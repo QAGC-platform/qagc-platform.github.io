@@ -1,0 +1,56 @@
+openapi: 3.1.0
+info:
+  title: QAGC Assistant API
+  description: >
+    Reads the QAGC annual plan and pushes proposed tasks into the platform's
+    inbox. Everything pushed is pending until the Director General approves it.
+  version: 1.0.0
+servers:
+  - url: https://script.google.com/macros/s/PASTE_DEPLOYMENT_ID_HERE
+paths:
+  /exec:
+    get:
+      operationId: readPlatform
+      summary: Read the plan objectives, the inbox, or ping the service.
+      parameters:
+        - name: key
+          in: query
+          required: true
+          schema: { type: string }
+          description: The platform-issued API key (given in the GPT instructions).
+        - name: fn
+          in: query
+          required: true
+          schema: { type: string, enum: [ping, objectives, inbox] }
+      responses:
+        "200":
+          description: JSON result.
+    post:
+      operationId: pushTask
+      summary: Push one proposed task into the platform inbox (lands as pending).
+      parameters:
+        - name: key
+          in: query
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, tag]
+              properties:
+                fn: { type: string, enum: [addTask], default: addTask }
+                title: { type: string, description: "عنوان المهمة بالعربية" }
+                tag:
+                  type: string
+                  enum: [five_year_plan, annual_plan, third_category]
+                  description: التصنيف — إلزامي، لا تُقبل مهمة بلا فئة
+                owner: { type: string, description: "الجهة أو الشخص المقترح" }
+                due: { type: string, description: "YYYY-MM-DD" }
+                budget: { type: number, description: "تقدير بالريال العماني، إن وجد" }
+                note: { type: string }
+      responses:
+        "200":
+          description: JSON result with state pending.
