@@ -1,5 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
+<meta name="qagc-ver" content="beta 17">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -1820,6 +1821,13 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
   font:600 11px/19px var(--latin);text-align:center;cursor:pointer;
   box-shadow:0 1px 4px rgba(0,0,0,.3)}
 .rv-pin.gone{background:var(--ink-4);opacity:.75}
+.verline{margin-top:8px;font-size:10.5px;color:var(--ink-3);opacity:.75;letter-spacing:.3px}
+#verBar{position:fixed;z-index:120;bottom:14px;left:50%;transform:translateX(-50%);
+  display:flex;gap:10px;align-items:center;max-width:min(680px,94vw);
+  background:#14522e;color:#fff;border:1px solid #8a6a1f;border-radius:14px;
+  padding:10px 16px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-size:13px}
+#verBar .btn{white-space:nowrap}
+#verBar .btn:not(.btn-p){background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
 #rvPop.fx{position:fixed}
 .rv-pin.fx{position:fixed}
 #rvPop{position:absolute;z-index:70;width:min(330px,92vw);background:var(--surface);
@@ -2054,8 +2062,15 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
           <div class="who-role"><span lang="ar">مركز ضمان الجودة والحوكمة</span><span lang="en">Quality Assurance &amp; Governance</span></div>
         </div>
       </div>
+      <div class="verline" id="verLine"></div>
     </div>
   </nav>
+
+  <div id="verBar" hidden>
+    <span id="verBarTxt"></span>
+    <button class="btn btn-p" id="verBarGo"><span lang="ar">تحديث الآن</span><span lang="en">Update now</span></button>
+    <button class="btn" id="verBarLater"><span lang="ar">لاحقاً</span><span lang="en">Later</span></button>
+  </div>
 
   <main>
     <div id="awardsBar" hidden></div>
@@ -12705,6 +12720,47 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var left=Math.max(8, Math.min(r.left+(fx?0:window.scrollX), vw-345));
     pop.style.top=top+"px"; pop.style.left=left+"px";
   }
+  // ── version: the file is the deployment, so the file carries the stamp;
+  //    a Range fetch of our own first bytes tells us when the CDN has newer ──
+  var APP_VER=(document.querySelector('meta[name="qagc-ver"]')||{}).content||"";
+  (function(){
+    var vl=document.getElementById("verLine");
+    if(vl&&APP_VER) vl.innerHTML=bi("نسخة المنصة: "+APP_VER,"Platform version: "+APP_VER);
+  })();
+  function verBarShow(nv){
+    var bar=document.getElementById("verBar"); if(!bar) return;
+    document.getElementById("verBarTxt").innerHTML=
+      bi("نسخة أحدث من المنصة متوفرة («"+nv+"» — وأنتِ على «"+APP_VER+"»). اضغطي «تحديث الآن»؛ وإن بقيت النسخة القديمة فحدّثي تحديثاً قوياً (⌘⇧R).",
+         "A newer platform version is available (“"+nv+"” — you are on “"+APP_VER+"”). Press “Update now”; if the old one persists, hard-reload (Cmd-Shift-R).");
+    bar.hidden=false; bar._nv=nv;
+  }
+  function verCheck(){
+    if(!APP_VER || location.protocol==="file:") return;
+    if(!document.getElementById("verBar").hidden) return;
+    fetch(location.pathname+"?vchk="+Date.now(), {cache:"no-store", headers:{"Range":"bytes=0-4095"}})
+      .then(function(r){ return r.text(); })
+      .then(function(t){
+        var m=t.slice(0,8192).match(/name="qagc-ver" content="([^"]+)"/);
+        if(m && m[1]!==APP_VER && sessionStorage.getItem("qagcVerSeen")!==m[1]) verBarShow(m[1]);
+      }).catch(function(){});
+  }
+  document.addEventListener("click", function(e){
+    if(e.target.closest("#verBarGo")){
+      var nv=document.getElementById("verBar")._nv||"";
+      location.replace(location.pathname+"?v="+encodeURIComponent(nv));
+      return;
+    }
+    if(e.target.closest("#verBarLater")){
+      var bar=document.getElementById("verBar");
+      try{ sessionStorage.setItem("qagcVerSeen", bar._nv||""); }catch(_){}
+      bar.hidden=true; return;
+    }
+  });
+  setTimeout(verCheck, 12000);
+  setInterval(verCheck, 20*60*1000);
+  document.addEventListener("visibilitychange", function(){
+    if(document.visibilityState==="visible") verCheck();
+  });
   // the rail is sticky: its pins are right only for the scroll position they
   // were painted at, so every scroll repaints (a few pins — cheap)
   var rvScRaf=null;
@@ -12719,7 +12775,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   // capture phase: in review mode the click is a comment, not an action
   document.addEventListener("click", function(e){
     if(!RVON) return;
-    if(e.target.closest("#rvPop,#rvPanel,#rvToggle,.rv-pin,#rvToast,.gate")) return;
+    if(e.target.closest("#rvPop,#rvPanel,#rvToggle,.rv-pin,#rvToast,#verBar,.gate")) return;
     if(RVNAV){ RVNAV=false; return; }
     e.preventDefault(); e.stopPropagation();
     var el=e.target;

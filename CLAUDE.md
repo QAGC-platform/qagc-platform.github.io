@@ -177,6 +177,11 @@ finished until it is committed and **pushed** — the push is the deployment
 to the live site. The full cycle, every time:
 
 1. `git pull --rebase` before starting (two people work on this repo).
+0. **Bump the version stamp** with any app/index.html change: the
+   `<meta name="qagc-ver" content="beta N">` tag near the top of the file
+   (increment N). The running platform re-fetches its own first bytes and
+   shows every user an update banner when the deployed stamp is newer —
+   an unbumped push means nobody is told to reload.
 2. Edit → `node --check` → verify in a local browser.
 3. Commit with a message that explains the decision (commit messages are
    the shared project memory) and **push without waiting to be asked**.
