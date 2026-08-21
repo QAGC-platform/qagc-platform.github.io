@@ -6,7 +6,8 @@ info:
     inbox. Everything pushed is pending until the Director General approves it.
   version: 1.0.0
 servers:
-  - url: https://script.google.com/macros/s/PASTE_DEPLOYMENT_ID_HERE
+  # the live deployment — no /exec here; the path below adds it
+  - url: https://script.google.com/macros/s/AKfycbyXcZmRRwTd3l9RxsVervXq2waQ6SLyZ8uVQ83H9RuBFJZupisg_s1-5R8wvPQmQIQxgg
 paths:
   /exec:
     get:
