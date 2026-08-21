@@ -1948,7 +1948,7 @@ body.editmode .screen .head .eyebrow span[lang]:focus{
       <button data-go="annual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="17" rx="2"/><path d="M8 2v4M16 2v4M8 12l2 2 4-4"/></svg><span lang="ar">الخطة السنوية</span><span lang="en">Annual plan</span><span class="count tnum">3</span></button>
       <button data-go="dept"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-5h6v5"/><path d="M9 11h.01M15 11h.01"/></svg><span lang="ar">سجل الأقسام</span><span lang="en">Department register</span></button>
       <button data-go="people"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 20a6.2 6.2 0 0 1 12.4 0"/><path d="M17 5.3a3.2 3.2 0 0 1 0 5.4M18.4 20a6.2 6.2 0 0 0-2.6-4.4"/></svg><span lang="ar">الموظفون</span><span lang="en">People</span><span class="count tnum">3</span></button>
-      <button data-go="mine"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="3.5"/><path d="M3.5 20a6.5 6.5 0 0 1 11.4-4.3"/><path d="m15.5 18.5 2 2 4-4"/></svg><span lang="ar">مهامي</span><span lang="en">My assignments</span></button>
+      <button data-go="mine"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="3.5"/><path d="M3.5 20a6.5 6.5 0 0 1 11.4-4.3"/><path d="m15.5 18.5 2 2 4-4"/></svg><span lang="ar">المهام</span><span lang="en">Assignments</span></button>
       <button data-go="approvals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6a2 2 0 0 1 2 2v0h1.5A1.5 1.5 0 0 1 20 7.5v12A1.5 1.5 0 0 1 18.5 21h-13A1.5 1.5 0 0 1 4 19.5v-12A1.5 1.5 0 0 1 5.5 6H7v0a2 2 0 0 1 2-2z"/><path d="m8.5 13.5 2 2 4.5-4.5"/></svg><span lang="ar">الاعتمادات</span><span lang="en">Approvals</span><span class="count tnum" id="apprCount">0</span></button>
       <button data-go="leave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg><span lang="ar">الإجازات</span><span lang="en">Leave</span><span class="count tnum">2</span></button>
       <button data-go="cpd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5z"/><path d="M6 10.5V15c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5"/></svg><span lang="ar">التدريب والتطوير</span><span lang="en">Training &amp; development</span></button>
@@ -2001,6 +2001,7 @@ body.editmode .screen .head .eyebrow span[lang]:focus{
         <button class="btn" id="dashReset" hidden><span lang="ar">إعادة الافتراضي</span><span lang="en">Reset to default</span></button>
         <span class="fcount spacer" id="dashHint"></span>
       </div>
+      <div class="card" data-dighost hidden></div>
       <div id="addPanel" hidden></div>
       <div class="wgrid" id="dashGrid"></div>
     </section>
@@ -2243,10 +2244,39 @@ body.editmode .screen .head .eyebrow span[lang]:focus{
     <section class="screen" id="mine">
       <div class="head">
         <p class="eyebrow"><span lang="ar">نطاق شخصي</span><span lang="en">Personal scope</span></p>
-        <h1><span lang="ar">مهامي</span><span lang="en">My assignments</span></h1>
+        <h1><span lang="ar">المهام</span><span lang="en">Assignments</span></h1>
         <p><span lang="ar">ما هو مسند إليّ، وما أضيفه بنفسي. كل ما يُضاف يحمل فئة، ولا يسري قبل اعتماد المدير العام — الهدف نفسه، ومؤشره، وتقدير ميزانيته.</span>
            <span lang="en">What is assigned to me, and what I add myself. Everything added carries a category, and none of it takes effect before the Director General approves it — the objective itself, its KPI, and its budget estimate.</span></p>
       </div>
+      <div class="subtabs" id="mineTabs">
+        <button class="on" data-minetab="own"><span lang="ar">مهامي</span><span lang="en">My assignments</span></button>
+        <button data-minetab="assign" hidden><span lang="ar">إسناد مهمة لموظف</span><span lang="en">Assign to an employee</span></button>
+      </div>
+      <div id="mine-assign" hidden>
+        <div class="card">
+          <div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 20a6.2 6.2 0 0 1 12.4 0"/><path d="M16 8h6M19 5v6"/></svg></span><div>
+            <span class="ceye" id="asgScopeEye"></span>
+            <h2><span lang="ar">إسناد مهمة</span><span lang="en">Assign a task</span></h2></div></div></div>
+          <div class="kform">
+            <span class="fld"><label><span lang="ar">الموظف</span><span lang="en">Employee</span></label>
+              <select class="fld-sel" id="asg-p"></select></span>
+            <span class="fld" style="grid-column:span 2"><label><span lang="ar">المهمة</span><span lang="en">Task</span></label>
+              <input id="asg-t" placeholder="إعداد، مراجعة، تنفيذ…"></span>
+            <span class="fld"><label><span lang="ar">الاستحقاق</span><span lang="en">Due</span></label>
+              <input id="asg-due" type="date"></span>
+            <span class="fld"><label><span lang="ar">ضمن</span><span lang="en">Under</span></label>
+              <input id="asg-obj" placeholder="الهدف أو السياق"></span>
+            <span class="fld"><label><span lang="ar">ميزانية (اختياري)</span><span lang="en">Budget (optional)</span></label>
+              <input id="asg-amt" type="number" step="any" placeholder="ر.ع"></span>
+          </div>
+          <div id="asgLeaveWarn" hidden style="margin-top:var(--sp-2)"></div>
+          <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
+            <button class="btn btn-p" id="asgGo"><span lang="ar">إسناد</span><span lang="en">Assign</span></button>
+            <span class="kerr" id="asgErr"></span>
+          </div>
+        </div>
+      </div>
+      <div id="mine-own">
       <div class="tiles" id="mineTiles"></div>
       <div class="card">
         <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="8" r="3.5"/><path d="M3.5 20a6.5 6.5 0 0 1 11.4-4.3"/><path d="m15.5 18.5 2 2 4-4"/></svg></span><div>
@@ -2279,6 +2309,7 @@ body.editmode .screen .head .eyebrow span[lang]:focus{
             <span class="saved" id="asnSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span id="asnSavedT"><span lang="ar">أُرسلت لاعتماد المدير العام.</span><span lang="en">Sent to the Director General.</span></span></span>
           </div>
         </div>
+      </div>
       </div>
     </section>
 
@@ -2409,6 +2440,13 @@ body.editmode .screen .head .eyebrow span[lang]:focus{
           <span class="ceye"><span lang="ar">من كل الجهات، بسرّية</span><span lang="en">From every direction, in confidence</span></span>
           <h2><span lang="ar">التقييم 360°</span><span lang="en">360° evaluation</span></h2></div></div></div>
         <div id="ev360Body"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><div>
+          <span class="ceye"><span lang="ar">معادلة معلنة، لا انطباعات</span><span lang="en">An open formula, not impressions</span></span>
+          <h2><span lang="ar">مؤشر الأداء</span><span lang="en">Performance score</span></h2></div></div></div>
+        <div id="perfBoard"></div>
       </div>
 
       <div class="msplit">
@@ -2618,6 +2656,7 @@ body.editmode .screen .head .eyebrow span[lang]:focus{
         <span lang="en">This section owns no objectives — its role is operational: <b>people and the calendar</b>.</span>
       </div>
       <div class="homestrip" id="coordStrip"></div>
+      <div class="card" data-dighost hidden></div>
       <div class="tiles" id="coordTiles"></div>
       <div id="coordPrio" hidden></div>
 
@@ -2866,6 +2905,7 @@ body.editmode .screen .head .eyebrow span[lang]:focus{
         <span lang="en">Other people's plans and budgets do not appear here — the scope is personal.</span>
       </div>
       <div class="homestrip" id="staffStrip"></div>
+      <div class="card" data-dighost hidden></div>
       <div class="card">
         <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><div>
           <span class="ceye"><span lang="ar">ما يخص الجميع من مواعيد</span><span lang="en">The dates that concern everyone</span></span>
@@ -3198,6 +3238,7 @@ body.editmode .screen .head .eyebrow span[lang]:focus{
           </div>
           <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
             <button class="btn btn-p" id="awSave"><span lang="ar">إعلان التكريم</span><span lang="en">Announce</span></button>
+            <span id="awPerfHint" style="font-size:var(--t-sm)"></span>
             <button class="btn" id="awClear"><span lang="ar">إزالة الشريط</span><span lang="en">Take the ribbon down</span></button>
             <span class="saved" id="awSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span lang="ar">أُعلن التكريم.</span><span lang="en">Announced.</span></span>
           </div>
@@ -8597,6 +8638,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       aiStatus(bi("متصل — آخر تحديث الآن.","Connected — just refreshed."),true);
       aiSaveCfg(url,key);
       renderAiInbox(j.items||[]);
+      try{ aiPushSnapshot(url,key); }catch(_){}
       try{
         var ra=await fetch(url+"?key="+encodeURIComponent(key)+"&fn=analysis");
         var ja=await ra.json();
@@ -8849,6 +8891,147 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       return;
     }
     if(e.target.closest('[data-go="own"]')) drawStaffMg();
+  });
+
+  // ══ assigning, with the leave calendar watching over it ══
+  function leaveCoverOn(pid, dateStr){
+    if(!pid||!dateStr) return null;
+    var p=STAFF.filter(function(x){return x.id===pid;})[0]; if(!p) return null;
+    var hit=null;
+    LVREQ.forEach(function(l){
+      if(l.byId===pid && l.state==="approved" && l.from<=dateStr && l.to>=dateStr)
+        hit={from:l.from,to:l.to,sub:l.sub?l.sub[0]:""};
+    });
+    LEAVE.forEach(function(l){
+      if(l.status==="approved" && l.who[0]===p.who[0] && l.start<=dateStr && l.end>=dateStr)
+        hit={from:l.start,to:l.end,sub:l.sub?l.sub[0]:""};
+    });
+    return hit;
+  }
+  function canAssignTasks(){ return ROLE==="dg"||ROLE==="dir"; }
+  function asgScope(){
+    if(ROLE==="dg") return STAFF.filter(function(p){return p.id!=="dg0";});
+    if(ROLE==="dir") return pdpTeamOf();
+    return [];
+  }
+  function drawAsgForm(){
+    var sel=document.getElementById("asg-p"); if(!sel) return;
+    var scope=asgScope();
+    sel.innerHTML=scope.map(function(p){return '<option value="'+p.id+'">'+bi(p.who[0],p.who[1])+'</option>';}).join("");
+    var eye=document.getElementById("asgScopeEye");
+    if(eye) eye.innerHTML=(ROLE==="dg")
+      ? bi("المديرة العامة تُسند لأي موظف في المركز","The DG assigns to anyone in the centre")
+      : bi("الرئيس المباشر يُسند لفريقه","A line manager assigns within the team");
+    asgLeaveCheck();
+  }
+  function asgLeaveCheck(){
+    var w=document.getElementById("asgLeaveWarn"); if(!w) return;
+    var pid=(document.getElementById("asg-p")||{}).value||"";
+    var due=(document.getElementById("asg-due")||{}).value||"";
+    var hit=leaveCoverOn(pid,due);
+    if(!hit){ w.hidden=true; w.innerHTML=""; return; }
+    var subP=aiMatchStaff(hit.sub);
+    w.hidden=false;
+    w.innerHTML='<div class="retnote" style="display:block"><b>'+bi("⚠ تنبيه التغطية: ","⚠ Coverage: ")+'</b>'+
+      bi("الموظف في إجازة معتمدة من "+hit.from+" إلى "+hit.to+
+         (hit.sub?" — البديل المسجَّل: "+hit.sub:""),
+         "On approved leave "+hit.from+" → "+hit.to+(hit.sub?" — recorded substitute: "+hit.sub:""))+
+      (subP?' <button class="mini yes" data-asgswap="'+subP.id+'">'+bi("الإسناد إلى البديل","Assign the substitute")+'</button>':"")+'</div>';
+  }
+  document.addEventListener("change",function(e){
+    if(e.target && (e.target.id==="asg-p"||e.target.id==="asg-due")) asgLeaveCheck();
+  });
+  document.addEventListener("click",function(e){
+    var tb=e.target.closest("[data-minetab]");
+    if(tb){
+      document.querySelectorAll("[data-minetab]").forEach(function(x){x.classList.toggle("on",x===tb);});
+      document.getElementById("mine-own").hidden=(tb.dataset.minetab!=="own");
+      document.getElementById("mine-assign").hidden=(tb.dataset.minetab!=="assign");
+      if(tb.dataset.minetab==="assign") drawAsgForm();
+      return;
+    }
+    if(e.target.closest('[data-go="mine"]')){
+      var bA=document.querySelector('[data-minetab="assign"]');
+      if(bA) bA.hidden=!canAssignTasks();
+      return;
+    }
+    var sw=e.target.closest("[data-asgswap]");
+    if(sw){ var s2=document.getElementById("asg-p"); if(s2){ s2.value=sw.dataset.asgswap; asgLeaveCheck(); } return; }
+    if(e.target.closest("#asgGo")){
+      if(!canAssignTasks()) return;
+      var t=document.getElementById("asg-t"), err=document.getElementById("asgErr");
+      if(!t.value.trim()){ t.focus(); return; }
+      var pid=(document.getElementById("asg-p")||{}).value||"";
+      var pp=STAFF.filter(function(x){return x.id===pid;})[0]; if(!pp) return;
+      var due=(document.getElementById("asg-due")||{}).value||"2027-06-30";
+      var amt=parseFloat((document.getElementById("asg-amt")||{}).value);
+      stepUp("submit", bi("إسناد مهمة إلى ","Assigning to ")+bi(pp.who[0],pp.who[1])+": "+t.value.trim(), function(){
+        pp.steps=pp.steps||[];
+        pp.steps.push({t:[t.value.trim(),t.value.trim()],
+          obj:[(document.getElementById("asg-obj")||{}).value||"إسناد مباشر",
+               (document.getElementById("asg-obj")||{}).value||"Direct assignment"],
+          due:due, st:"not_started",
+          budget:isNaN(amt)?null:{amt:amt,state:"proposed"}});
+        if(typeof drawRoster==="function"){ drawRoster(); drawPeopleTiles(); refreshPeopleCount(); }
+        t.value=""; (document.getElementById("asg-amt")||{}).value="";
+        if(err) err.innerHTML=bi("أُسندت — تظهر في مهامه فوراً"+(isNaN(amt)?".":"، وميزانيتها في طابور المديرة العامة."),
+                                 "Assigned — on their list now.");
+      });
+      return;
+    }
+  });
+
+  // ══ the performance score: objective, visible, and tied to the honours ══
+  function perfScore(p){
+    var steps=p.steps||[], t=steps.length;
+    var o=steps.filter(function(st){return st.st==="overdue";}).length;
+    var task=(t? (t-o)/t : 1)*50;
+    var evAll=[]; 
+    (typeof EV360!=="undefined"?EV360:[]).forEach(function(c){
+      if(c.subject===p.id) Object.keys(c.resp).forEach(function(r){
+        evAll=evAll.concat(c.resp[r].scores.map(Number));
+      });
+    });
+    var ev=evAll.length? (evAll.reduce(function(a,b){return a+b;},0)/evAll.length)/5*30 : 24;
+    var pdpN=((typeof PDP!=="undefined"&&PDP[p.id])||[]).filter(function(x){return x.status==="approved";}).length;
+    var dev=pdpN? Math.min(pdpN,2)/2*20 : 10;
+    return Math.round(task+ev+dev);
+  }
+  function drawPerfBoard(){
+    var host=document.getElementById("perfBoard"); if(!host) return;
+    var rows=STAFF.filter(function(p){return p.id!=="dg0";})
+      .map(function(p){return {p:p, s:perfScore(p)};})
+      .sort(function(a,b){return b.s-a.s;});
+    host.innerHTML=rows.slice(0,8).map(function(r,i){
+      var col=r.s>=85?"var(--good-ink)":r.s>=65?"var(--warn-ink)":"var(--critical-ink)";
+      return '<div style="display:flex;gap:10px;align-items:center;padding:5px 0">'+
+        '<span class="tnum" style="width:22px;color:var(--ink-4)">'+(i+1)+'</span>'+
+        '<span style="width:220px;font-size:var(--t-sm);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+bi(r.p.who[0],r.p.who[1])+'</span>'+
+        '<span style="flex:1;height:9px;background:var(--surface-2);border-radius:5px;overflow:hidden">'+
+          '<span style="display:block;height:100%;width:'+r.s+'%;background:'+col+'"></span></span>'+
+        '<span class="tnum" style="width:36px;font-weight:700;color:'+col+'">'+r.s+'</span>'+
+        (i===0?'<span class="awstar" title="'+(isAr()?"مرشح تكريم الشهر":"Month honour candidate")+'">🏆</span>':"")+
+      '</div>';
+    }).join("")+
+    '<p class="hint2" style="margin-top:var(--sp-2)">'+
+      bi("معادلة معلنة: 50 نقطة للمهام في موعدها، 30 لتقييم 360° (24 عند غيابه)، 20 لعناصر التطوير المعتمدة (10 عند غيابها).",
+         "Open formula: 50 for on-time tasks, 30 for the 360° (24 if none), 20 for approved development items (10 if none).")+'</p>';
+  }
+  document.addEventListener("click",function(e){
+    if(e.target.closest('[data-go="people"]')) drawPerfBoard();
+    if(e.target.closest('[data-go="own"]')){
+      var hint=document.getElementById("awPerfHint");
+      if(hint){
+        var best=STAFF.filter(function(p){return p.id!=="dg0";})
+          .map(function(p){return {p:p,s:perfScore(p)};})
+          .sort(function(a,b){return b.s-a.s;})[0];
+        if(best) hint.innerHTML=bi("الأعلى أداءً هذا الشهر: ","Top performer: ")+
+          '<b>'+bi(best.p.who[0],best.p.who[1])+'</b> ('+best.s+') '+
+          '<button class="mini yes" data-awpick="'+best.p.id+'">'+bi("جعله موظف الشهر","Make employee of the month")+'</button>';
+      }
+    }
+    var ap=e.target.closest("[data-awpick]");
+    if(ap){ var se=document.getElementById("aw-emp"); if(se){ se.value=ap.dataset.awpick; } return; }
   });
 
   // ══ development plans: the person's, the directorate's, the centre's ══
@@ -9786,6 +9969,26 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       return;
     }
   });
+  function aiPushSnapshot(url,key){
+    var lv={};
+    ["center","directorate","department"].forEach(function(l){
+      var xs=PLAN2027.filter(function(o){return o.l===l;});
+      lv[l]={n:xs.length, avg:xs.length?Math.round(xs.reduce(function(a,o){return a+progOf(o);},0)/xs.length):0};
+    });
+    var overdue=0, total=0;
+    STAFF.forEach(function(p){(p.steps||[]).forEach(function(st){ total++; if(st.st==="overdue") overdue++; });});
+    var today="2026-11-20";
+    var onLeaveNow=LEAVE.filter(function(l){return l.status==="approved"&&l.start<=today&&l.end>=today;}).length+
+      LVREQ.filter(function(l){return l.state==="approved"&&l.from<=today&&l.to>=today;}).length;
+    var snap={date:today,
+      levels:{"المركز":lv.center,"الدوائر":lv.directorate,"الأقسام":lv.department},
+      steps:{total:total, overdue:overdue},
+      pendingApprovals:subsPending().length,
+      upcomingCpd:CPD.filter(function(ev){return ev.from>=today;}).length,
+      onLeaveNow:onLeaveNow, staff:STAFF.length-1};
+    fetch(url+"?key="+encodeURIComponent(key), {method:"POST",
+      body:JSON.stringify({fn:"putSnapshot", snapshot:snap})}).catch(function(){});
+  }
   function renderAiInbox(items){
     var host=document.getElementById("aiInbox"); if(!host) return;
     AI_LAST=items;
@@ -9833,6 +10036,35 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             : (ROLE==="dg"||ROLE==="coord"
                ? '<button class="mini yes" data-aicpd="'+encodeURIComponent(JSON.stringify(it))+'">'+bi("إدراج في برنامج CPD","Place on the CPD board")+'</button>'
                : '<span class="pill p-warn">'+bi("بانتظار الإدراج","Pending")+'</span>'))+editBtn+hideBtn+'</span>'+
+        editForm+'</div>';
+      }
+      if(kind==="digest"){
+        return '<div class="subrow" style="grid-template-columns:minmax(0,1fr) auto auto">'+
+          '<span><span class="st2">'+String(it.title||"موجز أسبوعي").slice(0,120)+'</span>'+
+            '<span class="sm"><span class="pill p-good">'+bi("موجز أسبوعي","Weekly digest")+'</span>'+
+            ' · '+String(it.note||"").split("##").length+' '+bi("أقسام","sections")+'</span></span>'+
+          '<span class="sw2 tnum">'+String(it.when||"").slice(0,10)+'</span>'+
+          '<span class="acts">'+(done
+            ? '<span class="pill p-good">'+bi("منشور","Published")+'</span>'
+            : (ROLE==="dg"
+               ? '<button class="mini yes" data-aidigest="'+encodeURIComponent(JSON.stringify(it))+'">'+bi("نشر الموجز على الصفحات","Publish to the home pages")+'</button>'
+               : '<span class="pill p-warn">'+bi("بانتظار النشر","Pending")+'</span>'))+editBtn+hideBtn+'</span>'+
+        editForm+'</div>';
+      }
+      if(kind==="report"){
+        var rk=encodeURIComponent(JSON.stringify(it));
+        return '<div class="subrow" style="grid-template-columns:minmax(0,1fr) auto auto">'+
+          '<span><span class="st2">'+String(it.title||"تقرير دوري").slice(0,120)+'</span>'+
+            '<span class="sm"><span class="pill p-neutral">'+bi("تقرير دوري","Periodic report")+'</span></span>'+
+            (AI_RVIEW[it.when]?'<span class="sm" style="margin-top:6px">'+aiReportHtml(it)+'</span>':"")+'</span>'+
+          '<span class="sw2 tnum">'+String(it.when||"").slice(0,10)+'</span>'+
+          '<span class="acts">'+
+            '<button class="mini" data-airview="'+encodeURIComponent(it.when)+'">'+
+              (AI_RVIEW[it.when]?bi("إخفاء","Hide"):bi("عرض","View"))+'</button>'+
+            '<button class="mini yes" data-airpptx="'+rk+'">PowerPoint</button>'+
+            '<button class="mini yes" data-airdocx="'+rk+'">Word</button>'+
+            '<span class="kerr" data-airerr="'+encodeURIComponent(it.when)+'"></span>'+
+            editBtn+hideBtn+'</span>'+
         editForm+'</div>';
       }
       if(kind==="pdp"){
@@ -9896,6 +10128,113 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   var AI_LAST=[];
   var AI_HIDDEN={};
   var AI_EDITING={};
+  var AI_RVIEW={};
+  var DIGEST=null;
+  function aiKindSections(note){
+    var secs=[], cur={h:"",lines:[]};
+    String(note||"").split("\n").forEach(function(l){
+      l=l.trim(); if(!l) return;
+      if(l.indexOf("##")===0){ if(cur.h||cur.lines.length) secs.push(cur); cur={h:l.replace(/^#+\s*/,""),lines:[]}; }
+      else cur.lines.push(l.replace(/^[-•·]\s*/,""));
+    });
+    if(cur.h||cur.lines.length) secs.push(cur);
+    return secs;
+  }
+  function aiReportHtml(it){
+    return aiKindSections(it.note).map(function(sc){
+      return (sc.h?'<b style="display:block;margin-top:6px;color:var(--good-ink)">'+sc.h+'</b>':"")+
+        sc.lines.map(function(l){return '<span style="display:block">• '+l+'</span>';}).join("");
+    }).join("");
+  }
+  function drawDigest(){
+    document.querySelectorAll("[data-dighost]").forEach(function(h){
+      if(!DIGEST){ h.hidden=true; return; }
+      h.hidden=false;
+      h.innerHTML='<div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M8 8h8M8 12h6"/></svg></span><div>'+
+        '<span class="ceye">'+bi("أعدّه المساعد الذكي ونشرته المديرة العامة","Prepared by the assistant, published by the DG")+'</span>'+
+        '<h2>'+String(DIGEST.title)+'</h2></div></div></div>'+
+        aiKindSections(DIGEST.body).map(function(sc){
+          return (sc.h?'<p class="subh">'+sc.h+'</p>':"")+
+            sc.lines.map(function(l){return '<div class="sm" style="padding:2px 0">• '+l+'</div>';}).join("");
+        }).join("");
+    });
+  }
+  // ── the report becomes real files: a deck and a document, built in the page ──
+  function xmlEsc(t){ return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  function dlBlob(name, blob){
+    var a=document.createElement("a");
+    a.href=URL.createObjectURL(blob); a.download=name;
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },800);
+  }
+  async function reportPptx(title, secs){
+    var N=secs.length+1;
+    var files={};
+    var ct='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'+
+      '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'+
+      '<Default Extension="xml" ContentType="application/xml"/>'+
+      '<Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>'+
+      '<Override PartName="/ppt/slideMasters/slideMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>'+
+      '<Override PartName="/ppt/slideLayouts/slideLayout1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>'+
+      '<Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>';
+    for(var i=1;i<=N;i++) ct+='<Override PartName="/ppt/slides/slide'+i+'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>';
+    files["[Content_Types].xml"]=ct+'</Types>';
+    files["_rels/.rels"]='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="ppt/presentation.xml"/></Relationships>';
+    var sldIds="", pRels='<Relationship Id="rM" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster" Target="slideMasters/slideMaster1.xml"/>';
+    for(var i=1;i<=N;i++){
+      sldIds+='<p:sldId id="'+(255+i)+'" r:id="rS'+i+'"/>';
+      pRels+='<Relationship Id="rS'+i+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="slides/slide'+i+'.xml"/>';
+    }
+    files["ppt/presentation.xml"]='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">'+
+      '<p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rM"/></p:sldMasterIdLst>'+
+      '<p:sldIdLst>'+sldIds+'</p:sldIdLst><p:sldSz cx="12192000" cy="6858000"/><p:notesSz cx="6858000" cy="9144000"/></p:presentation>';
+    files["ppt/_rels/presentation.xml.rels"]='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+pRels+'</Relationships>';
+    var themeXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="q"><a:themeElements><a:clrScheme name="q"><a:dk1><a:srgbClr val="26251F"/></a:dk1><a:lt1><a:srgbClr val="FFFFFF"/></a:lt1><a:dk2><a:srgbClr val="14522E"/></a:dk2><a:lt2><a:srgbClr val="F7F3EA"/></a:lt2><a:accent1><a:srgbClr val="14522E"/></a:accent1><a:accent2><a:srgbClr val="8A6A1F"/></a:accent2><a:accent3><a:srgbClr val="4A63A8"/></a:accent3><a:accent4><a:srgbClr val="A84A5B"/></a:accent4><a:accent5><a:srgbClr val="3F7D80"/></a:accent5><a:accent6><a:srgbClr val="6D6754"/></a:accent6><a:hlink><a:srgbClr val="14522E"/></a:hlink><a:folHlink><a:srgbClr val="8A6A1F"/></a:folHlink></a:clrScheme><a:fontScheme name="q"><a:majorFont><a:latin typeface="Calibri"/><a:ea typeface=""/><a:cs typeface="Arial"/></a:majorFont><a:minorFont><a:latin typeface="Calibri"/><a:ea typeface=""/><a:cs typeface="Arial"/></a:minorFont></a:fontScheme><a:fmtScheme name="q"><a:fillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:fillStyleLst><a:lnStyleLst><a:ln><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:ln><a:ln><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:ln><a:ln><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:ln></a:lnStyleLst><a:effectStyleLst><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:bgFillStyleLst></a:fmtScheme></a:themeElements></a:theme>';
+    files["ppt/theme/theme1.xml"]=themeXml;
+    files["ppt/slideMasters/slideMaster1.xml"]='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><p:sldMaster xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"><p:cSld><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr/></p:spTree></p:cSld><p:clrMap bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink"/><p:sldLayoutIdLst><p:sldLayoutId id="2147483649" r:id="rL"/></p:sldLayoutIdLst></p:sldMaster>';
+    files["ppt/slideMasters/_rels/slideMaster1.xml.rels"]='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rL" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/><Relationship Id="rT" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="../theme/theme1.xml"/></Relationships>';
+    files["ppt/slideLayouts/slideLayout1.xml"]='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><p:sldLayout xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"><p:cSld><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr/></p:spTree></p:cSld><p:clrMapOvr><a:overrideClrMapping bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink"/></p:clrMapOvr></p:sldLayout>';
+    files["ppt/slideLayouts/_rels/slideLayout1.xml.rels"]='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rM" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster" Target="../slideMasters/slideMaster1.xml"/></Relationships>';
+    function txt(x,y,w,h,runs){
+      return '<p:sp><p:nvSpPr><p:cNvPr id="'+(Math.floor(Math.random()*9000)+2)+'" name="t"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>'+
+        '<p:spPr><a:xfrm><a:off x="'+x+'" y="'+y+'"/><a:ext cx="'+w+'" cy="'+h+'"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr>'+
+        '<p:txBody><a:bodyPr wrap="square" rtlCol="1"/><a:lstStyle/>'+runs+'</p:txBody></p:sp>';
+    }
+    function para(t,size,bold,color){
+      return '<a:p><a:pPr algn="r" rtl="1"/><a:r><a:rPr lang="ar-OM" sz="'+size+'"'+(bold?' b="1"':'')+' dirty="0"><a:solidFill><a:srgbClr val="'+color+'"/></a:solidFill><a:cs typeface="Arial"/></a:rPr><a:t>'+xmlEsc(t)+'</a:t></a:r></a:p>';
+    }
+    function slide(body){
+      return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"><p:cSld><p:bg><p:bgPr><a:solidFill><a:srgbClr val="F7F3EA"/></a:solidFill><a:effectLst/></p:bgPr></p:bg><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr/>'+body+'</p:spTree></p:cSld><p:clrMapOvr><a:overrideClrMapping bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink"/></p:clrMapOvr></p:sld>';
+    }
+    files["ppt/slides/slide1.xml"]=slide(
+      txt(914400,2200000,10363200,1400000,para(title,4000,true,"14522E"))+
+      txt(914400,3700000,10363200,700000,para("مركز ضمان الجودة والحوكمة — أعدّه المساعد الذكي",1800,false,"6D6754")));
+    secs.forEach(function(sc,i){
+      var runs=sc.lines.map(function(l){return para("• "+l,1600,false,"26251F");}).join("");
+      files["ppt/slides/slide"+(i+2)+".xml"]=slide(
+        txt(914400,457200,10363200,900000,para(sc.h||("قسم "+(i+1)),2600,true,"14522E"))+
+        txt(914400,1500000,10363200,4900000,runs||para("—",1600,false,"6D6754")));
+    });
+    for(var i=1;i<=N;i++) files["ppt/slides/_rels/slide"+i+".xml.rels"]='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rL" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/></Relationships>';
+    return makeZip(files,"application/vnd.openxmlformats-officedocument.presentationml.presentation");
+  }
+  async function reportDocx(title, secs){
+    var files={};
+    files["[Content_Types].xml"]='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>';
+    files["_rels/.rels"]='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>';
+    function wp(t,size,bold,color){
+      return '<w:p><w:pPr><w:bidi/><w:jc w:val="right"/><w:spacing w:after="160"/></w:pPr>'+
+        '<w:r><w:rPr><w:rtl/>'+(bold?'<w:b/><w:bCs/>':'')+'<w:sz w:val="'+size+'"/><w:szCs w:val="'+size+'"/><w:color w:val="'+color+'"/><w:rFonts w:cs="Arial"/></w:rPr>'+
+        '<w:t xml:space="preserve">'+xmlEsc(t)+'</w:t></w:r></w:p>';
+    }
+    var body=wp(title,40,true,"14522E")+wp("مركز ضمان الجودة والحوكمة — أعدّه المساعد الذكي وأقرّه العرض من المنصة",20,false,"6D6754");
+    secs.forEach(function(sc){
+      body+=wp(sc.h||"",28,true,"14522E");
+      sc.lines.forEach(function(l){ body+=wp("• "+l,22,false,"26251F"); });
+    });
+    files["word/document.xml"]='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'+body+'<w:sectPr><w:bidi/><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/></w:sectPr></w:body></w:document>';
+    return makeZip(files,"application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+  }
   try{ AI_HIDDEN=JSON.parse(localStorage.getItem("qagcAiHidden")||"{}")||{}; }catch(_){}
   function aiMatchStaff(name){
     name=String(name||"").trim();
@@ -9911,7 +10250,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   function aiKindOf(it){
     if(it.itype==="cpd") return "cpd";
-    if(it.kind==="task"||it.kind==="agenda"||it.kind==="objective"||it.kind==="pdp") return it.kind;
+    if(["task","agenda","objective","pdp","digest","report"].indexOf(it.kind)>=0) return it.kind;
     // pushes from before the kind field: an objective carries SMART or KPIs; the rest are tasks
     return (it.smart || aiKpisOf(it).length) ? "objective" : "task";
   }
@@ -9954,6 +10293,40 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       AGENDAS.push({id:"AG"+(++AGSEQ), title:String(evA.title||""), date:String(evA.due||"").slice(0,10),
         items:String(evA.note||""), by:["المساعد الذكي","The assistant"], asg:"", asgName:""});
       drawAgendas(); aiFetchInbox(); return;
+    }
+    var dg1=e.target.closest("[data-aidigest]");
+    if(dg1){
+      var evD=JSON.parse(decodeURIComponent(dg1.dataset.aidigest));
+      stepUp("submit", bi("نشر الموجز الأسبوعي على الصفحات الرئيسية","Publishing the weekly digest"), function(){
+        AI_IMPORTED[evD.when]=true;
+        DIGEST={title:String(evD.title||"الموجز الأسبوعي"), body:String(evD.note||""), when:String(evD.when||"").slice(0,10)};
+        drawDigest(); aiFetchInbox();
+      });
+      return;
+    }
+    var rv=e.target.closest("[data-airview]");
+    if(rv){ var kw=decodeURIComponent(rv.dataset.airview); AI_RVIEW[kw]=!AI_RVIEW[kw]; renderAiInbox(AI_LAST); return; }
+    var rp=e.target.closest("[data-airpptx]");
+    if(rp){
+      var itR=JSON.parse(decodeURIComponent(rp.dataset.airpptx));
+      var errR=document.querySelector('[data-airerr="'+encodeURIComponent(itR.when)+'"]');
+      if(errR) errR.innerHTML=bi("جارٍ البناء…","Building…");
+      reportPptx(String(itR.title||"تقرير"), aiKindSections(itR.note)).then(function(b){
+        dlBlob("qagc-report.pptx", b);
+        if(errR) errR.innerHTML="";
+      }).catch(function(e2){ if(errR) errR.innerHTML=bi("تعذّر البناء: ","Failed: ")+(e2&&e2.message||""); });
+      return;
+    }
+    var rw=e.target.closest("[data-airdocx]");
+    if(rw){
+      var itW=JSON.parse(decodeURIComponent(rw.dataset.airdocx));
+      var errW=document.querySelector('[data-airerr="'+encodeURIComponent(itW.when)+'"]');
+      if(errW) errW.innerHTML=bi("جارٍ البناء…","Building…");
+      reportDocx(String(itW.title||"تقرير"), aiKindSections(itW.note)).then(function(b){
+        dlBlob("qagc-report.docx", b);
+        if(errW) errW.innerHTML="";
+      }).catch(function(e2){ if(errW) errW.innerHTML=bi("تعذّر البناء: ","Failed: ")+(e2&&e2.message||""); });
+      return;
     }
     var ipd=e.target.closest("[data-aipdp]");
     if(ipd){
@@ -10408,6 +10781,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             '</select>'+
             (s.meta&&s.meta.suggest?'<span class="al" style="color:var(--good-ink);margin-top:3px">'+
               bi("تعرّفت المنصة على الاسم الوارد في الدفعة.","The platform recognised the name in the push.")+'</span>':"")+
+            (function(){
+              var lc=s.meta&&s.meta.suggest?leaveCoverOn(s.meta.suggest, s.meta.due):null;
+              return lc?'<span class="al" style="color:var(--critical-ink);margin-top:3px">'+
+                bi("⚠ سيكون في إجازة عند الاستحقاق ("+lc.from+" → "+lc.to+")"+(lc.sub?" — البديل: "+lc.sub:""),
+                   "⚠ On leave at the due date"+(lc.sub?" — substitute: "+lc.sub:""))+'</span>':"";
+            })()+
             '</span>':"")+
         (pendN>1?'<span class="acts">'+
           '<button class="mini yes" data-cdecall="'+r.key+'">'+bi("اعتماد كل المتبقي","Approve all remaining")+'</button>'+

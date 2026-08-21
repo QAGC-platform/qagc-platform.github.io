@@ -167,6 +167,13 @@ function doGet(e) {
     const head = rows.shift();
     return json_({ ok: true, items: rows.map(r => Object.fromEntries(head.map((h, i) => [h, r[i]]))) });
   }
+  if (fn === 'snapshot') {
+    // the platform's own reading of itself, refreshed on every bridge connect —
+    // the digest and the periodic report are written FROM this, not from guesses
+    return json_({ ok: true,
+      when: PROPS.getProperty('QAGC_SNAP_WHEN') || '',
+      snapshot: JSON.parse(PROPS.getProperty('QAGC_SNAPSHOT') || 'null') });
+  }
   if (fn === 'changes') {
     // the tabs' last-edit stamps — one light call tells the platform what to re-pull
     const all = PROPS.getProperties();
@@ -318,6 +325,13 @@ function doPost(e) {
       url: ss.getUrl() + '#gid=' + sh.getSheetId() });
   }
 
+  // ── the platform posts its performance snapshot for the assistant to read ──
+  if (fn === 'putSnapshot') {
+    PROPS.setProperty('QAGC_SNAPSHOT', JSON.stringify(body.snapshot || {}));
+    PROPS.setProperty('QAGC_SNAP_WHEN', new Date().toISOString());
+    return json_({ ok: true });
+  }
+
   // ── the owner links (or unlinks) her personal calendar, from the platform ──
   if (fn === 'setDgCal') {
     const email = String(body.email || '').trim();
@@ -425,7 +439,7 @@ function doPost(e) {
     kpis: kpis.length ? JSON.stringify(kpis) : '',
     itype: 'package', venue: '', ctype: '', date_to: '',
     // what this push IS: an objective package, a simple task, or a meeting agenda
-    kind: ['task', 'objective', 'agenda', 'pdp'].indexOf(String(body.kind || '').trim()) >= 0
+    kind: ['task', 'objective', 'agenda', 'pdp', 'digest', 'report'].indexOf(String(body.kind || '').trim()) >= 0
       ? String(body.kind).trim() : '',
   };
   sh.appendRow(head.map(h => (h in rec) ? rec[h] : ''));
