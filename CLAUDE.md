@@ -112,14 +112,26 @@ before touching anything — it replaces a long build history you cannot see.
   `rvText()`, never `textContent` (bi() leaves both languages in the DOM),
   and remember that changing screen only toggles a class, so the pins are
   repainted from a nav click as well as from the MutationObserver.
-- The review board is an Artifact that RECEIVES those notes:
-  `claude.ai/code/artifact/9fa37a24-5104-4db7-bb72-2c726689bd82`. The
-  platform cannot post to it (static page, no auth), so "Send to the review
-  board" carries the notes in the URL fragment and the board saves them with
-  `claude.use("artifact").publish()` on her click. **Before ever
-  republishing that artifact from a local file, WebFetch it first and merge
-  the notes it already holds into the file** — a plain republish silently
-  discards everything she sent. Its state lives in `<script id="rv-data">`.
+- **Review notes loop (bridge-backed)**: "Send via the bridge" POSTs unsent
+  notes to `fn=addFeedback` on the GAS bridge (they land in a `feedback`
+  sheet, shared across every device); sent notes carry a `fid` and show
+  "أُرسلت ✓". The panel's "Shared board" button pulls `fn=feedback` and
+  shows every note with its state; "عُولجت" calls `fn=resolveFeedback`.
+  **Claude sessions close the loop**: if a gitignored `.qagc-key` file
+  exists at the repo root (one line: the API key — the user creates it, it
+  is NEVER committed), read notes with
+  `curl '<exec-url>?key=$(cat .qagc-key)&fn=feedback'`, act on the open
+  ones, then mark each `{"fn":"resolveFeedback","id":…,"state":"done",
+  "reply":"<one line saying what was done>"}` via POST. Without the key
+  file, ask the user to paste the notes instead. Never print the key.
+- The review-board Artifact
+  (`claude.ai/code/artifact/9fa37a24-5104-4db7-bb72-2c726689bd82`) remains
+  the FALLBACK when no bridge key is configured on the device: the send
+  carries notes in the URL fragment and the board saves them on her click.
+  **Before ever republishing that artifact from a local file, WebFetch it
+  first and merge the notes it already holds into the file** — a plain
+  republish silently discards everything she sent. Its state lives in
+  `<script id="rv-data">`.
 - The owner (DG) customises wording in place (edit mode), reorders the rail
   (drag or arrows), tunes the performance-score weights, the 360 criteria,
   leave rules, working hours — all persisted. Maximising her autonomy is a

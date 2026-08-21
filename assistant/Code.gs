@@ -115,8 +115,15 @@ function tabOf_(ss, name, header) {
 
 const COLS = ['when', 'title', 'tag', 'owner', 'due', 'budget', 'note', 'state', 'smart', 'kpis', 'itype', 'venue', 'ctype', 'date_to', 'kind'];
 const ACOLS = ['id', 'when', 'kpi', 'question', 'data', 'answer', 'state'];
+const FCOLS = ['id', 'when', 'by', 'screen', 'where', 'what', 'text', 'state', 'reply'];
 const CTYPES = ['lecture', 'workshop', 'webinar', 'forum'];
 
+function fsheet_() {
+  const ss = ss_();
+  let sh = ss.getSheetByName('feedback');
+  if (!sh) { sh = ss.insertSheet('feedback'); sh.appendRow(FCOLS); }
+  return sh;
+}
 function sheet_(name) {
   const ss = ss_();
   let sh = ss.getSheetByName(name);
@@ -173,6 +180,13 @@ function doGet(e) {
     return json_({ ok: true,
       when: PROPS.getProperty('QAGC_SNAP_WHEN') || '',
       snapshot: JSON.parse(PROPS.getProperty('QAGC_SNAPSHOT') || 'null') });
+  }
+  if (fn === 'feedback') {
+    // the review notes pinned inside the platform — every device and every
+    // Claude session reads the same board
+    const rows = fsheet_().getDataRange().getValues();
+    const head = rows.shift();
+    return json_({ ok: true, notes: rows.map(r => Object.fromEntries(head.map((h, i) => [h, r[i]]))) });
   }
   if (fn === 'changes') {
     // the tabs' last-edit stamps — one light call tells the platform what to re-pull
@@ -330,6 +344,40 @@ function doPost(e) {
     PROPS.setProperty('QAGC_SNAPSHOT', JSON.stringify(body.snapshot || {}));
     PROPS.setProperty('QAGC_SNAP_WHEN', new Date().toISOString());
     return json_({ ok: true });
+  }
+
+  // ── review notes: the platform pins them, the bridge carries them ──
+  if (fn === 'addFeedback') {
+    const notes = Array.isArray(body.notes) ? body.notes.slice(0, 40) : [];
+    if (!notes.length) return json_({ ok: false, error: 'notes are required' });
+    const sh = fsheet_();
+    const ids = [];
+    notes.forEach(nt => {
+      const id = 'F' + Utilities.getUuid().slice(0, 8);
+      ids.push(id);
+      sh.appendRow([id, String(nt.when || new Date().toISOString()).slice(0, 16),
+        String(nt.by || '').slice(0, 80), String(nt.screen || '').slice(0, 40),
+        String(nt.where || '').slice(0, 120), String(nt.what || '').slice(0, 160),
+        String(nt.text || '').slice(0, 2000), 'open', '']);
+    });
+    return json_({ ok: true, ids: ids });
+  }
+  if (fn === 'resolveFeedback') {
+    const id = String(body.id || '').trim();
+    if (!id) return json_({ ok: false, error: 'id is required' });
+    const sh = fsheet_();
+    const vals = sh.getDataRange().getValues();
+    const head = vals[0];
+    for (let r = 1; r < vals.length; r++) {
+      if (String(vals[r][head.indexOf('id')]) === id) {
+        sh.getRange(r + 1, head.indexOf('state') + 1)
+          .setValue(body.state === 'kept' ? 'kept' : 'done');
+        if (body.reply) sh.getRange(r + 1, head.indexOf('reply') + 1)
+          .setValue(String(body.reply).slice(0, 1000));
+        return json_({ ok: true, id: id });
+      }
+    }
+    return json_({ ok: false, error: 'no such note' });
   }
 
   // ── the owner links (or unlinks) her personal calendar, from the platform ──

@@ -1848,7 +1848,11 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
 .rvitem .wh{font-size:var(--t-xs);color:var(--ink-3);display:block}
 .rvitem .tx{font-size:var(--t-sm);display:block;margin-top:2px;word-break:break-word}
 .rvitem .ac{display:flex;gap:6px;margin-top:5px}
-.rvempty{font-size:var(--t-sm);color:var(--ink-3);padding:14px 0}
+.rvsent{font-size:10px;color:#2c7a4b;font-weight:700;align-self:center}
+  .rvsec{margin:10px 0 4px;font-size:11px;font-weight:800;color:#8a6a1f;letter-spacing:.4px}
+  .rvitem.rvdone{opacity:.55}
+  .rvreply{color:#14522e;font-style:italic}
+  .rvempty{font-size:var(--t-sm);color:var(--ink-3);padding:14px 0}
 #rvToast{position:fixed;inset-block-end:22px;inset-inline-start:22px;z-index:80;
   background:var(--ink-1);color:var(--paper);padding:9px 15px;border-radius:9px;
   font-size:var(--t-sm);opacity:0;transform:translateY(6px);pointer-events:none;
@@ -3967,7 +3971,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
   </div>
   <div class="pb" id="rvList"></div>
   <div class="pf">
-    <button class="btn btn-p" id="rvSend"><span lang="ar">إرسال إلى لوحة المراجعة</span><span lang="en">Send to the review board</span></button>
+    <button class="btn btn-p" id="rvSend"><span lang="ar">إرسال عبر الجسر</span><span lang="en">Send via the bridge</span></button>
+    <button class="btn" id="rvPull"><span lang="ar">لوحة الجسر المشتركة</span><span lang="en">Shared board</span></button>
     <button class="btn" id="rvCopy"><span lang="ar">نسخ الكل</span><span lang="en">Copy all</span></button>
     <button class="btn" id="rvDl"><span lang="ar">تنزيل</span><span lang="en">Download</span></button>
     <button class="btn" id="rvClear"><span lang="ar">مسح الكل</span><span lang="en">Clear all</span></button>
@@ -12462,7 +12467,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   // it. A note remembers where it was pinned, so it survives the dynamic
   // repaints; if the thing it pointed at is gone, the note is kept and
   // marked detached rather than silently dropped.
-  var RVON=false, RVNOTES=[], RVSEQ=0, RVTARGET=null, RVEDIT=null;
+  var RVON=false, RVNOTES=[], RVSEQ=0, RVTARGET=null, RVEDIT=null, RVREMOTE=[];
   try{
     var _rv=JSON.parse(localStorage.getItem("qagcNotes")||"null");
     if(_rv&&_rv.notes){ RVNOTES=_rv.notes; RVSEQ=_rv.seq||RVNOTES.length; }
@@ -12554,12 +12559,26 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         '<span class="wh">'+nt.a.screenName+(nt.a.where?' · '+nt.a.where:'')+'</span>'+
         '<span class="tx">'+nt.text.replace(/</g,"&lt;")+'</span>'+
         '<span class="ac">'+
+          (nt.fid?'<span class="rvsent">'+bi("أُرسلت ✓","Sent ✓")+'</span>':'')+
           '<button class="mini" data-rvgo="'+nt.id+'">'+bi("اذهب","Go")+'</button>'+
           '<button class="mini no" data-rvdel="'+nt.id+'">'+bi("حذف","Delete")+'</button>'+
         '</span></span></div>';
     }).join("") : '<div class="rvempty">'+
       bi("لا ملاحظات بعد. شغّلي وضع المراجعة، ثم انقري أي عنصر على الشاشة.",
          "No notes yet. Turn on review mode, then click anything on screen.")+'</div>';
+    if(RVREMOTE.length){
+      host.innerHTML += '<div class="rvsec">'+bi("لوحة الجسر المشتركة","The shared board")+'</div>'+
+        RVREMOTE.map(function(n){
+          var done = n.state==="done"||n.state==="kept";
+          return '<div class="rvitem'+(done?' rvdone':'')+'"><span class="num">'+(done?'✓':'•')+'</span><span class="bd">'+
+            '<span class="wh">'+String(n.screen||"").replace(/</g,"&lt;")+(n.where?' · '+String(n.where).replace(/</g,"&lt;"):'')+
+              (n.by?' — '+String(n.by).replace(/</g,"&lt;"):'')+'</span>'+
+            '<span class="tx">'+String(n.text||"").replace(/</g,"&lt;")+'</span>'+
+            (n.reply?'<span class="tx rvreply">↩ '+String(n.reply).replace(/</g,"&lt;")+'</span>':'')+
+            (!done?'<span class="ac"><button class="mini" data-rvresolve="'+n.id+'">'+bi("عُولجت","Resolve")+'</button></span>':'')+
+          '</span></div>';
+        }).join("");
+    }
   }
   // one paste that tells Claude exactly what you meant, and where
   function rvReport(){
@@ -12690,13 +12709,66 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       rvPersist(); rvRows(); rvPaint(); return;
     }
     if(e.target.closest("#rvSend")){
-      if(!RVNOTES.length){ rvToast(bi("لا ملاحظات لإرسالها.","Nothing to send.")); return; }
+      var unsent=RVNOTES.filter(function(nt){return !nt.fid;});
+      if(!unsent.length){ rvToast(bi("لا ملاحظات جديدة لإرسالها.","Nothing new to send.")); return; }
+      var cfg=(typeof dgCalCfg==="function")?dgCalCfg():null;
+      if(cfg){
+        // the platform DOES have an authenticated door: the bridge. Notes sent
+        // through it reach every device — and every Claude session on the repo.
+        rvToast(bi("جارٍ الإرسال عبر الجسر…","Sending through the bridge…"));
+        var acct=(typeof SESSION!=="undefined"&&SESSION&&typeof acctOf==="function")?acctOf(SESSION.u):null;
+        fetch(cfg.url+"?key="+encodeURIComponent(cfg.key), {method:"POST",
+          body:JSON.stringify({fn:"addFeedback", notes:unsent.map(function(nt){
+            return {when:nt.when, by:acct?(isAr()?acct.who[0]:acct.who[1]):(nt.by||""),
+                    screen:nt.a&&nt.a.screen||"", where:nt.a&&nt.a.where||"",
+                    what:nt.a&&nt.a.what||"", text:nt.text};
+          })})})
+          .then(function(r){return r.json();})
+          .then(function(j){
+            if(j.ok&&j.ids){
+              unsent.forEach(function(nt,i){ nt.fid=j.ids[i]; });
+              rvPersist(); rvRows();
+              rvToast(bi(j.ids.length+" ملاحظة أُرسلت — تصل كل الأجهزة وجلسات Claude.",
+                         j.ids.length+" notes sent — every device and Claude session sees them."));
+            } else rvToast(bi("رفض الجسر: ","Bridge refused: ")+(j.error||""));
+          })
+          .catch(function(){ rvToast(bi("تعذّر الاتصال — من نسخة github.io مع مفتاح محفوظ.","Connect from github.io with the key remembered.")); });
+        return;
+      }
+      // no key on this device: fall back to the review-board hand-off
       var url=rvSendUrl();
-      if(!url){ rvToast(bi("الرابط أطول مما يحتمله المتصفح — أرسليها على دفعات، أو انسخيها.",
-                           "Too long for a URL — send them in batches, or use Copy all.")); return; }
+      if(!url){ rvToast(bi("أدخلي مفتاح الجسر أولاً، أو انسخي الملاحظات.","Enter the bridge key first, or use Copy all.")); return; }
       window.open(url, "_blank", "noopener");
       rvToast(bi("فُتحت اللوحة — اضغطي «أضيفيها إلى اللوحة» هناك.",
                  "The board is open — press “Add to the board” there."));
+      return;
+    }
+    if(e.target.closest("#rvPull")){
+      var cfg2=(typeof dgCalCfg==="function")?dgCalCfg():null;
+      if(!cfg2){ rvToast(bi("أدخلي مفتاح الجسر أولاً.","Enter the bridge key first.")); return; }
+      rvToast(bi("جارٍ القراءة من الجسر…","Reading the board…"));
+      fetch(cfg2.url+"?key="+encodeURIComponent(cfg2.key)+"&fn=feedback")
+        .then(function(r){return r.json();})
+        .then(function(j){
+          if(!j.ok){ rvToast(bi("رفض الجسر.","Bridge refused.")); return; }
+          RVREMOTE=j.notes||[];
+          rvRows();
+          rvToast(bi(RVREMOTE.length+" ملاحظة على لوحة الجسر.",RVREMOTE.length+" notes on the shared board."));
+        })
+        .catch(function(){ rvToast(bi("تعذّر الاتصال.","Could not connect.")); });
+      return;
+    }
+    var rvr=e.target.closest("[data-rvresolve]");
+    if(rvr){
+      var cfg3=(typeof dgCalCfg==="function")?dgCalCfg():null; if(!cfg3) return;
+      var fid=rvr.dataset.rvresolve;
+      fetch(cfg3.url+"?key="+encodeURIComponent(cfg3.key), {method:"POST",
+        body:JSON.stringify({fn:"resolveFeedback", id:fid, state:"done"})})
+        .then(function(r){return r.json();})
+        .then(function(j){ if(j.ok){
+          RVREMOTE.forEach(function(n){ if(n.id===fid) n.state="done"; });
+          rvRows(); rvToast(bi("عُلّمت منجزة.","Marked done."));
+        }});
       return;
     }
     if(e.target.closest("#rvCopy")){
