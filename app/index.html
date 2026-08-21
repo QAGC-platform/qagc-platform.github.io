@@ -1760,8 +1760,11 @@ html[lang="en"] span[lang="en"]{display:inline}
 .ccal-bar{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
 .ccal-year{display:inline-flex;gap:8px;align-items:center;font-size:1.15em}
 .ccal-view{display:inline-flex;gap:6px}
-.ccal-big .dcm-cell{min-height:96px}
-.ccal-big .dcm-ev{cursor:default}
+.ccal-big .dcm-grid{grid-template-columns:repeat(7,minmax(0,1fr));width:100%}
+.ccal-big .dcm-cell{min-height:104px;min-width:0;overflow:hidden}
+.ccal-big .dcm-ev{cursor:default;font-size:10.5px;max-width:100%}
+.dcm-grid{grid-template-columns:repeat(7,minmax(0,1fr))}
+.dcm-cell{min-width:0}
 .ccal-filters{display:flex;gap:8px;flex-wrap:wrap;margin-inline-start:auto}
 .ccal-chip{display:inline-flex;gap:7px;align-items:center;border:1.5px solid var(--rule);
   border-radius:999px;padding:4px 13px;cursor:pointer;font-size:var(--t-xs);
@@ -3106,6 +3109,23 @@ html[lang="en"] span[lang="en"]{display:inline}
           <div id="indTemplate"></div>
           <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-2);flex-wrap:wrap">
             <button class="btn" id="addInd"><span lang="ar">إضافة بند</span><span lang="en">Add an item</span></button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 20a6.2 6.2 0 0 1 12.4 0M17 5.3a3.2 3.2 0 0 1 0 5.4M21.2 20a6.2 6.2 0 0 0-4.2-5.8"/></svg></span><div>
+            <span class="ceye"><span lang="ar">قائمة المركز الرسمية</span><span lang="en">The centre's official list</span></span>
+            <h2><span lang="ar">الكوادر — الأسماء والمسميات</span><span lang="en">The roster — names and designations</span></h2></div></div></div>
+          <p style="font-size:var(--t-sm);color:var(--ink-3)">
+            <span lang="ar">من هنا تُدار قائمة الأسماء التي تظهر في كل قوائم الإسناد والتقييم. الحذف يزيل الاسم من القوائم فوراً.</span>
+            <span lang="en">This list feeds every assignment and evaluation dropdown. Deleting removes the name everywhere at once.</span></p>
+          <div id="staffMgList" style="display:flex;flex-direction:column;gap:4px"></div>
+          <div class="asnform" style="margin-top:var(--sp-3)">
+            <div style="font-size:var(--t-sm);font-weight:700"><span lang="ar">إضافة أسماء — سطر لكل اسم: الاسم — المسمى الوظيفي</span><span lang="en">Add names — one line each: name — designation</span></div>
+            <textarea id="staffImpTa" rows="4" style="width:100%;margin-top:6px" placeholder="أحمد بن سالم الهنائي — أخصائي حوكمة&#10;مريم بنت خلفان الرواحية — رئيسة قسم المعايير"></textarea>
+            <div style="margin-top:var(--sp-2);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
+              <button class="btn btn-p" id="staffImpGo"><span lang="ar">إضافة إلى القائمة</span><span lang="en">Add to the roster</span></button>
+              <span class="kerr" id="staffImpErr"></span>
+            </div>
           </div>
         </div>
         <div class="card">
@@ -5339,8 +5359,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var ev=JSON.parse(decodeURIComponent(dv.dataset.dgcalev));
     var msg=dv.parentElement.querySelector("[data-dgcalevmsg]");
     var cfg=dgCalCfg();
-    if(!cfg){ if(msg) msg.textContent=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
-    if(msg) msg.textContent=bi("جارٍ الإدراج…","Placing…");
+    if(!cfg){ if(msg) msg.innerHTML=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
+    if(msg) msg.innerHTML=bi("جارٍ الإدراج…","Placing…");
     var acct=(typeof SESSION!=="undefined"&&SESSION&&typeof acctOf==="function")?acctOf(SESSION.u):null;
     fetch(cfg.url+"?key="+encodeURIComponent(cfg.key), {method:"POST",
       body:JSON.stringify({fn:"addEvent", title:ev.title, date:String(ev.start).slice(0,10),
@@ -5349,11 +5369,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         who:acct?(isAr()?acct.who[0]:acct.who[1]):""})})
       .then(function(r){return r.json();})
       .then(function(j){
-        if(msg) msg.textContent=j.ok
+        if(msg) msg.innerHTML=j.ok
           ? bi("أُدرج في تقويمها (٩ص–٢م — عدّلي الوقت من التقويم نفسه).","Placed in her calendar (9–14 — adjust the time there).")
           : bi("رفض: ","Refused: ")+(j.error||"");
       })
-      .catch(function(){ if(msg) msg.textContent=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
+      .catch(function(){ if(msg) msg.innerHTML=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
   });
   async function saveIcs(events, name, btn){
     var text=icsDoc(events);
@@ -5607,10 +5627,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var url=(cfg&&cfg.url)||(document.getElementById("aiCfgUrl")||{}).value||"";
     var key=(cfg&&cfg.key)||(document.getElementById("aiCfgKey")||{}).value||"";
     if(!url||!key){
-      if(err) err.textContent=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first.");
+      if(err) err.innerHTML=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first.");
       return;
     }
-    if(err) err.textContent=bi("جارٍ الإرسال…","Sending…");
+    if(err) err.innerHTML=bi("جارٍ الإرسال…","Sending…");
     var st2=(typeof kpiStats==="function")?kpiStats(k):null;
     // no Content-Type header on purpose: text/plain avoids the preflight GAS cannot answer
     fetch(url+"?key="+encodeURIComponent(key), {method:"POST",
@@ -5623,13 +5643,13 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           edits:k.edits||0})})})
       .then(function(r){return r.json();})
       .then(function(j){
-        if(err) err.textContent = j.ok
+        if(err) err.innerHTML = j.ok
           ? bi("أُرسل الطلب — اطلبي التحليل من المساعد في ChatGPT، ثم افتحي شاشة الجسر الذكي.",
                "Sent — ask the assistant in ChatGPT to analyse, then open the bridge screen.")
           : bi("رفض الطلب: ","Refused: ")+(j.error||"");
       })
       .catch(function(){
-        if(err) err.textContent=bi("تعذّر الاتصال — جرّبي من النسخة المنشورة على github.io.",
+        if(err) err.innerHTML=bi("تعذّر الاتصال — جرّبي من النسخة المنشورة على github.io.",
                                    "Could not connect — try the github.io copy.");
       });
   });
@@ -5648,10 +5668,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(e.target.closest("#planGs")){
       var err=document.getElementById("docErr");
       if(ROLE!=="dg"&&ROLE!=="coord"){
-        if(err) err.textContent=bi("نشر الخطة للمدير العام والتنسيق.","Publishing is for the DG and Coordination."); return; }
+        if(err) err.innerHTML=bi("نشر الخطة للمدير العام والتنسيق.","Publishing is for the DG and Coordination."); return; }
       var cfg=dgCalCfg();
-      if(!cfg){ if(err) err.textContent=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
-      if(err) err.textContent=bi("جارٍ النشر…","Publishing…");
+      if(!cfg){ if(err) err.innerHTML=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
+      if(err) err.innerHTML=bi("جارٍ النشر…","Publishing…");
       var rows=PLAN2027.map(function(o){
         return {ref:o.r, level:o.l, title:o.t, smart:o.d||"", kpi:o.k||"", target:o.g||"",
                 owner:o.o||"", from:o.s||"", to:o.e||"",
@@ -5663,13 +5683,13 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         .then(function(r){return r.json();})
         .then(function(j){
           if(j.ok){
-            if(err) err.textContent=bi(j.rows+" هدفاً نُشر.", j.rows+" objectives published.");
+            if(err) err.innerHTML=bi(j.rows+" هدفاً نُشر.", j.rows+" objectives published.");
             var a=document.getElementById("planGsLink");
             if(a){ a.href=j.url; a.hidden=false; }
             try{ localStorage.setItem("qagcPlanSheet", j.url); }catch(_){}
-          } else if(err) err.textContent=bi("رفض: ","Refused: ")+(j.error||"");
+          } else if(err) err.innerHTML=bi("رفض: ","Refused: ")+(j.error||"");
         })
-        .catch(function(){ if(err) err.textContent=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
+        .catch(function(){ if(err) err.innerHTML=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
       return;
     }
     var kn2=e.target.closest("[data-kgsnew]");
@@ -5680,11 +5700,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       if(!titleN.trim()){
         var tiN=document.getElementById("kf-title-"+refN);
         if(tiN) tiN.focus();
-        if(errN) errN.textContent=bi("اكتبي عنوان المؤشر أولاً.","Give the KPI a title first."); return;
+        if(errN) errN.innerHTML=bi("اكتبي عنوان المؤشر أولاً.","Give the KPI a title first."); return;
       }
       var cfgN=dgCalCfg();
-      if(!cfgN){ if(errN) errN.textContent=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
-      if(errN) errN.textContent=bi("جارٍ إنشاء الورقة…","Creating…");
+      if(!cfgN){ if(errN) errN.innerHTML=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
+      if(errN) errN.innerHTML=bi("جارٍ إنشاء الورقة…","Creating…");
       var tgtN=parseFloat((document.getElementById("kf-tgt-"+refN)||{}).value);
       fetch(cfgN.url+"?key="+encodeURIComponent(cfgN.key), {method:"POST",
         body:JSON.stringify({fn:"kpiSheet", title:titleN.trim(),
@@ -5701,9 +5721,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
               dir:(document.getElementById("kf-dir-"+refN)||{}).value||"up"};
             refreshKpiPane(refN);
             window.open(j.url,"_blank");
-          } else if(errN) errN.textContent=bi("رفض: ","Refused: ")+(j.error||"");
+          } else if(errN) errN.innerHTML=bi("رفض: ","Refused: ")+(j.error||"");
         })
-        .catch(function(){ if(errN) errN.textContent=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
+        .catch(function(){ if(errN) errN.innerHTML=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
       return;
     }
     var kp2=e.target.closest("[data-kgspull]");
@@ -5711,8 +5731,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var refP=kp2.dataset.kgspull, pgP=PENDING_GS[refP]; if(!pgP) return;
       var errP=document.getElementById("kgserr-"+refP);
       var cfgP=dgCalCfg();
-      if(!cfgP){ if(errP) errP.textContent=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
-      if(errP) errP.textContent=bi("جارٍ السحب…","Pulling…");
+      if(!cfgP){ if(errP) errP.innerHTML=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
+      if(errP) errP.innerHTML=bi("جارٍ السحب…","Pulling…");
       fetch(cfgP.url+"?key="+encodeURIComponent(cfgP.key)+"&fn=readKpi&tab="+encodeURIComponent(pgP.tab))
         .then(function(r){return r.json();})
         .then(function(j){
@@ -5726,11 +5746,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
               dir:pgP.dir, sub:subP.id, gs:{tab:pgP.tab, url:pgP.url}});
             delete PENDING_GS[refP];
             refreshKpiPane(refP); afterSubmit();
-          } else if(errP) errP.textContent=j.ok
+          } else if(errP) errP.innerHTML=j.ok
             ? bi("الورقة فارغة — أضيفي قراءات في Sheets أولاً.","The sheet is empty — add readings in Sheets first.")
             : bi("رفض: ","Refused: ")+(j.error||"");
         })
-        .catch(function(){ if(errP) errP.textContent=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
+        .catch(function(){ if(errP) errP.innerHTML=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
       return;
     }
     var kg=e.target.closest("[data-kgs]");
@@ -5740,8 +5760,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       if(k1.gs){ window.open(k1.gs.url,"_blank"); return; }
       var err1=document.getElementById("kerr-"+ref1+"-"+i1);
       var cfg1=dgCalCfg();
-      if(!cfg1){ if(err1) err1.textContent=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
-      if(err1) err1.textContent=bi("جارٍ إنشاء الورقة…","Creating the sheet…");
+      if(!cfg1){ if(err1) err1.innerHTML=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
+      if(err1) err1.innerHTML=bi("جارٍ إنشاء الورقة…","Creating the sheet…");
       var st1=(typeof kpiStats==="function")?kpiStats(k1):null;
       fetch(cfg1.url+"?key="+encodeURIComponent(cfg1.key), {method:"POST",
         body:JSON.stringify({fn:"kpiSheet", title:k1.title, unit:k1.unit||"",
@@ -5751,13 +5771,13 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         .then(function(j){
           if(j.ok){
             k1.gs={tab:j.tab, url:j.url};
-            if(err1) err1.textContent=bi("أُنشئت — القراءات تُحرَّر في Sheets وتعود بزر المزامنة.",
+            if(err1) err1.innerHTML=bi("أُنشئت — القراءات تُحرَّر في Sheets وتعود بزر المزامنة.",
                                          "Created — edit readings in Sheets and pull them back with sync.");
             refreshKpiPane(ref1);
             window.open(j.url,"_blank");
-          } else if(err1) err1.textContent=bi("رفض: ","Refused: ")+(j.error||"");
+          } else if(err1) err1.innerHTML=bi("رفض: ","Refused: ")+(j.error||"");
         })
-        .catch(function(){ if(err1) err1.textContent=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
+        .catch(function(){ if(err1) err1.innerHTML=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
       return;
     }
     var ks=e.target.closest("[data-kgsync]");
@@ -5766,8 +5786,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var k2=(EXTRA[ref2]||[])[i2]; if(!k2||!k2.gs) return;
       var err2=document.getElementById("kerr-"+ref2+"-"+i2);
       var cfg2=dgCalCfg();
-      if(!cfg2){ if(err2) err2.textContent=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
-      if(err2) err2.textContent=bi("جارٍ السحب من Sheets…","Pulling from Sheets…");
+      if(!cfg2){ if(err2) err2.innerHTML=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
+      if(err2) err2.innerHTML=bi("جارٍ السحب من Sheets…","Pulling from Sheets…");
       fetch(cfg2.url+"?key="+encodeURIComponent(cfg2.key)+"&fn=readKpi&tab="+encodeURIComponent(k2.gs.tab))
         .then(function(r){return r.json();})
         .then(function(j){
@@ -5776,12 +5796,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             k2.src="Google Sheets";
             refreshKpiPane(ref2);
             var e3=document.getElementById("kerr-"+ref2+"-"+i2);
-            if(e3) e3.textContent=bi(j.labels.length+" قراءة مُزامنة من Sheets.", j.labels.length+" readings synced from Sheets.");
-          } else if(err2) err2.textContent=j.ok
+            if(e3) e3.innerHTML=bi(j.labels.length+" قراءة مُزامنة من Sheets.", j.labels.length+" readings synced from Sheets.");
+          } else if(err2) err2.innerHTML=j.ok
             ? bi("الورقة فارغة — أضيفي قراءات أولاً.","The sheet is empty — add readings first.")
             : bi("رفض: ","Refused: ")+(j.error||"");
         })
-        .catch(function(){ if(err2) err2.textContent=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
+        .catch(function(){ if(err2) err2.innerHTML=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
       return;
     }
   });
@@ -7584,7 +7604,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     h.classList.add("monthview");
     h.innerHTML='<colgroup>'+[1,2,3,4,5,6,7].map(function(){return '<col style="width:14.28%">';}).join("")+'</colgroup>'+html;
     var cnt=document.getElementById("cpdCount");
-    if(cnt) cnt.textContent=bi(CPD_MONTHS_FULL[m][0]+" 2027",CPD_MONTHS_FULL[m][1]+" 2027");
+    if(cnt) cnt.innerHTML=bi(CPD_MONTHS_FULL[m][0]+" 2027",CPD_MONTHS_FULL[m][1]+" 2027");
     var back=document.getElementById("cpdBack"); if(back) back.hidden=false;
   }
   function drawCpd(){
@@ -8422,6 +8442,60 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       '</div>';
     }).join("");
   }
+  // ── roster management: names in, names out, everything redraws ──
+  var STAFF_SEQ=0;
+  function staffRedrawAll(){
+    ["ag-asg"].forEach(function(id){ var el=document.getElementById(id); if(el) el.innerHTML=""; });
+    if(typeof drawRoster==="function"){ drawRoster(); drawPeopleTiles(); refreshPeopleCount(); }
+    if(typeof drawCalPerms==="function") drawCalPerms();
+    if(typeof drawAgendas==="function") drawAgendas();
+    if(typeof renderNoPlan==="function") renderNoPlan();
+    drawStaffMg();
+  }
+  function drawStaffMg(){
+    var h=document.getElementById("staffMgList"); if(!h) return;
+    h.innerHTML=STAFF.map(function(x){
+      return '<div style="display:flex;gap:10px;align-items:center;padding:5px 8px;border:1px solid var(--rule);border-radius:8px">'+
+        '<span class="rav">'+(x.ini||String(x.who[0]).slice(0,2))+'</span>'+
+        '<span style="flex:1"><b style="font-size:var(--t-sm)">'+bi(x.who[0],x.who[1])+'</b>'+
+        '<span class="sm"> · '+bi(x.dep[0],x.dep[1])+'</span></span>'+
+        '<button class="mini no" data-stafdel="'+x.id+'">✕</button></div>';
+    }).join("");
+  }
+  document.addEventListener("click",function(e){
+    var sd=e.target.closest("[data-stafdel]");
+    if(sd){
+      var pid=sd.dataset.stafdel;
+      var px=STAFF.filter(function(x){return x.id===pid;})[0]; if(!px) return;
+      stepUp("accounts", bi("حذف من قائمة الكوادر: ","Removing from the roster: ")+bi(px.who[0],px.who[1]), function(){
+        STAFF=STAFF.filter(function(x){return x.id!==pid;});
+        staffRedrawAll();
+      });
+      return;
+    }
+    if(e.target.closest("#staffImpGo")){
+      var ta=document.getElementById("staffImpTa"), err=document.getElementById("staffImpErr");
+      var lines=String(ta.value||"").split("\n").map(function(l){return l.trim();}).filter(Boolean);
+      if(!lines.length){ ta.focus(); return; }
+      var added=0;
+      lines.forEach(function(l){
+        var parts=l.split(/\s*[—–ـ-]{1,2}\s*|\s*[،,]\s*/).filter(Boolean);
+        var name=parts[0]||""; if(!name) return;
+        var desig=parts.slice(1).join(" — ")||(isAr()?"—":"—");
+        var words=name.split(/\s+/);
+        STAFF.push({id:"n"+(++STAFF_SEQ), who:[name,name], dep:[desig,desig],
+          ini:(words[0]||"").slice(0,1)+(words[1]?words[1].slice(0,1):""),
+          balance:30, steps:[]});
+        added++;
+      });
+      ta.value="";
+      if(err) err.innerHTML=bi(added+" اسماً أُضيف إلى القائمة.", added+" names added.");
+      staffRedrawAll();
+      return;
+    }
+    if(e.target.closest('[data-go="own"]')) drawStaffMg();
+  });
+
   // ── month awards: the golden ribbon every screen carries ──
   var AWARDS={emp:"sd-1", dep:"قسم تطوير الخدمات", mon:"أكتوبر 2026"};
   function drawAwardsBar(){
@@ -8526,6 +8600,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         bi(CCAL_CATS[cat].l[0],CCAL_CATS[cat].l[1])+' <b class="tnum">'+counts[cat]+'</b></span>';
     }).join("");
     var todayS="2026-11-20";
+    host.style.gridTemplateColumns = CCAL_VIEW==="month" ? "1fr" : "";
     if(CCAL_VIEW==="month"){
       // one large month, its days carrying full chips rather than dots
       var m0=CCAL_MON_IDX;
@@ -8704,12 +8779,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var subj=(document.getElementById("ev-subj")||{}).value||"";
       var err=document.getElementById("evErr");
       raters=raters.filter(function(r){return r!==subj;});
-      if(raters.length<2){ if(err) err.textContent=bi("اختاري مقيِّمَين على الأقل غير المُقيَّم نفسه.","Pick at least two raters besides the subject."); return; }
+      if(raters.length<2){ if(err) err.innerHTML=bi("اختاري مقيِّمَين على الأقل غير المُقيَّم نفسه.","Pick at least two raters besides the subject."); return; }
       EV360.push({id:"EV"+(++EVSEQ), subject:subj, criteria:EV_CRITERIA.slice(), raters:raters, resp:{}, open:true});
       drawEv360();
       // the redraw rebuilt the card — write the confirmation into the fresh element
       var err2=document.getElementById("evErr");
-      if(err2) err2.textContent=bi("فُتحت الدورة — تظهر الاستمارة لكل مقيِّم عند دخوله.","Opened — each rater sees the form when they sign in.");
+      if(err2) err2.innerHTML=bi("فُتحت الدورة — تظهر الاستمارة لكل مقيِّم عند دخوله.","Opened — each rater sees the form when they sign in.");
       return;
     }
     var es=e.target.closest("[data-evsend]");
@@ -8785,7 +8860,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         asg:sel?sel.value:"", asgName:pA?(isAr()?pA.who[0]:pA.who[1]):""};
       AGENDAS.push(a); agendaLand(a);
       t.value=""; document.getElementById("ag-items").value=""; if(sel) sel.value="";
-      if(err){ err.textContent=bi("حُفظ الجدول"+(a.asg?" وأُسند.":"."),"Saved"+(a.asg?" and assigned.":".")); }
+      if(err){ err.innerHTML=bi("حُفظ الجدول"+(a.asg?" وأُسند.":"."),"Saved"+(a.asg?" and assigned.":".")); }
       drawAgendas(); return;
     }
     var ga=e.target.closest("[data-agassign]");
@@ -8849,20 +8924,20 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var em=(document.getElementById("dgcal-email")||{}).value.trim();
     var err=document.getElementById("dgcalSetErr");
     var cfg=dgCalCfg();
-    if(!cfg){ if(err) err.textContent=bi("المفتاح أولاً من شاشة الجسر الذكي.","Key first, on the bridge screen."); return; }
+    if(!cfg){ if(err) err.innerHTML=bi("المفتاح أولاً من شاشة الجسر الذكي.","Key first, on the bridge screen."); return; }
     stepUp("submit", em?bi("ربط تقويم المديرة العامة: ","Linking the DG calendar: ")+em
                        :bi("فك ربط تقويم المديرة العامة","Unlinking the DG calendar"), function(){
-      if(err) err.textContent=bi("جارٍ الربط…","Linking…");
+      if(err) err.innerHTML=bi("جارٍ الربط…","Linking…");
       fetch(cfg.url+"?key="+encodeURIComponent(cfg.key), {method:"POST",
         body:JSON.stringify({fn:"setDgCal", email:em})})
         .then(function(r){return r.json();})
         .then(function(j){
-          if(err) err.textContent=j.ok
+          if(err) err.innerHTML=j.ok
             ? (j.cal?bi("رُبط: ","Linked: ")+j.cal:bi("أُلغي الربط.","Unlinked."))
             : bi("رفض: ","Refused: ")+(j.error||"");
           if(j.ok){ DGCAL_FETCHED=false; }
         })
-        .catch(function(){ if(err) err.textContent=bi("تعذّر الاتصال — نسخة github.io.","Use the github.io copy."); });
+        .catch(function(){ if(err) err.innerHTML=bi("تعذّر الاتصال — نسخة github.io.","Use the github.io copy."); });
     });
   });
   function dirCalStatusMsg(msg,ok){
@@ -8964,13 +9039,13 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var from=(document.getElementById("dirc-from")||{}).value||"";
       var to=(document.getElementById("dirc-to")||{}).value||"";
       if(!t.value.trim()){ t.focus(); return; }
-      if(!date||!from||!to||to<=from){ if(err) err.textContent=bi("أكملي التاريخ والوقت.","Complete the date and times."); return; }
-      if(!canEditDirCal()){ if(err) err.textContent=bi("الإضافة لمن حدّدتهم المالكة.","Adding is for those the owner chose."); return; }
+      if(!date||!from||!to||to<=from){ if(err) err.innerHTML=bi("أكملي التاريخ والوقت.","Complete the date and times."); return; }
+      if(!canEditDirCal()){ if(err) err.innerHTML=bi("الإضافة لمن حدّدتهم المالكة.","Adding is for those the owner chose."); return; }
       var cfg=dgCalCfg();
-      if(!cfg){ if(err) err.textContent=bi("المفتاح أولاً من شاشة الجسر.","Key first, on the bridge screen."); return; }
+      if(!cfg){ if(err) err.innerHTML=bi("المفتاح أولاً من شاشة الجسر.","Key first, on the bridge screen."); return; }
       var acct=(typeof SESSION!=="undefined"&&SESSION&&typeof acctOf==="function")?acctOf(SESSION.u):null;
       stepUp("submit", bi("إدراج في تقويم المركز: ","Adding to the centre calendar: ")+t.value.trim(), function(){
-        if(err) err.textContent=bi("جارٍ الإدراج…","Placing…");
+        if(err) err.innerHTML=bi("جارٍ الإدراج…","Placing…");
         fetch(cfg.url+"?key="+encodeURIComponent(cfg.key), {method:"POST",
           body:JSON.stringify({fn:"addEvent", which:"dir", title:t.value.trim(), date:date, from:from, to:to,
             loc:(document.getElementById("dirc-loc")||{}).value||"",
@@ -8979,9 +9054,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           .then(function(j){
             if(j.ok){ if(err) err.textContent=""; t.value="";
               dirCalFetch().then(function(){ dirCalStatusMsg(bi("أُدرج الموعد.","Placed."),true); });
-            } else if(err) err.textContent=bi("رفض: ","Refused: ")+(j.error||"");
+            } else if(err) err.innerHTML=bi("رفض: ","Refused: ")+(j.error||"");
           })
-          .catch(function(){ if(err) err.textContent=bi("تعذّر الاتصال.","Could not connect."); });
+          .catch(function(){ if(err) err.innerHTML=bi("تعذّر الاتصال.","Could not connect."); });
       });
       return;
     }
@@ -9051,15 +9126,15 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var from=(document.getElementById("dgc-from")||{}).value||"";
       var to=(document.getElementById("dgc-to")||{}).value||"";
       if(!t.value.trim()){ t.focus(); return; }
-      if(!date||!from||!to||to<=from){ if(err) err.textContent=bi("أكملي التاريخ والوقت — النهاية بعد البداية.","Complete the date and times — the end after the start."); return; }
+      if(!date||!from||!to||to<=from){ if(err) err.innerHTML=bi("أكملي التاريخ والوقت — النهاية بعد البداية.","Complete the date and times — the end after the start."); return; }
       var cfg=dgCalCfg();
-      if(!cfg){ if(err) err.textContent=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
+      if(!cfg){ if(err) err.innerHTML=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
       // the signature is the signed-in account, not the roster stand-in
       var acct=(typeof SESSION!=="undefined"&&SESSION&&typeof acctOf==="function")?acctOf(SESSION.u):null;
       var who=acct?(isAr()?acct.who[0]:acct.who[1]):"";
       // placing something in the DG's own calendar deserves the second step
       stepUp("submit", bi("جدولة موعد للمديرة العامة: ","Scheduling for the Director General: ")+t.value.trim(), function(){
-        if(err) err.textContent=bi("جارٍ الإدراج…","Placing…");
+        if(err) err.innerHTML=bi("جارٍ الإدراج…","Placing…");
         var privT=((document.getElementById("dgc-priv")||{}).checked?"🔒 ":"")+t.value.trim();
         fetch(cfg.url+"?key="+encodeURIComponent(cfg.key), {method:"POST",
           body:JSON.stringify({fn:"addEvent", title:privT, date:date, from:from, to:to,
@@ -9073,9 +9148,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
               dgCalFetch().then(function(){
                 dgCalStatus(bi("أُدرج الموعد في تقويمها وظهر في الجدول.","Placed in her calendar — now on the schedule."),true);
               });
-            } else if(err) err.textContent=bi("رفض: ","Refused: ")+(j.error||"");
+            } else if(err) err.innerHTML=bi("رفض: ","Refused: ")+(j.error||"");
           })
-          .catch(function(){ if(err) err.textContent=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
+          .catch(function(){ if(err) err.innerHTML=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
       });
       return;
     }
@@ -9095,6 +9170,24 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var hideBtn=(ROLE==="dg"||ROLE==="coord")
         ? '<button class="mini no" data-aihide="'+encodeURIComponent(it.when)+'" title="'+
           (isAr()?"إزالة من الوارد":"Remove from the inbox")+'">✕</button>' : "";
+      var editBtn=(!done && (ROLE==="dg"||ROLE==="coord"))
+        ? '<button class="mini" data-aieditbtn="'+encodeURIComponent(it.when)+'">'+bi("تعديل","Edit")+'</button>' : "";
+      var editForm=AI_EDITING[it.when]
+        ? '<div class="amendbox" style="grid-column:1/-1">'+
+          '<span class="al">'+bi("عدّلي ثم أدرجي — التعديل هنا لا يغيّر ما في ورقة الوارد الأصلية.",
+                                 "Edit, then take it in — this does not alter the original inbox sheet.")+'</span>'+
+          '<div class="kform" style="margin-top:6px">'+
+            '<span class="fld" style="grid-column:1/-1"><label>'+bi("العنوان","Title")+'</label>'+
+              '<input data-aie="t:'+encodeURIComponent(it.when)+'" value="'+String(it.title||"").replace(/"/g,"&quot;")+'"></span>'+
+            '<span class="fld"><label>'+bi("التاريخ","Date")+'</label>'+
+              '<input type="date" data-aie="d:'+encodeURIComponent(it.when)+'" value="'+String(it.due||"").slice(0,10)+'"></span>'+
+            '<span class="fld" style="grid-column:span 2"><label>'+bi("الملاحظة","Note")+'</label>'+
+              '<input data-aie="n:'+encodeURIComponent(it.when)+'" value="'+String(it.note||"").replace(/"/g,"&quot;")+'"></span>'+
+          '</div>'+
+          '<span class="arow"><button class="btn btn-p" data-aieapply="'+encodeURIComponent(it.when)+'">'+
+            bi("إدراج بعد التعديل","Take in as edited")+'</button>'+
+          '<button class="btn" data-aiecancel="'+encodeURIComponent(it.when)+'">'+bi("إلغاء","Cancel")+'</button></span></div>'
+        : "";
       if(kind==="cpd"){
         return '<div class="subrow" style="grid-template-columns:minmax(0,1fr) auto auto">'+
           '<span><span class="st2">'+String(it.title||"").slice(0,120)+'</span>'+
@@ -9108,8 +9201,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             ? '<span class="pill p-good">'+bi("على اللوحة","On the board")+'</span>'
             : (ROLE==="dg"||ROLE==="coord"
                ? '<button class="mini yes" data-aicpd="'+encodeURIComponent(JSON.stringify(it))+'">'+bi("إدراج في برنامج CPD","Place on the CPD board")+'</button>'
-               : '<span class="pill p-warn">'+bi("بانتظار الإدراج","Pending")+'</span>'))+hideBtn+'</span>'+
-        '</div>';
+               : '<span class="pill p-warn">'+bi("بانتظار الإدراج","Pending")+'</span>'))+editBtn+hideBtn+'</span>'+
+        editForm+'</div>';
       }
       if(kind==="agenda"){
         return '<div class="subrow" style="grid-template-columns:minmax(0,1fr) auto auto">'+
@@ -9122,8 +9215,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             ? '<span class="pill p-good">'+bi("في جداول الأعمال","Filed")+'</span>'
             : (ROLE==="dg"||ROLE==="coord"||ROLE==="dir"
                ? '<button class="mini yes" data-aiagenda="'+encodeURIComponent(JSON.stringify(it))+'">'+bi("إلى جداول الأعمال","To the agendas")+'</button>'
-               : '<span class="pill p-warn">'+bi("بانتظار الإدراج","Pending")+'</span>'))+hideBtn+'</span>'+
-        '</div>';
+               : '<span class="pill p-warn">'+bi("بانتظار الإدراج","Pending")+'</span>'))+editBtn+hideBtn+'</span>'+
+        editForm+'</div>';
       }
       var tg=AI_TAG_MAP[it.tag]||["t-third",String(it.tag||""),String(it.tag||"")];
       var kn=aiKpisOf(it).length;
@@ -9146,12 +9239,13 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
                  ? '<button class="mini" data-aicpd="'+encodeURIComponent(JSON.stringify(it))+'" title="'+
                    (isAr()?"إن كان نشاط تطوير مهني وصل مصنَّفاً كمهمة":"If this is a CPD activity classified as a task")+'">'+
                    bi("بل على لوحة CPD","To the CPD board instead")+'</button>' : "")
-             : '<span class="pill p-warn">'+bi("بانتظار القرار","Pending")+'</span>'))+hideBtn+'</span>'+
-      '</div>';
+             : '<span class="pill p-warn">'+bi("بانتظار القرار","Pending")+'</span>'))+editBtn+hideBtn+'</span>'+
+      editForm+'</div>';
     }).join("");
   }
   var AI_LAST=[];
   var AI_HIDDEN={};
+  var AI_EDITING={};
   try{ AI_HIDDEN=JSON.parse(localStorage.getItem("qagcAiHidden")||"{}")||{}; }catch(_){}
   function aiKindOf(it){
     if(it.itype==="cpd") return "cpd";
@@ -9166,6 +9260,25 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   aiLoadCfg();
   document.addEventListener("click",function(e){
     if(e.target.closest("#aiConnect")){ aiFetchInbox(); return; }
+    var eb=e.target.closest("[data-aieditbtn]");
+    if(eb){ AI_EDITING[decodeURIComponent(eb.dataset.aieditbtn)]=true; renderAiInbox(AI_LAST); return; }
+    var ecx=e.target.closest("[data-aiecancel]");
+    if(ecx){ delete AI_EDITING[decodeURIComponent(ecx.dataset.aiecancel)]; renderAiInbox(AI_LAST); return; }
+    var ea=e.target.closest("[data-aieapply]");
+    if(ea){
+      var whenK=decodeURIComponent(ea.dataset.aieapply);
+      var orig=AI_LAST.filter(function(x){return String(x.when)===whenK;})[0]; if(!orig) return;
+      var val=function(k){ var el=document.querySelector('[data-aie="'+k+':'+ea.dataset.aieapply+'"]'); return el?el.value:""; };
+      var it2=Object.assign({},orig,{title:val("t").trim()||orig.title, due:val("d")||orig.due, note:val("n")});
+      delete AI_EDITING[whenK];
+      // route the edited item through exactly the door its kind uses
+      var kind2=aiKindOf(it2);
+      var attr= kind2==="cpd" ? "data-aicpd" : kind2==="agenda" ? "data-aiagenda" : "data-aiimport";
+      var tmp=document.createElement("button");
+      tmp.setAttribute(attr, encodeURIComponent(JSON.stringify(it2)));
+      document.body.appendChild(tmp); tmp.click(); tmp.remove();
+      return;
+    }
     var hd=e.target.closest("[data-aihide]");
     if(hd){
       AI_HIDDEN[decodeURIComponent(hd.dataset.aihide)]=1;
