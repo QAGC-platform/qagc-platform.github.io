@@ -7778,7 +7778,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       SUBS.push({id:"S"+(++SUBSEQ), kind:"obj", ref:"", title:[it.title,it.title],
         byId:"chatgpt", by:["مساعد ChatGPT","ChatGPT assistant"], dep:["الجسر الذكي","The assistant bridge"],
         when:String(it.when||"").slice(0,10)||"2026-11-20", stage:"dg", state:"pending",
-        meta:{under:it.note||"", due:it.due||"", tag:it.tag, amt:it.budget?+it.budget:undefined},
+        meta:{under:it.note||"", due:String(it.due||"").slice(0,10), tag:it.tag, amt:it.budget?+it.budget:undefined},
         note:"", endorsedBy:null, decidedBy:null});
       afterSubmit(); aiFetchInbox();
       return;
@@ -8097,7 +8097,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var mine=subsPending().filter(function(s){ return (s.stage||"dg")===want; })
       .map(function(s){
         return {key:s.id, kind:s.kind, title:s.title, by:s.by, dep:s.dep, when:s.when,
-                meta:s.meta, endorse:(want==="sup")};
+                meta:s.meta, endorse:(want==="sup"), byId:s.byId};
       });
     // step budgets are the Director General's alone
     return ROLE==="dir" ? mine : mine.concat(stepBudgets());
@@ -8113,7 +8113,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       if(m.n) bits.push(m.n+' '+bi("قراءة","readings"));
     } else {
       if(m.amt) bits.push(m.amt.toLocaleString("en")+' '+bi("ر.ع","OMR"));
-      if(m.due) bits.push(bi("الاستحقاق ","due ")+m.due);
+      if(m.due) bits.push(bi("الاستحقاق ","due ")+String(m.due).slice(0,10));
+      if(m.assignedName) bits.push(bi("أُسند إلى ","assigned to ")+m.assignedName);
     }
     return bits.join(" · ");
   }
@@ -8126,6 +8127,14 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         '<span class="sm">'+metaLine(r.kind,r.meta)+'</span></span>'+
       '<span><span class="sw2">'+bi(r.by[0],r.by[1])+'</span>'+
         '<span class="sm">'+bi(r.dep[0],r.dep[1])+' · '+r.when+'</span></span>'+
+      (r.byId==="chatgpt" && r.kind==="obj"
+        ? '<span class="amendbox" style="background:var(--surface-2);border-color:var(--rule)">'+
+          '<span class="al" style="color:var(--ink-2)">'+bi("عند الاعتماد يُسند إلى:","On approval, assign to:")+'</span>'+
+          '<select class="fld-sel" data-asgsel="'+r.key+'" style="margin-top:6px">'+
+            '<option value="">'+(isAr()?"اختر المسؤول…":"Choose the owner…")+'</option>'+
+            STAFF.map(function(p){return '<option value="'+p.id+'">'+(isAr()?p.who[0]:p.who[1])+' — '+(isAr()?p.dep[0]:p.dep[1])+'</option>';}).join("")+
+          '</select></span>'
+        : "")+
       '<span class="acts">'+
         '<button class="mini yes" data-dec="'+r.key+':v">'+
           (r.endorse?bi("تزكية ورفعها","Endorse and pass up"):bi("اعتماد","Approve"))+'</button>'+
@@ -8266,6 +8275,17 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var parts=d.dataset.dec.split(":"), act=parts.pop(), key=parts.join(":");
       if(act==="a"){ RETURNING[key]=true; drawApprovals(); return; }
       var row=queueRows().filter(function(x){return x.key===key;})[0];
+      if(act==="v" && row && row.byId==="chatgpt" && row.kind==="obj"){
+        var sel=document.querySelector('[data-asgsel="'+key+'"]');
+        if(sel && !sel.value){ sel.focus(); sel.style.outline="2px solid var(--critical)"; return; }
+        var subA=subOf(key);
+        if(subA && sel){
+          var pA=STAFF.filter(function(x){return x.id===sel.value;})[0];
+          subA.meta=subA.meta||{};
+          subA.meta.assignee=sel.value;
+          subA.meta.assignedName=pA?(isAr()?pA.who[0]:pA.who[1]):"";
+        }
+      }
       var what=(act==="v"?bi("اعتماد: ","Approving: "):bi("رفض: ","Refusing: "))+
                (row?bi(row.title[0],row.title[1]):"");
       var kindKey=(row&&row.kind==="bud")?"budget":(act==="v"?"approve":"reject");
@@ -8309,6 +8329,18 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           s.state=state; s.note=note||"";
           s.decidedBy=SESSION?SESSION.u:"dg"; s.decidedAt="2026-11-20";
           if(state==="returned"||state==="rejected") s.stage="dg";
+          // an approved assistant push becomes real work on a real person
+          if(state==="approved" && s.byId==="chatgpt" && s.meta && s.meta.assignee){
+            var pp=STAFF.filter(function(x){return x.id===s.meta.assignee;})[0];
+            if(pp){
+              pp.steps=pp.steps||[];
+              pp.steps.push({t:[s.title[0],s.title[1]],
+                obj:["وارد ChatGPT — باعتماد المدير العام","From ChatGPT — approved by the DG"],
+                due:String(s.meta.due||"2027-06-30").slice(0,10), st:"not_started",
+                budget:s.meta.amt?{amt:+s.meta.amt,state:"proposed"}:null});
+              if(typeof drawRoster==="function"){ drawRoster(); drawPeopleTiles(); refreshPeopleCount(); }
+            }
+          }
         }
       }
     }
