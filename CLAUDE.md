@@ -118,8 +118,9 @@ before touching anything — it replaces a long build history you cannot see.
   "أُرسلت ✓". The panel's "Shared board" button pulls `fn=feedback` and
   shows every note with its state; "عُولجت" calls `fn=resolveFeedback`.
   **Claude sessions close the loop**: if a gitignored `.qagc-key` file
-  exists at the repo root (one line: the API key — the user creates it, it
-  is NEVER committed), read notes with
+  exists at the repo root — or, failing that, at `~/.qagc-key` (one line:
+  the API key — the user creates it, it is NEVER committed), read notes
+  with
   `curl '<exec-url>?key=$(cat .qagc-key)&fn=feedback'`, act on the open
   ones **addressed to development** (`to` is `dev` or empty — notes with
   `to: dg` are for the DG herself; leave them alone), then mark each `{"fn":"resolveFeedback","id":…,"state":"done",
