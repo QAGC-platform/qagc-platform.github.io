@@ -1810,6 +1810,51 @@ body.editmode .card-h h2 span[lang]:focus{
   margin-bottom:14px;background:var(--surface-1)}
 #ccalDayDetail .ddrow{display:flex;gap:10px;align-items:center;padding:4px 0}
 #ccalDayDetail .ddcat{font-size:var(--t-xs);border-radius:999px;padding:1px 10px;color:#fff}
+/* ══ review mode: comment on anything, from inside the platform ══ */
+.rvbtn.on{background:var(--surface-2);border-color:var(--gold-ink);color:var(--gold-ink)}
+body[data-review="on"] main *:not(.rv-skip){cursor:crosshair}
+body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset:2px;
+  background:color-mix(in srgb, var(--gold-ink) 8%, transparent)}
+.rv-pin{position:absolute;z-index:60;min-width:19px;height:19px;padding:0 5px;
+  border-radius:10px;background:var(--gold-ink);color:#fff;border:0;
+  font:600 11px/19px var(--latin);text-align:center;cursor:pointer;
+  box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.rv-pin.gone{background:var(--ink-4);opacity:.75}
+#rvPop{position:absolute;z-index:70;width:min(330px,92vw);background:var(--surface);
+  border:1px solid var(--rule-strong);border-radius:12px;padding:12px;
+  box-shadow:0 12px 40px -12px rgba(0,0,0,.45)}
+#rvPop .cx{font-size:var(--t-xs);color:var(--ink-3);margin-bottom:6px;
+  max-height:44px;overflow:hidden}
+#rvPop textarea{width:100%;min-height:78px;resize:vertical;font:inherit;
+  border:1px solid var(--rule);border-radius:8px;padding:8px;background:var(--surface-2);
+  color:var(--ink-1)}
+#rvPop .row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center}
+#rvPanel{position:fixed;inset-block-end:16px;inset-inline-end:16px;z-index:65;
+  width:min(370px,94vw);max-height:min(70vh,560px);display:flex;flex-direction:column;
+  background:var(--surface);border:1px solid var(--rule-strong);border-radius:14px;
+  box-shadow:0 18px 50px -18px rgba(0,0,0,.5);overflow:hidden}
+#rvPanel .ph{display:flex;gap:8px;align-items:center;padding:10px 14px;
+  border-bottom:1px solid var(--rule);background:var(--surface-2)}
+#rvPanel .ph b{font-size:var(--t-sm)}
+#rvPanel .ph .n{font-family:var(--latin);font-size:var(--t-xs);color:var(--ink-3)}
+#rvPanel .pb{overflow:auto;padding:8px 14px;flex:1}
+#rvPanel .pf{display:flex;gap:8px;padding:10px 14px;border-top:1px solid var(--rule);
+  flex-wrap:wrap;background:var(--surface-2)}
+.rvitem{border-bottom:1px solid var(--rule);padding:9px 0;display:flex;gap:9px}
+.rvitem:last-child{border-bottom:0}
+.rvitem .num{flex:none;width:20px;height:20px;border-radius:10px;background:var(--gold-ink);
+  color:#fff;font:600 11px/20px var(--latin);text-align:center}
+.rvitem .bd{min-width:0;flex:1}
+.rvitem .wh{font-size:var(--t-xs);color:var(--ink-3);display:block}
+.rvitem .tx{font-size:var(--t-sm);display:block;margin-top:2px;word-break:break-word}
+.rvitem .ac{display:flex;gap:6px;margin-top:5px}
+.rvempty{font-size:var(--t-sm);color:var(--ink-3);padding:14px 0}
+#rvToast{position:fixed;inset-block-end:22px;inset-inline-start:22px;z-index:80;
+  background:var(--ink-1);color:var(--paper);padding:9px 15px;border-radius:9px;
+  font-size:var(--t-sm);opacity:0;transform:translateY(6px);pointer-events:none;
+  transition:opacity .18s,transform .18s}
+#rvToast.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){#rvToast{transition:none}}
 </style>
 
 <div class="gate" id="gate">
@@ -1981,6 +2026,10 @@ body.editmode .card-h h2 span[lang]:focus{
         <span class="ltr" style="background:none;padding:1px 6px">AR / EN</span>
       </button>
       <button class="btn signout" id="signOut"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 12H4M8 8l-4 4 4 4"/><path d="M11 4h7a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-7"/></svg><span lang="ar">تسجيل الخروج</span><span lang="en">Sign out</span></button>
+      <button class="scoperow scopebtn rvbtn" id="rvToggle" aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-3.6A8.4 8.4 0 1 1 21 11.5z"/><path d="M8.5 10.5h7M8.5 14h4"/></svg>
+        <span id="rvToggleLbl"><span lang="ar">وضع المراجعة — للتعليق على أي عنصر</span><span lang="en">Review mode — comment on anything</span></span>
+      </button>
       <button class="scoperow scopebtn" id="allTabs" aria-pressed="false">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-2 8-2 8h16s-2-1-2-8"/><path d="M10.5 21a2 2 0 0 0 3 0"/></svg>
         <span id="allTabsLbl"><span lang="ar">صلاحيات الوصول حسب الدور مفعلة</span><span lang="en">Role-aware access active</span></span>
@@ -3899,6 +3948,29 @@ body.editmode .card-h h2 span[lang]:focus{
       <span lang="en">Design prototype. All data shown is illustrative, not real, and owners are named by role only. Its purpose is to show the proposed plan structure: a master plan derived from the Ministry document, every objective assessed against it, assignment to a person, and an optional budget at step level.</span>
     </p>
   </main>
+</div>
+
+<div id="rvToast" hidden></div>
+<div id="rvPop" hidden>
+  <div class="cx" id="rvPopCx"></div>
+  <textarea id="rvPopTa" placeholder="ما ملاحظتك على هذا العنصر؟"></textarea>
+  <div class="row">
+    <button class="btn btn-p" id="rvPopSave"><span lang="ar">حفظ الملاحظة</span><span lang="en">Save note</span></button>
+    <button class="btn" id="rvPopCancel"><span lang="ar">إلغاء</span><span lang="en">Cancel</span></button>
+  </div>
+</div>
+<div id="rvPanel" hidden>
+  <div class="ph">
+    <b><span lang="ar">ملاحظات المراجعة</span><span lang="en">Review notes</span></b>
+    <span class="n" id="rvCount">0</span>
+    <button class="btn" id="rvHide" style="margin-inline-start:auto;padding:2px 9px"><span lang="ar">إخفاء</span><span lang="en">Hide</span></button>
+  </div>
+  <div class="pb" id="rvList"></div>
+  <div class="pf">
+    <button class="btn btn-p" id="rvCopy"><span lang="ar">نسخ الكل لإرساله إلى Claude</span><span lang="en">Copy all for Claude</span></button>
+    <button class="btn" id="rvDl"><span lang="ar">تنزيل</span><span lang="en">Download</span></button>
+    <button class="btn" id="rvClear"><span lang="ar">مسح الكل</span><span lang="en">Clear all</span></button>
+  </div>
 </div>
 
 <div class="ovl" id="statsOvl">
@@ -12384,6 +12456,273 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     }
     SEL=saveSel;
   }
+  // ══ review mode ══
+  // She points at anything on the live platform and says what is wrong with
+  // it. A note remembers where it was pinned, so it survives the dynamic
+  // repaints; if the thing it pointed at is gone, the note is kept and
+  // marked detached rather than silently dropped.
+  var RVON=false, RVNOTES=[], RVSEQ=0, RVTARGET=null, RVEDIT=null;
+  try{
+    var _rv=JSON.parse(localStorage.getItem("qagcNotes")||"null");
+    if(_rv&&_rv.notes){ RVNOTES=_rv.notes; RVSEQ=_rv.seq||RVNOTES.length; }
+  }catch(_){}
+  function rvPersist(){
+    try{ localStorage.setItem("qagcNotes", JSON.stringify({notes:RVNOTES, seq:RVSEQ})); }catch(_){}
+  }
+  function rvToast(msg){
+    var t=document.getElementById("rvToast"); if(!t) return;
+    t.hidden=false; t.innerHTML=msg; t.classList.add("on");
+    clearTimeout(t._t); t._t=setTimeout(function(){ t.classList.remove("on"); },2400);
+  }
+  function rvTrim(s2,n2){
+    s2=String(s2||"").replace(/\s+/g," ").trim();
+    return s2.length>n2 ? s2.slice(0,n2)+"…" : s2;
+  }
+  // bi() leaves both languages in the DOM and hides one in CSS, so textContent
+  // returns them glued together. Read only the half she can actually see.
+  function rvText(el){
+    if(!el) return "";
+    var sp=el.querySelectorAll?el.querySelectorAll("span[lang]"):null;
+    if(sp&&sp.length){
+      var want=isAr()?"ar":"en", parts=[];
+      [].forEach.call(sp,function(x){
+        if(x.getAttribute("lang")===want && !x.querySelector("span[lang]")) parts.push(x.textContent);
+      });
+      if(parts.length) return parts.join(" ");
+    }
+    return el.textContent||"";
+  }
+  // where the click landed, in words a human (and Claude) can act on
+  function rvAnchor(el){
+    var sec=el.closest?el.closest(".screen"):null;
+    var screen=sec?sec.id:"—";
+    var h1=sec?sec.querySelector(".head h1"):null;
+    var card=el.closest?el.closest(".card,.tile,.subrow,.q-item,.cov-row,.acrow,.rperson"):null;
+    var ch=card?card.querySelector(".card-h h2, .tl, .st2, .t, .g"):null;
+    // the nearest identified container is the stable half of the address
+    var host=el.closest?el.closest("[id]"):null;
+    var hostId=host?host.id:"";
+    var sibs=host?[].slice.call(host.querySelectorAll(el.tagName)):[];
+    return {
+      screen:screen,
+      screenName:h1?rvTrim(rvText(h1),60):screen,
+      where: ch?rvTrim(rvText(ch),60):(card?rvTrim(rvText(card),40):""),
+      what: rvTrim(rvText(el)||el.getAttribute("placeholder")||el.tagName,110),
+      hostId:hostId, tag:el.tagName, idx:sibs.indexOf(el)
+    };
+  }
+  function rvFind(a){
+    if(!a) return null;
+    var host=a.hostId?document.getElementById(a.hostId):null;
+    if(!host){ var sc=document.getElementById(a.screen); if(!sc) return null; host=sc; }
+    var sibs=[].slice.call(host.querySelectorAll(a.tag));
+    var byIdx=(a.idx>=0&&a.idx<sibs.length)?sibs[a.idx]:null;
+    if(byIdx && rvTrim(rvText(byIdx),110)===a.what) return byIdx;
+    // the content moved: fall back to matching what it said
+    var byText=sibs.filter(function(x){ return rvTrim(rvText(x),110)===a.what; })[0];
+    return byText||byIdx||null;
+  }
+  function rvClearPins(){
+    document.querySelectorAll(".rv-pin").forEach(function(p){ p.remove(); });
+  }
+  function rvPaint(){
+    rvClearPins();
+    if(!RVON) return;
+    RVNOTES.forEach(function(nt,i){
+      var el=rvFind(nt.a);
+      var pin=document.createElement("button");
+      pin.className="rv-pin"+(el?"":" gone");
+      pin.type="button";
+      pin.textContent=String(i+1);
+      pin.setAttribute("data-rvpin", nt.id);
+      pin.title=rvTrim(nt.text,90);
+      if(el){
+        var r=el.getBoundingClientRect();
+        if(!r.width && !r.height){ pin.remove(); return; }
+        pin.style.top=(r.top+window.scrollY-8)+"px";
+        pin.style.left=(r.left+window.scrollX-8)+"px";
+        document.body.appendChild(pin);
+      }
+    });
+  }
+  function rvRows(){
+    var host=document.getElementById("rvList"); if(!host) return;
+    document.getElementById("rvCount").textContent=String(RVNOTES.length);
+    host.innerHTML = RVNOTES.length ? RVNOTES.map(function(nt,i){
+      return '<div class="rvitem"><span class="num">'+(i+1)+'</span><span class="bd">'+
+        '<span class="wh">'+nt.a.screenName+(nt.a.where?' · '+nt.a.where:'')+'</span>'+
+        '<span class="tx">'+nt.text.replace(/</g,"&lt;")+'</span>'+
+        '<span class="ac">'+
+          '<button class="mini" data-rvgo="'+nt.id+'">'+bi("اذهب","Go")+'</button>'+
+          '<button class="mini no" data-rvdel="'+nt.id+'">'+bi("حذف","Delete")+'</button>'+
+        '</span></span></div>';
+    }).join("") : '<div class="rvempty">'+
+      bi("لا ملاحظات بعد. شغّلي وضع المراجعة، ثم انقري أي عنصر على الشاشة.",
+         "No notes yet. Turn on review mode, then click anything on screen.")+'</div>';
+  }
+  // one paste that tells Claude exactly what you meant, and where
+  function rvReport(){
+    if(!RVNOTES.length) return "";
+    var out=["# QAGC — ملاحظات المراجعة / Review notes",
+             "("+RVNOTES.length+" note"+(RVNOTES.length===1?"":"s")+" · "+PLATFORM_TODAY+")",""];
+    var byScreen={};
+    RVNOTES.forEach(function(nt){
+      (byScreen[nt.a.screenName]=byScreen[nt.a.screenName]||[]).push(nt);
+    });
+    Object.keys(byScreen).forEach(function(k){
+      var list=byScreen[k];
+      out.push("## "+k+"  `/"+list[0].a.screen+"`","");
+      list.forEach(function(nt){
+        out.push("- **"+(nt.a.where||"—")+"**"+(nt.a.what?"  — “"+nt.a.what+"”":""));
+        out.push("  - "+nt.text.replace(/\n/g,"\n    "));
+        out.push("  - _"+nt.by+" · "+nt.when+"_");
+      });
+      out.push("");
+    });
+    return out.join("\n");
+  }
+  function rvSetMode(on){
+    RVON=!!on;
+    document.body.setAttribute("data-review", RVON?"on":"");
+    var b=document.getElementById("rvToggle");
+    if(b){ b.setAttribute("aria-pressed", RVON?"true":"false"); b.classList.toggle("on",RVON); }
+    var lbl=document.getElementById("rvToggleLbl");
+    if(lbl) lbl.innerHTML = RVON
+      ? bi("وضع المراجعة مُفعّل — انقري أي عنصر","Review mode on — click anything")
+      : bi("وضع المراجعة — للتعليق على أي عنصر","Review mode — comment on anything");
+    var p=document.getElementById("rvPanel");
+    if(p) p.hidden=!RVON;
+    if(!RVON){ rvClearPins(); rvPopClose(); }
+    else { rvRows(); rvPaint(); }
+  }
+  function rvPopClose(){
+    var p=document.getElementById("rvPop"); if(p) p.hidden=true;
+    RVTARGET=null; RVEDIT=null;
+    document.querySelectorAll(".rv-hot").forEach(function(x){ x.classList.remove("rv-hot"); });
+  }
+  function rvPopOpen(el, existing){
+    var pop=document.getElementById("rvPop"); if(!pop) return;
+    RVTARGET=el; RVEDIT=existing||null;
+    el.classList.add("rv-hot");
+    var a=existing?existing.a:rvAnchor(el);
+    document.getElementById("rvPopCx").innerHTML=
+      '<b>'+a.screenName+'</b>'+(a.where?' · '+a.where:'')+(a.what?'<br>“'+rvTrim(a.what,80)+'”':'');
+    var ta=document.getElementById("rvPopTa");
+    ta.value=existing?existing.text:"";
+    pop.hidden=false;
+    var r=el.getBoundingClientRect();
+    var top=r.bottom+window.scrollY+8;
+    var left=Math.max(8, Math.min(r.left+window.scrollX, window.innerWidth-345));
+    pop.style.top=top+"px"; pop.style.left=left+"px";
+    ta.focus();
+  }
+  // capture phase: in review mode the click is a comment, not an action
+  document.addEventListener("click", function(e){
+    if(!RVON) return;
+    if(e.target.closest("#rvPop,#rvPanel,#rvToggle,.rv-pin,.gate")) return;
+    var main=e.target.closest("main"); if(!main) return;
+    e.preventDefault(); e.stopPropagation();
+    var el=e.target;
+    // a bare text node's parent is more useful than a wrapping span
+    if(el.children.length===0 && el.parentElement &&
+       rvTrim(rvText(el.parentElement),110)===rvTrim(rvText(el),110)) el=el.parentElement;
+    rvPopOpen(el);
+  }, true);
+  document.addEventListener("click", function(e){
+    var t=e.target.closest("#rvToggle");
+    if(t){ rvSetMode(!RVON); return; }
+    if(e.target.closest("#rvPopCancel")){ rvPopClose(); return; }
+    if(e.target.closest("#rvHide")){ rvSetMode(false); return; }
+    if(e.target.closest("#rvPopSave")){
+      var txt=(document.getElementById("rvPopTa")||{}).value||"";
+      if(!txt.trim()){ document.getElementById("rvPopTa").focus(); return; }
+      if(RVEDIT){ RVEDIT.text=txt.trim(); }
+      else if(RVTARGET){
+        RVNOTES.push({id:"N"+(++RVSEQ), a:rvAnchor(RVTARGET), text:txt.trim(),
+          by:(SESSION?SESSION.u:"—"), when:PLATFORM_TODAY});
+      }
+      rvPersist(); rvPopClose(); rvRows(); rvPaint();
+      rvToast(bi("حُفظت الملاحظة.","Note saved."));
+      return;
+    }
+    var pin=e.target.closest("[data-rvpin]");
+    if(pin){
+      var nt=RVNOTES.filter(function(x){return x.id===pin.dataset.rvpin;})[0];
+      var el2=nt?rvFind(nt.a):null;
+      if(nt&&el2) rvPopOpen(el2,nt);
+      else if(nt) rvToast(bi("العنصر لم يعد موجوداً — الملاحظة محفوظة.","That element is gone — the note is kept."));
+      return;
+    }
+    var go=e.target.closest("[data-rvgo]");
+    if(go){
+      var nt2=RVNOTES.filter(function(x){return x.id===go.dataset.rvgo;})[0]; if(!nt2) return;
+      var btn=document.querySelector('[data-go="'+nt2.a.screen+'"]');
+      if(btn && !btn.hidden) btn.click();
+      setTimeout(function(){
+        var el3=rvFind(nt2.a);
+        if(el3){ el3.scrollIntoView({block:"center",behavior:"smooth"});
+                 el3.classList.add("rv-hot");
+                 setTimeout(function(){ el3.classList.remove("rv-hot"); },1600); }
+        else rvToast(bi("العنصر لم يعد موجوداً — الملاحظة محفوظة.","That element is gone — the note is kept."));
+        rvPaint();
+      },120);
+      return;
+    }
+    var del=e.target.closest("[data-rvdel]");
+    if(del){
+      RVNOTES=RVNOTES.filter(function(x){return x.id!==del.dataset.rvdel;});
+      rvPersist(); rvRows(); rvPaint(); return;
+    }
+    if(e.target.closest("#rvCopy")){
+      var rep=rvReport();
+      if(!rep){ rvToast(bi("لا ملاحظات لنسخها.","Nothing to copy.")); return; }
+      var done=function(){ rvToast(bi("نُسخت — الصقيها في محادثة Claude.","Copied — paste it into your Claude chat.")); };
+      if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(rep).then(done,function(){
+        var ta2=document.getElementById("rvPopTa"); ta2.value=rep; done();
+      });
+      else done();
+      return;
+    }
+    if(e.target.closest("#rvDl")){
+      var rep2=rvReport(); if(!rep2){ rvToast(bi("لا ملاحظات.","Nothing to download.")); return; }
+      dlBlob("qagc-review-notes.md", new Blob([rep2],{type:"text/markdown"}));
+      return;
+    }
+    if(e.target.closest("#rvClear")){
+      if(!RVNOTES.length) return;
+      var c=document.getElementById("rvClear");
+      if(c.dataset.armed!=="1"){
+        c.dataset.armed="1";
+        c.innerHTML=bi("تأكيد المسح؟","Confirm clear?");
+        setTimeout(function(){ c.dataset.armed=""; c.innerHTML=bi("مسح الكل","Clear all"); },4000);
+        return;
+      }
+      RVNOTES=[]; rvPersist(); rvRows(); rvPaint();
+      c.dataset.armed=""; c.innerHTML=bi("مسح الكل","Clear all");
+      return;
+    }
+  });
+  document.addEventListener("keydown", function(e){
+    if(e.key==="Escape" && !document.getElementById("rvPop").hidden){ rvPopClose(); return; }
+    if(RVON && e.key==="Enter" && (e.metaKey||e.ctrlKey) &&
+       e.target.id==="rvPopTa"){ document.getElementById("rvPopSave").click(); }
+  });
+  // the screens repaint themselves; the pins must find their way back
+  var _rvT=null;
+  function rvSoon(ms){ if(!RVON) return; clearTimeout(_rvT); _rvT=setTimeout(rvPaint, ms||140); }
+  new MutationObserver(function(){ rvSoon(140); })
+    .observe(document.querySelector("main")||document.body,{childList:true,subtree:true});
+  // changing screen only toggles a class, which the observer above never sees:
+  // without this the old screen's pins linger and the new screen's never appear
+  document.addEventListener("click", function(e){
+    if(!RVON || !e.target.closest) return;
+    if(e.target.closest('.nav button,[data-goto],[data-minetab],[data-cpdtab],#lvtabs button,[data-ccv]'))
+      rvSoon(180);
+  }, true);
+  window.addEventListener("resize", function(){ if(RVON) rvPaint(); });
+  window.addEventListener("scroll", function(){ if(RVON) rvPaint(); }, {passive:true});
+  rvRows();
+
   applyRole();
   gateFoot(); drawAccounts(); drawInvites();
 
@@ -12431,7 +12770,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       ownerPersist(); drawPerfBoard(); flashSaved("pwSaved"); return;
     }
     if(e.target.closest("#cfgExport")){
-      var keys=["qagcCustom","qagcPrivs","qagcAwards","qagcOwnerCfg","qagcPlanSheet","qagcAiHidden","qagcAiCfg"];
+      var keys=["qagcCustom","qagcPrivs","qagcAwards","qagcOwnerCfg","qagcPlanSheet","qagcAiHidden","qagcAiCfg","qagcNotes"];
       var bag={_qagc:"owner-settings", when:PLATFORM_TODAY};
       keys.forEach(function(k){ var v=localStorage.getItem(k); if(v!==null) bag[k]=v; });
       dlBlob("qagc-settings.json", new Blob([JSON.stringify(bag,null,1)],{type:"application/json"}));

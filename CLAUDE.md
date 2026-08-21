@@ -55,7 +55,8 @@ before touching anything — it replaces a long build history you cannot see.
 7. **Persistence pattern**: device-level stores in localStorage —
    `qagcSession`, `qagcAiCfg` (bridge key — sensitive), `qagcCustom`
    (wording/order), `qagcPrivs`, `qagcAwards`, `qagcOwnerCfg` (rules,
-   weights, criteria, hours), `qagcPlanSheet`, `qagcAiHidden`. The
+   weights, criteria, hours), `qagcPlanSheet`, `qagcAiHidden`,
+   `qagcNotes` (review-mode comments). The
    settings screen exports/imports all of them as one JSON. Work data
    (submissions, plans, 360 cycles) is in-memory by design until the thin
    backend exists — never promise it persists.
@@ -102,6 +103,15 @@ before touching anything — it replaces a long build history you cannot see.
   development, endorses upward, never approves a budget — budgets are the
   DG's alone. Her scope is computed from her own `dep`, not a hard-coded
   list, so a second head needs no new code.
+- Review mode (rail toggle, `qagcNotes`): she clicks any element on the live
+  platform and pins a comment to it. A note stores the screen, the nearest
+  card heading and the element's own visible text, so it stays meaningful
+  even when the thing it pointed at is gone. "Copy all for Claude" emits one
+  markdown block grouped by screen — that is how her feedback reaches me
+  until the backend exists. Two rules it depends on: read element text with
+  `rvText()`, never `textContent` (bi() leaves both languages in the DOM),
+  and remember that changing screen only toggles a class, so the pins are
+  repainted from a nav click as well as from the MutationObserver.
 - The owner (DG) customises wording in place (edit mode), reorders the rail
   (drag or arrows), tunes the performance-score weights, the 360 criteria,
   leave rules, working hours — all persisted. Maximising her autonomy is a
