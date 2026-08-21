@@ -56,6 +56,31 @@ function fmt_(d) {
   return Utilities.formatDate(d, Session.getScriptTimeZone(), "yyyy-MM-dd'T'HH:mm");
 }
 
+// ── Google Sheets as the working surface ──
+// The annual plan publishes to one spreadsheet; every KPI gets its own tab
+// in a second one. Both live in the QAGC account's Drive and are shared by
+// link for editing — tighten to named people once the team list is final.
+function namedSS_(prop, title) {
+  let id = PROPS.getProperty(prop);
+  if (!id) {
+    const ss = SpreadsheetApp.create(title);
+    id = ss.getId();
+    PROPS.setProperty(prop, id);
+    DriveApp.getFileById(id).setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.EDIT);
+  }
+  return SpreadsheetApp.openById(id);
+}
+function tabOf_(ss, name, header) {
+  let sh = ss.getSheetByName(name);
+  if (!sh) {
+    sh = ss.insertSheet(name);
+    sh.setRightToLeft(true);
+    sh.appendRow(header);
+    sh.setFrozenRows(1);
+  }
+  return sh;
+}
+
 const COLS = ['when', 'title', 'tag', 'owner', 'due', 'budget', 'note', 'state', 'smart', 'kpis', 'itype', 'venue', 'ctype', 'date_to'];
 const ACOLS = ['id', 'when', 'kpi', 'question', 'data', 'answer', 'state'];
 const CTYPES = ['lecture', 'workshop', 'webinar', 'forum'];
@@ -110,6 +135,20 @@ function doGet(e) {
     const head = rows.shift();
     return json_({ ok: true, items: rows.map(r => Object.fromEntries(head.map((h, i) => [h, r[i]]))) });
   }
+  if (fn === 'readKpi') {
+    // the platform pulls what the owner typed into the KPI's tab
+    const tab = String(e.parameter.tab || '').trim();
+    if (!tab) return json_({ ok: false, error: 'tab is required' });
+    const ss = namedSS_('QAGC_KPI_SSID', 'مؤشرات الأداء — QAGC');
+    const sh = ss.getSheetByName(tab);
+    if (!sh) return json_({ ok: false, error: 'no such KPI tab' });
+    const rows = sh.getDataRange().getValues().slice(1)
+      .filter(r => r[0] !== '' && r[1] !== '' && !isNaN(Number(r[1])));
+    return json_({ ok: true, tab: tab,
+      labels: rows.map(r => String(r[0])),
+      values: rows.map(r => Number(r[1])),
+      notes: rows.map(r => String(r[2] || '')) });
+  }
   if (fn === 'calendar') {
     try {
       const days = Math.min(60, Math.max(1, Number(e.parameter.days || 14)));
@@ -161,6 +200,50 @@ function doPost(e) {
     sh0.appendRow(head0.map(h => (h in rec0) ? rec0[h] : ''));
     return json_({ ok: true, state: 'pending',
       message: 'أُدرج النشاط في الوارد — يظهر على لوحة CPD كموعد مبدئي فور إدراجه في المنصة.' });
+  }
+
+  // ── the annual plan, published as a live Google Sheet ──
+  if (fn === 'exportPlan') {
+    const rows = Array.isArray(body.rows) ? body.rows.slice(0, 200) : [];
+    if (!rows.length) return json_({ ok: false, error: 'rows are required' });
+    const ss = namedSS_('QAGC_PLAN_SSID', 'الخطة السنوية 2027 — QAGC');
+    const head = ['المرجع', 'المستوى', 'الهدف', 'الصياغة الذكية', 'مؤشرات الأداء',
+                  'المستهدف', 'المسؤول', 'من', 'إلى', 'الفئة', 'التقدم %'];
+    const sh = tabOf_(ss, 'الخطة', head);
+    sh.clearContents();
+    sh.appendRow(head);
+    sh.setFrozenRows(1);
+    const data = rows.map(r => [r.ref || '', r.level || '', r.title || '', r.smart || '',
+      r.kpi || '', r.target || '', r.owner || '', r.from || '', r.to || '', r.tag || '',
+      r.progress === undefined ? '' : Number(r.progress)]);
+    sh.getRange(2, 1, data.length, head.length).setValues(data);
+    return json_({ ok: true, url: ss.getUrl(), rows: data.length,
+      message: 'نُشرت الخطة في Google Sheets.' });
+  }
+
+  // ── a KPI gets its own tab; the owner edits readings in Sheets itself ──
+  if (fn === 'kpiSheet') {
+    const title = String(body.title || '').trim();
+    if (!title) return json_({ ok: false, error: 'title is required' });
+    const ss = namedSS_('QAGC_KPI_SSID', 'مؤشرات الأداء — QAGC');
+    const tab = title.slice(0, 80);
+    const existed = !!ss.getSheetByName(tab);
+    const sh = tabOf_(ss, tab, ['الفترة', 'القيمة', 'ملاحظات']);
+    if (!existed) {
+      const labels = Array.isArray(body.labels) ? body.labels : [];
+      const values = Array.isArray(body.values) ? body.values : [];
+      const notes = Array.isArray(body.notes) ? body.notes : [];
+      if (labels.length) {
+        sh.getRange(2, 1, labels.length, 3).setValues(
+          labels.map((lb, i) => [String(lb), values[i] === undefined ? '' : Number(values[i]), String(notes[i] || '')]));
+      }
+      if (body.unit || body.target !== undefined) {
+        sh.getRange(1, 5).setValue('الوحدة: ' + (body.unit || '—') +
+          (body.target !== undefined && body.target !== null ? ' · المستهدف: ' + body.target : ''));
+      }
+    }
+    return json_({ ok: true, tab: tab, existed: existed,
+      url: ss.getUrl() + '#gid=' + sh.getSheetId() });
   }
 
   // ── a coordinator schedules a meeting; it lands in the DG's calendar ──

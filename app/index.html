@@ -2010,6 +2010,8 @@ html[lang="en"] span[lang="en"]{display:inline}
         <button class="btn btn-p" id="newObjBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span lang="ar">هدف جديد</span><span lang="en">New objective</span></button>
         <button class="btn" id="planXls"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 19h16"/></svg><span lang="ar">تصدير Excel</span><span lang="en">Export Excel</span></button>
         <button class="btn" id="planDoc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><span lang="ar">تقرير Word</span><span lang="en">Word report</span></button>
+        <button class="btn" id="planGs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg><span lang="ar">نشر إلى Google Sheets</span><span lang="en">Publish to Google Sheets</span></button>
+        <a id="planGsLink" href="#" target="_blank" rel="noopener" hidden class="btn" style="text-decoration:none"><span lang="ar">فتح الخطة في Sheets ↗</span><span lang="en">Open the plan in Sheets ↗</span></a>
         <span class="kerr" id="docErr"></span>
       </div>
 
@@ -5331,6 +5333,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           '<button class="btn" data-kdl="'+ref+':'+i+'">'+bi("تنزيل القراءات Excel","Readings as Excel")+'</button>'+
           '<button class="btn" data-kppt="'+ref+':'+i+'">'+bi("تصدير شريحة PowerPoint","Export a PowerPoint slide")+'</button>'+
           '<button class="btn" data-kask="'+ref+':'+i+'">'+bi("تحليل عبر المساعد الذكي","Analyse with the assistant")+'</button>'+
+          '<button class="btn" data-kgs="'+ref+':'+i+'">'+
+            (k.gs?bi("فتح في Google Sheets ↗","Open in Google Sheets ↗"):bi("إنشاء ورقة Google Sheets","Create a Google Sheet"))+'</button>'+
+          (k.gs?'<button class="btn" data-kgsync="'+ref+':'+i+'">'+bi("مزامنة من Sheets","Sync from Sheets")+'</button>':"")+
           '<span class="kerr" id="kerr-'+ref+'-'+i+'"></span>'+
         '</div>'+
         table+'</div>';
@@ -5369,6 +5374,87 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         if(err) err.textContent=bi("تعذّر الاتصال — جرّبي من النسخة المنشورة على github.io.",
                                    "Could not connect — try the github.io copy.");
       });
+  });
+  // ── the plan and the KPIs as live Google Sheets, through the bridge ──
+  var PLAN_TAG_AR={"t-min":"الخطة الخمسية","t-dir":"الخطة السنوية","t-third":"الفئة الثالثة","t-none":""};
+  document.addEventListener("click",function(e){
+    if(e.target.closest("#planGs")){
+      var err=document.getElementById("docErr");
+      if(ROLE!=="dg"&&ROLE!=="coord"){
+        if(err) err.textContent=bi("نشر الخطة للمدير العام والتنسيق.","Publishing is for the DG and Coordination."); return; }
+      var cfg=dgCalCfg();
+      if(!cfg){ if(err) err.textContent=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
+      if(err) err.textContent=bi("جارٍ النشر…","Publishing…");
+      var rows=PLAN2027.map(function(o){
+        return {ref:o.r, level:o.l, title:o.t, smart:o.d||"", kpi:o.k||"", target:o.g||"",
+                owner:o.o||"", from:o.s||"", to:o.e||"",
+                tag:PLAN_TAG_AR[(typeof tagOf==="function")?tagOf(o):o.tag]||"",
+                progress:(typeof progOf==="function")?progOf(o):""};
+      });
+      fetch(cfg.url+"?key="+encodeURIComponent(cfg.key), {method:"POST",
+        body:JSON.stringify({fn:"exportPlan", rows:rows})})
+        .then(function(r){return r.json();})
+        .then(function(j){
+          if(j.ok){
+            if(err) err.textContent=bi(j.rows+" هدفاً نُشر.", j.rows+" objectives published.");
+            var a=document.getElementById("planGsLink");
+            if(a){ a.href=j.url; a.hidden=false; }
+          } else if(err) err.textContent=bi("رفض: ","Refused: ")+(j.error||"");
+        })
+        .catch(function(){ if(err) err.textContent=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
+      return;
+    }
+    var kg=e.target.closest("[data-kgs]");
+    if(kg){
+      var q1=kg.dataset.kgs.split(":"), ref1=q1[0], i1=+q1[1];
+      var k1=(EXTRA[ref1]||[])[i1]; if(!k1) return;
+      if(k1.gs){ window.open(k1.gs.url,"_blank"); return; }
+      var err1=document.getElementById("kerr-"+ref1+"-"+i1);
+      var cfg1=dgCalCfg();
+      if(!cfg1){ if(err1) err1.textContent=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
+      if(err1) err1.textContent=bi("جارٍ إنشاء الورقة…","Creating the sheet…");
+      var st1=(typeof kpiStats==="function")?kpiStats(k1):null;
+      fetch(cfg1.url+"?key="+encodeURIComponent(cfg1.key), {method:"POST",
+        body:JSON.stringify({fn:"kpiSheet", title:k1.title, unit:k1.unit||"",
+          target:(st1&&st1.target!=null)?st1.target:null,
+          labels:k1.labels, values:k1.values, notes:k1.notes||[]})})
+        .then(function(r){return r.json();})
+        .then(function(j){
+          if(j.ok){
+            k1.gs={tab:j.tab, url:j.url};
+            if(err1) err1.textContent=bi("أُنشئت — القراءات تُحرَّر في Sheets وتعود بزر المزامنة.",
+                                         "Created — edit readings in Sheets and pull them back with sync.");
+            refreshKpiPane(ref1);
+            window.open(j.url,"_blank");
+          } else if(err1) err1.textContent=bi("رفض: ","Refused: ")+(j.error||"");
+        })
+        .catch(function(){ if(err1) err1.textContent=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
+      return;
+    }
+    var ks=e.target.closest("[data-kgsync]");
+    if(ks){
+      var q2=ks.dataset.kgsync.split(":"), ref2=q2[0], i2=+q2[1];
+      var k2=(EXTRA[ref2]||[])[i2]; if(!k2||!k2.gs) return;
+      var err2=document.getElementById("kerr-"+ref2+"-"+i2);
+      var cfg2=dgCalCfg();
+      if(!cfg2){ if(err2) err2.textContent=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
+      if(err2) err2.textContent=bi("جارٍ السحب من Sheets…","Pulling from Sheets…");
+      fetch(cfg2.url+"?key="+encodeURIComponent(cfg2.key)+"&fn=readKpi&tab="+encodeURIComponent(k2.gs.tab))
+        .then(function(r){return r.json();})
+        .then(function(j){
+          if(j.ok && j.labels && j.labels.length){
+            k2.labels=j.labels; k2.values=j.values; k2.notes=j.notes;
+            k2.src="Google Sheets";
+            refreshKpiPane(ref2);
+            var e3=document.getElementById("kerr-"+ref2+"-"+i2);
+            if(e3) e3.textContent=bi(j.labels.length+" قراءة مُزامنة من Sheets.", j.labels.length+" readings synced from Sheets.");
+          } else if(err2) err2.textContent=j.ok
+            ? bi("الورقة فارغة — أضيفي قراءات أولاً.","The sheet is empty — add readings first.")
+            : bi("رفض: ","Refused: ")+(j.error||"");
+        })
+        .catch(function(){ if(err2) err2.textContent=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
+      return;
+    }
   });
   // Excel puts tab-separated text on the clipboard; that is all a paste needs to be.
   function ingestPaste(ref, text){
