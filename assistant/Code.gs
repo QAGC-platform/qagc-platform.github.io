@@ -81,7 +81,7 @@ function tabOf_(ss, name, header) {
   return sh;
 }
 
-const COLS = ['when', 'title', 'tag', 'owner', 'due', 'budget', 'note', 'state', 'smart', 'kpis', 'itype', 'venue', 'ctype', 'date_to'];
+const COLS = ['when', 'title', 'tag', 'owner', 'due', 'budget', 'note', 'state', 'smart', 'kpis', 'itype', 'venue', 'ctype', 'date_to', 'kind'];
 const ACOLS = ['id', 'when', 'kpi', 'question', 'data', 'answer', 'state'];
 const CTYPES = ['lecture', 'workshop', 'webinar', 'forum'];
 
@@ -337,6 +337,9 @@ function doPost(e) {
     smart: String(body.smart || '').trim(),
     kpis: kpis.length ? JSON.stringify(kpis) : '',
     itype: 'package', venue: '', ctype: '', date_to: '',
+    // what this push IS: an objective package, a simple task, or a meeting agenda
+    kind: ['task', 'objective', 'agenda'].indexOf(String(body.kind || '').trim()) >= 0
+      ? String(body.kind).trim() : '',
   };
   sh.appendRow(head.map(h => (h in rec) ? rec[h] : ''));
   return json_({ ok: true, state: 'pending', kpis: kpis.length,

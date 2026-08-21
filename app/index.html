@@ -1729,6 +1729,18 @@ body[data-flagband="1"] .gate{padding-top:38px}
 span[lang]{display:none}
 html[lang="ar"] span[lang="ar"]{display:inline}
 html[lang="en"] span[lang="en"]{display:inline}
+#awardsBar{display:flex;gap:18px;align-items:center;flex-wrap:wrap;
+  margin:0 0 var(--sp-4);padding:10px 18px;border-radius:12px;
+  background:linear-gradient(120deg,#8a6a1f,#c9a13b 35%,#e8cf7a 50%,#c9a13b 65%,#8a6a1f);
+  color:#fffbe9;box-shadow:0 2px 10px rgba(138,106,31,.35);
+  font-size:var(--t-sm);position:relative;overflow:hidden}
+#awardsBar::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.35) 50%,transparent 60%);
+  transform:translateX(-100%);animation:awshine 6s ease-in-out infinite}
+@keyframes awshine{0%,60%{transform:translateX(-100%)}85%,100%{transform:translateX(100%)}}
+#awardsBar .awchip{display:inline-flex;gap:8px;align-items:center;font-weight:700}
+#awardsBar .awmon{margin-inline-start:auto;font-size:var(--t-xs);opacity:.85;font-weight:400}
+#awardsBar .awstar{font-size:1.15em}
 </style>
 
 <div class="gate" id="gate">
@@ -1912,6 +1924,7 @@ html[lang="en"] span[lang="en"]{display:inline}
   </nav>
 
   <main>
+    <div id="awardsBar" hidden></div>
     <!-- ══════════ COMMAND CENTRE ══════════ -->
     <section class="screen on" id="cc">
       <div class="head">
@@ -2315,6 +2328,13 @@ html[lang="en"] span[lang="en"]{display:inline}
 
       <div class="tiles" id="peopleTiles"></div>
 
+      <div class="card" id="ev360Card">
+        <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg></span><div>
+          <span class="ceye"><span lang="ar">من كل الجهات، بسرّية</span><span lang="en">From every direction, in confidence</span></span>
+          <h2><span lang="ar">التقييم 360°</span><span lang="en">360° evaluation</span></h2></div></div></div>
+        <div id="ev360Body"></div>
+      </div>
+
       <div class="msplit">
         <aside class="roster" id="rosterList"></aside>
         <div id="personBody"></div>
@@ -2524,6 +2544,32 @@ html[lang="en"] span[lang="en"]{display:inline}
       <div class="homestrip" id="coordStrip"></div>
       <div class="tiles" id="coordTiles"></div>
       <div id="coordPrio" hidden></div>
+
+      <div class="card" id="agCard">
+        <div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg></span><div>
+          <span class="ceye"><span lang="ar">من يجهّز ماذا قبل كل اجتماع</span><span lang="en">Who prepares what before each meeting</span></span>
+          <h2><span lang="ar">جداول أعمال الاجتماعات</span><span lang="en">Meeting agendas</span></h2></div></div></div>
+        <p style="font-size:var(--t-sm);color:var(--ink-3)">
+          <span lang="ar">جدول الأعمال يُكتب هنا أو يصل من المساعد، ثم يُسند تحضيره إلى موظف بعينه فيظهر في مهامه بموعد الاجتماع.</span>
+          <span lang="en">An agenda is written here or arrives from the assistant, then its preparation is assigned to a named person and lands in their tasks, due the meeting day.</span></p>
+        <div class="asnform" id="agForm">
+          <div class="kform">
+            <span class="fld" style="grid-column:1/-1"><label><span lang="ar">عنوان الاجتماع</span><span lang="en">Meeting</span></label>
+              <input id="ag-title" placeholder="اجتماع لجنة الحوكمة الشهري"></span>
+            <span class="fld"><label><span lang="ar">التاريخ</span><span lang="en">Date</span></label>
+              <input id="ag-date" type="date"></span>
+            <span class="fld"><label><span lang="ar">يُسند تحضيره إلى</span><span lang="en">Prepared by</span></label>
+              <select class="fld-sel" id="ag-asg"></select></span>
+            <span class="fld" style="grid-column:1/-1"><label><span lang="ar">البنود — بند في كل سطر</span><span lang="en">Items — one per line</span></label>
+              <textarea id="ag-items" rows="3" placeholder="متابعة قرارات الاجتماع السابق&#10;عرض مؤشرات الربع"></textarea></span>
+          </div>
+          <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
+            <button class="btn btn-p" id="agAdd"><span lang="ar">حفظ الجدول وإسناده</span><span lang="en">Save and assign</span></button>
+            <span class="kerr" id="agErr"></span>
+          </div>
+        </div>
+        <div id="agList" style="margin-top:var(--sp-3)"></div>
+      </div>
 
       <div class="card" id="dgCalCard">
         <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18M12 14v4M10 16h4"/></svg></span><div>
@@ -2969,6 +3015,24 @@ html[lang="en"] span[lang="en"]{display:inline}
           <div id="indTemplate"></div>
           <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-2);flex-wrap:wrap">
             <button class="btn" id="addInd"><span lang="ar">إضافة بند</span><span lang="en">Add an item</span></button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10zM8.5 14 7 21l5-3 5 3-1.5-7"/></svg></span><div>
+            <span class="ceye"><span lang="ar">يظهر على كل صفحات المنصة</span><span lang="en">Shown on every page of the platform</span></span>
+            <h2><span lang="ar">تكريم الشهر</span><span lang="en">The month's honours</span></h2></div></div></div>
+          <div class="frow">
+            <div class="fld"><label><span lang="ar">موظف الشهر</span><span lang="en">Employee of the month</span></label>
+              <select class="fld-sel" id="aw-emp"><option value="">—</option></select></div>
+            <div class="fld"><label><span lang="ar">قسم الشهر</span><span lang="en">Department of the month</span></label>
+              <select class="fld-sel" id="aw-dep"><option value="">—</option></select></div>
+            <div class="fld"><label><span lang="ar">الشهر</span><span lang="en">Month</span></label>
+              <input id="aw-mon" placeholder="نوفمبر 2026"></div>
+          </div>
+          <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
+            <button class="btn btn-p" id="awSave"><span lang="ar">إعلان التكريم</span><span lang="en">Announce</span></button>
+            <button class="btn" id="awClear"><span lang="ar">إزالة الشريط</span><span lang="en">Take the ribbon down</span></button>
+            <span class="saved" id="awSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span lang="ar">أُعلن التكريم.</span><span lang="en">Announced.</span></span>
           </div>
         </div>
       </div>
@@ -8221,6 +8285,224 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       '</div>';
     }).join("");
   }
+  // ── month awards: the golden ribbon every screen carries ──
+  var AWARDS={emp:"sd-1", dep:"قسم تطوير الخدمات", mon:"أكتوبر 2026"};
+  function drawAwardsBar(){
+    var bar=document.getElementById("awardsBar"); if(!bar) return;
+    if(!AWARDS || (!AWARDS.emp && !AWARDS.dep)){ bar.hidden=true; return; }
+    var pe=AWARDS.emp?STAFF.filter(function(x){return x.id===AWARDS.emp;})[0]:null;
+    var depEn=AWARDS.dep?((STAFF.filter(function(x){return x.dep[0]===AWARDS.dep;})[0]||{dep:[AWARDS.dep,AWARDS.dep]}).dep[1]):"";
+    bar.hidden=false;
+    bar.innerHTML=
+      (pe?'<span class="awchip"><span class="awstar">🏆</span>'+bi("موظف الشهر: ","Employee of the month: ")+bi(pe.who[0],pe.who[1])+
+        ' <span style="font-weight:400;opacity:.85">· '+bi(pe.dep[0],pe.dep[1])+'</span></span>':"")+
+      (AWARDS.dep?'<span class="awchip"><span class="awstar">🏅</span>'+bi("قسم الشهر: ","Department of the month: ")+bi(AWARDS.dep,depEn)+'</span>':"")+
+      (AWARDS.mon?'<span class="awmon">'+AWARDS.mon+'</span>':"");
+  }
+  function fillAwardSelects(){
+    var se=document.getElementById("aw-emp"), sd=document.getElementById("aw-dep");
+    if(se && se.options.length<=1){
+      se.innerHTML='<option value="">—</option>'+STAFF.map(function(x){
+        return '<option value="'+x.id+'"'+(AWARDS.emp===x.id?' selected':'')+'>'+(isAr()?x.who[0]:x.who[1])+'</option>';}).join("");
+    }
+    if(sd && sd.options.length<=1){
+      sd.innerHTML='<option value="">—</option>'+DEP_ORDER.map(function(d){
+        return '<option value="'+d+'"'+(AWARDS.dep===d?' selected':'')+'>'+d+'</option>';}).join("");
+    }
+    var m=document.getElementById("aw-mon"); if(m && !m.value && AWARDS.mon) m.value=AWARDS.mon;
+  }
+  document.addEventListener("click",function(e){
+    if(e.target.closest("#awSave")){
+      AWARDS={emp:(document.getElementById("aw-emp")||{}).value||"",
+              dep:(document.getElementById("aw-dep")||{}).value||"",
+              mon:(document.getElementById("aw-mon")||{}).value||""};
+      drawAwardsBar();
+      if(typeof burstConfetti==="function") burstConfetti(null,false);
+      var mm=document.getElementById("awSaved");
+      if(mm){ mm.classList.add("on"); setTimeout(function(){mm.classList.remove("on");},2600); }
+      return;
+    }
+    if(e.target.closest("#awClear")){ AWARDS={emp:"",dep:"",mon:""}; drawAwardsBar(); return; }
+    if(e.target.closest('[data-go="own"]')) fillAwardSelects();
+  });
+  drawAwardsBar();
+
+  // ── the 360° evaluation: a cycle per subject; raters answer in confidence ──
+  var EV_CRITERIA=["التواصل المهني","العمل ضمن الفريق","جودة العمل ودقته","الالتزام بالمواعيد","المبادرة وحل المشكلات","التعامل مع المراجعين وأسرهم"];
+  var EV360=[], EVSEQ=0;   // {id, subject, criteria[], raters[], resp:{pid:{scores[],comment}}, open}
+  function drawEv360(){
+    var host=document.getElementById("ev360Body"); if(!host) return;
+    var me=(typeof myPerson==="function")?myPerson():null;
+    var h="";
+    // the owner or coordination opens a cycle
+    if(ROLE==="dg"||ROLE==="coord"){
+      h+='<div class="asnform"><div style="font-size:var(--t-sm);font-weight:700">'+bi("فتح دورة تقييم","Open an evaluation cycle")+'</div>'+
+        '<div class="kform">'+
+        '<span class="fld"><label>'+bi("المُقيَّم","Subject")+'</label><select class="fld-sel" id="ev-subj">'+
+          STAFF.map(function(x){return '<option value="'+x.id+'">'+(isAr()?x.who[0]:x.who[1])+'</option>';}).join("")+'</select></span>'+
+        '<span class="fld" style="grid-column:1/-1"><label>'+bi("المُقيِّمون — علّمي على كل من يشارك","Raters — tick everyone taking part")+'</label>'+
+          '<span style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">'+
+          STAFF.map(function(x){return '<label style="display:inline-flex;gap:5px;align-items:center;font-size:var(--t-xs);cursor:pointer">'+
+            '<input type="checkbox" data-evr="'+x.id+'">'+(isAr()?x.who[0]:x.who[1])+'</label>';}).join("")+'</span></span>'+
+        '</div>'+
+        '<div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">'+
+        '<button class="btn btn-p" id="evOpen">'+bi("فتح الدورة","Open the cycle")+'</button>'+
+        '<span class="kerr" id="evErr"></span></div></div>';
+    }
+    // forms waiting on the signed-in person
+    var mineDue=EV360.filter(function(c){ return c.open && me && c.raters.indexOf(me.id)>=0 && !c.resp[me.id]; });
+    if(mineDue.length){
+      h+='<p class="subh" style="margin-top:var(--sp-4)">'+bi("استمارات مطلوبة منك","Forms waiting on you")+' <span class="cnt">'+mineDue.length+'</span></p>';
+      mineDue.forEach(function(c){
+        var subj=STAFF.filter(function(x){return x.id===c.subject;})[0];
+        h+='<div class="asnform" style="margin-top:var(--sp-2)"><div style="font-size:var(--t-sm);font-weight:700">'+
+          bi("تقييم: ","Evaluating: ")+(subj?bi(subj.who[0],subj.who[1]):"")+'</div>'+
+          '<div style="font-size:var(--t-xs);color:var(--ink-3)">'+bi("١ ضعيف — ٥ ممتاز. الإجابات سرّية: تظهر النتيجة مجمّعة بلا أسماء.","1 poor — 5 excellent. Confidential: results show aggregated, unnamed.")+'</div>'+
+          c.criteria.map(function(cr,i){
+            return '<div style="display:flex;gap:10px;align-items:center;padding:5px 0;border-bottom:1px solid var(--rule)">'+
+              '<span style="flex:1;font-size:var(--t-sm)">'+cr+'</span>'+
+              '<select class="fld-sel" data-evs="'+c.id+':'+i+'" style="width:70px">'+
+              [1,2,3,4,5].map(function(n){return '<option value="'+n+'"'+(n===3?' selected':'')+'>'+n+'</option>';}).join("")+'</select></div>';
+          }).join("")+
+          '<input data-evc="'+c.id+'" placeholder="'+(isAr()?"ملاحظة اختيارية…":"optional comment…")+'" style="margin-top:8px;width:100%">'+
+          '<div style="margin-top:var(--sp-2)"><button class="btn btn-p" data-evsend="'+c.id+'">'+bi("إرسال التقييم","Submit")+'</button></div></div>';
+      });
+    }
+    // aggregated results for the DG
+    var closedOrRated=EV360.filter(function(c){ return Object.keys(c.resp).length; });
+    if(ROLE==="dg" && closedOrRated.length){
+      h+='<p class="subh" style="margin-top:var(--sp-4)">'+bi("النتائج المجمّعة","Aggregated results")+'</p>';
+      closedOrRated.forEach(function(c){
+        var subj=STAFF.filter(function(x){return x.id===c.subject;})[0];
+        var n=Object.keys(c.resp).length;
+        h+='<div style="border:1px solid var(--rule);border-radius:10px;padding:12px;margin-top:8px">'+
+          '<div style="display:flex;gap:8px;align-items:center"><b style="font-size:var(--t-sm)">'+
+            (subj?bi(subj.who[0],subj.who[1]):"")+'</b>'+
+          '<span class="pill p-neutral">'+n+" "+bi("من ","of ")+c.raters.length+" "+bi("مقيِّمين","raters")+'</span>'+
+          (c.open?'<button class="mini no" data-evclose="'+c.id+'" style="margin-inline-start:auto">'+bi("إغلاق الدورة","Close")+'</button>':'<span class="pill p-good" style="margin-inline-start:auto">'+bi("مغلقة","Closed")+'</span>')+'</div>'+
+          c.criteria.map(function(cr,i){
+            var avg=Object.keys(c.resp).reduce(function(a,pid){return a+(+c.resp[pid].scores[i]||0);},0)/n;
+            return '<div style="display:flex;gap:10px;align-items:center;padding:4px 0">'+
+              '<span style="width:210px;font-size:var(--t-xs)">'+cr+'</span>'+
+              '<span style="flex:1;height:8px;background:var(--surface-2);border-radius:4px;overflow:hidden">'+
+                '<span style="display:block;height:100%;width:'+(avg/5*100)+'%;background:'+(avg>=3.5?"var(--good-ink)":avg>=2.5?"var(--warn-ink)":"var(--critical-ink)")+'"></span></span>'+
+              '<span class="tnum" style="width:34px;font-size:var(--t-xs)">'+avg.toFixed(1)+'</span></div>';
+          }).join("")+
+          (function(){
+            var cm=Object.keys(c.resp).map(function(pid){return c.resp[pid].comment;}).filter(Boolean);
+            return cm.length?'<div class="sm" style="margin-top:6px"><b>'+bi("ملاحظات (بلا أسماء): ","Comments (unnamed): ")+'</b>'+cm.join(" · ")+'</div>':"";
+          })()+
+        '</div>';
+      });
+    }
+    if(!h) h='<div class="subempty">'+bi("لا دورات تقييم مفتوحة تخصّك.","No evaluation cycles concern you right now.")+'</div>';
+    host.innerHTML=h;
+  }
+  document.addEventListener("click",function(e){
+    if(e.target.closest("#evOpen")){
+      var raters=[...document.querySelectorAll("[data-evr]:checked")].map(function(x){return x.dataset.evr;});
+      var subj=(document.getElementById("ev-subj")||{}).value||"";
+      var err=document.getElementById("evErr");
+      raters=raters.filter(function(r){return r!==subj;});
+      if(raters.length<2){ if(err) err.textContent=bi("اختاري مقيِّمَين على الأقل غير المُقيَّم نفسه.","Pick at least two raters besides the subject."); return; }
+      EV360.push({id:"EV"+(++EVSEQ), subject:subj, criteria:EV_CRITERIA.slice(), raters:raters, resp:{}, open:true});
+      drawEv360();
+      // the redraw rebuilt the card — write the confirmation into the fresh element
+      var err2=document.getElementById("evErr");
+      if(err2) err2.textContent=bi("فُتحت الدورة — تظهر الاستمارة لكل مقيِّم عند دخوله.","Opened — each rater sees the form when they sign in.");
+      return;
+    }
+    var es=e.target.closest("[data-evsend]");
+    if(es){
+      var cid=es.dataset.evsend;
+      var c=EV360.filter(function(x){return x.id===cid;})[0]; if(!c) return;
+      var me=(typeof myPerson==="function")?myPerson():null; if(!me) return;
+      var scores=c.criteria.map(function(_,i){
+        var sel=document.querySelector('[data-evs="'+cid+':'+i+'"]');
+        return sel?+sel.value:3;
+      });
+      var comment=(document.querySelector('[data-evc="'+cid+'"]')||{}).value||"";
+      stepUp("submit", bi("إرسال تقييم 360°","Submitting a 360° evaluation"), function(){
+        c.resp[me.id]={scores:scores, comment:comment.trim()};
+        drawEv360();
+      });
+      return;
+    }
+    var ec=e.target.closest("[data-evclose]");
+    if(ec){ var cc2=EV360.filter(function(x){return x.id===ec.dataset.evclose;})[0]; if(cc2) cc2.open=false; drawEv360(); return; }
+    if(e.target.closest('[data-go="people"]')) drawEv360();
+  });
+
+  // ── meeting agendas: written or imported, then assigned to a person ──
+  var AGENDAS=[], AGSEQ=0;
+  function canAssignAgenda(){ return ROLE==="dg"||ROLE==="dir"||ROLE==="coord"; }
+  function drawAgendas(){
+    var host=document.getElementById("agList"); if(!host) return;
+    var selHost=document.getElementById("ag-asg");
+    if(selHost && !selHost.options.length){
+      selHost.innerHTML='<option value="">'+(isAr()?"بلا إسناد الآن":"Unassigned for now")+'</option>'+
+        STAFF.map(function(x){return '<option value="'+x.id+'">'+(isAr()?x.who[0]:x.who[1])+'</option>';}).join("");
+    }
+    var form=document.getElementById("agForm");
+    if(form) form.hidden=!canAssignAgenda();
+    host.innerHTML=AGENDAS.length? AGENDAS.slice().reverse().map(function(a){
+      return '<div class="subrow" style="grid-template-columns:minmax(0,1fr) auto">'+
+        '<span><span class="st2">'+a.title+'</span>'+
+          '<span class="sm"><span class="tnum">'+(a.date||"—")+'</span> · '+bi(a.by[0],a.by[1])+
+          (a.asgName?' · '+bi("يحضّره: ","prepared by: ")+a.asgName:"")+'</span>'+
+          (a.items?'<span class="sm" style="white-space:pre-line;margin-top:4px">'+a.items+'</span>':"")+'</span>'+
+        '<span class="acts">'+
+          (!a.asg && canAssignAgenda()
+            ? '<select class="fld-sel" data-agsel="'+a.id+'" style="min-width:150px"><option value="">'+
+              (isAr()?"إسناد إلى…":"Assign to…")+'</option>'+
+              STAFF.map(function(x){return '<option value="'+x.id+'">'+(isAr()?x.who[0]:x.who[1])+'</option>';}).join("")+
+              '</select><button class="mini yes" data-agassign="'+a.id+'">'+bi("إسناد","Assign")+'</button>'
+            : "")+
+          ((ROLE==="dg"||ROLE==="coord")?'<button class="mini no" data-agdel="'+a.id+'">✕</button>':"")+
+        '</span></div>';
+    }).join("") : '<div class="subempty">'+bi("لا جداول أعمال بعد.","No agendas yet.")+'</div>';
+  }
+  function agendaLand(a){
+    if(!a.asg) return;
+    var pp=STAFF.filter(function(x){return x.id===a.asg;})[0]; if(!pp) return;
+    pp.steps=pp.steps||[];
+    pp.steps.push({t:["تحضير اجتماع: "+a.title,"Prepare the meeting: "+a.title],
+      obj:["جدول الأعمال: "+String(a.items||"").split("\n").filter(Boolean).join(" · "),
+           "Agenda: "+String(a.items||"").split("\n").filter(Boolean).join(" · ")],
+      due:a.date||"2026-12-31", st:"not_started", budget:null});
+    if(typeof drawRoster==="function"){ drawRoster(); drawPeopleTiles(); refreshPeopleCount(); }
+  }
+  document.addEventListener("click",function(e){
+    if(e.target.closest("#agAdd")){
+      var t=document.getElementById("ag-title"), err=document.getElementById("agErr");
+      if(!t.value.trim()){ t.focus(); return; }
+      var sel=document.getElementById("ag-asg");
+      var pA=sel&&sel.value?STAFF.filter(function(x){return x.id===sel.value;})[0]:null;
+      var a={id:"AG"+(++AGSEQ), title:t.value.trim(),
+        date:(document.getElementById("ag-date")||{}).value||"",
+        items:(document.getElementById("ag-items")||{}).value||"",
+        by:(typeof SESSION!=="undefined"&&SESSION&&typeof acctOf==="function"&&acctOf(SESSION.u))?acctOf(SESSION.u).who:["—","—"],
+        asg:sel?sel.value:"", asgName:pA?(isAr()?pA.who[0]:pA.who[1]):""};
+      AGENDAS.push(a); agendaLand(a);
+      t.value=""; document.getElementById("ag-items").value=""; if(sel) sel.value="";
+      if(err){ err.textContent=bi("حُفظ الجدول"+(a.asg?" وأُسند.":"."),"Saved"+(a.asg?" and assigned.":".")); }
+      drawAgendas(); return;
+    }
+    var ga=e.target.closest("[data-agassign]");
+    if(ga){
+      var idA=ga.dataset.agassign;
+      var aA=AGENDAS.filter(function(x){return x.id===idA;})[0]; if(!aA) return;
+      var selA=document.querySelector('[data-agsel="'+idA+'"]');
+      if(!selA||!selA.value){ if(selA) selA.focus(); return; }
+      var pAA=STAFF.filter(function(x){return x.id===selA.value;})[0];
+      aA.asg=selA.value; aA.asgName=pAA?(isAr()?pAA.who[0]:pAA.who[1]):"";
+      agendaLand(aA); drawAgendas(); return;
+    }
+    var gd=e.target.closest("[data-agdel]");
+    if(gd){ AGENDAS=AGENDAS.filter(function(x){return x.id!==gd.dataset.agdel;}); drawAgendas(); return; }
+    if(e.target.closest('[data-go="coord"]')) drawAgendas();
+  });
+
   // ── the DG calendar bridge on the coordination screen ──
   var DGCAL_FETCHED=false;
   function dgCalCfg(){
@@ -8312,6 +8594,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   });
   function renderAiInbox(items){
     var host=document.getElementById("aiInbox"); if(!host) return;
+    AI_LAST=items;
+    items=items.filter(function(it){ return !AI_HIDDEN[it.when]; });
     var cnt=document.getElementById("aiInbCount"); if(cnt) cnt.textContent=String(items.length);
     if(!items.length){
       host.innerHTML='<div class="subempty">'+bi("الوارد فارغ — لم تدفع المساعِدة شيئاً بعد.","The inbox is empty — nothing pushed yet.")+'</div>';
@@ -8319,7 +8603,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     }
     host.innerHTML=items.slice().reverse().map(function(it){
       var done=AI_IMPORTED[it.when];
-      if(it.itype==="cpd"){
+      var kind=aiKindOf(it);
+      var hideBtn=(ROLE==="dg"||ROLE==="coord")
+        ? '<button class="mini no" data-aihide="'+encodeURIComponent(it.when)+'" title="'+
+          (isAr()?"إزالة من الوارد":"Remove from the inbox")+'">✕</button>' : "";
+      if(kind==="cpd"){
         return '<div class="subrow" style="grid-template-columns:minmax(0,1fr) auto auto">'+
           '<span><span class="st2">'+String(it.title||"").slice(0,120)+'</span>'+
             '<span class="sm"><span class="pill p-warn">'+bi("نشاط تطوير مهني","CPD activity")+'</span>'+
@@ -8332,14 +8620,30 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             ? '<span class="pill p-good">'+bi("على اللوحة","On the board")+'</span>'
             : (ROLE==="dg"||ROLE==="coord"
                ? '<button class="mini yes" data-aicpd="'+encodeURIComponent(JSON.stringify(it))+'">'+bi("إدراج في برنامج CPD","Place on the CPD board")+'</button>'
-               : '<span class="pill p-warn">'+bi("بانتظار الإدراج","Pending")+'</span>'))+'</span>'+
+               : '<span class="pill p-warn">'+bi("بانتظار الإدراج","Pending")+'</span>'))+hideBtn+'</span>'+
+        '</div>';
+      }
+      if(kind==="agenda"){
+        return '<div class="subrow" style="grid-template-columns:minmax(0,1fr) auto auto">'+
+          '<span><span class="st2">'+String(it.title||"").slice(0,120)+'</span>'+
+            '<span class="sm"><span class="pill p-neutral">'+bi("جدول أعمال اجتماع","Meeting agenda")+'</span>'+
+            (it.due?' · <span class="tnum">'+String(it.due).slice(0,10)+'</span>':'')+
+            (it.note?' · '+String(it.note).slice(0,80):'')+'</span></span>'+
+          '<span class="sw2 tnum">'+String(it.when||"").slice(0,10)+'</span>'+
+          '<span class="acts">'+(done
+            ? '<span class="pill p-good">'+bi("في جداول الأعمال","Filed")+'</span>'
+            : (ROLE==="dg"||ROLE==="coord"||ROLE==="dir"
+               ? '<button class="mini yes" data-aiagenda="'+encodeURIComponent(JSON.stringify(it))+'">'+bi("إلى جداول الأعمال","To the agendas")+'</button>'
+               : '<span class="pill p-warn">'+bi("بانتظار الإدراج","Pending")+'</span>'))+hideBtn+'</span>'+
         '</div>';
       }
       var tg=AI_TAG_MAP[it.tag]||["t-third",String(it.tag||""),String(it.tag||"")];
       var kn=aiKpisOf(it).length;
       return '<div class="subrow" style="grid-template-columns:minmax(0,1fr) auto auto">'+
         '<span><span class="st2">'+String(it.title||"").slice(0,120)+'</span>'+
-          '<span class="sm"><span class="tag '+tg[0]+'"><span class="dot"></span>'+bi(tg[1],tg[2])+'</span>'+
+          '<span class="sm"><span class="pill '+(kind==="objective"?"p-good":"p-neutral")+'">'+
+            (kind==="objective"?bi("حزمة هدف","Objective package"):bi("مهمة","Task"))+'</span> '+
+          '<span class="tag '+tg[0]+'"><span class="dot"></span>'+bi(tg[1],tg[2])+'</span>'+
           (kn?' · <b>'+kn+'</b> '+bi("مؤشرات","KPIs"):'')+
           (it.smart?' · SMART':'')+
           (it.owner?' · '+it.owner:'')+(it.due?' · <span class="tnum">'+String(it.due).slice(0,10)+'</span>':'')+
@@ -8350,12 +8654,22 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           ? '<span class="pill p-good">'+bi("أُدرجت","Taken in")+'</span>'
           : (ROLE==="dg"
              ? '<button class="mini yes" data-aiimport="'+encodeURIComponent(JSON.stringify(it))+'">'+bi("إدراج في الاعتمادات","Take into Approvals")+'</button>'+
-               '<button class="mini" data-aicpd="'+encodeURIComponent(JSON.stringify(it))+'" title="'+
-                 (isAr()?"إن كان نشاط تطوير مهني وصل مصنَّفاً كمهمة":"If this is a CPD activity that arrived classified as a task")+'">'+
-                 bi("بل على لوحة CPD","To the CPD board instead")+'</button>'
-             : '<span class="pill p-warn">'+bi("بانتظار القرار","Pending")+'</span>'))+'</span>'+
+               (kind==="task"
+                 ? '<button class="mini" data-aicpd="'+encodeURIComponent(JSON.stringify(it))+'" title="'+
+                   (isAr()?"إن كان نشاط تطوير مهني وصل مصنَّفاً كمهمة":"If this is a CPD activity classified as a task")+'">'+
+                   bi("بل على لوحة CPD","To the CPD board instead")+'</button>' : "")
+             : '<span class="pill p-warn">'+bi("بانتظار القرار","Pending")+'</span>'))+hideBtn+'</span>'+
       '</div>';
     }).join("");
+  }
+  var AI_LAST=[];
+  var AI_HIDDEN={};
+  try{ AI_HIDDEN=JSON.parse(localStorage.getItem("qagcAiHidden")||"{}")||{}; }catch(_){}
+  function aiKindOf(it){
+    if(it.itype==="cpd") return "cpd";
+    if(it.kind==="task"||it.kind==="agenda"||it.kind==="objective") return it.kind;
+    // pushes from before the kind field: an objective carries SMART or KPIs; the rest are tasks
+    return (it.smart || aiKpisOf(it).length) ? "objective" : "task";
   }
   function aiKpisOf(it){
     if(Array.isArray(it.kpis)) return it.kpis;
@@ -8364,6 +8678,20 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   aiLoadCfg();
   document.addEventListener("click",function(e){
     if(e.target.closest("#aiConnect")){ aiFetchInbox(); return; }
+    var hd=e.target.closest("[data-aihide]");
+    if(hd){
+      AI_HIDDEN[decodeURIComponent(hd.dataset.aihide)]=1;
+      try{ localStorage.setItem("qagcAiHidden", JSON.stringify(AI_HIDDEN)); }catch(_){}
+      renderAiInbox(AI_LAST); return;
+    }
+    var ag=e.target.closest("[data-aiagenda]");
+    if(ag){
+      var evA=JSON.parse(decodeURIComponent(ag.dataset.aiagenda));
+      AI_IMPORTED[evA.when]=true;
+      AGENDAS.push({id:"AG"+(++AGSEQ), title:String(evA.title||""), date:String(evA.due||"").slice(0,10),
+        items:String(evA.note||""), by:["المساعد الذكي","The assistant"], asg:"", asgName:""});
+      drawAgendas(); aiFetchInbox(); return;
+    }
     var ic=e.target.closest("[data-aicpd]");
     if(ic){
       // a CPD activity goes straight to its month, tentative until confirmed there

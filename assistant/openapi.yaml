@@ -58,6 +58,13 @@ paths:
                     إلى لوحة CPD (يلزم title وdue وctype)؛ answerAnalysis لكتابة
                     تحليل مؤشر (يلزم id من طابور analysis وحقل answer).
                 title: { type: string, description: "عنوان الهدف أو المهمة بالعربية" }
+                kind:
+                  type: string
+                  enum: [objective, task, agenda]
+                  description: >
+                    ما نوع المدفوع — objective لحزمة هدف بمؤشراتها؛ task لمهمة
+                    بسيطة بلا خطة ولا مؤشرات؛ agenda لجدول أعمال اجتماع (بنوده
+                    في حقل note، بنداً في كل سطر). إلزامي مع addTask.
                 smart:
                   type: string
                   description: >
