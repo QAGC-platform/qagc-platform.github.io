@@ -112,6 +112,14 @@ before touching anything — it replaces a long build history you cannot see.
   `rvText()`, never `textContent` (bi() leaves both languages in the DOM),
   and remember that changing screen only toggles a class, so the pins are
   repainted from a nav click as well as from the MutationObserver.
+- The review board is an Artifact that RECEIVES those notes:
+  `claude.ai/code/artifact/9fa37a24-5104-4db7-bb72-2c726689bd82`. The
+  platform cannot post to it (static page, no auth), so "Send to the review
+  board" carries the notes in the URL fragment and the board saves them with
+  `claude.use("artifact").publish()` on her click. **Before ever
+  republishing that artifact from a local file, WebFetch it first and merge
+  the notes it already holds into the file** — a plain republish silently
+  discards everything she sent. Its state lives in `<script id="rv-data">`.
 - The owner (DG) customises wording in place (edit mode), reorders the rail
   (drag or arrows), tunes the performance-score weights, the 360 criteria,
   leave rules, working hours — all persisted. Maximising her autonomy is a

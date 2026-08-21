@@ -3967,7 +3967,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
   </div>
   <div class="pb" id="rvList"></div>
   <div class="pf">
-    <button class="btn btn-p" id="rvCopy"><span lang="ar">نسخ الكل لإرساله إلى Claude</span><span lang="en">Copy all for Claude</span></button>
+    <button class="btn btn-p" id="rvSend"><span lang="ar">إرسال إلى لوحة المراجعة</span><span lang="en">Send to the review board</span></button>
+    <button class="btn" id="rvCopy"><span lang="ar">نسخ الكل</span><span lang="en">Copy all</span></button>
     <button class="btn" id="rvDl"><span lang="ar">تنزيل</span><span lang="en">Download</span></button>
     <button class="btn" id="rvClear"><span lang="ar">مسح الكل</span><span lang="en">Clear all</span></button>
   </div>
@@ -12581,6 +12582,21 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     });
     return out.join("\n");
   }
+  // The platform cannot post into the board — it is a static page with no
+  // way to authenticate. So the notes ride across in the URL fragment, which
+  // never leaves the browser, and the board saves them on her click.
+  var RVBOARD="https://claude.ai/code/artifact/9fa37a24-5104-4db7-bb72-2c726689bd82";
+  function rvSendUrl(){
+    var bag={v:1, from:"qagc", notes:RVNOTES.map(function(nt){
+      return {screen:nt.a.screen, screenName:nt.a.screenName, where:nt.a.where,
+              what:nt.a.what, text:nt.text, by:nt.by, when:nt.when};
+    })};
+    var b64;
+    try{ b64=btoa(unescape(encodeURIComponent(JSON.stringify(bag)))); }catch(_){ return ""; }
+    b64=b64.replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+    var url=RVBOARD+"#in="+b64;
+    return url.length>28000 ? "" : url;     // well inside what browsers accept
+  }
   function rvSetMode(on){
     RVON=!!on;
     document.body.setAttribute("data-review", RVON?"on":"");
@@ -12672,6 +12688,16 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(del){
       RVNOTES=RVNOTES.filter(function(x){return x.id!==del.dataset.rvdel;});
       rvPersist(); rvRows(); rvPaint(); return;
+    }
+    if(e.target.closest("#rvSend")){
+      if(!RVNOTES.length){ rvToast(bi("لا ملاحظات لإرسالها.","Nothing to send.")); return; }
+      var url=rvSendUrl();
+      if(!url){ rvToast(bi("الرابط أطول مما يحتمله المتصفح — أرسليها على دفعات، أو انسخيها.",
+                           "Too long for a URL — send them in batches, or use Copy all.")); return; }
+      window.open(url, "_blank", "noopener");
+      rvToast(bi("فُتحت اللوحة — اضغطي «أضيفيها إلى اللوحة» هناك.",
+                 "The board is open — press “Add to the board” there."));
+      return;
     }
     if(e.target.closest("#rvCopy")){
       var rep=rvReport();
