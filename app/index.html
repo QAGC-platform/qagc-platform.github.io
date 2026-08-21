@@ -9605,8 +9605,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     document.getElementById("stepErr").textContent="";
     document.getElementById("stepCode").value="";
     document.getElementById("stepHint").innerHTML=
-      bi("نموذج للعرض — الرمز في المنصة المبنية يصل إلى تطبيق المصادقة أو بريد الوزارة: <b>"+code+"</b>",
-         "Demonstration build — in the built platform this code reaches the authenticator app or ministry mail: <b>"+code+"</b>");
+      '<div style="text-align:center;margin-bottom:6px"><span style="display:inline-block;font-family:var(--mono,monospace);font-size:1.7em;font-weight:700;letter-spacing:.18em;direction:ltr;padding:6px 18px;border:2px dashed var(--warn-ink);border-radius:10px;background:var(--surface-2)">'+code+'</span></div>'+
+      bi("هذا رمزك — اكتبه في الخانة أعلاه. (نموذج للعرض: في المنصة المبنية يصل الرمز إلى تطبيق المصادقة أو بريد الوزارة ولا يظهر هنا.)",
+         "This is your code — type it in the box above. (Demonstration build: in the real platform it reaches the authenticator app or ministry mail, never shown here.)");
     document.getElementById("stepOvl").classList.add("open");
     setTimeout(function(){ document.getElementById("stepCode").focus(); },40);
   }
