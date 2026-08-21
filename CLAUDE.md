@@ -130,6 +130,25 @@ Open, in priority order:
    fed from exportPlan instead of the hand-copied five, read/write key
    split, Sheets sharing tightened to named accounts.
 
+## Definition of done — in this project, pushing IS deploying
+
+This repo has standing authorization to publish: a platform change is not
+finished until it is committed and **pushed** — the push is the deployment
+to the live site. The full cycle, every time:
+
+1. `git pull --rebase` before starting (two people work on this repo).
+2. Edit → `node --check` → verify in a local browser.
+3. Commit with a message that explains the decision (commit messages are
+   the shared project memory) and **push without waiting to be asked**.
+4. Tell the user it is live, that the CDN lags ~10 minutes, and to
+   hard-reload. If the push is rejected (non-fast-forward), pull --rebase
+   and push again; if it fails with an auth error, the machine needs
+   `gh auth login` once with an account in the QAGC-platform org.
+
+The only changes that still wait for explicit confirmation: anything in
+`assistant/` that requires a manual Apps Script redeploy (say so plainly),
+and anything that would publish new personal data.
+
 ## Working with the user
 
 The DG (or her husband, the platform's builder) gives short, direct
