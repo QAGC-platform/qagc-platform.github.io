@@ -40,6 +40,22 @@ function ss_() {
   return SpreadsheetApp.openById(id);
 }
 
+// ── the Director General's calendar bridge ──
+// The DG shares her Google calendar with the QAGC account (qagcplatform@gmail.com)
+// with "Make changes to events". Put her calendar id (her email) in Script
+// properties as QAGC_DG_CAL; until then the QAGC account's own calendar is used,
+// which also works as the demo. Set the project time zone to Asia/Muscat
+// (Project Settings) so times read and write correctly.
+function dgCal_() {
+  const id = PROPS.getProperty('QAGC_DG_CAL') || '';
+  const cal = id ? CalendarApp.getCalendarById(id) : CalendarApp.getDefaultCalendar();
+  if (!cal) throw new Error('calendar not accessible — has it been shared with the QAGC account?');
+  return cal;
+}
+function fmt_(d) {
+  return Utilities.formatDate(d, Session.getScriptTimeZone(), "yyyy-MM-dd'T'HH:mm");
+}
+
 const COLS = ['when', 'title', 'tag', 'owner', 'due', 'budget', 'note', 'state', 'smart', 'kpis', 'itype', 'venue', 'ctype', 'date_to'];
 const ACOLS = ['id', 'when', 'kpi', 'question', 'data', 'answer', 'state'];
 const CTYPES = ['lecture', 'workshop', 'webinar', 'forum'];
@@ -94,6 +110,24 @@ function doGet(e) {
     const head = rows.shift();
     return json_({ ok: true, items: rows.map(r => Object.fromEntries(head.map((h, i) => [h, r[i]]))) });
   }
+  if (fn === 'calendar') {
+    try {
+      const days = Math.min(60, Math.max(1, Number(e.parameter.days || 14)));
+      const start = new Date(); start.setHours(0, 0, 0, 0);
+      const end = new Date(start.getTime() + days * 86400000);
+      const cal = dgCal_();
+      const items = cal.getEvents(start, end).slice(0, 100).map(ev => ({
+        title: ev.getTitle(),
+        start: fmt_(ev.getStartTime()),
+        end: fmt_(ev.getEndTime()),
+        allday: ev.isAllDayEvent(),
+        loc: ev.getLocation() || '',
+      }));
+      return json_({ ok: true, cal: cal.getName(), tz: Session.getScriptTimeZone(), items: items });
+    } catch (err) {
+      return json_({ ok: false, error: String(err.message || err) });
+    }
+  }
   if (fn === 'analysis') {
     const rows = sheet_('analysis').getDataRange().getValues();
     const head = rows.shift();
@@ -127,6 +161,34 @@ function doPost(e) {
     sh0.appendRow(head0.map(h => (h in rec0) ? rec0[h] : ''));
     return json_({ ok: true, state: 'pending',
       message: 'أُدرج النشاط في الوارد — يظهر على لوحة CPD كموعد مبدئي فور إدراجه في المنصة.' });
+  }
+
+  // ── a coordinator schedules a meeting; it lands in the DG's calendar ──
+  if (fn === 'addEvent') {
+    const t = String(body.title || '').trim();
+    const date = String(body.date || '').trim();
+    const from = String(body.from || '').trim();
+    const to = String(body.to || '').trim();
+    if (!t) return json_({ ok: false, error: 'title is required' });
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return json_({ ok: false, error: 'date must be YYYY-MM-DD' });
+    if (!/^\d{2}:\d{2}$/.test(from) || !/^\d{2}:\d{2}$/.test(to)) {
+      return json_({ ok: false, error: 'from and to must be HH:MM' });
+    }
+    const start = new Date(date + 'T' + from + ':00');
+    const end = new Date(date + 'T' + to + ':00');
+    if (!(end > start)) return json_({ ok: false, error: 'to must be after from' });
+    try {
+      const cal = dgCal_();
+      const desc = [String(body.note || '').trim(),
+        'عبر منصة QAGC' + (body.who ? ' — ' + String(body.who).trim() : '')]
+        .filter(Boolean).join('\n');
+      const ev = cal.createEvent(t, start, end, {
+        description: desc, location: String(body.loc || '').trim() });
+      return json_({ ok: true, start: fmt_(ev.getStartTime()), end: fmt_(ev.getEndTime()),
+        message: 'أُدرج الموعد في تقويم المديرة العامة.' });
+    } catch (err) {
+      return json_({ ok: false, error: String(err.message || err) });
+    }
   }
 
   // ── the platform asks; ChatGPT reads the queue and writes the answer back ──

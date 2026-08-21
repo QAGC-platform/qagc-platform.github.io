@@ -2515,6 +2515,41 @@ html[lang="en"] span[lang="en"]{display:inline}
       <div class="tiles" id="coordTiles"></div>
       <div id="coordPrio" hidden></div>
 
+      <div class="card" id="dgCalCard">
+        <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18M12 14v4M10 16h4"/></svg></span><div>
+          <span class="ceye"><span lang="ar">جسر مباشر إلى Google Calendar</span><span lang="en">A live bridge to Google Calendar</span></span>
+          <h2><span lang="ar">تقويم المديرة العامة</span><span lang="en">The Director General's calendar</span></h2></div></div></div>
+        <p style="font-size:var(--t-sm);color:var(--ink-3)">
+          <span lang="ar">جدولها الحقيقي كما هو في Google، يُقرأ مباشرة عبر جسر المنصة. الموعد المُنشأ هنا يظهر في تقويمها فوراً وعلى هاتفها، موقَّعاً باسم من جدوله. يلزم أن تشارك تقويمها مع حساب المنصة مرة واحدة.</span>
+          <span lang="en">Her real schedule as it stands in Google, read live through the platform bridge. A meeting created here lands in her calendar at once, signed by whoever scheduled it. She shares her calendar with the platform account once.</span></p>
+        <div style="display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center">
+          <button class="btn btn-p" id="dgCalRefresh"><span lang="ar">تحديث الجدول</span><span lang="en">Refresh</span></button>
+          <span id="dgCalStatus" style="font-size:var(--t-sm)"></span>
+        </div>
+        <div id="dgCalList" style="margin-top:var(--sp-3)"></div>
+        <div class="asnform" style="margin-top:var(--sp-3)">
+          <div style="font-size:var(--t-sm);font-weight:700"><span lang="ar">جدولة موعد في تقويمها</span><span lang="en">Schedule a meeting in her calendar</span></div>
+          <div class="kform">
+            <span class="fld" style="grid-column:1/-1"><label><span lang="ar">الموضوع</span><span lang="en">Subject</span></label>
+              <input id="dgc-title" placeholder="اجتماع لجنة الحوكمة"></span>
+            <span class="fld"><label><span lang="ar">التاريخ</span><span lang="en">Date</span></label>
+              <input id="dgc-date" type="date"></span>
+            <span class="fld"><label><span lang="ar">من</span><span lang="en">From</span></label>
+              <input id="dgc-from" type="time" value="10:00"></span>
+            <span class="fld"><label><span lang="ar">إلى</span><span lang="en">To</span></label>
+              <input id="dgc-to" type="time" value="11:00"></span>
+            <span class="fld"><label><span lang="ar">المكان</span><span lang="en">Location</span></label>
+              <input id="dgc-loc" placeholder="مكتب المديرة العامة"></span>
+            <span class="fld" style="grid-column:1/-1"><label><span lang="ar">ملاحظة</span><span lang="en">Note</span></label>
+              <input id="dgc-note" placeholder="جدول الأعمال باختصار"></span>
+          </div>
+          <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
+            <button class="btn btn-p" id="dgCalAdd"><span lang="ar">إدراج في تقويمها</span><span lang="en">Place in her calendar</span></button>
+            <span class="kerr" id="dgCalErr"></span>
+          </div>
+        </div>
+      </div>
+
       <div class="card">
         <div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><div>
           <span class="ceye"><span lang="ar">التقويم حيث يستخدمه الفريق</span><span lang="en">The calendar where the team already is</span></span>
@@ -7972,6 +8007,95 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       '</div>';
     }).join("");
   }
+  // ── the DG calendar bridge on the coordination screen ──
+  var DGCAL_FETCHED=false;
+  function dgCalCfg(){
+    try{ var c=JSON.parse(localStorage.getItem("qagcAiCfg")||"null"); if(c&&c.key&&c.url) return c; }catch(_){}
+    var u=(document.getElementById("aiCfgUrl")||{}).value||"";
+    var k=(document.getElementById("aiCfgKey")||{}).value||"";
+    return (u&&k)?{url:u,key:k}:null;
+  }
+  function dgCalStatus(msg,ok){
+    var el=document.getElementById("dgCalStatus");
+    if(el) el.innerHTML='<span style="color:var(--'+(ok?"good-ink":"critical-ink")+')">'+msg+'</span>';
+  }
+  var DAY_AR=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+  var DAY_EN=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  function renderDgCal(j){
+    var host=document.getElementById("dgCalList"); if(!host) return;
+    var items=j.items||[];
+    if(!items.length){
+      host.innerHTML='<div class="subempty">'+bi("لا مواعيد في الأيام الأربعة عشر القادمة.","Nothing in the next fourteen days.")+'</div>';
+      return;
+    }
+    var byDay={};
+    items.forEach(function(ev){ var d=String(ev.start).slice(0,10); (byDay[d]=byDay[d]||[]).push(ev); });
+    host.innerHTML=Object.keys(byDay).sort().map(function(d){
+      var wd=new Date(d+"T12:00:00").getDay();
+      return '<p class="subh" style="margin:10px 0 4px">'+bi(DAY_AR[wd],DAY_EN[wd])+' · <span class="tnum">'+d+'</span></p>'+
+        byDay[d].map(function(ev){
+          return '<div class="subrow" style="grid-template-columns:auto minmax(0,1fr)">'+
+            '<span class="tnum" style="font-size:var(--t-sm);white-space:nowrap">'+
+              (ev.allday?bi("اليوم كله","All day"):String(ev.start).slice(11,16)+"–"+String(ev.end).slice(11,16))+'</span>'+
+            '<span><span class="st2">'+String(ev.title||"")+'</span>'+
+              (ev.loc?'<span class="sm">'+ev.loc+'</span>':"")+'</span></div>';
+        }).join("");
+    }).join("");
+  }
+  async function dgCalFetch(){
+    var cfg=dgCalCfg();
+    if(!cfg){ dgCalStatus(bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."),false); return; }
+    dgCalStatus(bi("جارٍ القراءة…","Reading…"),true);
+    try{
+      var r=await fetch(cfg.url+"?key="+encodeURIComponent(cfg.key)+"&fn=calendar&days=14");
+      var j=await r.json();
+      if(!j.ok){ dgCalStatus(bi("تعذّر: ","Failed: ")+(j.error||bi("المفتاح مرفوض","key refused")),false); return; }
+      DGCAL_FETCHED=true;
+      dgCalStatus(bi("تقويم: ","Calendar: ")+(j.cal||"")+" — "+bi("مُحدَّث الآن.","just refreshed."),true);
+      renderDgCal(j);
+    }catch(_){
+      dgCalStatus(bi("تعذّر الاتصال من هذه النسخة — استخدمي النسخة المنشورة على github.io.",
+                     "Could not connect from this copy — use the github.io version."),false);
+    }
+  }
+  document.addEventListener("click",function(e){
+    if(e.target.closest("#dgCalRefresh")){ dgCalFetch(); return; }
+    var nav=e.target.closest('[data-go="coord"]');
+    if(nav && !DGCAL_FETCHED && dgCalCfg()){ dgCalFetch(); return; }
+    if(e.target.closest("#dgCalAdd")){
+      var t=document.getElementById("dgc-title"), err=document.getElementById("dgCalErr");
+      var date=(document.getElementById("dgc-date")||{}).value||"";
+      var from=(document.getElementById("dgc-from")||{}).value||"";
+      var to=(document.getElementById("dgc-to")||{}).value||"";
+      if(!t.value.trim()){ t.focus(); return; }
+      if(!date||!from||!to||to<=from){ if(err) err.textContent=bi("أكملي التاريخ والوقت — النهاية بعد البداية.","Complete the date and times — the end after the start."); return; }
+      var cfg=dgCalCfg();
+      if(!cfg){ if(err) err.textContent=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
+      // the signature is the signed-in account, not the roster stand-in
+      var acct=(typeof SESSION!=="undefined"&&SESSION&&typeof acctOf==="function")?acctOf(SESSION.u):null;
+      var who=acct?(isAr()?acct.who[0]:acct.who[1]):"";
+      // placing something in the DG's own calendar deserves the second step
+      stepUp("submit", bi("جدولة موعد للمديرة العامة: ","Scheduling for the Director General: ")+t.value.trim(), function(){
+        if(err) err.textContent=bi("جارٍ الإدراج…","Placing…");
+        fetch(cfg.url+"?key="+encodeURIComponent(cfg.key), {method:"POST",
+          body:JSON.stringify({fn:"addEvent", title:t.value.trim(), date:date, from:from, to:to,
+            loc:(document.getElementById("dgc-loc")||{}).value||"",
+            note:(document.getElementById("dgc-note")||{}).value||"", who:who})})
+          .then(function(r){return r.json();})
+          .then(function(j){
+            if(j.ok){
+              if(err) err.textContent="";
+              t.value=""; document.getElementById("dgc-note").value="";
+              dgCalFetch().then(function(){
+                dgCalStatus(bi("أُدرج الموعد في تقويمها وظهر في الجدول.","Placed in her calendar — now on the schedule."),true);
+              });
+            } else if(err) err.textContent=bi("رفض: ","Refused: ")+(j.error||"");
+          })
+          .catch(function(){ if(err) err.textContent=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
+      });
+      return;
+    }
+  });
   function renderAiInbox(items){
     var host=document.getElementById("aiInbox"); if(!host) return;
     var cnt=document.getElementById("aiInbCount"); if(cnt) cnt.textContent=String(items.length);
