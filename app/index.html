@@ -1742,13 +1742,19 @@ html[lang="en"] span[lang="en"]{display:inline}
 #awardsBar .awmon{margin-inline-start:auto;font-size:var(--t-xs);opacity:.85;font-weight:400}
 #awardsBar .awstar{font-size:1.15em}
 body.editmode .nav button span[lang],
+body.editmode .nav-group span[lang],
 body.editmode .screen .head h1 span[lang],
-body.editmode .screen .head .eyebrow span[lang]{
+body.editmode .screen .head .eyebrow span[lang],
+body.editmode .screen .head > p span[lang],
+body.editmode .card-h h2 span[lang]{
   outline:1.5px dashed var(--warn-ink);outline-offset:3px;border-radius:4px;
   cursor:text;min-width:24px;display:inline-block}
 body.editmode .nav button span[lang]:focus,
+body.editmode .nav-group span[lang]:focus,
 body.editmode .screen .head h1 span[lang]:focus,
-body.editmode .screen .head .eyebrow span[lang]:focus{
+body.editmode .screen .head .eyebrow span[lang]:focus,
+body.editmode .screen .head > p span[lang]:focus,
+body.editmode .card-h h2 span[lang]:focus{
   outline-style:solid;background:var(--surface-2)}
 #czExit{position:fixed;bottom:18px;inset-inline-start:18px;z-index:400;
   background:var(--ink);color:var(--paper,#fff);border:none;border-radius:999px;
@@ -8768,16 +8774,22 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   function czSnapshot(){
     if(CZ_ORIG) return;
-    CZ_ORIG={name:null, heads:{}, order:[]};
+    CZ_ORIG={name:null, heads:{}, order:[], grps:[], cards:{}};
     var mk=document.querySelector(".mark-name");
     if(mk) CZ_ORIG.name=czSpanTexts(mk);
+    document.querySelectorAll(".nav-group").forEach(function(g){ CZ_ORIG.grps.push(czSpanTexts(g)); });
     document.querySelectorAll(".nav button").forEach(function(b){
       var id=b.dataset.go; CZ_ORIG.order.push(id);
       var sec=document.getElementById(id);
       var h1=sec?sec.querySelector(".head h1"):null;
       var ey=sec?sec.querySelector(".head .eyebrow"):null;
+      var pl=sec?sec.querySelector(".head > p"):null;
       CZ_ORIG.heads[id]={rail:czSpanTexts(b),
-        t:h1?czSpanTexts(h1):null, e:ey?czSpanTexts(ey):null};
+        t:h1?czSpanTexts(h1):null, e:ey?czSpanTexts(ey):null, p:pl?czSpanTexts(pl):null};
+      if(sec){
+        CZ_ORIG.cards[id]=[];
+        sec.querySelectorAll(".card-h h2").forEach(function(h){ CZ_ORIG.cards[id].push(czSpanTexts(h)); });
+      }
     });
   }
   function applyCustom(){
@@ -8789,12 +8801,22 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var o=CZ_ORIG.heads[id], c=CUSTOM.heads[id]||{};
       var sec=document.getElementById(id);
       var b=document.querySelector('.nav button[data-go="'+id+'"]');
-      // each text is its own: the rail label, the title and the eyebrow edit independently
+      // each text is its own: rail, title, eyebrow, lede and card headers all edit independently
       if(b) czSetSpans(b, c.rail||o.rail);
       if(sec){
         if(o.t) czSetSpans(sec.querySelector(".head h1"), c.t||o.t);
         if(o.e) czSetSpans(sec.querySelector(".head .eyebrow"), c.e||o.e);
+        if(o.p) czSetSpans(sec.querySelector(".head > p"), c.p||o.p);
+        var cc=(CUSTOM.cards&&CUSTOM.cards[id])||{};
+        sec.querySelectorAll(".card-h h2").forEach(function(h,i){
+          var ov=cc[i];
+          if(ov) czSetSpans(h, ov);
+        });
       }
+    });
+    Object.keys(CUSTOM.grps||{}).forEach(function(i){
+      var g=document.querySelectorAll(".nav-group")[+i];
+      if(g) czSetSpans(g, CUSTOM.grps[i]);
     });
     if(CUSTOM.order){
       var nav=document.querySelector(".nav");
@@ -8819,7 +8841,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   var EDITMODE=false;
   function czEditTargets(){
     return [].slice.call(document.querySelectorAll(
-      '.nav button span[lang], .screen .head h1 span[lang], .screen .head .eyebrow span[lang]'));
+      '.nav button span[lang], .nav-group span[lang], .screen .head h1 span[lang], '+
+      '.screen .head .eyebrow span[lang], .screen .head > p span[lang], .card-h h2 span[lang]'));
   }
   function czSetEditMode(on){
     EDITMODE=on;
@@ -8833,12 +8856,35 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function czCommit(sp){
     var lang=sp.getAttribute("lang")==="en"?1:0;
     var b=sp.closest(".nav button");
-    var id, field, host;
+    var grp=sp.closest(".nav-group");
+    if(grp){
+      var gi=[].indexOf.call(document.querySelectorAll(".nav-group"), grp);
+      var og=CZ_ORIG.grps[gi]; if(!og) return;
+      CUSTOM.grps=CUSTOM.grps||{};
+      var curG=CUSTOM.grps[gi]||og.slice();
+      curG[lang]=sp.textContent.trim()||og[lang];
+      sp.textContent=curG[lang];
+      if(curG[0]===og[0]&&curG[1]===og[1]) delete CUSTOM.grps[gi]; else CUSTOM.grps[gi]=curG;
+      czPersist(); return;
+    }
+    var id, field;
     if(b){ id=b.dataset.go; field="rail"; }
     else{
       var sec=sp.closest(".screen"); if(!sec) return;
       id=sec.id;
-      field=sp.closest("h1")?"t":sp.closest(".eyebrow")?"e":null;
+      var h2c=sp.closest(".card-h h2");
+      if(h2c){
+        var ci=[].indexOf.call(sec.querySelectorAll(".card-h h2"), h2c);
+        var oc=(CZ_ORIG.cards[id]||[])[ci]; if(!oc) return;
+        CUSTOM.cards=CUSTOM.cards||{}; CUSTOM.cards[id]=CUSTOM.cards[id]||{};
+        var curC=CUSTOM.cards[id][ci]||oc.slice();
+        curC[lang]=sp.textContent.trim()||oc[lang];
+        sp.textContent=curC[lang];
+        if(curC[0]===oc[0]&&curC[1]===oc[1]) delete CUSTOM.cards[id][ci]; else CUSTOM.cards[id][ci]=curC;
+        if(!Object.keys(CUSTOM.cards[id]).length) delete CUSTOM.cards[id];
+        czPersist(); return;
+      }
+      field=sp.closest("h1")?"t":sp.closest(".eyebrow")?"e":sp.closest(".head > p")?"p":null;
       if(!field) return;
     }
     var o=CZ_ORIG.heads[id]; if(!o||!o[field]) return;
@@ -8850,6 +8896,16 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     else CUSTOM.heads[id][field]=cur;
     if(!Object.keys(CUSTOM.heads[id]).length) delete CUSTOM.heads[id];
     czPersist();
+  }
+  // dynamic screens repaint their heads — the owner's words must repaint over them
+  function czReapplyHead(id){
+    if(!CZ_ORIG) return;
+    var c=(CUSTOM.heads[id]||{});
+    var sec=document.getElementById(id); if(!sec) return;
+    if(c.t) czSetSpans(sec.querySelector(".head h1"), c.t);
+    if(c.e) czSetSpans(sec.querySelector(".head .eyebrow"), c.e);
+    if(c.p) czSetSpans(sec.querySelector(".head > p"), c.p);
+    if(EDITMODE) czSetEditMode(true);
   }
   document.addEventListener("blur",function(e){
     if(!EDITMODE) return;
@@ -8870,7 +8926,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     ord.innerHTML=czVisibleOrder().map(function(id,i,arr){
       var o=CZ_ORIG.heads[id]||{}, c=CUSTOM.heads[id]||{};
       var lab=c.rail||o.rail||["",""];
-      return '<div style="display:flex;gap:8px;align-items:center;border:1px solid var(--rule);border-radius:8px;padding:5px 10px">'+
+      return '<div class="czrow" draggable="true" data-czid="'+id+'" style="display:flex;gap:8px;align-items:center;border:1px solid var(--rule);border-radius:8px;padding:5px 10px;cursor:grab;background:var(--surface-1)">'+
+        '<span style="color:var(--ink-4)">⠿</span>'+
         '<span style="flex:1;font-size:var(--t-sm)">'+bi(lab[0],lab[1])+'</span>'+
         '<button class="mini" data-czup="'+id+'"'+(i===0?' disabled style="opacity:.3"':'')+'>↑</button>'+
         '<button class="mini" data-czdn="'+id+'"'+(i===arr.length-1?' disabled style="opacity:.3"':'')+'>↓</button></div>';
@@ -8918,6 +8975,32 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       drawCustomPane(); return;
     }
     if(e.target.closest('[data-opane="ow-custom"]')) drawCustomPane();
+  });
+  // drag to reorder: the drop commits the DOM order as the rail order
+  var CZ_DRAG=null;
+  document.addEventListener("dragstart",function(e){
+    var r=e.target.closest?e.target.closest(".czrow"):null; if(!r) return;
+    CZ_DRAG=r; r.style.opacity=".4";
+    try{ e.dataTransfer.setData("text/plain", r.dataset.czid); e.dataTransfer.effectAllowed="move"; }catch(_){}
+  });
+  document.addEventListener("dragover",function(e){
+    if(!CZ_DRAG) return;
+    var r=e.target.closest?e.target.closest(".czrow"):null;
+    if(!r||r===CZ_DRAG) return;
+    e.preventDefault();
+    var rect=r.getBoundingClientRect();
+    r.parentElement.insertBefore(CZ_DRAG, (e.clientY-rect.top)<rect.height/2?r:r.nextSibling);
+  });
+  document.addEventListener("drop",function(e){ if(CZ_DRAG) e.preventDefault(); });
+  document.addEventListener("dragend",function(){
+    if(!CZ_DRAG) return;
+    CZ_DRAG.style.opacity="";
+    var vis=[].map.call(document.querySelectorAll("#czOrder .czrow"),function(r){return r.dataset.czid;});
+    if(vis.length){
+      var hidden=czCurrentOrder().filter(function(x){return vis.indexOf(x)<0;});
+      CUSTOM.order=vis.concat(hidden); czPersist(); applyCustom(); drawCustomPane();
+    }
+    CZ_DRAG=null;
   });
   applyCustom();
 
@@ -11165,6 +11248,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
              "What has been sent for approval and where it stands. Anything returned can be corrected and resent from My assignments.");
     document.getElementById("apprH2").innerHTML=
       decider?bi("بانتظار قرارك","Waiting on your decision"):bi("قيد النظر","Under consideration");
+    if(typeof czReapplyHead==="function") czReapplyHead("approvals");
     document.getElementById("apprSub").textContent = decider ? String(q.length) : "";
 
     var cnt=function(kind){ return q.filter(function(r){
