@@ -9407,17 +9407,14 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function ccalMineItems(){
     var map={}, me=(typeof myPerson==="function")?myPerson():null;
     if(!me) return map;
-    // scheduled meetings are organisational: everyone sees them in their calendar
+    // MY meetings only: the ones I prepare, and the ones I scheduled myself.
+    // The whole centre's meetings stay in the year/month views.
+    var meU=(typeof SESSION!=="undefined"&&SESSION)?SESSION.u:"";
     AGENDAS.forEach(function(a){
       if(!a.date) return;
+      if(a.asg!==me.id && a.byId!==meU) return;
       var tm=a.time?" ("+a.time[0]+"–"+a.time[1]+")":"";
       ccalSpan(map,a.date,a.date,{cat:"act", t:"اجتماع: "+a.title+tm, agenda:a});
-    });
-    if(DIRCAL_J && DIRCAL_J.items) DIRCAL_J.items.forEach(function(ev){
-      // the centre calendar's own events, without doubling the agenda-synced ones
-      if(String(ev.title||"").indexOf("اجتماع: ")===0) return;
-      ccalSpan(map,String(ev.start).slice(0,10),String(ev.end||ev.start).slice(0,10),
-        {cat:"act", t:String(ev.title||"")});
     });
     (me.steps||[]).forEach(function(st){
       if(st.due) ccalSpan(map,st.due,st.due,{cat:"lv2", t:"استحقاق: "+(isAr()?st.t[0]:st.t[1])});
@@ -9607,7 +9604,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       stepUp("submit", bi("جدولة اجتماع: ","Scheduling: ")+t.value.trim()+" · "+d, function(){
         var a={id:"AG"+(++AGSEQ), title:t.value.trim(), date:d, time:[f,to],
           items:(document.getElementById("ccm-items")||{}).value||"",
-          by:acct?acct.who:["—","—"],
+          by:acct?acct.who:["—","—"], byId:(typeof SESSION!=="undefined"&&SESSION)?SESSION.u:"",
           asg:selA?selA.value:"", asgName:pA?(isAr()?pA.who[0]:pA.who[1]):""};
         AGENDAS.push(a); agendaLand(a); agendaSyncCal(a);
         t.value=""; document.getElementById("ccm-items").value="";
@@ -9787,6 +9784,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         date:(document.getElementById("ag-date")||{}).value||"",
         items:(document.getElementById("ag-items")||{}).value||"",
         by:(typeof SESSION!=="undefined"&&SESSION&&typeof acctOf==="function"&&acctOf(SESSION.u))?acctOf(SESSION.u).who:["—","—"],
+        byId:(typeof SESSION!=="undefined"&&SESSION)?SESSION.u:"",
         asg:sel?sel.value:"", asgName:pA?(isAr()?pA.who[0]:pA.who[1]):""};
       AGENDAS.push(a); agendaLand(a); agendaSyncCal(a);
       t.value=""; document.getElementById("ag-items").value=""; if(sel) sel.value="";
@@ -10222,9 +10220,13 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         return '<div class="subrow" style="grid-template-columns:minmax(0,1fr) auto auto">'+
           '<span><span class="st2">'+String(it.title||"موجز أسبوعي").slice(0,120)+'</span>'+
             '<span class="sm"><span class="pill p-good">'+bi("موجز أسبوعي","Weekly digest")+'</span>'+
-            ' · '+String(it.note||"").split("##").length+' '+bi("أقسام","sections")+'</span></span>'+
+            ' · '+String(it.note||"").split("##").length+' '+bi("أقسام","sections")+'</span>'+
+            (AI_RVIEW[it.when]?'<span class="sm" style="margin-top:6px">'+aiReportHtml(it)+'</span>':"")+'</span>'+
           '<span class="sw2 tnum">'+String(it.when||"").slice(0,10)+'</span>'+
-          '<span class="acts">'+(done
+          '<span class="acts">'+
+            '<button class="mini" data-airview="'+encodeURIComponent(it.when)+'">'+
+              (AI_RVIEW[it.when]?bi("إخفاء المعاينة","Hide preview"):bi("معاينة","Preview"))+'</button>'+
+            (done
             ? '<span class="pill p-good">'+bi("منشور","Published")+'</span>'
             : (ROLE==="dg"
                ? '<button class="mini yes" data-aidigest="'+encodeURIComponent(JSON.stringify(it))+'">'+bi("نشر الموجز على الصفحات","Publish to the home pages")+'</button>'
@@ -11784,7 +11786,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
 
   // ══ role views: each persona sees only what its scope allows ══
   var ROLE_NAV={
-    dg:    ["cc","master","annual","dept","people","mine","approvals","leave","cpd","ccal","ai","prefs","own"],
+    dg:    ["cc","master","annual","dept","people","mine","approvals","leave","cpd","ccal","coord","ai","prefs","own"],
     dir:   ["dir","master","annual","dept","people","mine","approvals","leave","cpd","ccal","prefs"],
     coord: ["coord","master","annual","people","mine","approvals","leave","cpd","ccal","prefs"],
     staff: ["staffhome","master","annual","mine","approvals","leave","cpd","ccal","prefs"]
