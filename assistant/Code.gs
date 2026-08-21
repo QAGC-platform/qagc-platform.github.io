@@ -274,6 +274,21 @@ function doPost(e) {
       url: ss.getUrl() + '#gid=' + sh.getSheetId() });
   }
 
+  // ── the owner links (or unlinks) her personal calendar, from the platform ──
+  if (fn === 'setDgCal') {
+    const email = String(body.email || '').trim();
+    if (!email) {
+      PROPS.deleteProperty('QAGC_DG_CAL');
+      return json_({ ok: true, cal: '', message: 'أُلغي الربط — يُستخدم تقويم حساب المنصة.' });
+    }
+    if (email.indexOf('@') < 0) return json_({ ok: false, error: 'ليس بريداً صالحاً' });
+    const cal = CalendarApp.getCalendarById(email);
+    if (!cal) return json_({ ok: false,
+      error: 'التقويم غير متاح — هل شاركته المديرة مع حساب المنصة بصلاحية التعديل؟' });
+    PROPS.setProperty('QAGC_DG_CAL', email);
+    return json_({ ok: true, cal: cal.getName(), message: 'رُبط تقويم المديرة العامة.' });
+  }
+
   // ── a coordinator schedules a meeting; it lands in the DG's calendar ──
   if (fn === 'addEvent') {
     const t = String(body.title || '').trim();
