@@ -5121,11 +5121,39 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   function calButtons(ev, small){
     var cls=small?"mini no":"btn";
-    return '<a class="'+cls+'" target="_blank" rel="noopener noreferrer" href="'+gcalLink(ev)+'">'+
-        bi("إضافة إلى Google","Add to Google")+'</a>'+
+    return '<a class="'+cls+'" target="_blank" rel="noopener noreferrer" href="'+gcalLink(ev)+'" title="'+
+        (isAr()?"يضاف إلى تقويم من ينقر عليه هو":"Adds to the clicker's own calendar")+'">'+
+        bi("إلى تقويمي أنا","To my calendar")+'</a>'+
       '<button class="'+cls+'" data-ics="'+encodeURIComponent(JSON.stringify(ev))+'">'+
-        bi("ملف تقويم","Calendar file")+'</button>';
+        bi("ملف تقويم","Calendar file")+'</button>'+
+      ((ROLE==="dg"||ROLE==="coord")
+        ? '<button class="'+cls+'" data-dgcalev="'+encodeURIComponent(JSON.stringify(ev))+'">'+
+          bi("إلى تقويم المديرة العامة","To the DG's calendar")+'</button>'+
+          '<span class="kerr" data-dgcalevmsg></span>'
+        : "");
   }
+  // through the bridge: the event lands in the calendar she shared, on her phone
+  document.addEventListener("click",function(e){
+    var dv=e.target.closest("[data-dgcalev]"); if(!dv) return;
+    var ev=JSON.parse(decodeURIComponent(dv.dataset.dgcalev));
+    var msg=dv.parentElement.querySelector("[data-dgcalevmsg]");
+    var cfg=dgCalCfg();
+    if(!cfg){ if(msg) msg.textContent=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
+    if(msg) msg.textContent=bi("جارٍ الإدراج…","Placing…");
+    var acct=(typeof SESSION!=="undefined"&&SESSION&&typeof acctOf==="function")?acctOf(SESSION.u):null;
+    fetch(cfg.url+"?key="+encodeURIComponent(cfg.key), {method:"POST",
+      body:JSON.stringify({fn:"addEvent", title:ev.title, date:String(ev.start).slice(0,10),
+        from:"09:00", to:"14:00", loc:ev.loc||"", note:(ev.desc||"")+
+          (ev.end&&ev.end!==ev.start?" — حتى "+ev.end:""),
+        who:acct?(isAr()?acct.who[0]:acct.who[1]):""})})
+      .then(function(r){return r.json();})
+      .then(function(j){
+        if(msg) msg.textContent=j.ok
+          ? bi("أُدرج في تقويمها (٩ص–٢م — عدّلي الوقت من التقويم نفسه).","Placed in her calendar (9–14 — adjust the time there).")
+          : bi("رفض: ","Refused: ")+(j.error||"");
+      })
+      .catch(function(){ if(msg) msg.textContent=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
+  });
   async function saveIcs(events, name, btn){
     var text=icsDoc(events);
     var blob=new Blob([text],{type:"text/calendar;charset=utf-8"});
@@ -5407,6 +5435,14 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   // ── the plan and the KPIs as live Google Sheets, through the bridge ──
   var PLAN_TAG_AR={"t-min":"الخطة الخمسية","t-dir":"الخطة السنوية","t-third":"الفئة الثالثة","t-none":""};
   var PENDING_GS={};   // ref -> {tab,url,title,unit,per,base,tgt,dir}: a KPI whose home is a sheet awaiting readings
+  // the plan's sheet, once published, stays one click away across sessions
+  try{
+    var savedPlanSheet=localStorage.getItem("qagcPlanSheet");
+    if(savedPlanSheet){
+      var aPS=document.getElementById("planGsLink");
+      if(aPS){ aPS.href=savedPlanSheet; aPS.hidden=false; }
+    }
+  }catch(_){}
   document.addEventListener("click",function(e){
     if(e.target.closest("#planGs")){
       var err=document.getElementById("docErr");
@@ -5429,6 +5465,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             if(err) err.textContent=bi(j.rows+" هدفاً نُشر.", j.rows+" objectives published.");
             var a=document.getElementById("planGsLink");
             if(a){ a.href=j.url; a.hidden=false; }
+            try{ localStorage.setItem("qagcPlanSheet", j.url); }catch(_){}
           } else if(err) err.textContent=bi("رفض: ","Refused: ")+(j.error||"");
         })
         .catch(function(){ if(err) err.textContent=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
