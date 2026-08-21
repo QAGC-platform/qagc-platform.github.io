@@ -1741,6 +1741,19 @@ html[lang="en"] span[lang="en"]{display:inline}
 #awardsBar .awchip{display:inline-flex;gap:8px;align-items:center;font-weight:700}
 #awardsBar .awmon{margin-inline-start:auto;font-size:var(--t-xs);opacity:.85;font-weight:400}
 #awardsBar .awstar{font-size:1.15em}
+body.editmode .nav button span[lang],
+body.editmode .screen .head h1 span[lang],
+body.editmode .screen .head .eyebrow span[lang]{
+  outline:1.5px dashed var(--warn-ink);outline-offset:3px;border-radius:4px;
+  cursor:text;min-width:24px;display:inline-block}
+body.editmode .nav button span[lang]:focus,
+body.editmode .screen .head h1 span[lang]:focus,
+body.editmode .screen .head .eyebrow span[lang]:focus{
+  outline-style:solid;background:var(--surface-2)}
+#czExit{position:fixed;bottom:18px;inset-inline-start:18px;z-index:400;
+  background:var(--ink);color:var(--paper,#fff);border:none;border-radius:999px;
+  padding:10px 22px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+#czExit[hidden]{display:none}
 .dcm-head{display:flex;gap:10px;align-items:center;margin:8px 0 6px}
 .dcm-head b{font-size:var(--t-sm)}
 .dcm-nav{border:1px solid var(--rule);background:var(--surface-2);border-radius:7px;
@@ -1976,6 +1989,7 @@ html[lang="en"] span[lang="en"]{display:inline}
 
   <main>
     <div id="awardsBar" hidden></div>
+    <button id="czExit" hidden><span lang="ar">انتهيتُ من التحرير — حفظ</span><span lang="en">Done editing — save</span></button>
     <!-- ══════════ COMMAND CENTRE ══════════ -->
     <section class="screen on" id="cc">
       <div class="head">
@@ -2970,10 +2984,13 @@ html[lang="en"] span[lang="en"]{display:inline}
             <div class="fld"><label><span lang="ar">اسم المنصة (إنجليزي)</span><span lang="en">Platform name (English)</span></label>
               <input id="cz-name-en" style="direction:ltr;text-align:start"></div>
           </div>
+          <p class="subh" style="margin-top:var(--sp-4)"><span lang="ar">تحرير العناوين — مباشرة على المنصة</span><span lang="en">Headlines — edited on the platform itself</span></p>
+          <p style="font-size:var(--t-sm);color:var(--ink-3)">
+            <span lang="ar">فعّلي وضع التحرير، ثم انقري أي عنوان شاشة أو سطر تمهيدي أو اسم في اللوحة الجانبية واكتبي مكانه. تنقّلي بين الشاشات بحرّية؛ كل تعديل يُحفظ عند مغادرة النص، وزر الإنهاء يظهر أسفل الشاشة.</span>
+            <span lang="en">Turn the mode on, then click any screen title, eyebrow, or rail label and type over it. Move between screens freely; every edit saves when you leave the text.</span></p>
+          <button class="btn btn-p" id="czEditMode"><span lang="ar">✏️ تفعيل وضع التحرير المباشر</span><span lang="en">✏️ Start direct editing</span></button>
           <p class="subh" style="margin-top:var(--sp-4)"><span lang="ar">ترتيب اللوحة الجانبية</span><span lang="en">Rail order</span></p>
           <div id="czOrder" style="display:flex;flex-direction:column;gap:4px"></div>
-          <p class="subh" style="margin-top:var(--sp-4)"><span lang="ar">عناوين الشاشات</span><span lang="en">Screen headlines</span></p>
-          <div id="czHeads"></div>
           <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
             <button class="btn btn-p" id="czSave"><span lang="ar">حفظ التخصيص</span><span lang="en">Save</span></button>
             <button class="btn" id="czReset"><span lang="ar">استعادة الافتراضي</span><span lang="en">Reset to default</span></button>
@@ -8635,11 +8652,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var o=CZ_ORIG.heads[id], c=CUSTOM.heads[id]||{};
       var sec=document.getElementById(id);
       var b=document.querySelector('.nav button[data-go="'+id+'"]');
-      var title=c.t||o.t, eye=c.e||o.e;
-      if(b && title) czSetSpans(b, title);       // the rail follows the headline
+      // each text is its own: the rail label, the title and the eyebrow edit independently
+      if(b) czSetSpans(b, c.rail||o.rail);
       if(sec){
-        if(title) czSetSpans(sec.querySelector(".head h1"), title);
-        if(eye) czSetSpans(sec.querySelector(".head .eyebrow"), eye);
+        if(o.t) czSetSpans(sec.querySelector(".head h1"), c.t||o.t);
+        if(o.e) czSetSpans(sec.querySelector(".head .eyebrow"), c.e||o.e);
       }
     });
     if(CUSTOM.order){
@@ -8656,60 +8673,90 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function czCurrentOrder(){
     return [].slice.call(document.querySelectorAll(".nav button")).map(function(b){return b.dataset.go;});
   }
+  function czVisibleOrder(){
+    // only what this owner's rail actually shows — no ghost screens in the list
+    return [].slice.call(document.querySelectorAll(".nav button"))
+      .filter(function(b){return !b.hidden;}).map(function(b){return b.dataset.go;});
+  }
+  // ── direct editing: the words change where they live ──
+  var EDITMODE=false;
+  function czEditTargets(){
+    return [].slice.call(document.querySelectorAll(
+      '.nav button span[lang], .screen .head h1 span[lang], .screen .head .eyebrow span[lang]'));
+  }
+  function czSetEditMode(on){
+    EDITMODE=on;
+    document.body.classList.toggle("editmode",on);
+    var x=document.getElementById("czExit"); if(x) x.hidden=!on;
+    czEditTargets().forEach(function(sp){
+      if(on) sp.setAttribute("contenteditable","true");
+      else sp.removeAttribute("contenteditable");
+    });
+  }
+  function czCommit(sp){
+    var lang=sp.getAttribute("lang")==="en"?1:0;
+    var b=sp.closest(".nav button");
+    var id, field, host;
+    if(b){ id=b.dataset.go; field="rail"; }
+    else{
+      var sec=sp.closest(".screen"); if(!sec) return;
+      id=sec.id;
+      field=sp.closest("h1")?"t":sp.closest(".eyebrow")?"e":null;
+      if(!field) return;
+    }
+    var o=CZ_ORIG.heads[id]; if(!o||!o[field]) return;
+    CUSTOM.heads[id]=CUSTOM.heads[id]||{};
+    var cur=CUSTOM.heads[id][field]||o[field].slice();
+    cur[lang]=sp.textContent.trim()||o[field][lang];
+    sp.textContent=cur[lang];
+    if(cur[0]===o[field][0]&&cur[1]===o[field][1]) delete CUSTOM.heads[id][field];
+    else CUSTOM.heads[id][field]=cur;
+    if(!Object.keys(CUSTOM.heads[id]).length) delete CUSTOM.heads[id];
+    czPersist();
+  }
+  document.addEventListener("blur",function(e){
+    if(!EDITMODE) return;
+    var sp=e.target.closest?e.target.closest('span[lang][contenteditable]'):null;
+    if(sp) czCommit(sp);
+  },true);
+  document.addEventListener("keydown",function(e){
+    if(EDITMODE && e.key==="Enter" && e.target.closest && e.target.closest('span[lang][contenteditable]')){
+      e.preventDefault(); e.target.blur();
+    }
+  });
   function drawCustomPane(){
     czSnapshot();
     var na=document.getElementById("cz-name-ar"); if(!na) return;
     var name=CUSTOM.name||CZ_ORIG.name;
     na.value=name[0]; document.getElementById("cz-name-en").value=name[1];
     var ord=document.getElementById("czOrder");
-    ord.innerHTML=czCurrentOrder().map(function(id,i,arr){
-      var lab=(CUSTOM.heads[id]&&CUSTOM.heads[id].t)||CZ_ORIG.heads[id].t||CZ_ORIG.heads[id].rail;
+    ord.innerHTML=czVisibleOrder().map(function(id,i,arr){
+      var o=CZ_ORIG.heads[id]||{}, c=CUSTOM.heads[id]||{};
+      var lab=c.rail||o.rail||["",""];
       return '<div style="display:flex;gap:8px;align-items:center;border:1px solid var(--rule);border-radius:8px;padding:5px 10px">'+
         '<span style="flex:1;font-size:var(--t-sm)">'+bi(lab[0],lab[1])+'</span>'+
         '<button class="mini" data-czup="'+id+'"'+(i===0?' disabled style="opacity:.3"':'')+'>↑</button>'+
         '<button class="mini" data-czdn="'+id+'"'+(i===arr.length-1?' disabled style="opacity:.3"':'')+'>↓</button></div>';
-    }).join("");
-    var hd=document.getElementById("czHeads");
-    hd.innerHTML=Object.keys(CZ_ORIG.heads).filter(function(id){return CZ_ORIG.heads[id].t;}).map(function(id){
-      var o=CZ_ORIG.heads[id], c=CUSTOM.heads[id]||{};
-      var t=c.t||o.t, e=c.e||o.e||["",""];
-      return '<div style="border:1px solid var(--rule);border-radius:10px;padding:10px;margin-top:8px">'+
-        '<div class="kform">'+
-        '<span class="fld"><label>'+bi("العنوان (عربي)","Title (Arabic)")+'</label>'+
-          '<input data-czt="'+id+':t:0" value="'+t[0].replace(/"/g,"&quot;")+'"></span>'+
-        '<span class="fld"><label>'+bi("العنوان (إنجليزي)","Title (English)")+'</label>'+
-          '<input data-czt="'+id+':t:1" value="'+t[1].replace(/"/g,"&quot;")+'" style="direction:ltr;text-align:start"></span>'+
-        '<span class="fld"><label>'+bi("السطر التمهيدي (عربي)","Eyebrow (Arabic)")+'</label>'+
-          '<input data-czt="'+id+':e:0" value="'+e[0].replace(/"/g,"&quot;")+'"></span>'+
-        '<span class="fld"><label>'+bi("السطر التمهيدي (إنجليزي)","Eyebrow (English)")+'</label>'+
-          '<input data-czt="'+id+':e:1" value="'+e[1].replace(/"/g,"&quot;")+'" style="direction:ltr;text-align:start"></span>'+
-        '</div></div>';
     }).join("");
   }
   document.addEventListener("click",function(e){
     var up=e.target.closest("[data-czup]"), dn=e.target.closest("[data-czdn]");
     if(up||dn){
       var id=(up||dn).dataset.czup||(up||dn).dataset.czdn;
-      var order=czCurrentOrder(), i=order.indexOf(id);
-      var j=up? i-1 : i+1;
-      if(j<0||j>=order.length) return;
-      order.splice(i,1); order.splice(j,0,id);
-      CUSTOM.order=order; czPersist(); applyCustom(); drawCustomPane(); return;
+      // the move happens among the visible items; hidden screens keep out of the way
+      var vis=czVisibleOrder(), vi=vis.indexOf(id);
+      var vj=up? vi-1 : vi+1;
+      if(vj<0||vj>=vis.length) return;
+      vis.splice(vi,1); vis.splice(vj,0,id);
+      var hidden=czCurrentOrder().filter(function(x){return vis.indexOf(x)<0;});
+      CUSTOM.order=vis.concat(hidden); czPersist(); applyCustom(); drawCustomPane(); return;
     }
+    if(e.target.closest("#czEditMode")){ czSetEditMode(true); return; }
+    if(e.target.closest("#czExit")){ czSetEditMode(false); flashSaved("czSaved"); drawCustomPane(); return; }
     if(e.target.closest("#czSave")){
       var nar=(document.getElementById("cz-name-ar")||{}).value||"";
       var nen=(document.getElementById("cz-name-en")||{}).value||"";
       CUSTOM.name=(nar.trim()||nen.trim())?[nar.trim()||nen.trim(), nen.trim()||nar.trim()]:null;
-      document.querySelectorAll("[data-czt]").forEach(function(inp){
-        var q=inp.dataset.czt.split(":"), id=q[0], f=q[1], ix=+q[2];
-        var o=CZ_ORIG.heads[id]; if(!o||!o[f]) return;
-        CUSTOM.heads[id]=CUSTOM.heads[id]||{};
-        var cur=CUSTOM.heads[id][f]||o[f].slice();
-        cur[ix]=inp.value;
-        // store only real changes, so the defaults stay the defaults
-        CUSTOM.heads[id][f]=(cur[0]===o[f][0]&&cur[1]===o[f][1])?undefined:cur;
-        if(!CUSTOM.heads[id].t&&!CUSTOM.heads[id].e) delete CUSTOM.heads[id];
-      });
       czPersist(); applyCustom(); flashSaved("czSaved"); return;
     }
     if(e.target.closest("#czReset")){
