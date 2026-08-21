@@ -10027,6 +10027,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   function openApp(a){
     SESSION=a; ROLE=a.role;
+    try{ localStorage.setItem("qagcSession", a.u); }catch(_){}
     var sel=document.getElementById("roleSel"); if(sel) sel.value=a.role;
     document.getElementById("gate").classList.add("done");
     applyRole();
@@ -10075,6 +10076,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   function signOut(){
     SESSION=null;
+    try{ localStorage.removeItem("qagcSession"); }catch(_){}
     document.getElementById("gate").classList.remove("done");
     document.getElementById("gi-user").value=""; document.getElementById("gi-pass").value="";
     gateMsg("ok", bi("انتهت الجلسة.","Signed out."));
@@ -10636,6 +10638,17 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   applyRole();
   gateFoot(); drawAccounts(); drawInvites();
+
+  // a refresh keeps the signed-in account on this device; sign-out ends it.
+  // (Demo-grade: the built platform restores a server-side session token instead.)
+  try{
+    var savedU=localStorage.getItem("qagcSession");
+    if(savedU && !SESSION){
+      var savedA=acctOf(savedU);
+      if(savedA && savedA.active && !savedA.must){ gateMsg("",""); openApp(savedA); }
+      else localStorage.removeItem("qagcSession");
+    }
+  }catch(_){}
 
   document.getElementById("lang").addEventListener("click", function(){
     var ar = document.documentElement.lang === "ar";
