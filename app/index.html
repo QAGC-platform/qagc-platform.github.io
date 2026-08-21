@@ -2030,6 +2030,14 @@ html[lang="en"] span[lang="en"]{display:inline}
             <input id="no-desc" placeholder="بحلول … اعتماد وتفعيل …"></span>
           <span class="fld"><label><span lang="ar">مؤشر الأداء</span><span lang="en">KPI</span></label>
             <input id="no-kpi" placeholder="نسبة …"></span>
+          <span class="fld"><label><span lang="ar">نوع المؤشر</span><span lang="en">KPI type</span></label>
+            <select id="no-ktype"><option value="نسبة مئوية">نسبة مئوية · Percentage</option>
+              <option value="عدد">عدد · Count</option>
+              <option value="معدل">معدل · Rate</option>
+              <option value="درجة">درجة · Score</option>
+              <option value="مدة">مدة · Duration</option></select></span>
+          <span class="fld"><label><span lang="ar">الرقم الحالي</span><span lang="en">Current figure</span></label>
+            <input id="no-kbase" placeholder="45%"></span>
           <span class="fld"><label><span lang="ar">المستهدف</span><span lang="en">Target</span></label>
             <input id="no-target" placeholder="80%"></span>
           <span class="fld" style="align-self:end"><button class="btn" id="noKpiAdd" type="button"><span lang="ar">＋ مؤشر آخر</span><span lang="en">＋ Another KPI</span></button></span>
@@ -3903,7 +3911,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function renderNoKpis(){
     var h=document.getElementById("noKpiList"); if(!h) return;
     h.innerHTML=NO_KPIS.map(function(k,i){
-      return '<span class="pill p-neutral" style="gap:6px">'+k.name+(k.target?' — '+k.target:'')+
+      return '<span class="pill p-neutral" style="gap:6px">'+k.name+
+        (k.ktype?' · '+k.ktype:'')+(k.base?' · '+(isAr()?"الحالي ":"now ")+k.base:'')+(k.target?' ← '+k.target:'')+
         ' <button class="mini no" data-nokdel="'+i+'" style="padding:0 6px">×</button></span>';
     }).join("");
   }
@@ -3911,8 +3920,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(e.target.closest("#noKpiAdd")){
       var ki=document.getElementById("no-kpi"), kt=document.getElementById("no-target");
       if(!ki.value.trim()){ ki.focus(); return; }
-      NO_KPIS.push({name:ki.value.trim(), target:kt.value.trim()});
-      ki.value=""; kt.value=""; renderNoKpis(); ki.focus(); return;
+      NO_KPIS.push({name:ki.value.trim(), target:kt.value.trim(),
+        ktype:(document.getElementById("no-ktype")||{}).value||"",
+        base:(document.getElementById("no-kbase")||{}).value||""});
+      ki.value=""; kt.value=""; document.getElementById("no-kbase").value="";
+      renderNoKpis(); ki.focus(); return;
     }
     var nkd=e.target.closest("[data-nokdel]");
     if(nkd){ NO_KPIS.splice(+nkd.dataset.nokdel,1); renderNoKpis(); return; }
@@ -3955,7 +3967,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         var desc=(document.getElementById("no-desc")||{}).value||"";
         var kpis=NO_KPIS.slice();
         var ki=(document.getElementById("no-kpi")||{}).value||"", kt=(document.getElementById("no-target")||{}).value||"";
-        if(ki.trim()) kpis.push({name:ki.trim(), target:kt.trim()});
+        if(ki.trim()) kpis.push({name:ki.trim(), target:kt.trim(),
+          ktype:(document.getElementById("no-ktype")||{}).value||"",
+          base:(document.getElementById("no-kbase")||{}).value||""});
         var dueTo=(document.getElementById("no-to")||{}).value||"2027-12-31";
         var draft={ r:ref, l:lvl, t:title, d:desc,
           k:kpis.map(function(x){return x.name;}).join("، "),
@@ -3984,6 +3998,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           var comps=[{ct:"obj", title:title, smart:(mode==="smart"?desc:""), due:dueTo,
                       state:"pending", note:"", applied:false}];
           kpis.forEach(function(x){ comps.push({ct:"kpi", title:x.name, target:x.target||"",
+                      ktype:x.ktype||"", base:x.base||"",
                       unit:"", state:"pending", note:"", applied:false}); });
           planPhases.forEach(function(phse){ comps.push({ct:"ph", title:phse.ph,
                       steps:phse.steps.slice(), state:"pending", note:"", applied:false}); });
@@ -5202,6 +5217,17 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       '<textarea class="pastebox" data-paste="'+ref+'" rows="3" placeholder="'+
         (isAr()?"يناير\t42\nفبراير\t48":"Jan\t42\nFeb\t48")+'"></textarea>'+
       '</div>';
+    var pg=PENDING_GS[ref];
+    h+='<div class="tplrow" style="border-color:var(--good-ink)"><span>'+
+        (pg? bi("الورقة جاهزة — أضيفي القراءات في Sheets ثم اسحبيها إلى هنا.",
+                "The sheet is ready — add readings in Sheets, then pull them here.")
+           : bi("أو أنشئ المؤشر في Google Sheets نفسها: تُفتح ورقة باسمه يضيف فيها القسم قراءاته، والمنصة تسحبها.",
+                "Or create the KPI in Google Sheets itself: a tab opens under its name, the team adds readings there, and the platform pulls them."))+
+      '</span>'+
+      (pg? '<a class="btn" href="'+pg.url+'" target="_blank" rel="noopener" style="text-decoration:none">'+bi("فتح الورقة ↗","Open ↗")+'</a>'+
+           '<button class="btn btn-p" data-kgspull="'+ref+'">'+bi("سحب القراءات من Sheets","Pull the readings")+'</button>'
+         : '<button class="btn" data-kgsnew="'+ref+'">'+bi("إنشاء المؤشر في Google Sheets","Create the KPI in Google Sheets")+'</button>')+
+      '<span class="kerr" id="kgserr-'+ref+'"></span></div>';
     h+='<div class="tplrow"><span>'+
         bi("لتفادي اختلاف الجداول بين الأقسام: نزّل نموذجاً يصدره النظام لهذا المؤشر، ثم أعده مملوءاً.",
            "So departments do not each send a differently shaped sheet: download a template the system issues for this KPI, then return it filled.")+
@@ -5360,9 +5386,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     // no Content-Type header on purpose: text/plain avoids the preflight GAS cannot answer
     fetch(url+"?key="+encodeURIComponent(key), {method:"POST",
       body:JSON.stringify({fn:"askAnalysis", kpi:k.title,
-        question:"حلّلي هذا المؤشر: الاتجاه، الوتيرة، احتمال بلوغ المستهدف، وتوصية عملية واحدة.",
-        data:JSON.stringify({labels:k.labels, values:k.values, unit:k.unit||"",
-          target:(st2&&st2.target!=null)?st2.target:null, dir:k.dir||"up", period:k.period||""})})})
+        question:"حلّلي الورقة المرفوعة لهذا المؤشر: الاتجاه، الوتيرة، القراءات الشاذة، ملاحظات الأعمدة، احتمال بلوغ المستهدف، وتوصية عملية واحدة.",
+        data:JSON.stringify({labels:k.labels, values:k.values, notes:k.notes||[],
+          unit:k.unit||"", src:k.src||"", period:k.period||"",
+          base:(k.base!=null&&!isNaN(k.base))?k.base:null,
+          target:(st2&&st2.target!=null)?st2.target:null, dir:k.dir||"up",
+          edits:k.edits||0})})})
       .then(function(r){return r.json();})
       .then(function(j){
         if(err) err.textContent = j.ok
@@ -5377,6 +5406,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   });
   // ── the plan and the KPIs as live Google Sheets, through the bridge ──
   var PLAN_TAG_AR={"t-min":"الخطة الخمسية","t-dir":"الخطة السنوية","t-third":"الفئة الثالثة","t-none":""};
+  var PENDING_GS={};   // ref -> {tab,url,title,unit,per,base,tgt,dir}: a KPI whose home is a sheet awaiting readings
   document.addEventListener("click",function(e){
     if(e.target.closest("#planGs")){
       var err=document.getElementById("docErr");
@@ -5402,6 +5432,67 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           } else if(err) err.textContent=bi("رفض: ","Refused: ")+(j.error||"");
         })
         .catch(function(){ if(err) err.textContent=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
+      return;
+    }
+    var kn2=e.target.closest("[data-kgsnew]");
+    if(kn2){
+      var refN=kn2.dataset.kgsnew;
+      var errN=document.getElementById("kgserr-"+refN);
+      var titleN=(document.getElementById("kf-title-"+refN)||{}).value||"";
+      if(!titleN.trim()){
+        var tiN=document.getElementById("kf-title-"+refN);
+        if(tiN) tiN.focus();
+        if(errN) errN.textContent=bi("اكتبي عنوان المؤشر أولاً.","Give the KPI a title first."); return;
+      }
+      var cfgN=dgCalCfg();
+      if(!cfgN){ if(errN) errN.textContent=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
+      if(errN) errN.textContent=bi("جارٍ إنشاء الورقة…","Creating…");
+      var tgtN=parseFloat((document.getElementById("kf-tgt-"+refN)||{}).value);
+      fetch(cfgN.url+"?key="+encodeURIComponent(cfgN.key), {method:"POST",
+        body:JSON.stringify({fn:"kpiSheet", title:titleN.trim(),
+          unit:(document.getElementById("kf-unit-"+refN)||{}).value||"",
+          target:isNaN(tgtN)?null:tgtN, labels:[], values:[], notes:[]})})
+        .then(function(r){return r.json();})
+        .then(function(j){
+          if(j.ok){
+            PENDING_GS[refN]={tab:j.tab, url:j.url, title:titleN.trim(),
+              unit:(document.getElementById("kf-unit-"+refN)||{}).value||"",
+              per:(document.getElementById("kf-per-"+refN)||{}).value||"",
+              base:(document.getElementById("kf-base-"+refN)||{}).value||"",
+              tgt:(document.getElementById("kf-tgt-"+refN)||{}).value||"",
+              dir:(document.getElementById("kf-dir-"+refN)||{}).value||"up"};
+            refreshKpiPane(refN);
+            window.open(j.url,"_blank");
+          } else if(errN) errN.textContent=bi("رفض: ","Refused: ")+(j.error||"");
+        })
+        .catch(function(){ if(errN) errN.textContent=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
+      return;
+    }
+    var kp2=e.target.closest("[data-kgspull]");
+    if(kp2){
+      var refP=kp2.dataset.kgspull, pgP=PENDING_GS[refP]; if(!pgP) return;
+      var errP=document.getElementById("kgserr-"+refP);
+      var cfgP=dgCalCfg();
+      if(!cfgP){ if(errP) errP.textContent=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
+      if(errP) errP.textContent=bi("جارٍ السحب…","Pulling…");
+      fetch(cfgP.url+"?key="+encodeURIComponent(cfgP.key)+"&fn=readKpi&tab="+encodeURIComponent(pgP.tab))
+        .then(function(r){return r.json();})
+        .then(function(j){
+          if(j.ok && j.labels && j.labels.length){
+            EXTRA[refP]=EXTRA[refP]||[];
+            var subP=submitFor("kpi", refP, [pgP.title,pgP.title],
+              {under:"", per:pgP.per, unit:pgP.unit, src:"Google Sheets", n:j.labels.length});
+            EXTRA[refP].push({title:pgP.title, period:pgP.per, unit:pgP.unit, graph:"line",
+              labels:j.labels, values:j.values, notes:j.notes,
+              src:"Google Sheets", base:parseFloat(pgP.base), target:parseFloat(pgP.tgt),
+              dir:pgP.dir, sub:subP.id, gs:{tab:pgP.tab, url:pgP.url}});
+            delete PENDING_GS[refP];
+            refreshKpiPane(refP); afterSubmit();
+          } else if(errP) errP.textContent=j.ok
+            ? bi("الورقة فارغة — أضيفي قراءات في Sheets أولاً.","The sheet is empty — add readings in Sheets first.")
+            : bi("رفض: ","Refused: ")+(j.error||"");
+        })
+        .catch(function(){ if(errP) errP.textContent=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
       return;
     }
     var kg=e.target.closest("[data-kgs]");
@@ -8221,7 +8312,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         '<span class="acts">'+(done
           ? '<span class="pill p-good">'+bi("أُدرجت","Taken in")+'</span>'
           : (ROLE==="dg"
-             ? '<button class="mini yes" data-aiimport="'+encodeURIComponent(JSON.stringify(it))+'">'+bi("إدراج في الاعتمادات","Take into Approvals")+'</button>'
+             ? '<button class="mini yes" data-aiimport="'+encodeURIComponent(JSON.stringify(it))+'">'+bi("إدراج في الاعتمادات","Take into Approvals")+'</button>'+
+               '<button class="mini" data-aicpd="'+encodeURIComponent(JSON.stringify(it))+'" title="'+
+                 (isAr()?"إن كان نشاط تطوير مهني وصل مصنَّفاً كمهمة":"If this is a CPD activity that arrived classified as a task")+'">'+
+                 bi("بل على لوحة CPD","To the CPD board instead")+'</button>'
              : '<span class="pill p-warn">'+bi("بانتظار القرار","Pending")+'</span>'))+'</span>'+
       '</div>';
     }).join("");
@@ -8623,6 +8717,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var det=[];
       if(c.ct==="obj") det.push(c.smart? "SMART: "+String(c.smart).slice(0,140) : bi("بصيغة مهمة مباشرة","Written as a plain task"));
       if(c.ct==="obj"&&c.due) det.push(bi("الاستحقاق ","due ")+c.due);
+      if(c.ct==="kpi"&&c.ktype) det.push(c.ktype);
+      if(c.ct==="kpi"&&c.base) det.push(bi("الحالي ","now ")+c.base);
       if(c.ct==="kpi"&&c.target) det.push(bi("المستهدف ","target ")+c.target+(c.unit?" "+c.unit:""));
       if(c.ct==="bud") det.push((+c.amt).toLocaleString("en")+" "+bi("ر.ع","OMR"));
       var stepLines=c.ct==="ph"&&c.steps&&c.steps.length
