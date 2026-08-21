@@ -8861,6 +8861,21 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   var DIRSEQ=1;
   var QPLAN=[ {id:"Q1", t:"برنامج قيادات الجودة — دفعة أولى", when:"2027", note:"بالشراكة مع المعهد الوطني"} ];
   var QSEQ=1;
+  // the direct line: people of the governance directorate answer to its
+  // director's account; everyone else's line manager account is the DG
+  // (their directors have no sign-ins in the demo)
+  var DIR_ACCT_DIR="دائرة الحوكمة ومعايير الجودة وتطوير الخدمات";
+  function pdpManagedBy(p){
+    if(!p) return "dg";
+    if(p.id==="m4") return "dg";                       // the assistant director answers to the DG
+    return p.dir && p.dir[0]===DIR_ACCT_DIR ? "dir" : "dg";
+  }
+  function pdpTeamOf(){
+    var me=(typeof myPerson==="function")?myPerson():null;
+    if(ROLE==="dir") return STAFF.filter(function(p){return p.id!==(me&&me.id) && pdpManagedBy(p)==="dir";});
+    if(ROLE==="dg") return STAFF.filter(function(p){return p.id!=="dg0" && pdpManagedBy(p)==="dg";});
+    return [];
+  }
   var PDP_STATUS={
     requested:{p:"p-warn", l:["بانتظار المديرة العامة","Awaiting the DG"]},
     approved:{p:"p-good", l:["معتمدة","Approved"]},
@@ -8875,45 +8890,58 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var bMe=document.querySelector('[data-cpdtab="me"]');
     if(bMe) czSetSpans(bMe, dg?["الخطط الشخصية — إشراف","Personal plans — oversight"]:["خطتي التطويرية","My development plan"]);
   }
-  function pdpItemRow(pid,it,dgView){
+  function pdpItemRow(pid,it,opts){
+    opts=opts||{};
     var st=PDP_STATUS[it.status]||PDP_STATUS.requested;
     return '<div class="subrow" style="grid-template-columns:minmax(0,1fr) auto">'+
       '<span><span class="st2">'+it.t+'</span>'+
         '<span class="sm">'+it.kind+(it.when?' · <span class="tnum">'+it.when+'</span>':'')+
-        (it.note?' · '+it.note:'')+'</span>'+
-        (it.comment?'<span class="retnote"><b>'+bi("تعليق المديرة العامة: ","DG's comment: ")+'</b>'+it.comment+'</span>':"")+
+        (it.note?' · '+it.note:'')+
+        (it.by==="mgr"?' · <span class="pill p-neutral">'+bi("أضافها الرئيس المباشر","Added by the line manager")+'</span>':'')+'</span>'+
+        (it.comment?'<span class="retnote"><b>'+bi("تعليق الإدارة: ","Management comment: ")+'</b>'+it.comment+'</span>':"")+
       '</span>'+
       '<span class="acts">'+
-      (dgView && it.status==="requested"
+      (opts.decide && it.status==="requested"
         ? '<button class="mini yes" data-pdpdec="'+pid+':'+it.id+':v">'+bi("اعتماد","Approve")+'</button>'+
           '<button class="mini ret" data-pdpdec="'+pid+':'+it.id+':r">'+bi("إعادة بملاحظة","Return")+'</button>'
         : '<span class="pill '+st.p+'">'+bi(st.l[0],st.l[1])+'</span>')+
-      (dgView?'<button class="mini" data-pdpcmt="'+pid+':'+it.id+'">'+bi("تعليق","Comment")+'</button>':"")+
+      (opts.comment?'<button class="mini" data-pdpcmt="'+pid+':'+it.id+'">'+bi("تعليق","Comment")+'</button>':"")+
       '</span></div>';
+  }
+  function pdpMgrForm(team,title){
+    return '<div class="asnform" style="margin-top:var(--sp-3)">'+
+      '<div style="font-size:var(--t-sm);font-weight:700">'+title+'</div>'+
+      '<div class="kform">'+
+        '<span class="fld"><label>'+bi("الموظف","Employee")+'</label><select id="pdpm-p" class="fld-sel">'+
+          team.map(function(p){return '<option value="'+p.id+'">'+bi(p.who[0],p.who[1])+'</option>';}).join("")+'</select></span>'+
+        '<span class="fld" style="grid-column:span 2"><label>'+bi("العنصر","Item")+'</label><input id="pdpm-t" placeholder="دورة، ورشة، مهمة تعلّم…"></span>'+
+        '<span class="fld"><label>'+bi("النوع","Kind")+'</label><select id="pdpm-k" class="fld-sel"><option>دورة</option><option>ورشة</option><option>مؤتمر</option><option>شهادة مهنية</option><option>تكليف تطويري</option></select></span>'+
+        '<span class="fld"><label>'+bi("التوقيت","Timing")+'</label><input id="pdpm-w" placeholder="2027-06"></span>'+
+        '<span class="fld"><label>'+bi("ملاحظة","Note")+'</label><input id="pdpm-n"></span>'+
+      '</div>'+
+      '<div style="margin-top:var(--sp-2)"><button class="btn btn-p" id="pdpMgrAdd">'+bi("إضافة إلى خطته","Add to their plan")+'</button>'+
+      '<span class="kerr" id="pdpmErr"></span></div></div>';
+  }
+  function pdpTeamSection(decider){
+    var team=pdpTeamOf();
+    var withItems=team.filter(function(p){return (PDP[p.id]||[]).length;});
+    return '<p class="subh" style="margin-top:var(--sp-4)">'+bi("خطط فريقي — القرار عندي","My team's plans — the decision sits here")+
+      ' <span class="cnt">'+withItems.length+'</span></p>'+
+      (withItems.length? withItems.map(function(p){
+        return '<p class="subh" style="font-size:var(--t-xs)">'+bi(p.who[0],p.who[1])+'</p>'+
+          PDP[p.id].map(function(it){return pdpItemRow(p.id,it,{decide:true,comment:true});}).join("");
+      }).join("") : '<div class="subempty">'+bi("لا خطط ولا طلبات من الفريق بعد.","Nothing from the team yet.")+'</div>')+
+      pdpMgrForm(team, bi("إنشاء عنصر في خطة موظف","Create an item in an employee's plan"));
   }
   function drawPdp(){
     var dg=(ROLE==="dg");
     var me=(typeof myPerson==="function")?myPerson():null;
-    // ── the personal pane ──
+    // ── the personal pane: my plan, and — for line managers — the team's ──
     var hMe=document.getElementById("cpd-me");
     if(hMe){
-      if(dg){
-        var withPlans=STAFF.filter(function(p){return (PDP[p.id]||[]).length;});
-        hMe.innerHTML='<div class="card"><div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span><div>'+
-          '<span class="ceye">'+bi("كل موظف وخطته","Every person and their plan")+'</span>'+
-          '<h2>'+bi("الخطط الشخصية — إشراف المديرة العامة","Personal plans — DG oversight")+'</h2></div></div></div>'+
-          (withPlans.length? withPlans.map(function(p){
-            return '<p class="subh">'+bi(p.who[0],p.who[1])+' <span class="cnt">'+PDP[p.id].length+'</span></p>'+
-              PDP[p.id].map(function(it){return pdpItemRow(p.id,it,true);}).join("");
-          }).join("") : '<div class="subempty">'+bi("لا خطط شخصية بعد.","No personal plans yet.")+'</div>')+'</div>';
-      } else {
-        var mine=me?(PDP[me.id]||[]):[];
-        hMe.innerHTML='<div class="card"><div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span><div>'+
-          '<span class="ceye">'+bi("ما أتعلّمه هذا العام","What I learn this year")+'</span>'+
-          '<h2>'+bi("خطتي التطويرية","My development plan")+'</h2></div></div></div>'+
-          (mine.length? mine.map(function(it){return pdpItemRow(me.id,it,false);}).join("")
-            : '<div class="subempty">'+bi("لا عناصر بعد — اطلبي دورتك الأولى أدناه.","Nothing yet — request your first course below.")+'</div>')+
-          '<div class="asnform" style="margin-top:var(--sp-3)">'+
+      var mine=me?(PDP[me.id]||[]):[];
+      var myForm=(!dg)
+        ? '<div class="asnform" style="margin-top:var(--sp-3)">'+
           '<div style="font-size:var(--t-sm);font-weight:700">'+bi("طلب دورة أو نشاط تدريبي","Request a course")+'</div>'+
           '<div class="kform">'+
             '<span class="fld" style="grid-column:1/-1"><label>'+bi("العنوان","Title")+'</label><input id="pdp-t" placeholder="دورة إدارة المخاطر"></span>'+
@@ -8921,9 +8949,32 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             '<span class="fld"><label>'+bi("الموعد المفضّل","Preferred timing")+'</label><input id="pdp-w" placeholder="2027-04"></span>'+
             '<span class="fld" style="grid-column:1/-1"><label>'+bi("المسوّغ","Why")+'</label><input id="pdp-n" placeholder="علاقتها بمهامي وأهداف القسم"></span>'+
           '</div>'+
-          '<div style="margin-top:var(--sp-2)"><button class="btn btn-p" id="pdpAsk">'+bi("إرسال الطلب للمديرة العامة","Send to the DG")+'</button>'+
-          '<span class="kerr" id="pdpErr"></span></div></div>';
+          '<div style="margin-top:var(--sp-2)"><button class="btn btn-p" id="pdpAsk">'+bi("إرسال الطلب لرئيسي المباشر","Send to my line manager")+'</button>'+
+          '<span class="kerr" id="pdpErr"></span></div></div>'
+        : "";
+      var myBlock=(!dg)
+        ? (mine.length? mine.map(function(it){return pdpItemRow(me.id,it,{});}).join("")
+            : '<div class="subempty">'+bi("لا عناصر بعد — اطلب دورتك الأولى أدناه.","Nothing yet — request your first course below.")+'</div>')+myForm
+        : "";
+      var teamBlock=(dg||ROLE==="dir")? pdpTeamSection() : "";
+      // the DG additionally reads everyone, commenting where the decision is not hers
+      var othersBlock="";
+      if(dg){
+        var others=STAFF.filter(function(p){return pdpManagedBy(p)!=="dg" && (PDP[p.id]||[]).length;});
+        othersBlock='<p class="subh" style="margin-top:var(--sp-4)">'+bi("بقية الخطط — القرار لرؤسائهم، والتعليق لي","The rest — their managers decide; I comment")+'</p>'+
+          (others.length? others.map(function(p){
+            return '<p class="subh" style="font-size:var(--t-xs)">'+bi(p.who[0],p.who[1])+'</p>'+
+              PDP[p.id].map(function(it){return pdpItemRow(p.id,it,{comment:true});}).join("");
+          }).join("") : '<div class="subempty">'+bi("لا شيء بعد.","Nothing yet.")+'</div>');
       }
+      hMe.innerHTML='<div class="card"><div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span><div>'+
+        '<span class="ceye">'+(dg?bi("القرار عند الرئيس المباشر، والإشراف هنا","Line managers decide; oversight lives here")
+          :ROLE==="dir"?bi("خطتي، وخطط من يعملون معي","Mine, and my team's")
+          :bi("ما أتعلّمه هذا العام","What I learn this year"))+'</span>'+
+        '<h2>'+(dg?bi("الخطط الشخصية — الإشراف العام","Personal plans — oversight")
+          :ROLE==="dir"?bi("خطتي وفريقي","My plan and my team's")
+          :bi("خطتي التطويرية","My development plan"))+'</h2></div></div></div>'+
+        myBlock+teamBlock+othersBlock+'</div>';
     }
     // ── the directorate pane ──
     var hDir=document.getElementById("cpd-dir");
@@ -9000,7 +9051,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           status:"requested", comment:""});
         drawPdp();
         var e2=document.getElementById("pdpErr");
-        if(e2) e2.innerHTML=bi("أُرسل الطلب — يظهر للمديرة العامة في تبويب الإشراف.","Sent — the DG sees it in the oversight tab.");
+        if(e2) e2.innerHTML=bi("أُرسل الطلب — يقرّره رئيسك المباشر، وتطّلع عليه المديرة العامة.",
+                               "Sent — your line manager decides; the DG can see it.");
       });
       return;
     }
@@ -9013,6 +9065,23 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         it.status=act==="v"?"approved":"returned";
         if(act!=="v" && !it.comment) it.comment=isAr()?"يُرجى مراجعة التوقيت أو المسوّغ.":"Please revisit the timing or rationale.";
         drawPdp();
+      });
+      return;
+    }
+    if(e.target.closest("#pdpMgrAdd")){
+      var selP=(document.getElementById("pdpm-p")||{}).value||"";
+      var tM=document.getElementById("pdpm-t");
+      if(!tM.value.trim()){ tM.focus(); return; }
+      var pM=STAFF.filter(function(x){return x.id===selP;})[0]; if(!pM) return;
+      stepUp("submit", bi("إضافة إلى خطة ","Adding to the plan of ")+bi(pM.who[0],pM.who[1])+": "+tM.value.trim(), function(){
+        (PDP[selP]=PDP[selP]||[]).push({id:"P"+(++PDPSEQ), t:tM.value.trim(),
+          kind:(document.getElementById("pdpm-k")||{}).value||"دورة",
+          when:(document.getElementById("pdpm-w")||{}).value||"",
+          note:(document.getElementById("pdpm-n")||{}).value||"",
+          status:"approved", comment:"", by:"mgr"});
+        drawPdp();
+        var eM=document.getElementById("pdpmErr");
+        if(eM) eM.innerHTML=bi("أُضيفت — يراها الموظف معتمدةً في خطته.","Added — it appears approved in their plan.");
       });
       return;
     }
