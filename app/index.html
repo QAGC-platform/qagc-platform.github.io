@@ -3670,6 +3670,30 @@ body.editmode .screen .head .eyebrow span[lang]:focus{
             <button class="dcm-nav" data-ccy="1">›</button></span>
           <span class="ccal-filters" id="ccalFilters"></span>
         </div>
+        <div class="asnform" id="ccalMeet" hidden style="margin-bottom:14px">
+          <div style="font-size:var(--t-sm);font-weight:700"><span lang="ar">جدولة اجتماع</span><span lang="en">Schedule a meeting</span></div>
+          <div style="font-size:var(--t-xs);color:var(--ink-3);margin-top:2px">
+            <span lang="ar">يظهر لجميع الموظفين في تقاويمهم، ويُزامَن مع تقويم المركز في Google.</span>
+            <span lang="en">Appears in everyone's calendar and syncs to the centre's Google calendar.</span></div>
+          <div class="kform">
+            <span class="fld" style="grid-column:1/-1"><label><span lang="ar">الموضوع</span><span lang="en">Subject</span></label>
+              <input id="ccm-t" placeholder="اجتماع لجنة…"></span>
+            <span class="fld"><label><span lang="ar">التاريخ</span><span lang="en">Date</span></label>
+              <input id="ccm-d" type="date"></span>
+            <span class="fld"><label><span lang="ar">من</span><span lang="en">From</span></label>
+              <input id="ccm-f" type="time" value="10:00"></span>
+            <span class="fld"><label><span lang="ar">إلى</span><span lang="en">To</span></label>
+              <input id="ccm-to" type="time" value="11:00"></span>
+            <span class="fld"><label><span lang="ar">يحضّره (اختياري)</span><span lang="en">Prepared by</span></label>
+              <select class="fld-sel" id="ccm-asg"></select></span>
+            <span class="fld" style="grid-column:1/-1"><label><span lang="ar">جدول الأعمال — بند في كل سطر</span><span lang="en">Agenda — one item per line</span></label>
+              <textarea id="ccm-items" rows="2"></textarea></span>
+          </div>
+          <div style="margin-top:var(--sp-2);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
+            <button class="btn btn-p" id="ccmGo"><span lang="ar">جدولة الاجتماع</span><span lang="en">Schedule</span></button>
+            <span class="kerr" id="ccmErr"></span>
+          </div>
+        </div>
         <div id="ccalDayDetail" hidden></div>
         <div class="ccal-months" id="ccalMonths"></div>
       </div>
@@ -9383,11 +9407,17 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function ccalMineItems(){
     var map={}, me=(typeof myPerson==="function")?myPerson():null;
     if(!me) return map;
+    // scheduled meetings are organisational: everyone sees them in their calendar
     AGENDAS.forEach(function(a){
       if(!a.date) return;
-      // a meeting concerns its preparer by name — and the DG sees them all
-      if(ROLE==="dg" || a.asg===me.id)
-        ccalSpan(map,a.date,a.date,{cat:"act", t:"اجتماع: "+a.title, agenda:a});
+      var tm=a.time?" ("+a.time[0]+"–"+a.time[1]+")":"";
+      ccalSpan(map,a.date,a.date,{cat:"act", t:"اجتماع: "+a.title+tm, agenda:a});
+    });
+    if(DIRCAL_J && DIRCAL_J.items) DIRCAL_J.items.forEach(function(ev){
+      // the centre calendar's own events, without doubling the agenda-synced ones
+      if(String(ev.title||"").indexOf("اجتماع: ")===0) return;
+      ccalSpan(map,String(ev.start).slice(0,10),String(ev.end||ev.start).slice(0,10),
+        {cat:"act", t:String(ev.title||"")});
     });
     (me.steps||[]).forEach(function(st){
       if(st.due) ccalSpan(map,st.due,st.due,{cat:"lv2", t:"استحقاق: "+(isAr()?st.t[0]:st.t[1])});
@@ -9536,6 +9566,18 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(vb){
       CCAL_VIEW=vb.dataset.ccv;
       CCAL_SEL=null;
+      var mf=document.getElementById("ccalMeet");
+      if(mf){
+        var me9=(typeof myPerson==="function")?myPerson():null;
+        var may=(ROLE==="dg"||ROLE==="dir"||ROLE==="coord"||(me9&&me9.role==="dept_head"));
+        mf.hidden=!(CCAL_VIEW==="mine" && may);
+        if(!mf.hidden){
+          var selM=document.getElementById("ccm-asg");
+          if(selM) selM.innerHTML='<option value="">'+(isAr()?"بلا إسناد":"Unassigned")+'</option>'+
+            STAFF.filter(function(x){return x.id!=="dg0";}).map(function(x){
+              return '<option value="'+x.id+'">'+(isAr()?x.who[0]:x.who[1])+'</option>';}).join("");
+        }
+      }
       document.querySelectorAll("[data-ccv]").forEach(function(x){x.classList.toggle("on",x===vb);});
       drawCcal(); return;
     }
@@ -9552,6 +9594,28 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     }
     var dc=e.target.closest("[data-ccd]");
     if(dc){ CCAL_SEL=(CCAL_SEL===dc.dataset.ccd?null:dc.dataset.ccd); drawCcal(); return; }
+    if(e.target.closest("#ccmGo")){
+      var t=document.getElementById("ccm-t"), err=document.getElementById("ccmErr");
+      if(!t.value.trim()){ t.focus(); return; }
+      var d=(document.getElementById("ccm-d")||{}).value||"";
+      var f=(document.getElementById("ccm-f")||{}).value||"10:00";
+      var to=(document.getElementById("ccm-to")||{}).value||"11:00";
+      if(!d||to<=f){ if(err) err.innerHTML=bi("أكملي التاريخ والوقت — النهاية بعد البداية.","Complete date and times."); return; }
+      var selA=document.getElementById("ccm-asg");
+      var pA=selA&&selA.value?STAFF.filter(function(x){return x.id===selA.value;})[0]:null;
+      var acct=(typeof SESSION!=="undefined"&&SESSION&&typeof acctOf==="function")?acctOf(SESSION.u):null;
+      stepUp("submit", bi("جدولة اجتماع: ","Scheduling: ")+t.value.trim()+" · "+d, function(){
+        var a={id:"AG"+(++AGSEQ), title:t.value.trim(), date:d, time:[f,to],
+          items:(document.getElementById("ccm-items")||{}).value||"",
+          by:acct?acct.who:["—","—"],
+          asg:selA?selA.value:"", asgName:pA?(isAr()?pA.who[0]:pA.who[1]):""};
+        AGENDAS.push(a); agendaLand(a); agendaSyncCal(a);
+        t.value=""; document.getElementById("ccm-items").value="";
+        if(err) err.innerHTML=bi("جُدول الاجتماع — في تقويم الجميع وفي تقويم المركز.","Scheduled — on everyone's calendar.");
+        CCAL_SEL=d; drawCcal(); drawAgendas();
+      });
+      return;
+    }
   });
 
   // ── the 360° evaluation: a cycle per subject; raters answer in confidence ──
@@ -9697,9 +9761,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     // the meeting exists in one more place: the centre's Google calendar
     if(!a.date) return;
     var cfg=dgCalCfg(); if(!cfg) return;
+    var f=(a.time&&a.time[0])||"10:00", t=(a.time&&a.time[1])||"11:00";
     fetch(cfg.url+"?key="+encodeURIComponent(cfg.key), {method:"POST",
       body:JSON.stringify({fn:"addEvent", which:"dir", title:"اجتماع: "+a.title,
-        date:a.date, from:"10:00", to:"11:00",
+        date:a.date, from:f, to:t,
         loc:"", note:String(a.items||""), who:"جداول الأعمال"})}).catch(function(){});
   }
   function agendaLand(a){
