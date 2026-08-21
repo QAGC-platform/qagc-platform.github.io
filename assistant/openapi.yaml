@@ -22,7 +22,10 @@ paths:
         - name: fn
           in: query
           required: true
-          schema: { type: string, enum: [ping, objectives, inbox] }
+          schema: { type: string, enum: [ping, objectives, inbox, analysis] }
+          description: >
+            analysis يعيد طابور طلبات تحليل المؤشرات المرسلة من المنصة —
+            كل صف فيه kpi وquestion وdata (سلسلة القراءات JSON) وid.
       responses:
         "200":
           description: JSON result.
@@ -46,7 +49,14 @@ paths:
               type: object
               required: [title, tag]
               properties:
-                fn: { type: string, enum: [addTask], default: addTask }
+                fn:
+                  type: string
+                  enum: [addTask, addCpd, answerAnalysis]
+                  default: addTask
+                  description: >
+                    addTask لحزمة هدف/مهمة؛ addCpd لنشاط تطوير مهني يذهب مباشرة
+                    إلى لوحة CPD (يلزم title وdue وctype)؛ answerAnalysis لكتابة
+                    تحليل مؤشر (يلزم id من طابور analysis وحقل answer).
                 title: { type: string, description: "عنوان الهدف أو المهمة بالعربية" }
                 smart:
                   type: string
@@ -72,6 +82,14 @@ paths:
                 due: { type: string, description: "YYYY-MM-DD" }
                 budget: { type: number, description: "تقدير بالريال العماني، إن وجد" }
                 note: { type: string }
+                ctype:
+                  type: string
+                  enum: [lecture, workshop, webinar, forum]
+                  description: نوع نشاط CPD — إلزامي مع addCpd فقط
+                venue: { type: string, description: "مكان نشاط CPD (اختياري)" }
+                date_to: { type: string, description: "نهاية نشاط CPD إن امتد أياماً، YYYY-MM-DD" }
+                id: { type: string, description: "معرّف طلب التحليل — مع answerAnalysis فقط" }
+                answer: { type: string, description: "نص التحليل بالعربية — مع answerAnalysis فقط" }
       responses:
         "200":
           description: JSON result with state pending.

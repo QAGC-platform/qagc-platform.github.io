@@ -40,18 +40,20 @@ function ss_() {
   return SpreadsheetApp.openById(id);
 }
 
-const COLS = ['when', 'title', 'tag', 'owner', 'due', 'budget', 'note', 'state', 'smart', 'kpis'];
+const COLS = ['when', 'title', 'tag', 'owner', 'due', 'budget', 'note', 'state', 'smart', 'kpis', 'itype', 'venue', 'ctype', 'date_to'];
+const ACOLS = ['id', 'when', 'kpi', 'question', 'data', 'answer', 'state'];
+const CTYPES = ['lecture', 'workshop', 'webinar', 'forum'];
 
 function sheet_(name) {
   const ss = ss_();
   let sh = ss.getSheetByName(name);
   if (!sh) {
     sh = ss.insertSheet(name);
-    sh.appendRow(COLS);
+    sh.appendRow(name === 'analysis' ? ACOLS : COLS);
   }
-  // a sheet created before the package columns existed gets them added in place
+  // a sheet created before newer columns existed gets them added in place
   const head = sh.getRange(1, 1, 1, Math.max(sh.getLastColumn(), 1)).getValues()[0];
-  COLS.forEach(c => {
+  (name === 'analysis' ? ACOLS : COLS).forEach(c => {
     if (head.indexOf(c) < 0) {
       sh.getRange(1, head.length + 1).setValue(c);
       head.push(c);
@@ -92,6 +94,11 @@ function doGet(e) {
     const head = rows.shift();
     return json_({ ok: true, items: rows.map(r => Object.fromEntries(head.map((h, i) => [h, r[i]]))) });
   }
+  if (fn === 'analysis') {
+    const rows = sheet_('analysis').getDataRange().getValues();
+    const head = rows.shift();
+    return json_({ ok: true, items: rows.map(r => Object.fromEntries(head.map((h, i) => [h, r[i]]))) });
+  }
   return json_({ ok: false, error: 'unknown fn' });
 }
 
@@ -101,7 +108,55 @@ function doPost(e) {
   try { body = JSON.parse(e.postData.contents || '{}'); } catch (err) {
     return json_({ ok: false, error: 'body is not JSON' });
   }
-  if ((body.fn || 'addTask') !== 'addTask') return json_({ ok: false, error: 'unknown fn' });
+  const fn = body.fn || 'addTask';
+
+  // ── a CPD activity goes straight to its place on the year board ──
+  if (fn === 'addCpd') {
+    const t = String(body.title || '').trim();
+    const due = String(body.due || '').trim().slice(0, 10);
+    const ctype = String(body.ctype || 'lecture').trim();
+    if (!t) return json_({ ok: false, error: 'title is required' });
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(due)) return json_({ ok: false, error: 'due must be YYYY-MM-DD' });
+    if (CTYPES.indexOf(ctype) < 0) return json_({ ok: false, error: 'ctype must be one of: ' + CTYPES.join(', ') });
+    const sh0 = sheet_('inbox');
+    const head0 = sh0.getRange(1, 1, 1, sh0.getLastColumn()).getValues()[0];
+    const rec0 = { when: new Date().toISOString(), title: t, tag: '', owner: String(body.owner || '').trim(),
+      due: due, budget: '', note: String(body.note || '').trim(), state: 'pending', smart: '', kpis: '',
+      itype: 'cpd', venue: String(body.venue || '').trim(), ctype: ctype,
+      date_to: String(body.date_to || '').trim().slice(0, 10) };
+    sh0.appendRow(head0.map(h => (h in rec0) ? rec0[h] : ''));
+    return json_({ ok: true, state: 'pending',
+      message: 'أُدرج النشاط في الوارد — يظهر على لوحة CPD كموعد مبدئي فور إدراجه في المنصة.' });
+  }
+
+  // ── the platform asks; ChatGPT reads the queue and writes the answer back ──
+  if (fn === 'askAnalysis') {
+    const kpi = String(body.kpi || '').trim();
+    if (!kpi) return json_({ ok: false, error: 'kpi is required' });
+    const sh1 = sheet_('analysis');
+    const id = 'A' + (sh1.getLastRow());   // header is row 1, so ids start at A1
+    sh1.appendRow([id, new Date().toISOString(), kpi,
+      String(body.question || '').trim(), String(body.data || '').trim(), '', 'asked']);
+    return json_({ ok: true, id: id, state: 'asked' });
+  }
+  if (fn === 'answerAnalysis') {
+    const id = String(body.id || '').trim();
+    const answer = String(body.answer || '').trim();
+    if (!id || !answer) return json_({ ok: false, error: 'id and answer are required' });
+    const sh2 = sheet_('analysis');
+    const vals = sh2.getDataRange().getValues();
+    const head2 = vals[0];
+    for (let r = 1; r < vals.length; r++) {
+      if (String(vals[r][head2.indexOf('id')]) === id) {
+        sh2.getRange(r + 1, head2.indexOf('answer') + 1).setValue(answer);
+        sh2.getRange(r + 1, head2.indexOf('state') + 1).setValue('answered');
+        return json_({ ok: true, id: id, state: 'answered' });
+      }
+    }
+    return json_({ ok: false, error: 'no such analysis id' });
+  }
+
+  if (fn !== 'addTask') return json_({ ok: false, error: 'unknown fn' });
 
   const title = String(body.title || '').trim();
   const tag = String(body.tag || '').trim();
@@ -136,6 +191,7 @@ function doPost(e) {
     state: 'pending',   // ChatGPT proposes; the Director General decides
     smart: String(body.smart || '').trim(),
     kpis: kpis.length ? JSON.stringify(kpis) : '',
+    itype: 'package', venue: '', ctype: '', date_to: '',
   };
   sh.appendRow(head.map(h => (h in rec) ? rec[h] : ''));
   return json_({ ok: true, state: 'pending', kpis: kpis.length,

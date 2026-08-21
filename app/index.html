@@ -2032,6 +2032,15 @@ html[lang="en"] span[lang="en"]{display:inline}
             <input id="no-target" placeholder="80%"></span>
           <span class="fld" style="align-self:end"><button class="btn" id="noKpiAdd" type="button"><span lang="ar">＋ مؤشر آخر</span><span lang="en">＋ Another KPI</span></button></span>
           <div id="noKpiList" style="grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap"></div>
+          <div style="grid-column:1/-1;border-top:1px solid var(--rule);padding-top:var(--sp-3)">
+            <div style="font-size:var(--t-sm);font-weight:700"><span lang="ar">خطة العمل (اختيارية) — مراحل ثم خطوات</span><span lang="en">Action plan (optional) — phases, then steps</span></div>
+            <div class="frow" style="align-items:end;margin-top:var(--sp-2)">
+              <span class="fld"><label><span lang="ar">مرحلة جديدة</span><span lang="en">New phase</span></label>
+                <input id="no-ph" placeholder="مثال: التحضير والحشد"></span>
+              <span class="fld" style="align-self:end"><button class="btn" id="noPhAdd" type="button"><span lang="ar">＋ مرحلة</span><span lang="en">＋ Phase</span></button></span>
+            </div>
+            <div id="noPlanList"></div>
+          </div>
           <span class="fld"><label><span lang="ar">المستوى</span><span lang="en">Level</span></label>
             <select id="no-level"><option value="center">المركز · Centre</option>
               <option value="directorate">الدائرة · Directorate</option>
@@ -2840,6 +2849,14 @@ html[lang="en"] span[lang="en"]{display:inline}
               <input value="اعتماد المدير العام دائماً — always the Director General" readonly>
               <div class="hint2"><span lang="ar">تقدير الميزانية قرار مالي، فيبقى عند المدير العام مهما كان مسار الهدف.</span>
                 <span lang="en">A budget estimate is a financial decision, so it stays with the Director General whatever route the objective takes.</span></div></div>
+            <div class="fld"><label><span lang="ar">إسناد خطة العمل</span><span lang="en">Assigning the action plan</span></label>
+              <select class="fld-sel" id="setAsgPriv">
+                <option value="dg">المدير العام والتنسيق فقط — DG and Coordination only</option>
+                <option value="dir" selected>ومديرو الدوائر أيضاً — Directorate heads too</option>
+                <option value="all">الجميع — Everyone</option>
+              </select>
+              <div class="hint2"><span lang="ar">من يستطيع، عند إنشاء هدف، إسناد مراحل خطة العمل وخطواتها إلى موظفين بعينهم. من دون الصلاحية تُنشأ الخطة بلا أسماء وتُسند لاحقاً.</span>
+                <span lang="en">Who may, when creating an objective, assign the action-plan phases and steps to named staff. Without the privilege the plan is created unassigned.</span></div></div>
           </div>
         </div>
         <div class="card">
@@ -3326,6 +3343,11 @@ html[lang="en"] span[lang="en"]{display:inline}
           <span lang="ar">يُحفَظ المفتاح في متصفح هذا الجهاز فقط — لا يدخل الصفحة المنشورة ولا يغادر جهازك. أزيلي العلامة لمسحه.</span>
           <span lang="en">Stored only in this device's browser — never in the published page, never leaves your machine. Untick to erase it.</span></p>
         <div id="aiInbox" style="margin-top:var(--sp-3)"></div>
+        <p class="subh" style="margin-top:var(--sp-4)"><span lang="ar">تحليلات المؤشرات</span><span lang="en">KPI analyses</span></p>
+        <p style="font-size:var(--t-xs);color:var(--ink-3);margin:2px 0 0">
+          <span lang="ar">تُرسَل من زر «تحليل عبر المساعد» على بطاقة المؤشر، ويكتب المساعد جوابه هنا حين تطلبينه منه في ChatGPT.</span>
+          <span lang="en">Sent from the KPI card's analyse button; the assistant writes its answer here when you ask it in ChatGPT.</span></p>
+        <div id="aiAnalyses" style="margin-top:var(--sp-2)"></div>
       </div>
 
       <div class="card">
@@ -3815,6 +3837,32 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   var NEWOBJ_N=0;
   var NO_KPIS=[];
+  var NO_PLAN=[];      // [{ph, steps:[{t,due,asg}]}] — the action plan being drafted
+  function renderNoPlan(){
+    var h=document.getElementById("noPlanList"); if(!h) return;
+    var mayAsg=canAssignPlan();
+    h.innerHTML=NO_PLAN.map(function(p,pi){
+      return '<div style="border:1px solid var(--rule);border-radius:10px;padding:10px;margin-top:8px">'+
+        '<div style="display:flex;gap:8px;align-items:center"><b style="font-size:var(--t-sm)">'+
+          bi("المرحلة "+(pi+1)+": ","Phase "+(pi+1)+": ")+p.ph+'</b>'+
+          '<button class="mini no" data-phdel="'+pi+'" style="margin-inline-start:auto">×</button></div>'+
+        (p.steps.length?p.steps.map(function(st,si){
+          return '<div class="sm" style="display:flex;gap:8px;align-items:center;padding:3px 0">'+
+            '<span>'+(si+1)+'. '+st.t+(st.due?' · <span class="tnum">'+st.due+'</span>':"")+
+            (st.asgName?' · ← '+st.asgName:"")+'</span>'+
+            '<button class="mini no" data-stdel="'+pi+':'+si+'" style="padding:0 6px">×</button></div>';
+        }).join(""):"")+
+        '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:end;margin-top:6px">'+
+          '<input id="no-st-t-'+pi+'" placeholder="'+(isAr()?"خطوة…":"a step…")+'" style="flex:2;min-width:150px">'+
+          '<input id="no-st-due-'+pi+'" type="date" style="flex:1;min-width:130px">'+
+          (mayAsg? '<select class="fld-sel" id="no-st-asg-'+pi+'" style="flex:1;min-width:150px">'+
+            '<option value="">'+(isAr()?"بلا إسناد":"Unassigned")+'</option>'+
+            STAFF.map(function(x){return '<option value="'+x.id+'">'+(isAr()?x.who[0]:x.who[1])+'</option>';}).join("")+
+            '</select>' : "")+
+          '<button class="btn" data-stadd="'+pi+'" type="button" style="padding:6px 12px">'+bi("＋ خطوة","＋ Step")+'</button>'+
+        '</div></div>';
+    }).join("");
+  }
   function renderNoKpis(){
     var h=document.getElementById("noKpiList"); if(!h) return;
     h.innerHTML=NO_KPIS.map(function(k,i){
@@ -3831,6 +3879,28 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     }
     var nkd=e.target.closest("[data-nokdel]");
     if(nkd){ NO_KPIS.splice(+nkd.dataset.nokdel,1); renderNoKpis(); return; }
+    if(e.target.closest("#noPhAdd")){
+      var ph=document.getElementById("no-ph");
+      if(!ph.value.trim()){ ph.focus(); return; }
+      NO_PLAN.push({ph:ph.value.trim(), steps:[]});
+      ph.value=""; renderNoPlan(); return;
+    }
+    var phd=e.target.closest("[data-phdel]");
+    if(phd){ NO_PLAN.splice(+phd.dataset.phdel,1); renderNoPlan(); return; }
+    var sta=e.target.closest("[data-stadd]");
+    if(sta){
+      var pi=+sta.dataset.stadd;
+      var ti2=document.getElementById("no-st-t-"+pi);
+      if(!ti2.value.trim()){ ti2.focus(); return; }
+      var asgSel=document.getElementById("no-st-asg-"+pi);
+      var asgP=asgSel&&asgSel.value?STAFF.filter(function(x){return x.id===asgSel.value;})[0]:null;
+      NO_PLAN[pi].steps.push({t:ti2.value.trim(),
+        due:(document.getElementById("no-st-due-"+pi)||{}).value||"",
+        asg:asgSel?asgSel.value:"", asgName:asgP?(isAr()?asgP.who[0]:asgP.who[1]):""});
+      renderNoPlan(); return;
+    }
+    var std=e.target.closest("[data-stdel]");
+    if(std){ var qq=std.dataset.stdel.split(":"); NO_PLAN[+qq[0]].steps.splice(+qq[1],1); renderNoPlan(); return; }
     if(e.target.closest("#newObjBtn")){
       var f=document.getElementById("newObjForm"); f.hidden=!f.hidden;
       if(!f.hidden) document.getElementById("no-title").focus();
@@ -3856,11 +3926,21 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           o:(document.getElementById("no-owner")||{}).value||"",
           s:(document.getElementById("no-from")||{}).value||"2027-01-01",
           e:dueTo, tag:(document.getElementById("no-tag")||{}).value||"t-dir" };
+        var planPhases=NO_PLAN.filter(function(x){return x.steps.length||x.ph;});
         if(!needsApproval()){
           // the Director General's authority: straight into the plan, logged
           PLAN2027.push(draft);
           submitFor("obj", ref, [title,title],
             {under:(isAr()?"الخطة السنوية 2027":"Annual plan 2027"), due:dueTo});
+          var meNow=(typeof myPerson==="function"?myPerson():null);
+          planPhases.forEach(function(phse){ phse.steps.forEach(function(st){
+            var pid0=st.asg||(meNow?meNow.id:"ov-h");
+            var pp0=STAFF.filter(function(x){return x.id===pid0;})[0];
+            if(pp0){ pp0.steps=pp0.steps||[];
+              pp0.steps.push({t:[st.t,st.t], obj:["خطة عمل: "+title,"Action plan: "+title],
+                due:st.due||dueTo, st:"not_started", budget:null}); }
+          });});
+          if(typeof drawRoster==="function"){ drawRoster(); drawPeopleTiles(); refreshPeopleCount(); }
         } else {
           // everyone else sends the whole package — objective and KPIs —
           // to the gate; nothing enters the plan before its component is approved
@@ -3868,17 +3948,19 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
                       state:"pending", note:"", applied:false}];
           kpis.forEach(function(x){ comps.push({ct:"kpi", title:x.name, target:x.target||"",
                       unit:"", state:"pending", note:"", applied:false}); });
+          planPhases.forEach(function(phse){ comps.push({ct:"ph", title:phse.ph,
+                      steps:phse.steps.slice(), state:"pending", note:"", applied:false}); });
           var me=(typeof myPerson==="function"?myPerson():null);
           SUBS.push({ id:"S"+(++SUBSEQ), kind:"pkg", ref:ref, title:[title,title],
             byId:me?me.id:"sd-h", by:me?me.who:["موظف","Staff"], dep:me?me.dep:["—","—"],
             when:"2026-11-20", stage:firstStop("obj"), state:"pending",
             meta:{under:(isAr()?"الخطة السنوية 2027":"Annual plan 2027"), due:dueTo,
-                  nk:kpis.length, comps:comps,
+                  nk:kpis.length, np:planPhases.length, comps:comps,
                   // the draft lands with NO KPIs — only the ones the DG approves are appended
                   draft:Object.assign({},draft,{k:"",g:""})},
             note:"", endorsed:null, self:false });
         }
-        NO_KPIS=[]; renderNoKpis();
+        NO_KPIS=[]; renderNoKpis(); NO_PLAN=[]; renderNoPlan();
         t.value=""; document.getElementById("no-desc").value="";
         document.getElementById("no-kpi").value=""; document.getElementById("no-target").value="";
         document.getElementById("newObjForm").hidden=true;
@@ -4331,6 +4413,15 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   // the annual plan draws — and reads both — well before the dashboard code runs.
   var PINNED={SO1:true, SO4:true, "DO1.1":true};
   var PRIO_CFG={n:5, all:false, route:"dg"};   // route: dg | superior
+  var ASG_PRIV="dir";                          // who may assign action-plan work: dg | dir | all
+  function canAssignPlan(){
+    if(ROLE==="dg"||ROLE==="coord") return true;
+    if(ROLE==="dir") return ASG_PRIV==="dir"||ASG_PRIV==="all";
+    return ASG_PRIV==="all";
+  }
+  document.addEventListener("change",function(e){
+    if(e.target && e.target.id==="setAsgPriv"){ ASG_PRIV=e.target.value; }
+  });
 
   // ══ the approval ledger ══
   // An objective, a KPI or a budget estimate does not enter the plan the moment
@@ -5204,11 +5295,46 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             (open?bi("إخفاء القراءات","Hide the readings"):bi("عرض القراءات","Show the readings"))+'</button>'+
           '<button class="btn" data-kdl="'+ref+':'+i+'">'+bi("تنزيل القراءات Excel","Readings as Excel")+'</button>'+
           '<button class="btn" data-kppt="'+ref+':'+i+'">'+bi("تصدير شريحة PowerPoint","Export a PowerPoint slide")+'</button>'+
+          '<button class="btn" data-kask="'+ref+':'+i+'">'+bi("تحليل عبر المساعد الذكي","Analyse with the assistant")+'</button>'+
           '<span class="kerr" id="kerr-'+ref+'-'+i+'"></span>'+
         '</div>'+
         table+'</div>';
     }).join("");
   }
+  // the analyse button ships the readings to the bridge; the assistant answers
+  // when asked in ChatGPT, and the answer appears on the bridge screen
+  document.addEventListener("click",function(e){
+    var ka=e.target.closest("[data-kask]"); if(!ka) return;
+    var q=ka.dataset.kask.split(":"), ref=q[0], i=+q[1];
+    var k=(EXTRA[ref]||[])[i]; if(!k) return;
+    var err=document.getElementById("kerr-"+ref+"-"+i);
+    var cfg=null; try{ cfg=JSON.parse(localStorage.getItem("qagcAiCfg")||"null"); }catch(_){}
+    var url=(cfg&&cfg.url)||(document.getElementById("aiCfgUrl")||{}).value||"";
+    var key=(cfg&&cfg.key)||(document.getElementById("aiCfgKey")||{}).value||"";
+    if(!url||!key){
+      if(err) err.textContent=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first.");
+      return;
+    }
+    if(err) err.textContent=bi("جارٍ الإرسال…","Sending…");
+    var st2=(typeof kpiStats==="function")?kpiStats(k):null;
+    // no Content-Type header on purpose: text/plain avoids the preflight GAS cannot answer
+    fetch(url+"?key="+encodeURIComponent(key), {method:"POST",
+      body:JSON.stringify({fn:"askAnalysis", kpi:k.title,
+        question:"حلّلي هذا المؤشر: الاتجاه، الوتيرة، احتمال بلوغ المستهدف، وتوصية عملية واحدة.",
+        data:JSON.stringify({labels:k.labels, values:k.values, unit:k.unit||"",
+          target:(st2&&st2.target!=null)?st2.target:null, dir:k.dir||"up", period:k.period||""})})})
+      .then(function(r){return r.json();})
+      .then(function(j){
+        if(err) err.textContent = j.ok
+          ? bi("أُرسل الطلب — اطلبي التحليل من المساعد في ChatGPT، ثم افتحي شاشة الجسر الذكي.",
+               "Sent — ask the assistant in ChatGPT to analyse, then open the bridge screen.")
+          : bi("رفض الطلب: ","Refused: ")+(j.error||"");
+      })
+      .catch(function(){
+        if(err) err.textContent=bi("تعذّر الاتصال — جرّبي من النسخة المنشورة على github.io.",
+                                   "Could not connect — try the github.io copy.");
+      });
+  });
   // Excel puts tab-separated text on the clipboard; that is all a paste needs to be.
   function ingestPaste(ref, text){
     var lines=String(text||"").split(/\r?\n/).map(function(l){return l.replace(/\s+$/,"");})
@@ -7817,10 +7943,34 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       aiStatus(bi("متصل — آخر تحديث الآن.","Connected — just refreshed."),true);
       aiSaveCfg(url,key);
       renderAiInbox(j.items||[]);
+      try{
+        var ra=await fetch(url+"?key="+encodeURIComponent(key)+"&fn=analysis");
+        var ja=await ra.json();
+        if(ja.ok) renderAiAnalyses(ja.items||[]);
+      }catch(_){}
     }catch(err){
       aiStatus(bi("تعذّر الاتصال من هذه النسخة — جرّب النسخة المنشورة على github.io.",
                   "Could not connect from this copy — try the published github.io version."),false);
     }
+  }
+  function renderAiAnalyses(items){
+    var host=document.getElementById("aiAnalyses"); if(!host) return;
+    if(!items.length){
+      host.innerHTML='<div class="subempty">'+bi("لا طلبات تحليل بعد.","No analysis requests yet.")+'</div>';
+      return;
+    }
+    host.innerHTML=items.slice().reverse().map(function(a){
+      var done=a.state==="answered";
+      return '<div class="subrow" style="grid-template-columns:minmax(0,1fr) auto">'+
+        '<span><span class="st2">'+String(a.kpi||"")+'</span>'+
+        (done?'<span class="retnote" style="white-space:pre-wrap">'+String(a.answer||"")+'</span>'
+             :'<span class="sm">'+bi("بانتظار المساعد — اطلبي التحليل في ChatGPT.","Waiting for the assistant — ask for the analysis in ChatGPT.")+'</span>')+
+        '</span>'+
+        '<span class="acts">'+(done
+          ? '<span class="pill p-good">'+bi("مُحلَّل","Answered")+'</span>'
+          : '<span class="pill p-warn">'+bi("قيد التحليل","Asked")+'</span>')+'</span>'+
+      '</div>';
+    }).join("");
   }
   function renderAiInbox(items){
     var host=document.getElementById("aiInbox"); if(!host) return;
@@ -7830,8 +7980,24 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       return;
     }
     host.innerHTML=items.slice().reverse().map(function(it){
-      var tg=AI_TAG_MAP[it.tag]||["t-third",String(it.tag||""),String(it.tag||"")];
       var done=AI_IMPORTED[it.when];
+      if(it.itype==="cpd"){
+        return '<div class="subrow" style="grid-template-columns:minmax(0,1fr) auto auto">'+
+          '<span><span class="st2">'+String(it.title||"").slice(0,120)+'</span>'+
+            '<span class="sm"><span class="pill p-warn">'+bi("نشاط تطوير مهني","CPD activity")+'</span>'+
+            (it.ctype?' · '+it.ctype:'')+
+            (it.due?' · <span class="tnum">'+String(it.due).slice(0,10)+'</span>':'')+
+            (it.venue?' · '+it.venue:'')+
+            (it.note?' · '+String(it.note).slice(0,60):'')+'</span></span>'+
+          '<span class="sw2 tnum">'+String(it.when||"").slice(0,10)+'</span>'+
+          '<span class="acts">'+(done
+            ? '<span class="pill p-good">'+bi("على اللوحة","On the board")+'</span>'
+            : (ROLE==="dg"||ROLE==="coord"
+               ? '<button class="mini yes" data-aicpd="'+encodeURIComponent(JSON.stringify(it))+'">'+bi("إدراج في برنامج CPD","Place on the CPD board")+'</button>'
+               : '<span class="pill p-warn">'+bi("بانتظار الإدراج","Pending")+'</span>'))+'</span>'+
+        '</div>';
+      }
+      var tg=AI_TAG_MAP[it.tag]||["t-third",String(it.tag||""),String(it.tag||"")];
       var kn=aiKpisOf(it).length;
       return '<div class="subrow" style="grid-template-columns:minmax(0,1fr) auto auto">'+
         '<span><span class="st2">'+String(it.title||"").slice(0,120)+'</span>'+
@@ -7857,6 +8023,20 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   aiLoadCfg();
   document.addEventListener("click",function(e){
     if(e.target.closest("#aiConnect")){ aiFetchInbox(); return; }
+    var ic=e.target.closest("[data-aicpd]");
+    if(ic){
+      // a CPD activity goes straight to its month, tentative until confirmed there
+      var ev=JSON.parse(decodeURIComponent(ic.dataset.aicpd));
+      AI_IMPORTED[ev.when]=true;
+      CPD.push({t:[ev.title,ev.title], type:ev.ctype||"lecture",
+        from:String(ev.due||"").slice(0,10)||"2027-06-01", to:String(ev.date_to||"").slice(0,10),
+        venue:[ev.venue||"—",ev.venue||"—"],
+        desc:[(ev.note||"")+(ev.note?" · ":"")+"وارد المساعد الذكي",(ev.note||"")+(ev.note?" · ":"")+"From the assistant"],
+        pdf:null, log:[]});
+      if(typeof drawCpd==="function") drawCpd();
+      aiFetchInbox();
+      return;
+    }
     var im=e.target.closest("[data-aiimport]");
     if(im){
       var it=JSON.parse(decodeURIComponent(im.dataset.aiimport));
@@ -8208,6 +8388,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       bits.push(dn+"/"+m.comps.length+" "+bi("مكوّنات مُقرَّرة","components decided"));
     }
     if(kind==="pkg"&&m.nk) bits.push(m.nk+" "+bi("مؤشرات","KPIs"));
+    if(kind==="pkg"&&m.np) bits.push(m.np+" "+bi("مراحل","phases"));
     if(kind==="kpi"){
       if(m.per) bits.push(m.per);
       if(m.unit) bits.push(m.unit);
@@ -8226,13 +8407,19 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var objPend=comps.some(function(c){return c.ct==="obj"&&c.state==="pending";});
     var pendN=comps.filter(function(c){return c.state==="pending";}).length;
     var rows=comps.map(function(c,i){
-      var lab=c.ct==="obj"?["الهدف","Objective"]:c.ct==="kpi"?["مؤشر أداء","KPI"]:["تقدير ميزانية","Budget"];
-      var cls=c.ct==="obj"?"k-obj":c.ct==="kpi"?"k-kpi":"k-bud";
+      var lab=c.ct==="obj"?["الهدف","Objective"]:c.ct==="kpi"?["مؤشر أداء","KPI"]
+             :c.ct==="ph"?["مرحلة","Phase"]:["تقدير ميزانية","Budget"];
+      var cls=c.ct==="obj"?"k-obj":c.ct==="kpi"?"k-kpi":c.ct==="ph"?"k-obj":"k-bud";
       var det=[];
       if(c.ct==="obj") det.push(c.smart? "SMART: "+String(c.smart).slice(0,140) : bi("بصيغة مهمة مباشرة","Written as a plain task"));
       if(c.ct==="obj"&&c.due) det.push(bi("الاستحقاق ","due ")+c.due);
       if(c.ct==="kpi"&&c.target) det.push(bi("المستهدف ","target ")+c.target+(c.unit?" "+c.unit:""));
       if(c.ct==="bud") det.push((+c.amt).toLocaleString("en")+" "+bi("ر.ع","OMR"));
+      var stepLines=c.ct==="ph"&&c.steps&&c.steps.length
+        ? '<span class="sm">'+c.steps.map(function(st,si){
+            return (si+1)+". "+st.t+(st.due?' · <span class="tnum">'+st.due+'</span>':"")+
+                   (st.asgName?' · ← '+st.asgName:' · '+(isAr()?"بلا إسناد":"unassigned"));
+          }).join("<br>")+'</span>' : "";
       var ret=RETURNING[r.key+"#"+i];
       var acts=c.state==="pending"
         ? '<button class="mini yes" data-cdec="'+r.key+'#'+i+'#v">'+bi("اعتماد","Approve")+'</button>'+
@@ -8242,7 +8429,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       return '<div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;padding:9px 0;border-top:1px solid var(--rule)">'+
         '<span class="kind '+cls+'"><i></i>'+bi(lab[0],lab[1])+'</span>'+
         '<span style="flex:1;min-width:220px"><span class="st2">'+c.title+'</span>'+
-          (det.length?'<span class="sm">'+det.join(" · ")+'</span>':"")+
+          (det.length?'<span class="sm">'+det.join(" · ")+'</span>':"")+stepLines+
           (c.state==="returned"&&c.note?'<span class="retnote"><b>'+bi("طلب التعديل: ","Amendment requested: ")+'</b>'+c.note+'</span>':"")+
         '</span><span class="acts">'+acts+'</span></div>'+
         (ret? '<span class="amendbox"><span class="al">'+bi("ما الذي يجب تعديله في هذا المكوّن؟","What needs amending in this component?")+'</span>'+
@@ -8263,7 +8450,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
               '<option value="">'+(isAr()?"اختر المسؤول…":"Choose the owner…")+'</option>'+
               STAFF.map(function(p){return '<option value="'+p.id+'">'+(isAr()?p.who[0]:p.who[1])+' — '+(isAr()?p.dep[0]:p.dep[1])+'</option>';}).join("")+
             '</select></span>':"")+
-        (pendN>1?'<button class="mini yes" data-cdecall="'+r.key+'">'+bi("اعتماد كل المتبقي","Approve all remaining")+'</button>':"")+
+        (pendN>1?'<span class="acts">'+
+          '<button class="mini yes" data-cdecall="'+r.key+'">'+bi("اعتماد كل المتبقي","Approve all remaining")+'</button>'+
+          '<button class="mini no" data-cdecrall="'+r.key+'">'+bi("رفض كل المتبقي","Reject all remaining")+'</button></span>':"")+
       '</div>'+rows+'</div>';
   }
   function subRow(r){
@@ -8482,6 +8671,14 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       });
       return;
     }
+    var cRej=e.target.closest("[data-cdecrall]");
+    if(cRej){
+      var sidR=cRej.dataset.cdecrall, sRej=subOf(sidR); if(!sRej) return;
+      stepUp("reject", bi("رفض كل مكوّنات: ","Refusing every component of: ")+bi(sRej.title[0],sRej.title[1]), function(){
+        sRej.meta.comps.forEach(function(c,i){ if(c.state==="pending") applyCompDecision(sidR, i, "rejected",""); });
+      });
+      return;
+    }
     var csend=e.target.closest("[data-cdecsend]");
     if(csend){
       var kp=csend.dataset.cdecsend.split("#"), sidS=kp[0], ciS=+kp[1];
@@ -8542,6 +8739,18 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           var pk=STAFF.filter(function(x){return x.id===s.meta.stepPid;})[0];
           if(pk&&pk.steps[s.meta.stepIdx]) pk.steps[s.meta.stepIdx].obj=pkgStepText(s);
         }
+      }
+      if(c.ct==="ph"){
+        c.applied=true;
+        (c.steps||[]).forEach(function(st){
+          var pid=st.asg || (s.byId==="chatgpt" ? s.meta.assignee : s.byId);
+          var pw=STAFF.filter(function(x){return x.id===pid;})[0];
+          if(!pw) return;
+          pw.steps=pw.steps||[];
+          pw.steps.push({t:[st.t,st.t],
+            obj:["خطة عمل: "+(oc?oc.title:""),"Action plan: "+(oc?oc.title:"")],
+            due:st.due||(oc&&oc.due)||s.meta.due||"2027-06-30", st:"not_started", budget:null});
+        });
       }
       if(c.ct==="bud" && s.meta.stepPid!=null){
         var pb=STAFF.filter(function(x){return x.id===s.meta.stepPid;})[0];
