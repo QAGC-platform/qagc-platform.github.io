@@ -9835,6 +9835,25 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
                : '<span class="pill p-warn">'+bi("بانتظار الإدراج","Pending")+'</span>'))+editBtn+hideBtn+'</span>'+
         editForm+'</div>';
       }
+      if(kind==="pdp"){
+        var hit=aiMatchStaff(it.owner);
+        return '<div class="subrow" style="grid-template-columns:minmax(0,1fr) auto auto">'+
+          '<span><span class="st2">'+String(it.title||"خطة تطوير شخصية").slice(0,120)+'</span>'+
+            '<span class="sm"><span class="pill p-good">'+bi("خطة تطوير شخصية","Personal development plan")+'</span>'+
+            (it.owner?' · '+bi("لـ ","for ")+it.owner:'')+
+            (it.note?' · '+String(it.note).split("\n").filter(Boolean).length+" "+bi("عناصر","items"):'')+'</span></span>'+
+          '<span class="sw2 tnum">'+String(it.when||"").slice(0,10)+'</span>'+
+          '<span class="acts">'+(done
+            ? '<span class="pill p-good">'+bi("في خطته","Placed")+'</span>'
+            : (ROLE==="dg"
+               ? '<select class="fld-sel" data-aipdpsel="'+encodeURIComponent(it.when)+'" style="min-width:150px">'+
+                 STAFF.filter(function(p){return p.id!=="dg0";}).map(function(p){
+                   return '<option value="'+p.id+'"'+(hit&&hit.id===p.id?' selected':'')+'>'+(isAr()?p.who[0]:p.who[1])+'</option>';}).join("")+
+                 '</select>'+
+                 '<button class="mini yes" data-aipdp="'+encodeURIComponent(JSON.stringify(it))+'">'+bi("إلى خطته التطويرية","To their plan")+'</button>'
+               : '<span class="pill p-warn">'+bi("بانتظار الإدراج","Pending")+'</span>'))+editBtn+hideBtn+'</span>'+
+        editForm+'</div>';
+      }
       if(kind==="agenda"){
         return '<div class="subrow" style="grid-template-columns:minmax(0,1fr) auto auto">'+
           '<span><span class="st2">'+String(it.title||"").slice(0,120)+'</span>'+
@@ -9878,9 +9897,21 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   var AI_HIDDEN={};
   var AI_EDITING={};
   try{ AI_HIDDEN=JSON.parse(localStorage.getItem("qagcAiHidden")||"{}")||{}; }catch(_){}
+  function aiMatchStaff(name){
+    name=String(name||"").trim();
+    if(!name) return null;
+    var toks=name.split(/\s+/).filter(function(w){return w.length>2;});
+    var best=null, bestN=0;
+    STAFF.forEach(function(p){
+      var who=p.who[0];
+      var n=toks.filter(function(w){return who.indexOf(w)>=0;}).length;
+      if(n>bestN){ bestN=n; best=p; }
+    });
+    return bestN>=2 ? best : null;
+  }
   function aiKindOf(it){
     if(it.itype==="cpd") return "cpd";
-    if(it.kind==="task"||it.kind==="agenda"||it.kind==="objective") return it.kind;
+    if(it.kind==="task"||it.kind==="agenda"||it.kind==="objective"||it.kind==="pdp") return it.kind;
     // pushes from before the kind field: an objective carries SMART or KPIs; the rest are tasks
     return (it.smart || aiKpisOf(it).length) ? "objective" : "task";
   }
@@ -9924,6 +9955,26 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         items:String(evA.note||""), by:["المساعد الذكي","The assistant"], asg:"", asgName:""});
       drawAgendas(); aiFetchInbox(); return;
     }
+    var ipd=e.target.closest("[data-aipdp]");
+    if(ipd){
+      var evP=JSON.parse(decodeURIComponent(ipd.dataset.aipdp));
+      var selP=document.querySelector('[data-aipdpsel="'+encodeURIComponent(evP.when)+'"]');
+      var pid=selP?selP.value:""; if(!pid) return;
+      var items=String(evP.note||"").split("\n").map(function(l){return l.replace(/^[-•·\s]+/,"").trim();}).filter(Boolean);
+      if(!items.length && evP.title) items=[String(evP.title)];
+      stepUp("approve", bi("اعتماد خطة تطوير مقترحة من المساعد","Approving an assistant-proposed development plan"), function(){
+        AI_IMPORTED[evP.when]=true;
+        items.forEach(function(t){
+          (PDP[pid]=PDP[pid]||[]).push({id:"P"+(++PDPSEQ), t:t, kind:"عنصر مقترح",
+            when:String(evP.due||"").slice(0,10), note:"",
+            status:"approved", by:"mgr",
+            comment:isAr()?"اقترحها المساعد الذكي واعتمدتها المديرة العامة.":"Proposed by the assistant, approved by the DG."});
+        });
+        if(typeof drawPdp==="function") drawPdp();
+        aiFetchInbox();
+      });
+      return;
+    }
     var ic=e.target.closest("[data-aicpd]");
     if(ic){
       // a CPD activity goes straight to its month, tentative until confirmed there
@@ -9956,6 +10007,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         byId:"chatgpt", by:["مساعد ChatGPT","ChatGPT assistant"], dep:["الجسر الذكي","The assistant bridge"],
         when:String(it.when||"").slice(0,10)||"2026-11-20", stage:"dg", state:"pending",
         meta:{under:it.note||"", due:due, tag:it.tag, amt:it.budget?+it.budget:undefined,
+              suggest:(function(){var h=aiMatchStaff(it.owner); return h?h.id:"";})(),
               nk:comps.filter(function(c){return c.ct==="kpi";}).length, comps:comps},
         note:"", endorsedBy:null, decidedBy:null});
       afterSubmit(); aiFetchInbox();
@@ -10351,8 +10403,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             '<span class="al" style="color:var(--ink-2)">'+bi("عند اعتماد الهدف يُسند إلى:","On approving the objective, assign to:")+'</span>'+
             '<select class="fld-sel" data-asgsel="'+r.key+'" style="margin-top:6px">'+
               '<option value="">'+(isAr()?"اختر المسؤول…":"Choose the owner…")+'</option>'+
-              STAFF.map(function(p){return '<option value="'+p.id+'">'+(isAr()?p.who[0]:p.who[1])+' — '+(isAr()?p.dep[0]:p.dep[1])+'</option>';}).join("")+
-            '</select></span>':"")+
+              STAFF.map(function(p){return '<option value="'+p.id+'"'+
+                (s.meta&&s.meta.suggest===p.id?' selected':'')+'>'+(isAr()?p.who[0]:p.who[1])+' — '+(isAr()?p.dep[0]:p.dep[1])+'</option>';}).join("")+
+            '</select>'+
+            (s.meta&&s.meta.suggest?'<span class="al" style="color:var(--good-ink);margin-top:3px">'+
+              bi("تعرّفت المنصة على الاسم الوارد في الدفعة.","The platform recognised the name in the push.")+'</span>':"")+
+            '</span>':"")+
         (pendN>1?'<span class="acts">'+
           '<button class="mini yes" data-cdecall="'+r.key+'">'+bi("اعتماد كل المتبقي","Approve all remaining")+'</button>'+
           '<button class="mini no" data-cdecrall="'+r.key+'">'+bi("رفض كل المتبقي","Reject all remaining")+'</button></span>':"")+

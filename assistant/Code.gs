@@ -425,7 +425,7 @@ function doPost(e) {
     kpis: kpis.length ? JSON.stringify(kpis) : '',
     itype: 'package', venue: '', ctype: '', date_to: '',
     // what this push IS: an objective package, a simple task, or a meeting agenda
-    kind: ['task', 'objective', 'agenda'].indexOf(String(body.kind || '').trim()) >= 0
+    kind: ['task', 'objective', 'agenda', 'pdp'].indexOf(String(body.kind || '').trim()) >= 0
       ? String(body.kind).trim() : '',
   };
   sh.appendRow(head.map(h => (h in rec) ? rec[h] : ''));
