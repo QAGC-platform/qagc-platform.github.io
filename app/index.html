@@ -1849,6 +1849,13 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
 .rvitem .tx{font-size:var(--t-sm);display:block;margin-top:2px;word-break:break-word}
 .rvitem .ac{display:flex;gap:6px;margin-top:5px}
 .rvsent{font-size:10px;color:#2c7a4b;font-weight:700;align-self:center}
+  .rvto{display:flex;gap:6px;align-items:center;margin-top:8px;flex-wrap:wrap}
+  .rvto-l{font-size:11px;color:var(--ink-3)}
+  .rvto-b{font:inherit;font-size:11px;padding:3px 10px;border-radius:99px;cursor:pointer;
+    border:1px solid #d8d2c2;background:transparent;color:var(--ink-2)}
+  .rvto-b.on{background:#14522e;border-color:#14522e;color:#fff}
+  .rvchip{font-size:9.5px;padding:1px 7px;border-radius:99px;background:#e8f0ea;color:#14522e;font-weight:700}
+  .rvchip.dgc{background:#f3ead2;color:#8a6a1f}
   .rvsec{margin:10px 0 4px;font-size:11px;font-weight:800;color:#8a6a1f;letter-spacing:.4px}
   .rvitem.rvdone{opacity:.55}
   .rvreply{color:#14522e;font-style:italic}
@@ -3958,6 +3965,11 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
 <div id="rvPop" hidden>
   <div class="cx" id="rvPopCx"></div>
   <textarea id="rvPopTa" placeholder="ما ملاحظتك على هذا العنصر؟"></textarea>
+  <div class="rvto" id="rvToWrap">
+    <span class="rvto-l"><span lang="ar">إلى من؟</span><span lang="en">To whom?</span></span>
+    <button type="button" class="rvto-b on" data-rvto="dev"><span lang="ar">Claude — التطوير</span><span lang="en">Claude — development</span></button>
+    <button type="button" class="rvto-b" data-rvto="dg"><span lang="ar">المديرة العامة</span><span lang="en">The DG</span></button>
+  </div>
   <div class="row">
     <button class="btn btn-p" id="rvPopSave"><span lang="ar">حفظ الملاحظة</span><span lang="en">Save note</span></button>
     <button class="btn" id="rvPopCancel"><span lang="ar">إلغاء</span><span lang="en">Cancel</span></button>
@@ -12467,7 +12479,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   // it. A note remembers where it was pinned, so it survives the dynamic
   // repaints; if the thing it pointed at is gone, the note is kept and
   // marked detached rather than silently dropped.
-  var RVON=false, RVNOTES=[], RVSEQ=0, RVTARGET=null, RVEDIT=null, RVREMOTE=[];
+  var RVON=false, RVNOTES=[], RVSEQ=0, RVTARGET=null, RVEDIT=null, RVREMOTE=[], RVTO="dev";
   try{
     var _rv=JSON.parse(localStorage.getItem("qagcNotes")||"null");
     if(_rv&&_rv.notes){ RVNOTES=_rv.notes; RVSEQ=_rv.seq||RVNOTES.length; }
@@ -12556,7 +12568,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     document.getElementById("rvCount").textContent=String(RVNOTES.length);
     host.innerHTML = RVNOTES.length ? RVNOTES.map(function(nt,i){
       return '<div class="rvitem"><span class="num">'+(i+1)+'</span><span class="bd">'+
-        '<span class="wh">'+nt.a.screenName+(nt.a.where?' · '+nt.a.where:'')+'</span>'+
+        '<span class="wh">'+nt.a.screenName+(nt.a.where?' · '+nt.a.where:'')+
+          ' <span class="rvchip'+(nt.to==="dg"?' dgc':'')+'">'+(nt.to==="dg"?bi("إلى المديرة","to the DG"):bi("إلى Claude","to Claude"))+'</span></span>'+
         '<span class="tx">'+nt.text.replace(/</g,"&lt;")+'</span>'+
         '<span class="ac">'+
           (nt.fid?'<span class="rvsent">'+bi("أُرسلت ✓","Sent ✓")+'</span>':'')+
@@ -12572,7 +12585,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           var done = n.state==="done"||n.state==="kept";
           return '<div class="rvitem'+(done?' rvdone':'')+'"><span class="num">'+(done?'✓':'•')+'</span><span class="bd">'+
             '<span class="wh">'+String(n.screen||"").replace(/</g,"&lt;")+(n.where?' · '+String(n.where).replace(/</g,"&lt;"):'')+
-              (n.by?' — '+String(n.by).replace(/</g,"&lt;"):'')+'</span>'+
+              (n.by?' — '+String(n.by).replace(/</g,"&lt;"):'')+
+              ' <span class="rvchip'+(n.to==="dg"?' dgc':'')+'">'+(n.to==="dg"?bi("إلى المديرة","to the DG"):bi("إلى Claude","to Claude"))+'</span></span>'+
             '<span class="tx">'+String(n.text||"").replace(/</g,"&lt;")+'</span>'+
             (n.reply?'<span class="tx rvreply">↩ '+String(n.reply).replace(/</g,"&lt;")+'</span>':'')+
             (!done?'<span class="ac"><button class="mini" data-rvresolve="'+n.id+'">'+bi("عُولجت","Resolve")+'</button></span>':'')+
@@ -12644,6 +12658,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       '<b>'+a.screenName+'</b>'+(a.where?' · '+a.where:'')+(a.what?'<br>“'+rvTrim(a.what,80)+'”':'');
     var ta=document.getElementById("rvPopTa");
     ta.value=existing?existing.text:"";
+    RVTO=(existing&&existing.to)||"dev";
+    document.querySelectorAll("#rvToWrap .rvto-b").forEach(function(b){
+      b.classList.toggle("on", b.dataset.rvto===RVTO);
+    });
     pop.hidden=false;
     var r=el.getBoundingClientRect();
     var top=r.bottom+window.scrollY+8;
@@ -12667,14 +12685,22 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var t=e.target.closest("#rvToggle");
     if(t){ rvSetMode(!RVON); return; }
     if(e.target.closest("#rvPopCancel")){ rvPopClose(); return; }
+    var toB=e.target.closest("#rvToWrap .rvto-b");
+    if(toB){
+      RVTO=toB.dataset.rvto;
+      document.querySelectorAll("#rvToWrap .rvto-b").forEach(function(b){
+        b.classList.toggle("on", b===toB);
+      });
+      return;
+    }
     if(e.target.closest("#rvHide")){ rvSetMode(false); return; }
     if(e.target.closest("#rvPopSave")){
       var txt=(document.getElementById("rvPopTa")||{}).value||"";
       if(!txt.trim()){ document.getElementById("rvPopTa").focus(); return; }
-      if(RVEDIT){ RVEDIT.text=txt.trim(); }
+      if(RVEDIT){ RVEDIT.text=txt.trim(); RVEDIT.to=RVTO; }
       else if(RVTARGET){
         RVNOTES.push({id:"N"+(++RVSEQ), a:rvAnchor(RVTARGET), text:txt.trim(),
-          by:(SESSION?SESSION.u:"—"), when:PLATFORM_TODAY});
+          to:RVTO, by:(SESSION?SESSION.u:"—"), when:PLATFORM_TODAY});
       }
       rvPersist(); rvPopClose(); rvRows(); rvPaint();
       rvToast(bi("حُفظت الملاحظة.","Note saved."));
@@ -12720,6 +12746,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         fetch(cfg.url+"?key="+encodeURIComponent(cfg.key), {method:"POST",
           body:JSON.stringify({fn:"addFeedback", notes:unsent.map(function(nt){
             return {when:nt.when, by:acct?(isAr()?acct.who[0]:acct.who[1]):(nt.by||""),
+                    to:nt.to==="dg"?"dg":"dev",
                     screen:nt.a&&nt.a.screen||"", where:nt.a&&nt.a.where||"",
                     what:nt.a&&nt.a.what||"", text:nt.text};
           })})})

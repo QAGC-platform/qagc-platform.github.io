@@ -121,7 +121,8 @@ before touching anything — it replaces a long build history you cannot see.
   exists at the repo root (one line: the API key — the user creates it, it
   is NEVER committed), read notes with
   `curl '<exec-url>?key=$(cat .qagc-key)&fn=feedback'`, act on the open
-  ones, then mark each `{"fn":"resolveFeedback","id":…,"state":"done",
+  ones **addressed to development** (`to` is `dev` or empty — notes with
+  `to: dg` are for the DG herself; leave them alone), then mark each `{"fn":"resolveFeedback","id":…,"state":"done",
   "reply":"<one line saying what was done>"}` via POST. Without the key
   file, ask the user to paste the notes instead. Never print the key.
 - The review-board Artifact

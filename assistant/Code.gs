@@ -115,7 +115,7 @@ function tabOf_(ss, name, header) {
 
 const COLS = ['when', 'title', 'tag', 'owner', 'due', 'budget', 'note', 'state', 'smart', 'kpis', 'itype', 'venue', 'ctype', 'date_to', 'kind'];
 const ACOLS = ['id', 'when', 'kpi', 'question', 'data', 'answer', 'state'];
-const FCOLS = ['id', 'when', 'by', 'screen', 'where', 'what', 'text', 'state', 'reply'];
+const FCOLS = ['id', 'when', 'by', 'screen', 'where', 'what', 'text', 'state', 'reply', 'to'];
 const CTYPES = ['lecture', 'workshop', 'webinar', 'forum'];
 
 function fsheet_() {
@@ -358,7 +358,8 @@ function doPost(e) {
       sh.appendRow([id, String(nt.when || new Date().toISOString()).slice(0, 16),
         String(nt.by || '').slice(0, 80), String(nt.screen || '').slice(0, 40),
         String(nt.where || '').slice(0, 120), String(nt.what || '').slice(0, 160),
-        String(nt.text || '').slice(0, 2000), 'open', '']);
+        String(nt.text || '').slice(0, 2000), 'open', '',
+        nt.to === 'dg' ? 'dg' : 'dev']);
     });
     return json_({ ok: true, ids: ids });
   }
