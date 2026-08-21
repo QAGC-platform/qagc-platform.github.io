@@ -5584,8 +5584,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           '<button class="btn" data-kgs="'+ref+':'+i+'">'+
             (k.gs?bi("فتح في Google Sheets ↗","Open in Google Sheets ↗"):bi("إنشاء ورقة Google Sheets","Create a Google Sheet"))+'</button>'+
           (k.gs?'<button class="btn" data-kgsync="'+ref+':'+i+'">'+bi("مزامنة من Sheets","Sync from Sheets")+'</button>':"")+
+          '<button class="btn'+(KGRID[ref+":"+i]?" btn-p":"")+'" data-kgrid="'+ref+':'+i+'">'+
+            (KGRID[ref+":"+i]?bi("إغلاق المحرر","Close the editor"):bi("تحرير مضمّن","Edit in place"))+'</button>'+
           '<span class="kerr" id="kerr-'+ref+'-'+i+'"></span>'+
         '</div>'+
+        (KGRID[ref+":"+i]?kpiGridHtml(ref,i,k):"")+
         table+'</div>';
     }).join("");
   }
@@ -5629,6 +5632,162 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   // ── the plan and the KPIs as live Google Sheets, through the bridge ──
   var PLAN_TAG_AR={"t-min":"الخطة الخمسية","t-dir":"الخطة السنوية","t-third":"الفئة الثالثة","t-none":""};
   var PENDING_GS={};   // ref -> {tab,url,title,unit,per,base,tgt,dir}: a KPI whose home is a sheet awaiting readings
+  var KGRID={};        // which cards have the embedded editor open
+  var KPUSH_T={};      // debounce timers for the write-back to Sheets
+  function kgStats(k){
+    var v=(k.values||[]).map(Number).filter(function(x){return !isNaN(x);});
+    if(!v.length) return null;
+    var sum=v.reduce(function(a,b){return a+b;},0);
+    return {SUM:+sum.toFixed(2), AVG:+(sum/v.length).toFixed(2),
+            MIN:Math.min.apply(null,v), MAX:Math.max.apply(null,v),
+            FIRST:v[0], LAST:v[v.length-1], N:v.length,
+            TARGET:(typeof kpiStats==="function" && kpiStats(k) && kpiStats(k).target!=null)?+kpiStats(k).target:null};
+  }
+  // a small honest formula language over the series: SUM, AVG, MIN, MAX,
+  // FIRST, LAST, N, TARGET and arithmetic. Nothing else evaluates.
+  function kgFormula(expr,k){
+    var st=kgStats(k); if(!st) return bi("لا قراءات.","No readings.");
+    var e=String(expr||"").toUpperCase().replace(/AVERAGE/g,"AVG").replace(/^=/,"");
+    ["SUM","AVG","MIN","MAX","FIRST","LAST","TARGET","N"].forEach(function(t){
+      e=e.split(t).join(st[t]===null?"NaN":String(st[t]));
+    });
+    if(!/^[0-9+\-*/(). %]+$/.test(e)) return bi("رموز غير معروفة.","Unknown tokens.");
+    try{
+      var r=Function('"use strict";return ('+e.replace(/%/g,"/100")+')')();
+      return isFinite(r)? String(+r.toFixed(2)) : bi("تعذّر الحساب.","Not computable.");
+    }catch(_){ return bi("صيغة غير صالحة.","Invalid formula."); }
+  }
+  function kpiGridHtml(ref,i,k){
+    var key=ref+":"+i, st=kgStats(k);
+    var chips=st?[["المجموع","SUM",st.SUM],["المتوسط","AVG",st.AVG],["الأدنى","MIN",st.MIN],
+      ["الأعلى","MAX",st.MAX],["الأخيرة","LAST",st.LAST]]
+      .concat(st.TARGET!=null?[["% من المستهدف","%",+((st.LAST/st.TARGET)*100).toFixed(1)+"%"]]:[])
+      .map(function(c){return '<span class="pill p-neutral" title="'+c[1]+'">'+c[0]+' <b class="tnum">'+c[2]+'</b></span>';}).join(" "):"";
+    var rows=(k.labels||[]).map(function(lb,j){
+      return '<div style="display:flex;gap:6px;align-items:center;margin-top:4px">'+
+        '<span class="tnum" style="width:22px;font-size:var(--t-xs);color:var(--ink-4)">'+(j+1)+'</span>'+
+        '<input data-kgc="'+key+':'+j+':l" value="'+String(lb).replace(/"/g,"&quot;")+'" style="flex:2;min-width:90px">'+
+        '<input data-kgc="'+key+':'+j+':v" type="number" step="any" value="'+k.values[j]+'" style="flex:1;min-width:80px" class="tnum">'+
+        '<input data-kgc="'+key+':'+j+':n" value="'+String((k.notes&&k.notes[j])||"").replace(/"/g,"&quot;")+'" placeholder="'+(isAr()?"ملاحظة":"note")+'" style="flex:2;min-width:90px">'+
+        '<button class="mini no" data-kgdel="'+key+':'+j+'" style="padding:0 7px">✕</button></div>';
+    }).join("");
+    return '<div style="border:1px solid var(--rule);border-radius:10px;padding:12px;margin-top:10px" data-kgridbox="'+key+'">'+
+      '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+
+        '<b style="font-size:var(--t-sm)">'+bi("المحرر المضمّن","The embedded editor")+'</b>'+chips+
+        '<span class="kerr" id="kgsync-'+ref+'-'+i+'" style="margin-inline-start:auto">'+
+          (k.gs?bi("يُدفع إلى Sheets تلقائياً بعد كل تعديل.","Auto-pushed to Sheets after every edit."):bi("محلي — أنشئي ورقة Sheets ليُدفع إليها.","Local — create the sheet to mirror it."))+'</span></div>'+
+      '<div style="display:flex;gap:6px;font-size:var(--t-xs);color:var(--ink-4);margin-top:8px">'+
+        '<span style="width:22px"></span><span style="flex:2;min-width:90px">'+bi("الفترة","Period")+'</span>'+
+        '<span style="flex:1;min-width:80px">'+bi("القيمة","Value")+'</span>'+
+        '<span style="flex:2;min-width:90px">'+bi("ملاحظة","Note")+'</span><span style="width:28px"></span></div>'+
+      rows+
+      '<div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap">'+
+        '<button class="btn" data-kgadd="'+key+'" style="padding:5px 14px">'+bi("＋ صف","＋ Row")+'</button>'+
+        '<input data-kgf="'+key+'" placeholder="'+(isAr()?"معادلة: ‎=AVG*2 أو ‎=LAST/TARGET%":"formula: =AVG*2 or =LAST/TARGET%")+'" style="flex:1;min-width:170px;direction:ltr;text-align:start">'+
+        '<span class="pill p-good" data-kgfout="'+key+'" style="min-width:60px;justify-content:center">—</span>'+
+      '</div></div>';
+  }
+  function kgCommit(ref,i){
+    refreshKpiPane(ref);
+    var k=(EXTRA[ref]||[])[i]; if(!k||!k.gs) return;
+    var key=ref+":"+i;
+    clearTimeout(KPUSH_T[key]);
+    var el0=document.getElementById("kgsync-"+ref+"-"+i);
+    if(el0) el0.innerHTML=bi("سيُدفع إلى Sheets…","Will push to Sheets…");
+    KPUSH_T[key]=setTimeout(function(){ kgPush(ref,i); },1500);
+  }
+  function kgPush(ref,i){
+    var k=(EXTRA[ref]||[])[i]; if(!k||!k.gs) return;
+    var cfg=dgCalCfg(); if(!cfg) return;
+    var el=document.getElementById("kgsync-"+ref+"-"+i);
+    if(el) el.innerHTML=bi("جارٍ الدفع إلى Sheets…","Pushing to Sheets…");
+    fetch(cfg.url+"?key="+encodeURIComponent(cfg.key), {method:"POST",
+      body:JSON.stringify({fn:"writeKpi", tab:k.gs.tab, labels:k.labels, values:k.values, notes:k.notes||[]})})
+      .then(function(r){return r.json();})
+      .then(function(j){
+        var el2=document.getElementById("kgsync-"+ref+"-"+i);
+        if(j.ok){
+          if(el2) el2.innerHTML=bi("مُزامن مع Sheets ✓","Mirrored to Sheets ✓");
+          // record the stamp our own write caused, so the poll does not re-pull it
+          return fetch(cfg.url+"?key="+encodeURIComponent(cfg.key)+"&fn=changes")
+            .then(function(r){return r.json();})
+            .then(function(c){ if(c.ok&&c.stamps&&c.stamps[k.gs.tab]) k.gsStamp=c.stamps[k.gs.tab]; });
+        }
+        if(el2) el2.innerHTML=bi("تعذّر الدفع: ","Push failed: ")+(j.error||"");
+      }).catch(function(){
+        var el3=document.getElementById("kgsync-"+ref+"-"+i);
+        if(el3) el3.innerHTML=bi("تعذّر الاتصال — سيُعاد عند التعديل التالي.","Offline — retried on the next edit.");
+      });
+  }
+  // ── what changed in Sheets flows in by itself: a light stamp check on a loop ──
+  function kgPoll(ev){
+    // the timer respects a hidden tab; an explicit crank (event) always runs
+    if(document.hidden && !ev) return;
+    var cfg=dgCalCfg(); if(!cfg) return;
+    var linked=[];
+    Object.keys(EXTRA).forEach(function(ref){
+      (EXTRA[ref]||[]).forEach(function(k,i){ if(k.gs) linked.push({ref:ref,i:i,k:k}); });
+    });
+    if(!linked.length) return;
+    fetch(cfg.url+"?key="+encodeURIComponent(cfg.key)+"&fn=changes")
+      .then(function(r){return r.json();})
+      .then(function(j){
+        if(!j.ok||!j.stamps) return;
+        linked.forEach(function(x){
+          var st=j.stamps[x.k.gs.tab];
+          if(!st || st===x.k.gsStamp) return;
+          fetch(cfg.url+"?key="+encodeURIComponent(cfg.key)+"&fn=readKpi&tab="+encodeURIComponent(x.k.gs.tab))
+            .then(function(r){return r.json();})
+            .then(function(d){
+              if(!d.ok||!d.labels) return;
+              x.k.labels=d.labels; x.k.values=d.values; x.k.notes=d.notes;
+              x.k.gsStamp=st; x.k.src="Google Sheets";
+              refreshKpiPane(x.ref);
+              var el=document.getElementById("kgsync-"+x.ref+"-"+x.i);
+              if(el) el.innerHTML=bi("تحدّث من Sheets الآن ✓","Updated from Sheets just now ✓");
+            }).catch(function(){});
+        });
+      }).catch(function(){});
+  }
+  setInterval(kgPoll, 30000);
+  document.addEventListener("qagc-poll-sheets", kgPoll);   // a hand-crank for tests and refresh buttons
+  document.addEventListener("change",function(e){
+    var c=e.target.closest?e.target.closest("[data-kgc]"):null;
+    if(c){
+      var q=c.dataset.kgc.split(":"), ref=q[0], i=+q[1], j=+q[2], f=q[3];
+      var k=(EXTRA[ref]||[])[i]; if(!k) return;
+      if(f==="l") k.labels[j]=c.value;
+      if(f==="v") k.values[j]=parseFloat(c.value)||0;
+      if(f==="n"){ k.notes=k.notes||[]; k.notes[j]=c.value; }
+      kgCommit(ref,i); return;
+    }
+    var fx=e.target.closest?e.target.closest("[data-kgf]"):null;
+    if(fx){
+      var out=document.querySelector('[data-kgfout="'+fx.dataset.kgf+'"]');
+      var q2=fx.dataset.kgf.split(":");
+      var k2=(EXTRA[q2[0]]||[])[+q2[1]];
+      if(out&&k2) out.innerHTML=kgFormula(fx.value,k2);
+      return;
+    }
+  });
+  document.addEventListener("click",function(e){
+    var g=e.target.closest("[data-kgrid]");
+    if(g){ var key=g.dataset.kgrid; KGRID[key]=!KGRID[key]; refreshKpiPane(key.split(":")[0]); return; }
+    var ad=e.target.closest("[data-kgadd]");
+    if(ad){
+      var q=ad.dataset.kgadd.split(":"), k=(EXTRA[q[0]]||[])[+q[1]]; if(!k) return;
+      k.labels.push(isAr()?"فترة جديدة":"new period"); k.values.push(0);
+      (k.notes=k.notes||[]).push("");
+      kgCommit(q[0],+q[1]); return;
+    }
+    var dl=e.target.closest("[data-kgdel]");
+    if(dl){
+      var q3=dl.dataset.kgdel.split(":"), k3=(EXTRA[q3[0]]||[])[+q3[1]]; if(!k3) return;
+      k3.labels.splice(+q3[2],1); k3.values.splice(+q3[2],1);
+      if(k3.notes) k3.notes.splice(+q3[2],1);
+      kgCommit(q3[0],+q3[1]); return;
+    }
+  });
   // the plan's sheet, once published, stays one click away across sessions
   try{
     var savedPlanSheet=localStorage.getItem("qagcPlanSheet");

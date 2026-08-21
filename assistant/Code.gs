@@ -20,6 +20,19 @@
 
 const PROPS = PropertiesService.getScriptProperties();
 
+// every edit in the KPI spreadsheet stamps its tab, so the platform can ask
+// "what changed?" cheaply and pull only that. Installed by ensureKpiTrigger_().
+function onKpiEdit(e) {
+  try {
+    const name = e.range.getSheet().getName();
+    PROPS.setProperty('KPI_STAMP_' + name, new Date().toISOString());
+  } catch (_) {}
+}
+function ensureKpiTrigger_(ssId) {
+  const has = ScriptApp.getProjectTriggers().some(t => t.getHandlerFunction() === 'onKpiEdit');
+  if (!has) ScriptApp.newTrigger('onKpiEdit').forSpreadsheet(ssId).onEdit().create();
+}
+
 function setup() {
   if (!PROPS.getProperty('QAGC_API_KEY')) {
     PROPS.setProperty('QAGC_API_KEY',
@@ -154,6 +167,15 @@ function doGet(e) {
     const head = rows.shift();
     return json_({ ok: true, items: rows.map(r => Object.fromEntries(head.map((h, i) => [h, r[i]]))) });
   }
+  if (fn === 'changes') {
+    // the tabs' last-edit stamps — one light call tells the platform what to re-pull
+    const all = PROPS.getProperties();
+    const stamps = {};
+    Object.keys(all).forEach(k => {
+      if (k.indexOf('KPI_STAMP_') === 0) stamps[k.slice(10)] = all[k];
+    });
+    return json_({ ok: true, stamps: stamps });
+  }
   if (fn === 'readKpi') {
     // the platform pulls what the owner typed into the KPI's tab
     const tab = String(e.parameter.tab || '').trim();
@@ -230,6 +252,27 @@ function doPost(e) {
       message: 'أُدرج النشاط في الوارد — يظهر على لوحة CPD كموعد مبدئي فور إدراجه في المنصة.' });
   }
 
+  // ── the platform's embedded grid writes its rows back to the KPI's tab ──
+  if (fn === 'writeKpi') {
+    const tab = String(body.tab || '').trim();
+    if (!tab) return json_({ ok: false, error: 'tab is required' });
+    const labels = Array.isArray(body.labels) ? body.labels : [];
+    const values = Array.isArray(body.values) ? body.values : [];
+    const notes = Array.isArray(body.notes) ? body.notes : [];
+    const ss = namedSS_('QAGC_KPI_SSID', 'مؤشرات الأداء — QAGC');
+    ensureKpiTrigger_(ss.getId());
+    const sh = ss.getSheetByName(tab);
+    if (!sh) return json_({ ok: false, error: 'no such KPI tab' });
+    const last = sh.getLastRow();
+    if (last > 1) sh.getRange(2, 1, last - 1, 3).clearContent();
+    if (labels.length) {
+      sh.getRange(2, 1, labels.length, 3).setValues(labels.map((lb, i) =>
+        [String(lb), values[i] === undefined || values[i] === '' ? '' : Number(values[i]), String(notes[i] || '')]));
+    }
+    PROPS.setProperty('KPI_STAMP_' + tab, new Date().toISOString());
+    return json_({ ok: true, tab: tab, rows: labels.length });
+  }
+
   // ── the annual plan, published as a live Google Sheet ──
   if (fn === 'exportPlan') {
     const rows = Array.isArray(body.rows) ? body.rows.slice(0, 200) : [];
@@ -254,6 +297,7 @@ function doPost(e) {
     const title = String(body.title || '').trim();
     if (!title) return json_({ ok: false, error: 'title is required' });
     const ss = namedSS_('QAGC_KPI_SSID', 'مؤشرات الأداء — QAGC');
+    ensureKpiTrigger_(ss.getId());
     const tab = title.slice(0, 80);
     const existed = !!ss.getSheetByName(tab);
     const sh = tabOf_(ss, tab, ['الفترة', 'القيمة', 'ملاحظات']);
