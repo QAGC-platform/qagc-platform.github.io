@@ -2727,6 +2727,7 @@ body.editmode .screen .head .eyebrow span[lang]:focus{
           <button class="btn btn-p" id="dgCalRefresh"><span lang="ar">تحديث الجدول</span><span lang="en">Refresh</span></button>
           <span id="dgCalStatus" style="font-size:var(--t-sm)"></span>
         </div>
+        <div id="dgFreeSlots" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:var(--sp-2)"></div>
         <div id="dgCalList" style="margin-top:var(--sp-3)"></div>
         <div class="asnform" id="dgCalForm" style="margin-top:var(--sp-3)">
           <div style="font-size:var(--t-sm);font-weight:700"><span lang="ar">جدولة موعد في تقويمها</span><span lang="en">Schedule a meeting in her calendar</span></div>
@@ -2744,6 +2745,7 @@ body.editmode .screen .head .eyebrow span[lang]:focus{
             <span class="fld" style="grid-column:1/-1"><label><span lang="ar">ملاحظة</span><span lang="en">Note</span></label>
               <input id="dgc-note" placeholder="جدول الأعمال باختصار"></span>
           </div>
+          <div id="dgcClash" hidden style="margin-top:var(--sp-2)"></div>
           <label style="display:inline-flex;gap:7px;align-items:center;font-size:var(--t-sm);margin-top:var(--sp-2);cursor:pointer">
             <input type="checkbox" id="dgc-priv">
             <span><span lang="ar">🔒 خاص — تفاصيله للمديرة العامة وحدها، والآخرون يرون «مشغول»</span><span lang="en">🔒 Private — details for the DG alone; others see "busy"</span></span></label>
@@ -3661,6 +3663,7 @@ body.editmode .screen .head .eyebrow span[lang]:focus{
           <span class="ccal-view">
             <button class="fchip on" data-ccv="year"><span lang="ar">السنة كاملة</span><span lang="en">Whole year</span></button>
             <button class="fchip" data-ccv="month"><span lang="ar">شهراً بشهر</span><span lang="en">Month by month</span></button>
+            <button class="fchip" data-ccv="mine"><span lang="ar">تقويمي</span><span lang="en">My calendar</span></button>
           </span>
           <span class="ccal-year"><button class="dcm-nav" data-ccy="-1">‹</button>
             <b id="ccalYear" class="tnum">2026</b>
@@ -9354,13 +9357,14 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
 
   // ══ the centre-calendar screen: the whole year, every category, filtered ══
   var CCAL_CATS={
+    lv2: {l:["استحقاقات مهامي","My deadlines"],        c:"#3f7d80", cd:"#8cc4c6"},
     lv:  {l:["إجازات معتمدة","Approved leave"],        c:"#4a63a8", cd:"#8fa3dd"},
     hol: {l:["العطل والمناسبات","Holidays & occasions"],c:"#a84a5b", cd:"#dd8f9c"},
     cpdC:{l:["CPD مؤكد","CPD confirmed"],              c:"#1c6b3f", cd:"#79c299"},
     cpdT:{l:["CPD مبدئي","CPD provisional"],           c:"#b08a2e", cd:"#d9b968"},
     act: {l:["نشاطات واجتماعات","Activities & meetings"],c:"#3f7d80", cd:"#8cc4c6"}
   };
-  var CCAL_ON={lv:true,hol:true,cpdC:true,cpdT:true,act:true};
+  var CCAL_ON={lv:true,lv2:true,hol:true,cpdC:true,cpdT:true,act:true};
   var CCAL_YEAR=2026, CCAL_SEL=null, CCAL_VIEW="year", CCAL_MON_IDX=10;   // the in-world today is November 2026
   function ccalColor(cat){
     var dark=window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches &&
@@ -9376,7 +9380,31 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       if(Object.keys(map).length>800) return;   // a runaway range never floods the year
     }
   }
+  function ccalMineItems(){
+    var map={}, me=(typeof myPerson==="function")?myPerson():null;
+    if(!me) return map;
+    AGENDAS.forEach(function(a){
+      if(!a.date) return;
+      // a meeting concerns its preparer by name — and the DG sees them all
+      if(ROLE==="dg" || a.asg===me.id)
+        ccalSpan(map,a.date,a.date,{cat:"act", t:"اجتماع: "+a.title, agenda:a});
+    });
+    (me.steps||[]).forEach(function(st){
+      if(st.due) ccalSpan(map,st.due,st.due,{cat:"lv2", t:"استحقاق: "+(isAr()?st.t[0]:st.t[1])});
+    });
+    LVREQ.forEach(function(l){
+      if(l.byId===me.id && l.state==="approved") ccalSpan(map,l.from,l.to,{cat:"lv", t:"إجازتي المعتمدة"});
+    });
+    LEAVE.forEach(function(l){
+      if(l.status==="approved" && l.who[0]===me.who[0]) ccalSpan(map,l.start,l.end,{cat:"lv", t:"إجازتي المعتمدة"});
+    });
+    CPD.forEach(function(ev){
+      ccalSpan(map,ev.from,ev.to||ev.from,{cat:ev.confirmed?"cpdC":"cpdT", t:ev.t[0]});
+    });
+    return map;
+  }
   function ccalItems(){
+    if(CCAL_VIEW==="mine") return ccalMineItems();
     var map={};
     // approved leave, both the seeded blocks and requests decided in-session
     LEAVE.filter(function(l){return l.status==="approved";}).forEach(function(l){
@@ -9402,7 +9430,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var map=ccalItems();
     var yEl=document.getElementById("ccalYear"); if(yEl) yEl.textContent=String(CCAL_YEAR);
     // the filter chips carry this year's counts
-    var counts={lv:0,hol:0,cpdC:0,cpdT:0,act:0};
+    var counts={lv:0,lv2:0,hol:0,cpdC:0,cpdT:0,act:0};
     Object.keys(map).forEach(function(k){
       if(+k.slice(0,4)!==CCAL_YEAR) return;
       map[k].forEach(function(it){ counts[it.cat]++; });
@@ -9414,8 +9442,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         bi(CCAL_CATS[cat].l[0],CCAL_CATS[cat].l[1])+' <b class="tnum">'+counts[cat]+'</b></span>';
     }).join("");
     var todayS="2026-11-20";
-    host.style.gridTemplateColumns = CCAL_VIEW==="month" ? "1fr" : "";
-    if(CCAL_VIEW==="month"){
+    host.style.gridTemplateColumns = (CCAL_VIEW==="month"||CCAL_VIEW==="mine") ? "1fr" : "";
+    if(CCAL_VIEW==="month"||CCAL_VIEW==="mine"){
       // one large month, its days carrying full chips rather than dots
       var m0=CCAL_MON_IDX;
       var first=new Date(CCAL_YEAR,m0,1), startDow=first.getDay();
@@ -9483,8 +9511,17 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         det.hidden=false;
         det.innerHTML='<b style="font-size:var(--t-sm)">'+bi(DAY_AR[wd],DAY_EN[wd])+' · <span class="tnum">'+CCAL_SEL+'</span></b>'+
           (items.length?items.map(function(it){
-            return '<div class="ddrow"><span class="ddcat" style="background:'+ccalColor(it.cat)+'">'+
-              bi(CCAL_CATS[it.cat].l[0],CCAL_CATS[it.cat].l[1])+'</span><span>'+it.t+'</span></div>';
+            var extra="";
+            if(it.agenda){
+              // the meeting unfolds: its agenda, its preparer, item by item
+              extra='<div style="margin:4px 0 6px;padding:8px 12px;border:1px solid var(--rule);border-radius:8px;background:var(--surface-2)">'+
+                (it.agenda.asgName?'<div class="sm"><b>'+bi("يحضّره: ","Prepared by: ")+'</b>'+it.agenda.asgName+'</div>':"")+
+                (it.agenda.items?'<div class="sm" style="white-space:pre-line;margin-top:3px"><b>'+bi("جدول الأعمال:","Agenda:")+'</b>\n'+it.agenda.items+'</div>':"")+
+                '</div>';
+            }
+            return '<div class="ddrow" style="flex-wrap:wrap"><span class="ddcat" style="background:'+ccalColor(it.cat)+'">'+
+              bi(CCAL_CATS[it.cat].l[0],CCAL_CATS[it.cat].l[1])+'</span><span>'+it.t+'</span>'+
+              (extra?'<span style="flex-basis:100%">'+extra+'</span>':"")+'</div>';
           }).join(""):'<div class="sm">'+bi("لا شيء بعد الترشيح.","Nothing after filtering.")+'</div>');
       }
     }
@@ -9498,6 +9535,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var vb=e.target.closest("[data-ccv]");
     if(vb){
       CCAL_VIEW=vb.dataset.ccv;
+      CCAL_SEL=null;
       document.querySelectorAll("[data-ccv]").forEach(function(x){x.classList.toggle("on",x===vb);});
       drawCcal(); return;
     }
@@ -9634,7 +9672,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     }
     var form=document.getElementById("agForm");
     if(form) form.hidden=!canAssignAgenda();
-    host.innerHTML=AGENDAS.length? AGENDAS.slice().reverse().map(function(a){
+    var sorted=AGENDAS.slice().sort(function(a,b){
+      var ad=a.date||"9999", bd=b.date||"9999";
+      return ad<bd?-1:ad>bd?1:0;
+    });
+    host.innerHTML=sorted.length? sorted.map(function(a){
       return '<div class="subrow" style="grid-template-columns:minmax(0,1fr) auto">'+
         '<span><span class="st2">'+a.title+'</span>'+
           '<span class="sm"><span class="tnum">'+(a.date||"—")+'</span> · '+bi(a.by[0],a.by[1])+
@@ -9650,6 +9692,15 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           ((ROLE==="dg"||ROLE==="coord")?'<button class="mini no" data-agdel="'+a.id+'">✕</button>':"")+
         '</span></div>';
     }).join("") : '<div class="subempty">'+bi("لا جداول أعمال بعد.","No agendas yet.")+'</div>';
+  }
+  function agendaSyncCal(a){
+    // the meeting exists in one more place: the centre's Google calendar
+    if(!a.date) return;
+    var cfg=dgCalCfg(); if(!cfg) return;
+    fetch(cfg.url+"?key="+encodeURIComponent(cfg.key), {method:"POST",
+      body:JSON.stringify({fn:"addEvent", which:"dir", title:"اجتماع: "+a.title,
+        date:a.date, from:"10:00", to:"11:00",
+        loc:"", note:String(a.items||""), who:"جداول الأعمال"})}).catch(function(){});
   }
   function agendaLand(a){
     if(!a.asg) return;
@@ -9672,7 +9723,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         items:(document.getElementById("ag-items")||{}).value||"",
         by:(typeof SESSION!=="undefined"&&SESSION&&typeof acctOf==="function"&&acctOf(SESSION.u))?acctOf(SESSION.u).who:["—","—"],
         asg:sel?sel.value:"", asgName:pA?(isAr()?pA.who[0]:pA.who[1]):""};
-      AGENDAS.push(a); agendaLand(a);
+      AGENDAS.push(a); agendaLand(a); agendaSyncCal(a);
       t.value=""; document.getElementById("ag-items").value=""; if(sel) sel.value="";
       if(err){ err.innerHTML=bi("حُفظ الجدول"+(a.asg?" وأُسند.":"."),"Saved"+(a.asg?" and assigned.":".")); }
       drawAgendas(); return;
@@ -9890,7 +9941,71 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   var DAY_AR=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
   var DAY_EN=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  var DGCAL_ITEMS=[];
+  function dgcClashCheck(){
+    var w=document.getElementById("dgcClash"); if(!w) return;
+    var d=(document.getElementById("dgc-date")||{}).value||"";
+    var f=(document.getElementById("dgc-from")||{}).value||"";
+    var t=(document.getElementById("dgc-to")||{}).value||"";
+    if(!d||!f||!t){ w.hidden=true; return; }
+    var hits=DGCAL_ITEMS.filter(function(ev){
+      if(String(ev.start).slice(0,10)!==d) return false;
+      if(ev.allday) return true;
+      var s=String(ev.start).slice(11,16), e2=String(ev.end).slice(11,16);
+      return f<e2 && t>s;
+    });
+    if(!hits.length){ w.hidden=true; w.innerHTML=""; return; }
+    w.hidden=false;
+    w.innerHTML='<div class="retnote" style="display:block"><b>'+bi("⚠ تعارض في جدولها: ","⚠ Clash in her schedule: ")+'</b>'+
+      hits.map(function(ev){ return String(ev.title)+(ev.allday?"":" ("+String(ev.start).slice(11,16)+"–"+String(ev.end).slice(11,16)+")"); }).join(" · ")+
+      '</div>';
+  }
+  document.addEventListener("change",function(e){
+    if(e.target && ["dgc-date","dgc-from","dgc-to"].indexOf(e.target.id)>=0) dgcClashCheck();
+  });
+  function dgFreeSlots(){
+    var host=document.getElementById("dgFreeSlots"); if(!host) return;
+    var slots=[], now=new Date();
+    for(var d=0; d<7 && slots.length<3; d++){
+      var day=new Date(now.getTime()+d*86400000);
+      var dow=day.getDay(); if(dow===5||dow===6) continue;          // the Omani weekend
+      var ds=day.toISOString().slice(0,10);
+      var busy=DGCAL_ITEMS.filter(function(ev){return String(ev.start).slice(0,10)===ds;});
+      if(busy.some(function(ev){return ev.allday;})) continue;
+      for(var h=9; h<14 && slots.length<3; h++){
+        var f=String(h).padStart(2,"0")+":00", t=String(h+1).padStart(2,"0")+":00";
+        var clash=busy.some(function(ev){
+          return f<String(ev.end).slice(11,16) && t>String(ev.start).slice(11,16); });
+        if(!clash){ slots.push({d:ds,f:f,t:t,dow:dow}); break; }   // one suggestion per day
+      }
+    }
+    host.innerHTML=slots.length
+      ? '<span class="sm" style="align-self:center">'+bi("أقرب أوقات فارغة:","Nearest free hours:")+'</span>'+
+        slots.map(function(sl){
+          return '<button class="fchip" data-dgslot="'+sl.d+':'+sl.f+':'+sl.t+'">'+
+            bi(DAY_AR[sl.dow],DAY_EN[sl.dow].slice(0,3))+' <span class="tnum">'+sl.d.slice(5)+' · '+sl.f+'</span></button>';
+        }).join("")
+      : "";
+  }
+  document.addEventListener("click",function(e){
+    var sl=e.target.closest("[data-dgslot]"); if(!sl) return;
+    var parts=sl.dataset.dgslot.split(":");   // date : HH : 00 : HH : 00
+    document.getElementById("dgc-date").value=parts[0];
+    document.getElementById("dgc-from").value=parts[1]+":"+parts[2];
+    document.getElementById("dgc-to").value=parts[3]+":"+parts[4];
+    dgcClashCheck();
+  });
   function renderDgCal(j){
+    DGCAL_ITEMS=j.items||[];
+    dgcClashCheck();
+    dgFreeSlots();
+    var wk=document.getElementById("coordDgWk");
+    if(wk){
+      var now2=new Date(), in7=new Date(now2.getTime()+7*86400000).toISOString().slice(0,10);
+      var today2=now2.toISOString().slice(0,10);
+      wk.textContent=String(DGCAL_ITEMS.filter(function(ev){
+        var d=String(ev.start).slice(0,10); return d>=today2 && d<=in7; }).length);
+    }
     var host=document.getElementById("dgCalList"); if(!host) return;
     var items=j.items||[];
     if(!items.length){
@@ -10061,8 +10176,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           '<span class="acts">'+
             '<button class="mini" data-airview="'+encodeURIComponent(it.when)+'">'+
               (AI_RVIEW[it.when]?bi("إخفاء","Hide"):bi("عرض","View"))+'</button>'+
-            '<button class="mini yes" data-airpptx="'+rk+'">PowerPoint</button>'+
-            '<button class="mini yes" data-airdocx="'+rk+'">Word</button>'+
+            '<button class="mini yes" data-airdoc="'+rk+'">'+bi("ملف Word شامل","Full Word file")+'</button>'+
+            '<button class="mini" data-airprint="'+rk+'">'+bi("طباعة / PDF","Print / PDF")+'</button>'+
             '<span class="kerr" data-airerr="'+encodeURIComponent(it.when)+'"></span>'+
             editBtn+hideBtn+'</span>'+
         editForm+'</div>';
@@ -10153,11 +10268,67 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       h.innerHTML='<div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M8 8h8M8 12h6"/></svg></span><div>'+
         '<span class="ceye">'+bi("أعدّه المساعد الذكي ونشرته المديرة العامة","Prepared by the assistant, published by the DG")+'</span>'+
         '<h2>'+String(DIGEST.title)+'</h2></div></div></div>'+
+        '<div style="display:flex;gap:8px;margin-bottom:6px"><button class="mini yes" data-digdoc>'+bi("تنزيل الموجز الشامل (Word)","Full digest (Word)")+'</button></div>'+
         aiKindSections(DIGEST.body).map(function(sc){
           return (sc.h?'<p class="subh">'+sc.h+'</p>':"")+
             sc.lines.map(function(l){return '<div class="sm" style="padding:2px 0">• '+l+'</div>';}).join("");
         }).join("");
     });
+  }
+  // ── the comprehensive report: the platform compiles its own numbers,
+  //    then appends whatever sections the assistant wrote. Saved as HTML
+  //    that Word opens natively (.doc) — always an openable file. ──
+  function compileReportHtml(title, gptSecs){
+    var today="2026-11-20";
+    var esc=xmlEsc;
+    function h2(t){ return '<h2 style="color:#14522E;font-size:16pt;margin:18pt 0 6pt">'+esc(t)+'</h2>'; }
+    function li(t){ return '<p style="margin:2pt 0 2pt 0">• '+esc(t)+'</p>'; }
+    // level-by-level performance
+    var lvRows="";
+    [["المركز","center"],["الدوائر","directorate"],["الأقسام","department"]].forEach(function(L){
+      var xs=PLAN2027.filter(function(o){return o.l===L[1];});
+      var avg=xs.length?Math.round(xs.reduce(function(a,o){return a+progOf(o);},0)/xs.length):0;
+      var risk=xs.filter(function(o){return progOf(o)<40;}).length;
+      lvRows+='<tr><td style="border:1pt solid #C9C1A8;padding:4pt 8pt">'+L[0]+'</td>'+
+        '<td style="border:1pt solid #C9C1A8;padding:4pt 8pt;text-align:center">'+xs.length+'</td>'+
+        '<td style="border:1pt solid #C9C1A8;padding:4pt 8pt;text-align:center">'+avg+'%</td>'+
+        '<td style="border:1pt solid #C9C1A8;padding:4pt 8pt;text-align:center">'+risk+'</td></tr>';
+    });
+    // things to do
+    var todo="";
+    var over=[];
+    STAFF.forEach(function(p){(p.steps||[]).forEach(function(st){
+      if(st.st==="overdue") over.push((isAr()?st.t[0]:st.t[1])+" — "+(isAr()?p.who[0]:p.who[1]));});});
+    over.slice(0,8).forEach(function(t){ todo+=li("متأخرة: "+t); });
+    subsPending().slice(0,8).forEach(function(x){ todo+=li("بانتظار قرار: "+x.title[0]+" — "+x.by[0]); });
+    LVREQ.filter(function(l){return l.state==="pending";}).forEach(function(l){
+      todo+=li("طلب إجازة معلّق: "+l.who[0]+" ("+l.from+" → "+l.to+")"); });
+    if(!todo) todo=li("لا متأخرات ولا قرارات معلّقة.");
+    // upcoming
+    var up="";
+    CPD.filter(function(ev){return ev.from>=today;}).slice(0,6).forEach(function(ev){
+      up+=li(ev.from+" — "+ev.t[0]+(ev.confirmed?" (مؤكد)":" (مبدئي)")); });
+    AGENDAS.filter(function(a){return a.date&&a.date>=today;}).forEach(function(a){
+      up+=li(a.date+" — اجتماع: "+a.title); });
+    if(!up) up=li("لا مواعيد قادمة مسجّلة.");
+    var body='<div dir="rtl" style="font-family:Arial;color:#26251F">'+
+      '<h1 style="color:#14522E;font-size:22pt;margin:0 0 4pt">'+esc(title)+'</h1>'+
+      '<p style="color:#6D6754;margin:0 0 14pt">مركز ضمان الجودة والحوكمة · '+today+' · مُجمَّع من بيانات المنصة الحية</p>'+
+      h2("الأداء مستوىً بمستوى")+
+      '<table style="border-collapse:collapse;width:100%"><tr>'+
+        '<th style="border:1pt solid #C9C1A8;background:#E7EFE6;padding:4pt 8pt">المستوى</th>'+
+        '<th style="border:1pt solid #C9C1A8;background:#E7EFE6;padding:4pt 8pt">الأهداف</th>'+
+        '<th style="border:1pt solid #C9C1A8;background:#E7EFE6;padding:4pt 8pt">متوسط التقدم</th>'+
+        '<th style="border:1pt solid #C9C1A8;background:#E7EFE6;padding:4pt 8pt">تحت 40%</th></tr>'+lvRows+'</table>'+
+      h2("مطلوب إنجازه")+todo+
+      h2("القادم في التقويم")+up;
+    (gptSecs||[]).forEach(function(sc){
+      body+=h2(sc.h||"من المساعد الذكي");
+      sc.lines.forEach(function(l){ body+=li(l); });
+    });
+    body+='<p style="color:#6D6754;margin-top:18pt;font-size:9pt">أُنشئ من المنصة — الأرقام لحظة التوليد.</p></div>';
+    return '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">'+
+      '<head><meta charset="utf-8"><title>'+esc(title)+'</title></head><body>'+body+'</body></html>';
   }
   // ── the report becomes real files: a deck and a document, built in the page ──
   function xmlEsc(t){ return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
@@ -10290,8 +10461,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(ag){
       var evA=JSON.parse(decodeURIComponent(ag.dataset.aiagenda));
       AI_IMPORTED[evA.when]=true;
-      AGENDAS.push({id:"AG"+(++AGSEQ), title:String(evA.title||""), date:String(evA.due||"").slice(0,10),
-        items:String(evA.note||""), by:["المساعد الذكي","The assistant"], asg:"", asgName:""});
+      var agNew={id:"AG"+(++AGSEQ), title:String(evA.title||""), date:String(evA.due||"").slice(0,10),
+        items:String(evA.note||""), by:["المساعد الذكي","The assistant"], asg:"", asgName:""};
+      AGENDAS.push(agNew); agendaSyncCal(agNew);
       drawAgendas(); aiFetchInbox(); return;
     }
     var dg1=e.target.closest("[data-aidigest]");
@@ -10304,28 +10476,28 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       });
       return;
     }
-    var rv=e.target.closest("[data-airview]");
-    if(rv){ var kw=decodeURIComponent(rv.dataset.airview); AI_RVIEW[kw]=!AI_RVIEW[kw]; renderAiInbox(AI_LAST); return; }
-    var rp=e.target.closest("[data-airpptx]");
-    if(rp){
-      var itR=JSON.parse(decodeURIComponent(rp.dataset.airpptx));
-      var errR=document.querySelector('[data-airerr="'+encodeURIComponent(itR.when)+'"]');
-      if(errR) errR.innerHTML=bi("جارٍ البناء…","Building…");
-      reportPptx(String(itR.title||"تقرير"), aiKindSections(itR.note)).then(function(b){
-        dlBlob("qagc-report.pptx", b);
-        if(errR) errR.innerHTML="";
-      }).catch(function(e2){ if(errR) errR.innerHTML=bi("تعذّر البناء: ","Failed: ")+(e2&&e2.message||""); });
+    if(e.target.closest("[data-digdoc]")){
+      if(DIGEST){
+        var htmlD=compileReportHtml(String(DIGEST.title||"الموجز الأسبوعي"), aiKindSections(DIGEST.body));
+        dlBlob("qagc-digest.doc", new Blob(["\ufeff"+htmlD],{type:"application/msword"}));
+      }
       return;
     }
-    var rw=e.target.closest("[data-airdocx]");
+    var rv=e.target.closest("[data-airview]");
+    if(rv){ var kw=decodeURIComponent(rv.dataset.airview); AI_RVIEW[kw]=!AI_RVIEW[kw]; renderAiInbox(AI_LAST); return; }
+    var rp=e.target.closest("[data-airdoc]");
+    if(rp){
+      var itR=JSON.parse(decodeURIComponent(rp.dataset.airdoc));
+      var html=compileReportHtml(String(itR.title||"تقرير دوري"), aiKindSections(itR.note));
+      dlBlob("qagc-report.doc", new Blob(["\ufeff"+html],{type:"application/msword"}));
+      return;
+    }
+    var rw=e.target.closest("[data-airprint]");
     if(rw){
-      var itW=JSON.parse(decodeURIComponent(rw.dataset.airdocx));
-      var errW=document.querySelector('[data-airerr="'+encodeURIComponent(itW.when)+'"]');
-      if(errW) errW.innerHTML=bi("جارٍ البناء…","Building…");
-      reportDocx(String(itW.title||"تقرير"), aiKindSections(itW.note)).then(function(b){
-        dlBlob("qagc-report.docx", b);
-        if(errW) errW.innerHTML="";
-      }).catch(function(e2){ if(errW) errW.innerHTML=bi("تعذّر البناء: ","Failed: ")+(e2&&e2.message||""); });
+      var itW=JSON.parse(decodeURIComponent(rw.dataset.airprint));
+      var html2=compileReportHtml(String(itW.title||"تقرير دوري"), aiKindSections(itW.note));
+      var win=window.open("","_blank");
+      if(win){ win.document.write(html2); win.document.close(); win.focus(); win.print(); }
       return;
     }
     var ipd=e.target.closest("[data-aipdp]");
@@ -11686,7 +11858,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       '<div class="tile warn"><div class="th"><span class="tl">'+bi("تجاوزت موعدها","Overdue")+'</span></div>'+
         '<div class="tv">'+overdue+'</div><div class="ts">'+bi("تحتاج متابعة","need chasing")+'</div></div>'+
       '<div class="tile"><div class="th"><span class="tl">'+bi("التقويم المؤسسي","Institutional calendar")+'</span></div>'+
-        '<div class="tv">'+(HOL.length+EVENTS.length)+'</div><div class="ts">'+bi("عطلة ومناسبة","holidays and events")+'</div></div>';
+        '<div class="tv">'+(HOL.length+EVENTS.length)+'</div><div class="ts">'+bi("عطلة ومناسبة","holidays and events")+'</div></div>'+
+      '<div class="tile"><div class="th"><span class="tl">'+bi("مواعيد المديرة هذا الأسبوع","Her week")+'</span></div>'+
+        '<div class="tv" id="coordDgWk">—</div><div class="ts">'+bi("من الجسر المباشر","from the live bridge")+'</div></div>'+
+      '<div class="tile"><div class="th"><span class="tl">'+bi("اجتماعات قادمة","Upcoming meetings")+'</span></div>'+
+        '<div class="tv">'+AGENDAS.filter(function(a){return a.date&&a.date>="2026-11-20";}).length+
+        '</div><div class="ts">'+bi("من جداول الأعمال","from the agendas")+'</div></div>';
 
     var box=document.getElementById("coordInduction");
     box.innerHTML = joiners.length ? joiners.map(function(p){
