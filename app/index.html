@@ -1820,6 +1820,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
   font:600 11px/19px var(--latin);text-align:center;cursor:pointer;
   box-shadow:0 1px 4px rgba(0,0,0,.3)}
 .rv-pin.gone{background:var(--ink-4);opacity:.75}
+#rvPop.fx{position:fixed}
+.rv-pin.fx{position:fixed}
 #rvPop{position:absolute;z-index:70;width:min(330px,92vw);background:var(--surface);
   border:1px solid var(--rule-strong);border-radius:12px;padding:12px;
   box-shadow:0 12px 40px -12px rgba(0,0,0,.45)}
@@ -3973,6 +3975,7 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
   <div class="row">
     <button class="btn btn-p" id="rvPopSave"><span lang="ar">حفظ الملاحظة</span><span lang="en">Save note</span></button>
     <button class="btn" id="rvPopCancel"><span lang="ar">إلغاء</span><span lang="en">Cancel</span></button>
+    <button class="btn" id="rvPopGo" hidden><span lang="ar">افتحي الشاشة</span><span lang="en">Open the screen</span></button>
   </div>
 </div>
 <div id="rvPanel" hidden>
@@ -12479,7 +12482,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   // it. A note remembers where it was pinned, so it survives the dynamic
   // repaints; if the thing it pointed at is gone, the note is kept and
   // marked detached rather than silently dropped.
-  var RVON=false, RVNOTES=[], RVSEQ=0, RVTARGET=null, RVEDIT=null, RVREMOTE=[], RVTO="dev";
+  var RVON=false, RVNOTES=[], RVSEQ=0, RVTARGET=null, RVEDIT=null, RVREMOTE=[], RVTO="dev", RVNAV=false;
   try{
     var _rv=JSON.parse(localStorage.getItem("qagcNotes")||"null");
     if(_rv&&_rv.notes){ RVNOTES=_rv.notes; RVSEQ=_rv.seq||RVNOTES.length; }
@@ -12517,13 +12520,31 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var h1=sec?sec.querySelector(".head h1"):null;
     var card=el.closest?el.closest(".card,.tile,.subrow,.q-item,.cov-row,.acrow,.rperson"):null;
     var ch=card?card.querySelector(".card-h h2, .tl, .st2, .t, .g"):null;
+    var chromeName="";
+    if(!sec){
+      // outside every screen: the rail, a modal, or the page frame itself
+      if(el.closest&&el.closest("nav.rail")){
+        screen="rail"; chromeName=isAr()?"الشريط الجانبي":"The side rail";
+        if(!ch){
+          var nb=el.closest(".nav button");
+          if(nb&&nb.parentElement.previousElementSibling&&
+             nb.parentElement.previousElementSibling.classList.contains("nav-group"))
+            ch=nb.parentElement.previousElementSibling;
+          else if(el.closest(".mark")) chromeName+=isAr()?" · الشعار":" · the mark";
+          else if(el.closest(".rail-foot")) chromeName+=isAr()?" · أسفل الشريط":" · the rail foot";
+        }
+      } else if(el.closest&&el.closest(".modal")){
+        screen="modal"; chromeName=isAr()?"نافذة منبثقة":"A dialog";
+        if(!ch){ var mh=el.closest(".modal").querySelector("h2,h3"); if(mh) ch=mh; }
+      } else { screen="chrome"; chromeName=isAr()?"إطار الصفحة":"The page frame"; }
+    }
     // the nearest identified container is the stable half of the address
     var host=el.closest?el.closest("[id]"):null;
     var hostId=host?host.id:"";
     var sibs=host?[].slice.call(host.querySelectorAll(el.tagName)):[];
     return {
       screen:screen,
-      screenName:h1?rvTrim(rvText(h1),60):screen,
+      screenName:h1?rvTrim(rvText(h1),60):(chromeName||screen),
       where: ch?rvTrim(rvText(ch),60):(card?rvTrim(rvText(card),40):""),
       what: rvTrim(rvText(el)||el.getAttribute("placeholder")||el.tagName,110),
       hostId:hostId, tag:el.tagName, idx:sibs.indexOf(el)
@@ -12532,7 +12553,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function rvFind(a){
     if(!a) return null;
     var host=a.hostId?document.getElementById(a.hostId):null;
-    if(!host){ var sc=document.getElementById(a.screen); if(!sc) return null; host=sc; }
+    if(!host&&a.screen==="rail") host=document.querySelector("nav.rail");
+    if(!host){ var sc=document.getElementById(a.screen); host=sc||document.body; }
     var sibs=[].slice.call(host.querySelectorAll(a.tag));
     var byIdx=(a.idx>=0&&a.idx<sibs.length)?sibs[a.idx]:null;
     if(byIdx && rvTrim(rvText(byIdx),110)===a.what) return byIdx;
@@ -12557,8 +12579,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       if(el){
         var r=el.getBoundingClientRect();
         if(!r.width && !r.height){ pin.remove(); return; }
-        pin.style.top=(r.top+window.scrollY-8)+"px";
-        pin.style.left=(r.left+window.scrollX-8)+"px";
+        var fx=el.closest&&el.closest("nav.rail");
+        if(fx) pin.classList.add("fx");
+        pin.style.top=(r.top+(fx?0:window.scrollY)-8)+"px";
+        pin.style.left=(r.left+(fx?0:window.scrollX)-8)+"px";
         document.body.appendChild(pin);
       }
     });
@@ -12659,21 +12683,44 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var ta=document.getElementById("rvPopTa");
     ta.value=existing?existing.text:"";
     RVTO=(existing&&existing.to)||"dev";
+    var goB=document.getElementById("rvPopGo");
+    var navB=el.closest?el.closest("[data-go]"):null;
+    goB.hidden=!navB; goB._nav=navB||null;
     document.querySelectorAll("#rvToWrap .rvto-b").forEach(function(b){
       b.classList.toggle("on", b.dataset.rvto===RVTO);
     });
     pop.hidden=false;
-    var r=el.getBoundingClientRect();
-    var top=r.bottom+window.scrollY+8;
-    var left=Math.max(8, Math.min(r.left+window.scrollX, window.innerWidth-345));
-    pop.style.top=top+"px"; pop.style.left=left+"px";
+    rvPopPlace(el);
     ta.focus();
   }
+  function rvPopPlace(el){
+    var pop=document.getElementById("rvPop"); if(!pop||pop.hidden||!el) return;
+    var r=el.getBoundingClientRect();
+    var fx=el.closest&&el.closest("nav.rail");
+    pop.classList.toggle("fx", !!fx);
+    var vh=window.innerHeight||document.documentElement.clientHeight||720;
+    var vw=window.innerWidth||document.documentElement.clientWidth||1280;
+    var top=Math.max(8, r.bottom+(fx?0:window.scrollY)+8);
+    if(fx) top=Math.max(8, Math.min(top, vh-260));
+    var left=Math.max(8, Math.min(r.left+(fx?0:window.scrollX), vw-345));
+    pop.style.top=top+"px"; pop.style.left=left+"px";
+  }
+  // the rail is sticky: its pins are right only for the scroll position they
+  // were painted at, so every scroll repaints (a few pins — cheap)
+  var rvScRaf=null;
+  window.addEventListener("scroll", function(){
+    if(!RVON || rvScRaf) return;
+    rvScRaf=requestAnimationFrame(function(){
+      rvScRaf=null; rvPaint();
+      var pop=document.getElementById("rvPop");
+      if(pop&&!pop.hidden&&RVTARGET) rvPopPlace(RVTARGET);
+    });
+  }, {passive:true});
   // capture phase: in review mode the click is a comment, not an action
   document.addEventListener("click", function(e){
     if(!RVON) return;
-    if(e.target.closest("#rvPop,#rvPanel,#rvToggle,.rv-pin,.gate")) return;
-    var main=e.target.closest("main"); if(!main) return;
+    if(e.target.closest("#rvPop,#rvPanel,#rvToggle,.rv-pin,#rvToast,.gate")) return;
+    if(RVNAV){ RVNAV=false; return; }
     e.preventDefault(); e.stopPropagation();
     var el=e.target;
     // a bare text node's parent is more useful than a wrapping span
@@ -12685,6 +12732,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var t=e.target.closest("#rvToggle");
     if(t){ rvSetMode(!RVON); return; }
     if(e.target.closest("#rvPopCancel")){ rvPopClose(); return; }
+    if(e.target.closest("#rvPopGo")){
+      var nv=document.getElementById("rvPopGo")._nav;
+      rvPopClose();
+      if(nv){ RVNAV=true; nv.click(); }
+      return;
+    }
     var toB=e.target.closest("#rvToWrap .rvto-b");
     if(toB){
       RVTO=toB.dataset.rvto;
