@@ -1759,6 +1759,9 @@ html[lang="en"] span[lang="en"]{display:inline}
   color:var(--ink-3);font-style:italic}
 .ccal-bar{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
 .ccal-year{display:inline-flex;gap:8px;align-items:center;font-size:1.15em}
+.ccal-view{display:inline-flex;gap:6px}
+.ccal-big .dcm-cell{min-height:96px}
+.ccal-big .dcm-ev{cursor:default}
 .ccal-filters{display:flex;gap:8px;flex-wrap:wrap;margin-inline-start:auto}
 .ccal-chip{display:inline-flex;gap:7px;align-items:center;border:1.5px solid var(--rule);
   border-radius:999px;padding:4px 13px;cursor:pointer;font-size:var(--t-xs);
@@ -3538,6 +3541,10 @@ html[lang="en"] span[lang="en"]{display:inline}
       </div>
       <div class="card">
         <div class="ccal-bar">
+          <span class="ccal-view">
+            <button class="fchip on" data-ccv="year"><span lang="ar">السنة كاملة</span><span lang="en">Whole year</span></button>
+            <button class="fchip" data-ccv="month"><span lang="ar">شهراً بشهر</span><span lang="en">Month by month</span></button>
+          </span>
           <span class="ccal-year"><button class="dcm-nav" data-ccy="-1">‹</button>
             <b id="ccalYear" class="tnum">2026</b>
             <button class="dcm-nav" data-ccy="1">›</button></span>
@@ -8466,7 +8473,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     act: {l:["نشاطات واجتماعات","Activities & meetings"],c:"#3f7d80", cd:"#8cc4c6"}
   };
   var CCAL_ON={lv:true,hol:true,cpdC:true,cpdT:true,act:true};
-  var CCAL_YEAR=2026, CCAL_SEL=null;
+  var CCAL_YEAR=2026, CCAL_SEL=null, CCAL_VIEW="year", CCAL_MON_IDX=10;   // the in-world today is November 2026
   function ccalColor(cat){
     var dark=window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches &&
       document.documentElement.getAttribute("data-theme")!=="light";
@@ -8519,6 +8526,37 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         bi(CCAL_CATS[cat].l[0],CCAL_CATS[cat].l[1])+' <b class="tnum">'+counts[cat]+'</b></span>';
     }).join("");
     var todayS="2026-11-20";
+    if(CCAL_VIEW==="month"){
+      // one large month, its days carrying full chips rather than dots
+      var m0=CCAL_MON_IDX;
+      var first=new Date(CCAL_YEAR,m0,1), startDow=first.getDay();
+      var dim=new Date(CCAL_YEAR,m0+1,0).getDate();
+      var cells="";
+      for(var i=0;i<startDow;i++) cells+='<div class="dcm-cell out"></div>';
+      for(var d=1;d<=dim;d++){
+        var ds=CCAL_YEAR+"-"+String(m0+1).padStart(2,"0")+"-"+String(d).padStart(2,"0");
+        var items=(map[ds]||[]).filter(function(it){return CCAL_ON[it.cat];});
+        var chips=items.slice(0,3).map(function(it){
+          var col=ccalColor(it.cat);
+          return '<span class="dcm-ev" style="background:'+col+'22;border-inline-start-color:'+col+'" title="'+
+            String(it.t).replace(/"/g,"&quot;")+'">'+it.t+'</span>';
+        }).join("")+(items.length>3?'<span class="ccal-more">+'+(items.length-3)+' '+(isAr()?"أخرى":"more")+'</span>':"");
+        cells+='<div class="dcm-cell'+(ds===todayS?' today':'')+(items.length?' has':'')+'"'+
+          (items.length?' data-ccd="'+ds+'" style="cursor:pointer"':'')+'>'+
+          '<span class="dcm-day">'+d+'</span>'+chips+'</div>';
+      }
+      host.innerHTML='<div class="ccal-big">'+
+        '<div class="dcm-head">'+
+          '<button class="dcm-nav" data-ccm="-1">‹</button>'+
+          '<b>'+bi(MON_AR[m0]+" "+CCAL_YEAR, first.toLocaleDateString("en",{month:"long"})+" "+CCAL_YEAR)+'</b>'+
+          '<button class="dcm-nav" data-ccm="1">›</button>'+
+          '<button class="dcm-nav" data-ccm="0">'+bi("الشهر الحالي","This month")+'</button></div>'+
+        '<div class="dcm-grid">'+
+        DAY_AR.map(function(dn,i2){return '<span class="dcm-dow">'+bi(dn,DAY_EN[i2].slice(0,3))+'</span>';}).join("")+
+        cells+'</div></div>';
+      renderCcalDetail(map);
+      return;
+    }
     host.innerHTML=Array.from({length:12},function(_,m){
       var first=new Date(CCAL_YEAR,m,1), startDow=first.getDay();
       var dim=new Date(CCAL_YEAR,m+1,0).getDate();
@@ -8544,7 +8582,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         DAY_AR.map(function(dn,i){return '<span class="ccal-dw">'+bi(dn.slice(0,2),DAY_EN[i].slice(0,2))+'</span>';}).join("")+
         cells+'</div></div>';
     }).join("");
-    // the selected day's detail
+    renderCcalDetail(map);
+  }
+  function renderCcalDetail(map){
     var det=document.getElementById("ccalDayDetail");
     if(det){
       if(!CCAL_SEL || +CCAL_SEL.slice(0,4)!==CCAL_YEAR){ det.hidden=true; }
@@ -8566,6 +8606,23 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(fc){ var c=fc.dataset.ccalf; CCAL_ON[c]=!CCAL_ON[c]; drawCcal(); return; }
     var yb=e.target.closest("[data-ccy]");
     if(yb){ CCAL_YEAR+=+yb.dataset.ccy; CCAL_SEL=null; drawCcal(); return; }
+    var vb=e.target.closest("[data-ccv]");
+    if(vb){
+      CCAL_VIEW=vb.dataset.ccv;
+      document.querySelectorAll("[data-ccv]").forEach(function(x){x.classList.toggle("on",x===vb);});
+      drawCcal(); return;
+    }
+    var mb=e.target.closest("[data-ccm]");
+    if(mb){
+      var v=mb.dataset.ccm;
+      if(v==="0"){ CCAL_YEAR=2026; CCAL_MON_IDX=10; }
+      else{
+        CCAL_MON_IDX+=+v;
+        if(CCAL_MON_IDX<0){ CCAL_MON_IDX=11; CCAL_YEAR--; }
+        if(CCAL_MON_IDX>11){ CCAL_MON_IDX=0; CCAL_YEAR++; }
+      }
+      CCAL_SEL=null; drawCcal(); return;
+    }
     var dc=e.target.closest("[data-ccd]");
     if(dc){ CCAL_SEL=(CCAL_SEL===dc.dataset.ccd?null:dc.dataset.ccd); drawCcal(); return; }
   });
