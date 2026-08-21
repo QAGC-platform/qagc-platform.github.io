@@ -2,8 +2,12 @@
 //
 // Deployed as an Apps Script web app under qagcplatform@gmail.com.
 // ChatGPT (a Custom GPT with Actions) calls it to read the plan and to
-// push tasks; everything pushed lands as PENDING — the approval gate is
-// the platform's, never the assistant's.
+// push objective PACKAGES; everything pushed lands as PENDING — the
+// approval gate is the platform's, never the assistant's.
+//
+// A package is one objective together with its KPIs and (optionally) a
+// budget, pushed in a single call so they arrive — and are approved —
+// as a whole, component by component.
 //
 // One-time setup, in the editor:
 //   1. Run setup() once (authorize when asked).
@@ -11,6 +15,8 @@
 //   3. Deploy → New deployment → Web app →
 //        Execute as: Me · Who has access: Anyone
 //      Copy the /exec URL.
+//   After editing this file: Deploy → Manage deployments → edit →
+//   New version (the URL does not change).
 
 const PROPS = PropertiesService.getScriptProperties();
 
@@ -34,13 +40,23 @@ function ss_() {
   return SpreadsheetApp.openById(id);
 }
 
+const COLS = ['when', 'title', 'tag', 'owner', 'due', 'budget', 'note', 'state', 'smart', 'kpis'];
+
 function sheet_(name) {
   const ss = ss_();
   let sh = ss.getSheetByName(name);
   if (!sh) {
     sh = ss.insertSheet(name);
-    sh.appendRow(['when', 'title', 'tag', 'owner', 'due', 'budget', 'note', 'state']);
+    sh.appendRow(COLS);
   }
+  // a sheet created before the package columns existed gets them added in place
+  const head = sh.getRange(1, 1, 1, Math.max(sh.getLastColumn(), 1)).getValues()[0];
+  COLS.forEach(c => {
+    if (head.indexOf(c) < 0) {
+      sh.getRange(1, head.length + 1).setValue(c);
+      head.push(c);
+    }
+  });
   return sh;
 }
 
@@ -94,16 +110,34 @@ function doPost(e) {
     // the gate rule, enforced at the door: no tag, no entry
     return json_({ ok: false, error: 'tag must be one of: ' + TAGS.join(', ') });
   }
-  const row = [
-    new Date().toISOString(),
-    title,
-    tag,
-    String(body.owner || '').trim(),
-    String(body.due || '').trim(),
-    body.budget ? Number(body.budget) : '',
-    String(body.note || '').trim(),
-    'pending'   // ChatGPT proposes; the Director General decides
-  ];
-  sheet_('inbox').appendRow(row);
-  return json_({ ok: true, state: 'pending', message: 'أُدرجت في الوارد بانتظار اعتماد المدير العام.' });
+
+  // KPIs travel WITH their objective — one package, never separate pushes.
+  let kpis = [];
+  if (Array.isArray(body.kpis)) {
+    kpis = body.kpis.slice(0, 10)
+      .map(k => ({
+        name: String((k && k.name) || '').trim(),
+        target: String((k && k.target) || '').trim(),
+        unit: String((k && k.unit) || '').trim(),
+      }))
+      .filter(k => k.name);
+  }
+
+  const sh = sheet_('inbox');
+  const head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+  const rec = {
+    when: new Date().toISOString(),
+    title: title,
+    tag: tag,
+    owner: String(body.owner || '').trim(),
+    due: String(body.due || '').trim().slice(0, 10),
+    budget: body.budget ? Number(body.budget) : '',
+    note: String(body.note || '').trim(),
+    state: 'pending',   // ChatGPT proposes; the Director General decides
+    smart: String(body.smart || '').trim(),
+    kpis: kpis.length ? JSON.stringify(kpis) : '',
+  };
+  sh.appendRow(head.map(h => (h in rec) ? rec[h] : ''));
+  return json_({ ok: true, state: 'pending', kpis: kpis.length,
+    message: 'أُدرجت الحزمة (الهدف ومؤشراته) في الوارد بانتظار اعتماد المدير العام.' });
 }

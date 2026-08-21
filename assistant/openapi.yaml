@@ -27,7 +27,11 @@ paths:
           description: JSON result.
     post:
       operationId: pushTask
-      summary: Push one proposed task into the platform inbox (lands as pending).
+      summary: >
+        Push ONE package — an objective together with its KPIs and optional
+        budget — into the platform inbox (lands as pending). Never push the
+        KPIs of an objective as separate calls; they belong in the kpis array
+        of the same call.
       parameters:
         - name: key
           in: query
@@ -42,7 +46,23 @@ paths:
               required: [title, tag]
               properties:
                 fn: { type: string, enum: [addTask], default: addTask }
-                title: { type: string, description: "عنوان المهمة بالعربية" }
+                title: { type: string, description: "عنوان الهدف أو المهمة بالعربية" }
+                smart:
+                  type: string
+                  description: >
+                    الصياغة الذكية SMART كاملة إن كان هدفاً (اختياري) —
+                    وإن كانت مهمة مباشرة فاتركه فارغاً.
+                kpis:
+                  type: array
+                  maxItems: 10
+                  description: مؤشرات الأداء المرتبطة بهذا الهدف — تُرسل معه في النداء نفسه
+                  items:
+                    type: object
+                    required: [name]
+                    properties:
+                      name: { type: string, description: "اسم المؤشر" }
+                      target: { type: string, description: "المستهدف، مثل 80%" }
+                      unit: { type: string, description: "وحدة القياس" }
                 tag:
                   type: string
                   enum: [five_year_plan, annual_plan, third_category]

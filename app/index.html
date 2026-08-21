@@ -2021,12 +2021,17 @@ html[lang="en"] span[lang="en"]{display:inline}
         <div class="kform">
           <span class="fld" style="grid-column:1/-1"><label><span lang="ar">الهدف</span><span lang="en">Objective</span></label>
             <input id="no-title" placeholder="عنوان الهدف كما سيظهر في الخطة"></span>
-          <span class="fld" style="grid-column:1/-1"><label><span lang="ar">الصياغة الذكية SMART</span><span lang="en">SMART description</span></label>
+          <span class="fld"><label><span lang="ar">الصيغة</span><span lang="en">Form</span></label>
+            <select id="no-mode"><option value="smart">هدف بصياغة SMART · SMART objective</option>
+              <option value="task">مهمة مباشرة · Plain task</option></select></span>
+          <span class="fld" style="grid-column:1/-1"><label><span lang="ar">الصياغة الذكية SMART (اختيارية)</span><span lang="en">SMART description (optional)</span></label>
             <input id="no-desc" placeholder="بحلول … اعتماد وتفعيل …"></span>
           <span class="fld"><label><span lang="ar">مؤشر الأداء</span><span lang="en">KPI</span></label>
             <input id="no-kpi" placeholder="نسبة …"></span>
           <span class="fld"><label><span lang="ar">المستهدف</span><span lang="en">Target</span></label>
             <input id="no-target" placeholder="80%"></span>
+          <span class="fld" style="align-self:end"><button class="btn" id="noKpiAdd" type="button"><span lang="ar">＋ مؤشر آخر</span><span lang="en">＋ Another KPI</span></button></span>
+          <div id="noKpiList" style="grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap"></div>
           <span class="fld"><label><span lang="ar">المستوى</span><span lang="en">Level</span></label>
             <select id="no-level"><option value="center">المركز · Centre</option>
               <option value="directorate">الدائرة · Directorate</option>
@@ -3803,7 +3808,23 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     return out;
   }
   var NEWOBJ_N=0;
+  var NO_KPIS=[];
+  function renderNoKpis(){
+    var h=document.getElementById("noKpiList"); if(!h) return;
+    h.innerHTML=NO_KPIS.map(function(k,i){
+      return '<span class="pill p-neutral" style="gap:6px">'+k.name+(k.target?' — '+k.target:'')+
+        ' <button class="mini no" data-nokdel="'+i+'" style="padding:0 6px">×</button></span>';
+    }).join("");
+  }
   document.addEventListener("click",function(e){
+    if(e.target.closest("#noKpiAdd")){
+      var ki=document.getElementById("no-kpi"), kt=document.getElementById("no-target");
+      if(!ki.value.trim()){ ki.focus(); return; }
+      NO_KPIS.push({name:ki.value.trim(), target:kt.value.trim()});
+      ki.value=""; kt.value=""; renderNoKpis(); ki.focus(); return;
+    }
+    var nkd=e.target.closest("[data-nokdel]");
+    if(nkd){ NO_KPIS.splice(+nkd.dataset.nokdel,1); renderNoKpis(); return; }
     if(e.target.closest("#newObjBtn")){
       var f=document.getElementById("newObjForm"); f.hidden=!f.hidden;
       if(!f.hidden) document.getElementById("no-title").focus();
@@ -3817,18 +3838,41 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       stepUp("submit", bi("إضافة هدف إلى الخطة: ","Adding an objective to the plan: ")+title, function(){
         var lvl=(document.getElementById("no-level")||{}).value||"center";
         var ref=(lvl==="center"?"SO":"DO")+"N"+(++NEWOBJ_N);
-        PLAN2027.push({
-          r:ref, l:lvl, t:title,
-          d:(document.getElementById("no-desc")||{}).value||"",
-          k:(document.getElementById("no-kpi")||{}).value||"",
-          g:(document.getElementById("no-target")||{}).value||"", u:"",
+        var mode=(document.getElementById("no-mode")||{}).value||"smart";
+        var desc=(document.getElementById("no-desc")||{}).value||"";
+        var kpis=NO_KPIS.slice();
+        var ki=(document.getElementById("no-kpi")||{}).value||"", kt=(document.getElementById("no-target")||{}).value||"";
+        if(ki.trim()) kpis.push({name:ki.trim(), target:kt.trim()});
+        var dueTo=(document.getElementById("no-to")||{}).value||"2027-12-31";
+        var draft={ r:ref, l:lvl, t:title, d:desc,
+          k:kpis.map(function(x){return x.name;}).join("، "),
+          g:kpis.map(function(x){return x.target;}).filter(Boolean).join("، "), u:"",
           o:(document.getElementById("no-owner")||{}).value||"",
           s:(document.getElementById("no-from")||{}).value||"2027-01-01",
-          e:(document.getElementById("no-to")||{}).value||"2027-12-31",
-          tag:(document.getElementById("no-tag")||{}).value||"t-dir"
-        });
-        submitFor("obj", ref, [title,title],
-          {under:(isAr()?"الخطة السنوية 2027":"Annual plan 2027"), due:(document.getElementById("no-to")||{}).value});
+          e:dueTo, tag:(document.getElementById("no-tag")||{}).value||"t-dir" };
+        if(!needsApproval()){
+          // the Director General's authority: straight into the plan, logged
+          PLAN2027.push(draft);
+          submitFor("obj", ref, [title,title],
+            {under:(isAr()?"الخطة السنوية 2027":"Annual plan 2027"), due:dueTo});
+        } else {
+          // everyone else sends the whole package — objective and KPIs —
+          // to the gate; nothing enters the plan before its component is approved
+          var comps=[{ct:"obj", title:title, smart:(mode==="smart"?desc:""), due:dueTo,
+                      state:"pending", note:"", applied:false}];
+          kpis.forEach(function(x){ comps.push({ct:"kpi", title:x.name, target:x.target||"",
+                      unit:"", state:"pending", note:"", applied:false}); });
+          var me=(typeof myPerson==="function"?myPerson():null);
+          SUBS.push({ id:"S"+(++SUBSEQ), kind:"pkg", ref:ref, title:[title,title],
+            byId:me?me.id:"sd-h", by:me?me.who:["موظف","Staff"], dep:me?me.dep:["—","—"],
+            when:"2026-11-20", stage:firstStop("obj"), state:"pending",
+            meta:{under:(isAr()?"الخطة السنوية 2027":"Annual plan 2027"), due:dueTo,
+                  nk:kpis.length, comps:comps,
+                  // the draft lands with NO KPIs — only the ones the DG approves are appended
+                  draft:Object.assign({},draft,{k:"",g:""})},
+            note:"", endorsed:null, self:false });
+        }
+        NO_KPIS=[]; renderNoKpis();
         t.value=""; document.getElementById("no-desc").value="";
         document.getElementById("no-kpi").value=""; document.getElementById("no-target").value="";
         document.getElementById("newObjForm").hidden=true;
@@ -4291,7 +4335,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   var SUBKIND={
     obj:{cls:"k-obj", l:["هدف/مهمة","Objective / task"]},
     kpi:{cls:"k-kpi", l:["مؤشر أداء","KPI"]},
-    bud:{cls:"k-bud", l:["تقدير ميزانية","Budget estimate"]}
+    bud:{cls:"k-bud", l:["تقدير ميزانية","Budget estimate"]},
+    pkg:{cls:"k-obj", l:["حزمة هدف","Objective package"]}
   };
   var SUBSTATE={
     pending: {p:"p-warn",     l:["بانتظار اعتماد المدير العام","Awaiting the Director General"]},
@@ -7754,10 +7799,13 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     host.innerHTML=items.slice().reverse().map(function(it){
       var tg=AI_TAG_MAP[it.tag]||["t-third",String(it.tag||""),String(it.tag||"")];
       var done=AI_IMPORTED[it.when];
+      var kn=aiKpisOf(it).length;
       return '<div class="subrow" style="grid-template-columns:minmax(0,1fr) auto auto">'+
         '<span><span class="st2">'+String(it.title||"").slice(0,120)+'</span>'+
           '<span class="sm"><span class="tag '+tg[0]+'"><span class="dot"></span>'+bi(tg[1],tg[2])+'</span>'+
-          (it.owner?' · '+it.owner:'')+(it.due?' · <span class="tnum">'+it.due+'</span>':'')+
+          (kn?' · <b>'+kn+'</b> '+bi("مؤشرات","KPIs"):'')+
+          (it.smart?' · SMART':'')+
+          (it.owner?' · '+it.owner:'')+(it.due?' · <span class="tnum">'+String(it.due).slice(0,10)+'</span>':'')+
           (it.budget?' · <span class="tnum">'+it.budget+'</span> '+bi("ر.ع","OMR"):'')+
           (it.note?' · '+String(it.note).slice(0,60):'')+'</span></span>'+
         '<span class="sw2 tnum">'+String(it.when||"").slice(0,10)+'</span>'+
@@ -7769,16 +7817,31 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       '</div>';
     }).join("");
   }
+  function aiKpisOf(it){
+    if(Array.isArray(it.kpis)) return it.kpis;
+    try{ var a=JSON.parse(it.kpis||"[]"); return Array.isArray(a)?a:[]; }catch(_){ return []; }
+  }
   document.addEventListener("click",function(e){
     if(e.target.closest("#aiConnect")){ aiFetchInbox(); return; }
     var im=e.target.closest("[data-aiimport]");
     if(im){
       var it=JSON.parse(decodeURIComponent(im.dataset.aiimport));
       AI_IMPORTED[it.when]=true;
-      SUBS.push({id:"S"+(++SUBSEQ), kind:"obj", ref:"", title:[it.title,it.title],
+      // the objective, its KPIs and its budget arrive as ONE package;
+      // each component keeps its own pending state for the gate
+      var due=String(it.due||"").slice(0,10);
+      var comps=[{ct:"obj", title:String(it.title||""), smart:String(it.smart||""), due:due, state:"pending", note:"", applied:false}];
+      aiKpisOf(it).forEach(function(k){
+        if(k && k.name) comps.push({ct:"kpi", title:String(k.name), target:String(k.target||""),
+          unit:String(k.unit||""), state:"pending", note:"", applied:false});
+      });
+      if(it.budget) comps.push({ct:"bud", title:bi("تقدير ميزانية الهدف","Budget estimate for the objective"),
+        amt:+it.budget, state:"pending", note:"", applied:false});
+      SUBS.push({id:"S"+(++SUBSEQ), kind:"pkg", ref:"", title:[it.title,it.title],
         byId:"chatgpt", by:["مساعد ChatGPT","ChatGPT assistant"], dep:["الجسر الذكي","The assistant bridge"],
         when:String(it.when||"").slice(0,10)||"2026-11-20", stage:"dg", state:"pending",
-        meta:{under:it.note||"", due:String(it.due||"").slice(0,10), tag:it.tag, amt:it.budget?+it.budget:undefined},
+        meta:{under:it.note||"", due:due, tag:it.tag, amt:it.budget?+it.budget:undefined,
+              nk:comps.filter(function(c){return c.ct==="kpi";}).length, comps:comps},
         note:"", endorsedBy:null, decidedBy:null});
       afterSubmit(); aiFetchInbox();
       return;
@@ -8106,6 +8169,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(!m) return "";
     var bits=[];
     if(m.under) bits.push(bi("ضمن: ","under: ")+String(m.under).slice(0,52));
+    if(kind==="pkg"&&m.comps){
+      var dn=m.comps.filter(function(c){return c.state!=="pending";}).length;
+      bits.push(dn+"/"+m.comps.length+" "+bi("مكوّنات مُقرَّرة","components decided"));
+    }
+    if(kind==="pkg"&&m.nk) bits.push(m.nk+" "+bi("مؤشرات","KPIs"));
     if(kind==="kpi"){
       if(m.per) bits.push(m.per);
       if(m.unit) bits.push(m.unit);
@@ -8118,7 +8186,54 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     }
     return bits.join(" · ");
   }
+  function pkgRow(r){
+    var s=subOf(r.key); if(!s||!s.meta||!s.meta.comps) return "";
+    var comps=s.meta.comps;
+    var objPend=comps.some(function(c){return c.ct==="obj"&&c.state==="pending";});
+    var pendN=comps.filter(function(c){return c.state==="pending";}).length;
+    var rows=comps.map(function(c,i){
+      var lab=c.ct==="obj"?["الهدف","Objective"]:c.ct==="kpi"?["مؤشر أداء","KPI"]:["تقدير ميزانية","Budget"];
+      var cls=c.ct==="obj"?"k-obj":c.ct==="kpi"?"k-kpi":"k-bud";
+      var det=[];
+      if(c.ct==="obj") det.push(c.smart? "SMART: "+String(c.smart).slice(0,140) : bi("بصيغة مهمة مباشرة","Written as a plain task"));
+      if(c.ct==="obj"&&c.due) det.push(bi("الاستحقاق ","due ")+c.due);
+      if(c.ct==="kpi"&&c.target) det.push(bi("المستهدف ","target ")+c.target+(c.unit?" "+c.unit:""));
+      if(c.ct==="bud") det.push((+c.amt).toLocaleString("en")+" "+bi("ر.ع","OMR"));
+      var ret=RETURNING[r.key+"#"+i];
+      var acts=c.state==="pending"
+        ? '<button class="mini yes" data-cdec="'+r.key+'#'+i+'#v">'+bi("اعتماد","Approve")+'</button>'+
+          '<button class="mini ret" data-cdec="'+r.key+'#'+i+'#a">'+bi("إعادة للتعديل","Return")+'</button>'+
+          '<button class="mini no" data-cdec="'+r.key+'#'+i+'#r">'+bi("رفض","Reject")+'</button>'
+        : stateChip(c.state);
+      return '<div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;padding:9px 0;border-top:1px solid var(--rule)">'+
+        '<span class="kind '+cls+'"><i></i>'+bi(lab[0],lab[1])+'</span>'+
+        '<span style="flex:1;min-width:220px"><span class="st2">'+c.title+'</span>'+
+          (det.length?'<span class="sm">'+det.join(" · ")+'</span>':"")+
+          (c.state==="returned"&&c.note?'<span class="retnote"><b>'+bi("طلب التعديل: ","Amendment requested: ")+'</b>'+c.note+'</span>':"")+
+        '</span><span class="acts">'+acts+'</span></div>'+
+        (ret? '<span class="amendbox"><span class="al">'+bi("ما الذي يجب تعديله في هذا المكوّن؟","What needs amending in this component?")+'</span>'+
+          '<textarea id="cdec-'+r.key+'-'+i+'"></textarea>'+
+          '<span class="arow"><button class="btn btn-p" data-cdecsend="'+r.key+'#'+i+'">'+bi("إرسال طلب التعديل","Send the request")+'</button>'+
+          '<button class="btn" data-cdeccancel="'+r.key+'#'+i+'">'+bi("إلغاء","Cancel")+'</button></span></span>' : "");
+    }).join("");
+    return '<div class="subrow" style="grid-template-columns:minmax(0,1fr)">'+
+      '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">'+
+        '<span class="kind k-obj"><i></i>'+bi("حزمة","Package")+'</span>'+
+        '<span style="flex:1;min-width:200px"><span class="st2">'+bi(r.title[0],r.title[1])+'</span>'+
+          '<span class="sm">'+bi(r.by[0],r.by[1])+' · '+bi(r.dep[0],r.dep[1])+' · '+r.when+
+          (r.meta&&r.meta.under?' · '+bi("ضمن: ","under: ")+String(r.meta.under).slice(0,52):"")+'</span></span>'+
+        (s.byId==="chatgpt"&&objPend
+          ? '<span class="amendbox" style="background:var(--surface-2);border-color:var(--rule)">'+
+            '<span class="al" style="color:var(--ink-2)">'+bi("عند اعتماد الهدف يُسند إلى:","On approving the objective, assign to:")+'</span>'+
+            '<select class="fld-sel" data-asgsel="'+r.key+'" style="margin-top:6px">'+
+              '<option value="">'+(isAr()?"اختر المسؤول…":"Choose the owner…")+'</option>'+
+              STAFF.map(function(p){return '<option value="'+p.id+'">'+(isAr()?p.who[0]:p.who[1])+' — '+(isAr()?p.dep[0]:p.dep[1])+'</option>';}).join("")+
+            '</select></span>':"")+
+        (pendN>1?'<button class="mini yes" data-cdecall="'+r.key+'">'+bi("اعتماد كل المتبقي","Approve all remaining")+'</button>':"")+
+      '</div>'+rows+'</div>';
+  }
   function subRow(r){
+    if(r.kind==="pkg" && !r.endorse) return pkgRow(r);
     var k=SUBKIND[r.kind];
     var ret=RETURNING[r.key];
     return '<div class="subrow">'+
@@ -8172,7 +8287,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       decider?bi("بانتظار قرارك","Waiting on your decision"):bi("قيد النظر","Under consideration");
     document.getElementById("apprSub").textContent = decider ? String(q.length) : "";
 
-    var cnt=function(kind){ return q.filter(function(r){return r.kind===kind;}).length; };
+    var cnt=function(kind){ return q.filter(function(r){
+      return r.kind===kind || (kind==="obj"&&r.kind==="pkg"); }).length; };
     var t=document.getElementById("apprTiles");
     if(t){
       if(decider){
@@ -8294,6 +8410,56 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       });
       return;
     }
+    var cd=e.target.closest("[data-cdec]");
+    if(cd){
+      var cp=cd.dataset.cdec.split("#"), sid=cp[0], ci=+cp[1], cact=cp[2];
+      if(cact==="a"){ RETURNING[sid+"#"+ci]=true; drawApprovals(); return; }
+      var sP=subOf(sid); if(!sP) return;
+      var cc0=sP.meta.comps[ci];
+      if(cact==="v" && cc0.ct==="obj" && sP.byId==="chatgpt"){
+        var selC=document.querySelector('[data-asgsel="'+sid+'"]');
+        if(selC && !selC.value){ selC.focus(); selC.style.outline="2px solid var(--critical)"; return; }
+        if(selC){
+          var pC=STAFF.filter(function(x){return x.id===selC.value;})[0];
+          sP.meta.assignee=selC.value;
+          sP.meta.assignedName=pC?(isAr()?pC.who[0]:pC.who[1]):"";
+        }
+      }
+      var whatC=(cact==="v"?bi("اعتماد: ","Approving: "):bi("رفض: ","Refusing: "))+cc0.title;
+      stepUp(cc0.ct==="bud"?"budget":(cact==="v"?"approve":"reject"), whatC, function(){
+        applyCompDecision(sid, ci, cact==="v"?"approved":"rejected", "");
+      });
+      return;
+    }
+    var cAll=e.target.closest("[data-cdecall]");
+    if(cAll){
+      var sidA=cAll.dataset.cdecall, sAll=subOf(sidA); if(!sAll) return;
+      if(sAll.byId==="chatgpt" && sAll.meta.comps.some(function(c){return c.ct==="obj"&&c.state==="pending";})){
+        var selA=document.querySelector('[data-asgsel="'+sidA+'"]');
+        if(selA && !selA.value){ selA.focus(); selA.style.outline="2px solid var(--critical)"; return; }
+        if(selA){
+          var pAA=STAFF.filter(function(x){return x.id===selA.value;})[0];
+          sAll.meta.assignee=selA.value;
+          sAll.meta.assignedName=pAA?(isAr()?pAA.who[0]:pAA.who[1]):"";
+        }
+      }
+      stepUp("approve", bi("اعتماد كل مكوّنات: ","Approving every component of: ")+bi(sAll.title[0],sAll.title[1]), function(){
+        sAll.meta.comps.forEach(function(c,i){ if(c.state==="pending") applyCompDecision(sidA, i, "approved",""); });
+      });
+      return;
+    }
+    var csend=e.target.closest("[data-cdecsend]");
+    if(csend){
+      var kp=csend.dataset.cdecsend.split("#"), sidS=kp[0], ciS=+kp[1];
+      var taC=document.getElementById("cdec-"+sidS+"-"+ciS);
+      var noteC=(taC&&taC.value.trim())||(isAr()?"يُرجى المراجعة وإعادة الإرسال.":"Please revise and resend.");
+      stepUp("reject", bi("إعادة مكوّن بطلب تعديل","Returning a component for amendment"), function(){
+        applyCompDecision(sidS, ciS, "returned", noteC);
+      });
+      return;
+    }
+    var ccan=e.target.closest("[data-cdeccancel]");
+    if(ccan){ delete RETURNING[ccan.dataset.cdeccancel]; drawApprovals(); return; }
     var ds=e.target.closest("[data-decsend]");
     if(ds){
       var k=ds.dataset.decsend;
@@ -8307,6 +8473,65 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var dc=e.target.closest("[data-deccancel]");
     if(dc){ delete RETURNING[dc.dataset.deccancel]; drawApprovals(); return; }
   });
+  function pkgStepText(s){
+    var ks=s.meta.comps.filter(function(c){return c.ct==="kpi"&&c.applied;}).map(function(c){return c.title;});
+    return ["وارد ChatGPT — باعتماد المدير العام"+(ks.length?" · مؤشرات: "+ks.join("، "):""),
+            "From ChatGPT — approved by the DG"+(ks.length?" · KPIs: "+ks.join(", "):"")];
+  }
+  function pkgSync(s){
+    var comps=s.meta.comps, oc=comps.filter(function(c){return c.ct==="obj";})[0];
+    // the objective lands first: as a staff task (assistant packages) or in the plan (staff packages)
+    if(oc && oc.state==="approved" && !s.meta.landed){
+      if(s.byId==="chatgpt"){
+        var pp=STAFF.filter(function(x){return x.id===s.meta.assignee;})[0];
+        if(pp){
+          pp.steps=pp.steps||[];
+          pp.steps.push({t:[oc.title,oc.title], obj:pkgStepText(s),
+            due:String(oc.due||s.meta.due||"2027-06-30").slice(0,10), st:"not_started", budget:null});
+          s.meta.landed=true; s.meta.stepPid=pp.id; s.meta.stepIdx=pp.steps.length-1;
+        }
+      } else if(s.meta.draft){
+        PLAN2027.push(s.meta.draft);
+        s.meta.landed=true; s.meta.planRef=s.meta.draft.r;
+        if(typeof drawPlan==="function") drawPlan();
+      }
+    }
+    // approved KPIs and budget follow onto wherever the objective landed
+    if(s.meta.landed) comps.forEach(function(c){
+      if(c.state!=="approved"||c.applied) return;
+      if(c.ct==="kpi"){
+        c.applied=true;
+        if(s.meta.planRef){
+          var en=PLAN2027.filter(function(o){return o.r===s.meta.planRef;})[0];
+          if(en){ en.k=en.k?en.k+"، "+c.title:c.title; if(c.target) en.g=en.g?en.g+"، "+c.target:c.target; }
+        } else if(s.meta.stepPid!=null){
+          var pk=STAFF.filter(function(x){return x.id===s.meta.stepPid;})[0];
+          if(pk&&pk.steps[s.meta.stepIdx]) pk.steps[s.meta.stepIdx].obj=pkgStepText(s);
+        }
+      }
+      if(c.ct==="bud" && s.meta.stepPid!=null){
+        var pb=STAFF.filter(function(x){return x.id===s.meta.stepPid;})[0];
+        // already through the gate here — it enters validated, not proposed again
+        if(pb&&pb.steps[s.meta.stepIdx]){ pb.steps[s.meta.stepIdx].budget={amt:+c.amt,state:"validated"}; c.applied=true; }
+      }
+    });
+    // the package resolves only when every component has an answer
+    if(comps.every(function(c){return c.state!=="pending";})){
+      s.state = oc ? oc.state : "approved";
+      s.decidedBy=SESSION?SESSION.u:"dg"; s.decidedAt="2026-11-20";
+      s.note = comps.filter(function(c){return c.state==="returned"&&c.note;})
+                    .map(function(c){return c.title+": "+c.note;}).join(" · ");
+    }
+    if(typeof drawRoster==="function"){ drawRoster(); drawPeopleTiles(); refreshPeopleCount(); }
+  }
+  function applyCompDecision(sid, i, state, note){
+    delete RETURNING[sid+"#"+i];
+    var s=subOf(sid); if(!s||!s.meta||!s.meta.comps[i]) return;
+    var c=s.meta.comps[i];
+    c.state=state; c.note=note||""; c.decidedBy=SESSION?SESSION.u:"dg";
+    pkgSync(s);
+    drawMine(); afterSubmit();
+  }
   function applyDecision(key, state, note){
     delete RETURNING[key];
     if(key.indexOf("p:")===0){
