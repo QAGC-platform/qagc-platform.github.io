@@ -2571,6 +2571,36 @@ html[lang="en"] span[lang="en"]{display:inline}
         <div id="agList" style="margin-top:var(--sp-3)"></div>
       </div>
 
+      <div class="card" id="dirCalCard">
+        <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/><circle cx="12" cy="15" r="2.5"/></svg></span><div>
+          <span class="ceye"><span lang="ar">يراه الجميع — يكتب فيه من تحدّدهم المالكة</span><span lang="en">Everyone sees it; chosen hands write to it</span></span>
+          <h2><span lang="ar">تقويم المركز</span><span lang="en">The centre calendar</span></h2></div></div></div>
+        <div style="display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center">
+          <button class="btn btn-p" id="dirCalRefresh"><span lang="ar">تحديث</span><span lang="en">Refresh</span></button>
+          <span id="dirCalStatus" style="font-size:var(--t-sm)"></span>
+        </div>
+        <div id="dirCalList" style="margin-top:var(--sp-3)"></div>
+        <div class="asnform" id="dirCalForm" style="margin-top:var(--sp-3)" hidden>
+          <div style="font-size:var(--t-sm);font-weight:700"><span lang="ar">إضافة موعد إلى تقويم المركز</span><span lang="en">Add to the centre calendar</span></div>
+          <div class="kform">
+            <span class="fld" style="grid-column:1/-1"><label><span lang="ar">الموضوع</span><span lang="en">Subject</span></label>
+              <input id="dirc-title" placeholder="اجتماع مديري الدوائر"></span>
+            <span class="fld"><label><span lang="ar">التاريخ</span><span lang="en">Date</span></label>
+              <input id="dirc-date" type="date"></span>
+            <span class="fld"><label><span lang="ar">من</span><span lang="en">From</span></label>
+              <input id="dirc-from" type="time" value="10:00"></span>
+            <span class="fld"><label><span lang="ar">إلى</span><span lang="en">To</span></label>
+              <input id="dirc-to" type="time" value="11:00"></span>
+            <span class="fld"><label><span lang="ar">المكان</span><span lang="en">Location</span></label>
+              <input id="dirc-loc" placeholder="قاعة الاجتماعات"></span>
+          </div>
+          <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
+            <button class="btn btn-p" id="dirCalAdd"><span lang="ar">إدراج في تقويم المركز</span><span lang="en">Place it</span></button>
+            <span class="kerr" id="dirCalErr"></span>
+          </div>
+        </div>
+      </div>
+
       <div class="card" id="dgCalCard">
         <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18M12 14v4M10 16h4"/></svg></span><div>
           <span class="ceye"><span lang="ar">جسر مباشر إلى Google Calendar</span><span lang="en">A live bridge to Google Calendar</span></span>
@@ -2599,6 +2629,9 @@ html[lang="en"] span[lang="en"]{display:inline}
             <span class="fld" style="grid-column:1/-1"><label><span lang="ar">ملاحظة</span><span lang="en">Note</span></label>
               <input id="dgc-note" placeholder="جدول الأعمال باختصار"></span>
           </div>
+          <label style="display:inline-flex;gap:7px;align-items:center;font-size:var(--t-sm);margin-top:var(--sp-2);cursor:pointer">
+            <input type="checkbox" id="dgc-priv">
+            <span><span lang="ar">🔒 خاص — تفاصيله للمديرة العامة وحدها، والآخرون يرون «مشغول»</span><span lang="en">🔒 Private — details for the DG alone; others see "busy"</span></span></label>
           <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
             <button class="btn btn-p" id="dgCalAdd"><span lang="ar">إدراج في تقويمها</span><span lang="en">Place in her calendar</span></button>
             <span class="kerr" id="dgCalErr"></span>
@@ -2757,6 +2790,16 @@ html[lang="en"] span[lang="en"]{display:inline}
         <span lang="en">Other people's plans and budgets do not appear here — the scope is personal.</span>
       </div>
       <div class="homestrip" id="staffStrip"></div>
+      <div class="card">
+        <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><div>
+          <span class="ceye"><span lang="ar">ما يخص الجميع من مواعيد</span><span lang="en">The dates that concern everyone</span></span>
+          <h2><span lang="ar">تقويم المركز</span><span lang="en">The centre calendar</span></h2></div></div></div>
+        <div style="display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center">
+          <button class="btn" id="dirCalRefresh2"><span lang="ar">تحديث</span><span lang="en">Refresh</span></button>
+          <span id="dirCalStatus2" style="font-size:var(--t-sm)"></span>
+        </div>
+        <div id="dirCalList2" style="margin-top:var(--sp-3)"></div>
+      </div>
       <div class="tiles" id="staffTiles"></div>
       <div id="staffPrio" hidden></div>
       <div id="staffBody"></div>
@@ -3147,6 +3190,15 @@ html[lang="en"] span[lang="en"]{display:inline}
 
       <!-- leave -->
       <div class="pane" id="ow-lv">
+        <div class="card">
+          <div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/><circle cx="12" cy="15" r="2.5"/></svg></span><div>
+            <span class="ceye"><span lang="ar">الجميع يقرأ — القليلون يكتبون</span><span lang="en">Everyone reads; few write</span></span>
+            <h2><span lang="ar">تقويم المركز — من يضيف إليه</span><span lang="en">The centre calendar — who may add</span></h2></div></div></div>
+          <p style="font-size:var(--t-sm);color:var(--ink-3)">
+            <span lang="ar">المديرة العامة والتنسيق يضيفان دائماً. علِّمي على من تمنحينهم صلاحية الإضافة أيضاً؛ الجميع يشاهد التقويم في كل الأحوال.</span>
+            <span lang="en">The DG and Coordination always may. Tick anyone else who may add; everyone views it regardless.</span></p>
+          <div id="dirCalEds" style="display:flex;gap:12px;flex-wrap:wrap"></div>
+        </div>
         <div class="card">
           <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></svg></span><div>
             <span class="ceye"><span lang="ar">ضوابط المدير العام</span><span lang="en">Director General controls</span></span>
@@ -8503,6 +8555,104 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(e.target.closest('[data-go="coord"]')) drawAgendas();
   });
 
+  // ── the centre calendar: read by everyone, written by chosen hands ──
+  var DIRCAL_EDITORS={};   // staff id -> true, set by the owner; dg + coord always may
+  function canEditDirCal(){
+    if(ROLE==="dg"||ROLE==="coord") return true;
+    var me=(typeof myPerson==="function")?myPerson():null;
+    return !!(me && DIRCAL_EDITORS[me.id]);
+  }
+  function drawDirCalEds(){
+    var h=document.getElementById("dirCalEds"); if(!h) return;
+    h.innerHTML=STAFF.map(function(x){
+      return '<label style="display:inline-flex;gap:6px;align-items:center;font-size:var(--t-xs);cursor:pointer">'+
+        '<input type="checkbox" data-dced="'+x.id+'"'+(DIRCAL_EDITORS[x.id]?' checked':'')+'>'+
+        (isAr()?x.who[0]:x.who[1])+'</label>';
+    }).join("");
+  }
+  document.addEventListener("change",function(e){
+    var d=e.target.closest?e.target.closest("[data-dced]"):null; if(!d) return;
+    DIRCAL_EDITORS[d.dataset.dced]=d.checked;
+    var f=document.getElementById("dirCalForm"); if(f) f.hidden=!canEditDirCal();
+  });
+  function dirCalStatusMsg(msg,ok){
+    ["dirCalStatus","dirCalStatus2"].forEach(function(id){
+      var el=document.getElementById(id);
+      if(el) el.innerHTML='<span style="color:var(--'+(ok?"good-ink":"critical-ink")+')">'+msg+'</span>';
+    });
+  }
+  function renderDirCal(j){
+    ["dirCalList","dirCalList2"].forEach(function(id){
+      var host=document.getElementById(id); if(!host) return;
+      var items=j.items||[];
+      if(!items.length){
+        host.innerHTML='<div class="subempty">'+bi("لا مواعيد في الأيام القادمة.","Nothing upcoming.")+'</div>'; return;
+      }
+      var byDay={};
+      items.forEach(function(ev){ var d=String(ev.start).slice(0,10); (byDay[d]=byDay[d]||[]).push(ev); });
+      host.innerHTML=Object.keys(byDay).sort().map(function(d){
+        var wd=new Date(d+"T12:00:00").getDay();
+        return '<p class="subh" style="margin:10px 0 4px">'+bi(DAY_AR[wd],DAY_EN[wd])+' · <span class="tnum">'+d+'</span></p>'+
+          byDay[d].map(function(ev){
+            return '<div class="subrow" style="grid-template-columns:auto minmax(0,1fr)">'+
+              '<span class="tnum" style="font-size:var(--t-sm);white-space:nowrap">'+
+                (ev.allday?bi("اليوم كله","All day"):String(ev.start).slice(11,16)+"–"+String(ev.end).slice(11,16))+'</span>'+
+              '<span><span class="st2">'+String(ev.title||"")+'</span>'+
+                (ev.loc?'<span class="sm">'+ev.loc+'</span>':"")+'</span></div>';
+          }).join("");
+      }).join("");
+    });
+  }
+  var DIRCAL_FETCHED=false;
+  async function dirCalFetch(){
+    var cfg=dgCalCfg();
+    if(!cfg){ dirCalStatusMsg(bi("يُدخل المفتاح في شاشة الجسر الذكي أولاً.","The key goes in on the bridge screen first."),false); return; }
+    dirCalStatusMsg(bi("جارٍ القراءة…","Reading…"),true);
+    try{
+      var r=await fetch(cfg.url+"?key="+encodeURIComponent(cfg.key)+"&fn=calendar&which=dir&days=21");
+      var j=await r.json();
+      if(!j.ok){ dirCalStatusMsg(bi("تعذّر: ","Failed: ")+(j.error||""),false); return; }
+      DIRCAL_FETCHED=true;
+      dirCalStatusMsg(bi("مُحدَّث الآن.","Just refreshed."),true);
+      renderDirCal(j);
+      var f=document.getElementById("dirCalForm"); if(f) f.hidden=!canEditDirCal();
+    }catch(_){
+      dirCalStatusMsg(bi("تعذّر الاتصال من هذه النسخة — استخدمي نسخة github.io.","Use the github.io copy to connect."),false);
+    }
+  }
+  document.addEventListener("click",function(e){
+    if(e.target.closest("#dirCalRefresh")||e.target.closest("#dirCalRefresh2")){ dirCalFetch(); return; }
+    if((e.target.closest('[data-go="coord"]')||e.target.closest('[data-go="staffhome"]')) && !DIRCAL_FETCHED && dgCalCfg()){ dirCalFetch(); }
+    if(e.target.closest('[data-go="own"]')) drawDirCalEds();
+    if(e.target.closest("#dirCalAdd")){
+      var t=document.getElementById("dirc-title"), err=document.getElementById("dirCalErr");
+      var date=(document.getElementById("dirc-date")||{}).value||"";
+      var from=(document.getElementById("dirc-from")||{}).value||"";
+      var to=(document.getElementById("dirc-to")||{}).value||"";
+      if(!t.value.trim()){ t.focus(); return; }
+      if(!date||!from||!to||to<=from){ if(err) err.textContent=bi("أكملي التاريخ والوقت.","Complete the date and times."); return; }
+      if(!canEditDirCal()){ if(err) err.textContent=bi("الإضافة لمن حدّدتهم المالكة.","Adding is for those the owner chose."); return; }
+      var cfg=dgCalCfg();
+      if(!cfg){ if(err) err.textContent=bi("المفتاح أولاً من شاشة الجسر.","Key first, on the bridge screen."); return; }
+      var acct=(typeof SESSION!=="undefined"&&SESSION&&typeof acctOf==="function")?acctOf(SESSION.u):null;
+      stepUp("submit", bi("إدراج في تقويم المركز: ","Adding to the centre calendar: ")+t.value.trim(), function(){
+        if(err) err.textContent=bi("جارٍ الإدراج…","Placing…");
+        fetch(cfg.url+"?key="+encodeURIComponent(cfg.key), {method:"POST",
+          body:JSON.stringify({fn:"addEvent", which:"dir", title:t.value.trim(), date:date, from:from, to:to,
+            loc:(document.getElementById("dirc-loc")||{}).value||"",
+            note:"", who:acct?(isAr()?acct.who[0]:acct.who[1]):""})})
+          .then(function(r){return r.json();})
+          .then(function(j){
+            if(j.ok){ if(err) err.textContent=""; t.value="";
+              dirCalFetch().then(function(){ dirCalStatusMsg(bi("أُدرج الموعد.","Placed."),true); });
+            } else if(err) err.textContent=bi("رفض: ","Refused: ")+(j.error||"");
+          })
+          .catch(function(){ if(err) err.textContent=bi("تعذّر الاتصال.","Could not connect."); });
+      });
+      return;
+    }
+  });
+
   // ── the DG calendar bridge on the coordination screen ──
   var DGCAL_FETCHED=false;
   function dgCalCfg(){
@@ -8530,10 +8680,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var wd=new Date(d+"T12:00:00").getDay();
       return '<p class="subh" style="margin:10px 0 4px">'+bi(DAY_AR[wd],DAY_EN[wd])+' · <span class="tnum">'+d+'</span></p>'+
         byDay[d].map(function(ev){
-          return '<div class="subrow" style="grid-template-columns:auto minmax(0,1fr)">'+
+          var busy=ev.private && ev.title==="مشغول";
+          return '<div class="subrow" style="grid-template-columns:auto minmax(0,1fr)'+(busy?';opacity:.65':'')+'">'+
             '<span class="tnum" style="font-size:var(--t-sm);white-space:nowrap">'+
               (ev.allday?bi("اليوم كله","All day"):String(ev.start).slice(11,16)+"–"+String(ev.end).slice(11,16))+'</span>'+
-            '<span><span class="st2">'+String(ev.title||"")+'</span>'+
+            '<span><span class="st2"'+(busy?' style="font-style:italic;color:var(--ink-3)"':'')+'>'+
+              (busy?"🔒 ":(ev.private?"🔒 ":""))+String(ev.title||"")+'</span>'+
               (ev.loc?'<span class="sm">'+ev.loc+'</span>':"")+'</span></div>';
         }).join("");
     }).join("");
@@ -8543,7 +8695,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(!cfg){ dgCalStatus(bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."),false); return; }
     dgCalStatus(bi("جارٍ القراءة…","Reading…"),true);
     try{
-      var r=await fetch(cfg.url+"?key="+encodeURIComponent(cfg.key)+"&fn=calendar&days=14");
+      var r=await fetch(cfg.url+"?key="+encodeURIComponent(cfg.key)+"&fn=calendar&days=14"+(ROLE==="dg"?"&full=1":""));
       var j=await r.json();
       if(!j.ok){ dgCalStatus(bi("تعذّر: ","Failed: ")+(j.error||bi("المفتاح مرفوض","key refused")),false); return; }
       DGCAL_FETCHED=true;
@@ -8573,8 +8725,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       // placing something in the DG's own calendar deserves the second step
       stepUp("submit", bi("جدولة موعد للمديرة العامة: ","Scheduling for the Director General: ")+t.value.trim(), function(){
         if(err) err.textContent=bi("جارٍ الإدراج…","Placing…");
+        var privT=((document.getElementById("dgc-priv")||{}).checked?"🔒 ":"")+t.value.trim();
         fetch(cfg.url+"?key="+encodeURIComponent(cfg.key), {method:"POST",
-          body:JSON.stringify({fn:"addEvent", title:t.value.trim(), date:date, from:from, to:to,
+          body:JSON.stringify({fn:"addEvent", title:privT, date:date, from:from, to:to,
             loc:(document.getElementById("dgc-loc")||{}).value||"",
             note:(document.getElementById("dgc-note")||{}).value||"", who:who})})
           .then(function(r){return r.json();})

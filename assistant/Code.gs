@@ -55,6 +55,25 @@ function dgCal_() {
 function fmt_(d) {
   return Utilities.formatDate(d, Session.getScriptTimeZone(), "yyyy-MM-dd'T'HH:mm");
 }
+// ── the directorate calendar: everyone views, chosen hands write ──
+// Created in the QAGC account on first use; the platform decides who may add.
+function dirCal_() {
+  let id = PROPS.getProperty('QAGC_DIR_CAL');
+  if (!id) {
+    const cal = CalendarApp.createCalendar('تقويم المركز — QAGC');
+    id = cal.getId();
+    PROPS.setProperty('QAGC_DIR_CAL', id);
+  }
+  const cal = CalendarApp.getCalendarById(id);
+  if (!cal) throw new Error('the centre calendar is not accessible');
+  return cal;
+}
+// events the owner marked private: 🔒 in the title or #خاص in the description.
+// Anyone but the owner sees only «مشغول» and the time block.
+function isPrivate_(ev) {
+  return ev.getTitle().indexOf('🔒') >= 0 ||
+         (ev.getDescription() || '').indexOf('#خاص') >= 0;
+}
 
 // ── Google Sheets as the working surface ──
 // The annual plan publishes to one spreadsheet; every KPI gets its own tab
@@ -154,15 +173,24 @@ function doGet(e) {
       const days = Math.min(60, Math.max(1, Number(e.parameter.days || 14)));
       const start = new Date(); start.setHours(0, 0, 0, 0);
       const end = new Date(start.getTime() + days * 86400000);
-      const cal = dgCal_();
-      const items = cal.getEvents(start, end).slice(0, 100).map(ev => ({
-        title: ev.getTitle(),
-        start: fmt_(ev.getStartTime()),
-        end: fmt_(ev.getEndTime()),
-        allday: ev.isAllDayEvent(),
-        loc: ev.getLocation() || '',
-      }));
-      return json_({ ok: true, cal: cal.getName(), tz: Session.getScriptTimeZone(), items: items });
+      const which = e.parameter.which === 'dir' ? 'dir' : 'dg';
+      const cal = which === 'dir' ? dirCal_() : dgCal_();
+      const full = e.parameter.full === '1';   // the owner's view; others get busy-only on private items
+      const items = cal.getEvents(start, end).slice(0, 100).map(ev => {
+        const priv = isPrivate_(ev);
+        if (priv && !full) return {
+          title: 'مشغول', private: true,
+          start: fmt_(ev.getStartTime()), end: fmt_(ev.getEndTime()),
+          allday: ev.isAllDayEvent(), loc: '',
+        };
+        return {
+          title: ev.getTitle(), private: priv,
+          start: fmt_(ev.getStartTime()), end: fmt_(ev.getEndTime()),
+          allday: ev.isAllDayEvent(), loc: ev.getLocation() || '',
+        };
+      });
+      return json_({ ok: true, cal: cal.getName(), which: which,
+        tz: Session.getScriptTimeZone(), items: items });
     } catch (err) {
       return json_({ ok: false, error: String(err.message || err) });
     }
@@ -261,7 +289,7 @@ function doPost(e) {
     const end = new Date(date + 'T' + to + ':00');
     if (!(end > start)) return json_({ ok: false, error: 'to must be after from' });
     try {
-      const cal = dgCal_();
+      const cal = body.which === 'dir' ? dirCal_() : dgCal_();
       const desc = [String(body.note || '').trim(),
         'عبر منصة QAGC' + (body.who ? ' — ' + String(body.who).trim() : '')]
         .filter(Boolean).join('\n');
