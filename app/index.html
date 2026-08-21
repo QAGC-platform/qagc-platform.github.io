@@ -3045,6 +3045,16 @@ body.editmode .screen .head .eyebrow span[lang]:focus{
           <button class="btn btn-p" id="czEditMode"><span lang="ar">✏️ تفعيل وضع التحرير المباشر</span><span lang="en">✏️ Start direct editing</span></button>
           <p class="subh" style="margin-top:var(--sp-4)"><span lang="ar">ترتيب اللوحة الجانبية</span><span lang="en">Rail order</span></p>
           <div id="czOrder" style="display:flex;flex-direction:column;gap:4px"></div>
+          <p class="subh" style="margin-top:var(--sp-4)"><span lang="ar">نقل إعداداتك بين الأجهزة</span><span lang="en">Move your settings between devices</span></p>
+          <p style="font-size:var(--t-sm);color:var(--ink-3)">
+            <span lang="ar">ملف واحد يحمل تخصيصك وصلاحياتك وقواعدك وأوزانك — نزّليه هنا، واستوردِيه على أي جهاز آخر فتصير المنصة هناك كما ضبطتِها هنا. (يشمل مفتاح الجسر إن كان محفوظاً — احفظي الملف كما تحفظين مفتاحاً.)</span>
+            <span lang="en">One file carries your customisation, privileges, rules and weights — download here, import on any other device. (Includes the bridge key if remembered — treat the file like a key.)</span></p>
+          <div style="display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center">
+            <button class="btn" id="cfgExport"><span lang="ar">تصدير إعداداتي</span><span lang="en">Export my settings</span></button>
+            <label class="btn" style="cursor:pointer"><span lang="ar">استيراد ملف إعدادات</span><span lang="en">Import a settings file</span>
+              <input type="file" id="cfgImport" accept="application/json" hidden></label>
+            <span class="kerr" id="cfgMsg"></span>
+          </div>
           <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
             <button class="btn btn-p" id="czSave"><span lang="ar">حفظ التخصيص</span><span lang="en">Save</span></button>
             <button class="btn" id="czReset"><span lang="ar">استعادة الافتراضي</span><span lang="en">Reset to default</span></button>
@@ -3228,6 +3238,34 @@ body.editmode .screen .head .eyebrow span[lang]:focus{
           </div>
         </div>
         <div class="card">
+          <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg></span><div>
+            <span class="ceye"><span lang="ar">أسئلة التقييم مِلكها</span><span lang="en">The evaluation's questions are hers</span></span>
+            <h2><span lang="ar">معايير التقييم 360°</span><span lang="en">360° criteria</span></h2></div></div></div>
+          <p style="font-size:var(--t-sm);color:var(--ink-3)">
+            <span lang="ar">معيار في كل سطر — الدورات الجديدة تُفتح بهذه المعايير؛ الدورات القائمة تكمل بمعاييرها.</span>
+            <span lang="en">One criterion per line — new cycles open with these; running cycles keep theirs.</span></p>
+          <textarea id="evCritTa" rows="6" style="width:100%"></textarea>
+          <div style="margin-top:var(--sp-2)"><button class="btn btn-p" id="evCritSave"><span lang="ar">حفظ المعايير</span><span lang="en">Save</span></button>
+            <span class="saved" id="evCritSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span lang="ar">حُفظت.</span><span lang="en">Saved.</span></span></div>
+        </div>
+        <div class="card">
+          <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><div>
+            <span class="ceye"><span lang="ar">وزنها بيدها، والمعادلة معلنة للجميع</span><span lang="en">She sets the weights; everyone sees the formula</span></span>
+            <h2><span lang="ar">معادلة مؤشر الأداء</span><span lang="en">The performance formula</span></h2></div></div></div>
+          <div class="frow">
+            <div class="fld"><label><span lang="ar">المهام في موعدها</span><span lang="en">On-time tasks</span></label>
+              <input id="pw-task" type="number" min="0" max="100" value="50"></div>
+            <div class="fld"><label><span lang="ar">تقييم 360°</span><span lang="en">360°</span></label>
+              <input id="pw-ev" type="number" min="0" max="100" value="30"></div>
+            <div class="fld"><label><span lang="ar">التطوير المعتمد</span><span lang="en">Development</span></label>
+              <input id="pw-dev" type="number" min="0" max="100" value="20"></div>
+          </div>
+          <p class="hint2"><span lang="ar">تُعاير الأوزان تلقائياً إلى 100، وتظهر المعادلة الجديدة فوراً في لوحة الأداء.</span>
+            <span lang="en">Weights normalise to 100; the board shows the new formula at once.</span></p>
+          <div style="margin-top:var(--sp-2)"><button class="btn btn-p" id="pwSave"><span lang="ar">حفظ الأوزان</span><span lang="en">Save</span></button>
+            <span class="saved" id="pwSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span lang="ar">حُفظت.</span><span lang="en">Saved.</span></span></div>
+        </div>
+        <div class="card">
           <div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10zM8.5 14 7 21l5-3 5 3-1.5-7"/></svg></span><div>
             <span class="ceye"><span lang="ar">يظهر على كل صفحات المنصة</span><span lang="en">Shown on every page of the platform</span></span>
             <h2><span lang="ar">تكريم الشهر</span><span lang="en">The month's honours</span></h2></div></div></div>
@@ -3396,6 +3434,18 @@ body.editmode .screen .head .eyebrow span[lang]:focus{
           </div>
 
           <div style="margin-top:var(--sp-4);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
+            <div class="frow" style="margin-top:var(--sp-3)">
+              <div class="fld"><label><span lang="ar">بداية الدوام</span><span lang="en">Workday starts</span></label>
+                <input id="setHrsF" type="number" min="6" max="12" value="9"></div>
+              <div class="fld"><label><span lang="ar">نهاية الدوام</span><span lang="en">Workday ends</span></label>
+                <input id="setHrsT" type="number" min="10" max="20" value="14"></div>
+              <div class="fld"><label><span lang="ar">عطلة الأسبوع</span><span lang="en">Weekend</span></label>
+                <span style="display:flex;gap:12px;margin-top:8px">
+                  <label style="display:inline-flex;gap:5px;font-size:var(--t-sm);cursor:pointer"><input type="checkbox" id="setWkFri" checked> <span lang="ar">الجمعة</span><span lang="en">Fri</span></label>
+                  <label style="display:inline-flex;gap:5px;font-size:var(--t-sm);cursor:pointer"><input type="checkbox" id="setWkSat" checked> <span lang="ar">السبت</span><span lang="en">Sat</span></label>
+                </span></div>
+            </div>
+            <p class="hint2"><span lang="ar">الدوام والعطلة يحكمان اقتراحات «الأوقات الفارغة» في جدولة المواعيد.</span><span lang="en">These drive the free-slot suggestions when scheduling.</span></p>
             <button class="btn btn-p" id="saveSettings"><span lang="ar">حفظ</span><span lang="en">Save</span></button>
             <span class="saved" id="savedMsg"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span lang="ar">تم حفظ الإعدادات.</span><span lang="en">Settings saved.</span></span>
           </div>
@@ -4158,7 +4208,7 @@ body.editmode .screen .head .eyebrow span[lang]:focus{
     LVCFG.cap=+document.getElementById("setCap").value||75;
     LVCFG.heads=+document.getElementById("setHeads").value||2;
     LVCFG.mgrs=+document.getElementById("setMgrs").value||1;
-    applyCfg();
+    applyCfg(); ownerPersist();
     var msg=document.getElementById("savedMsg"); msg.classList.add("on");
     setTimeout(function(){ msg.classList.remove("on"); },2400);
   });
@@ -4786,6 +4836,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   // the platform's single declared today — every date computation reads THIS,
   // never the machine clock, so demo data and live features agree on the week
   var PLATFORM_TODAY="2026-11-20";
+  var PERF_W={task:50, ev:30, dev:20};          // the score's weights — hers to tune
+  var WORK_HRS={f:9, t:14, wk:[5,6]};           // working hours and weekend for free-slot suggestions
   function platformNow(){ return new Date(PLATFORM_TODAY+"T09:00:00"); }
   var PRIO_CFG={n:5, all:false, route:"dg"};   // route: dg | superior
   var ASG_PRIV="dir";                          // who may assign action-plan work: dg | dir | all
@@ -9026,9 +9078,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var pdpN=((typeof PDP!=="undefined"&&PDP[p.id])||[]).filter(function(x){return x.status==="approved";}).length;
     // a number only when there is something real to number — never a polite 84
     if(!t && !evAll.length && !pdpN) return null;
-    var task=(t? (t-o)/t : 1)*50;
-    var ev=evAll.length? (evAll.reduce(function(a,b){return a+b;},0)/evAll.length)/5*30 : 24;
-    var dev=pdpN? Math.min(pdpN,2)/2*20 : 10;
+    var W=PERF_W, tot=(W.task+W.ev+W.dev)||100, k=100/tot;   // normalised to 100 whatever she types
+    var task=(t? (t-o)/t : 1)*W.task*k;
+    var ev=(evAll.length? (evAll.reduce(function(a,b){return a+b;},0)/evAll.length)/5 : 0.8)*W.ev*k;
+    var dev=(pdpN? Math.min(pdpN,2)/2 : 0.5)*W.dev*k;
     return Math.round(task+ev+dev);
   }
   function drawPerfBoard(){
@@ -9051,8 +9104,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     (unscored?'<div class="sm" style="margin-top:6px"><span class="pill p-neutral">'+
       bi(unscored+" موظفاً: بيانات غير كافية بعد", unscored+" staff: not enough data yet")+'</span></div>':"")+
     '<p class="hint2" style="margin-top:var(--sp-2)">'+
-      bi("معادلة معلنة: 50 نقطة للمهام في موعدها، 30 لتقييم 360° (24 عند غيابه)، 20 لعناصر التطوير المعتمدة (10 عند غيابها).",
-         "Open formula: 50 for on-time tasks, 30 for the 360° (24 if none), 20 for approved development items (10 if none).")+'</p>';
+      bi("معادلة معلنة تضبطها المديرة من الإعدادات: "+PERF_W.task+" للمهام في موعدها، "+PERF_W.ev+" لتقييم 360°، "+PERF_W.dev+" لعناصر التطوير المعتمدة.",
+         "An open formula the DG tunes in Settings: "+PERF_W.task+" on-time tasks, "+PERF_W.ev+" the 360°, "+PERF_W.dev+" development.")+'</p>';
   }
   document.addEventListener("click",function(e){
     if(e.target.closest('[data-go="people"]')) drawPerfBoard();
@@ -9631,7 +9684,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   });
 
   // ── the 360° evaluation: a cycle per subject; raters answer in confidence ──
-  var EV_CRITERIA=["التواصل المهني","العمل ضمن الفريق","جودة العمل ودقته","الالتزام بالمواعيد","المبادرة وحل المشكلات","التعامل مع المراجعين وأسرهم"];
+  var EV_CRITERIA=["التواصل المهني","العمل ضمن الفريق","جودة العمل ودقته","الالتزام بالمواعيد","المبادرة وحل المشكلات","التعامل مع المراجعين وأسرهم"];   // editable in Settings; persisted
   var EV360=[], EVSEQ=0;   // {id, subject, criteria[], raters[], resp:{pid:{scores[],comment}}, open}
   function drawEv360(){
     var host=document.getElementById("ev360Body"); if(!host) return;
@@ -10058,11 +10111,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var slots=[], now=platformNow();
     for(var d=0; d<7 && slots.length<3; d++){
       var day=new Date(now.getTime()+d*86400000);
-      var dow=day.getDay(); if(dow===5||dow===6) continue;          // the Omani weekend
+      var dow=day.getDay(); if(WORK_HRS.wk.indexOf(dow)>=0) continue;   // her declared weekend
       var ds=day.toISOString().slice(0,10);
       var busy=DGCAL_ITEMS.filter(function(ev){return String(ev.start).slice(0,10)===ds;});
       if(busy.some(function(ev){return ev.allday;})) continue;
-      for(var h=9; h<14 && slots.length<3; h++){
+      for(var h=WORK_HRS.f; h<WORK_HRS.t && slots.length<3; h++){
         var f=String(h).padStart(2,"0")+":00", t=String(h+1).padStart(2,"0")+":00";
         var clash=busy.some(function(ev){
           return f<String(ev.end).slice(11,16) && t>String(ev.start).slice(11,16); });
@@ -10866,12 +10919,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   document.addEventListener("input",function(e){
     if(e.target.id==="setPrioN"){
       var v=parseInt(e.target.value,10);
-      if(!isNaN(v)&&v>0){ PRIO_CFG.n=Math.min(12,v); drawDash(); drawPrioEverywhere(); syncPrioSettings(); }
+      if(!isNaN(v)&&v>0){ PRIO_CFG.n=Math.min(12,v); drawDash(); drawPrioEverywhere(); syncPrioSettings(); ownerPersist(); }
     }
   });
   document.addEventListener("change",function(e){
     if(e.target.id==="setRoute"){
-      PRIO_CFG.route=e.target.value; syncPrioSettings(); afterSubmit();
+      PRIO_CFG.route=e.target.value; syncPrioSettings(); afterSubmit(); ownerPersist();
     }
   });
   function shade(hex,f){
@@ -10935,14 +10988,14 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(e.target.closest("#sw2fa")){
       TWOFA.on=!TWOFA.on;
       document.getElementById("sw2fa").classList.toggle("on",TWOFA.on);
-      return;
+      ownerPersist(); return;
     }
     var tf=e.target.closest("[data-2fa]");
     if(tf){ var k2=tf.getAttribute("data-2fa");
-      TWOFA.acts[k2]=!TWOFA.acts[k2]; tf.classList.toggle("on",TWOFA.acts[k2]); return; }
+      TWOFA.acts[k2]=!TWOFA.acts[k2]; tf.classList.toggle("on",TWOFA.acts[k2]); ownerPersist(); return; }
     if(e.target.closest("#swPrioAll")){
       PRIO_CFG.all=!PRIO_CFG.all;
-      syncPrioSettings(); drawPrioEverywhere(); return;
+      syncPrioSettings(); drawPrioEverywhere(); ownerPersist(); return;
     }
   });
 
@@ -12089,6 +12142,84 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   applyRole();
   gateFoot(); drawAccounts(); drawInvites();
+
+  // ── the owner's configuration outlives the refresh, all of it in one store ──
+  function ownerPersist(){
+    try{ localStorage.setItem("qagcOwnerCfg", JSON.stringify({
+      lv:LVCFG, prio:{n:PRIO_CFG.n, all:PRIO_CFG.all, route:PRIO_CFG.route},
+      twofa:TWOFA, ev:EV_CRITERIA, perfW:PERF_W, hrs:WORK_HRS })); }catch(_){}
+  }
+  try{
+    var _oc=JSON.parse(localStorage.getItem("qagcOwnerCfg")||"null");
+    if(_oc){
+      if(_oc.lv) Object.assign(LVCFG,_oc.lv);
+      if(_oc.prio) Object.assign(PRIO_CFG,_oc.prio);
+      if(_oc.twofa){ TWOFA.on=_oc.twofa.on!==false; Object.assign(TWOFA.acts,_oc.twofa.acts||{}); }
+      if(_oc.ev && _oc.ev.length) EV_CRITERIA=_oc.ev;
+      if(_oc.perfW) Object.assign(PERF_W,_oc.perfW);
+      if(_oc.hrs) Object.assign(WORK_HRS,_oc.hrs);
+      // reflect the restored values into the settings inputs
+      var set=function(id,v){ var el=document.getElementById(id); if(el) el.value=v; };
+      set("setWeeks",LVCFG.weeks); set("setCap",LVCFG.cap); set("setHeads",LVCFG.heads); set("setMgrs",LVCFG.mgrs);
+      set("setPrioN",PRIO_CFG.n); set("setRoute",PRIO_CFG.route);
+      set("setHrsF",WORK_HRS.f); set("setHrsT",WORK_HRS.t);
+      set("pw-task",PERF_W.task); set("pw-ev",PERF_W.ev); set("pw-dev",PERF_W.dev);
+      var fr=document.getElementById("setWkFri"); if(fr) fr.checked=WORK_HRS.wk.indexOf(5)>=0;
+      var sa=document.getElementById("setWkSat"); if(sa) sa.checked=WORK_HRS.wk.indexOf(6)>=0;
+      var s2=document.getElementById("sw2fa"); if(s2) s2.classList.toggle("on",TWOFA.on);
+      document.querySelectorAll("[data-2fa]").forEach(function(b){
+        b.classList.toggle("on", !!TWOFA.acts[b.getAttribute("data-2fa")]); });
+    }
+    var ta=document.getElementById("evCritTa"); if(ta) ta.value=EV_CRITERIA.join("\n");
+  }catch(_){}
+  document.addEventListener("click",function(e){
+    if(e.target.closest("#evCritSave")){
+      var ta=document.getElementById("evCritTa");
+      var lines=String(ta.value||"").split("\n").map(function(l){return l.trim();}).filter(Boolean);
+      if(lines.length<3){ ta.focus(); return; }
+      EV_CRITERIA=lines; ownerPersist(); flashSaved("evCritSaved"); return;
+    }
+    if(e.target.closest("#pwSave")){
+      PERF_W={task:+((document.getElementById("pw-task")||{}).value)||0,
+              ev:+((document.getElementById("pw-ev")||{}).value)||0,
+              dev:+((document.getElementById("pw-dev")||{}).value)||0};
+      if(!(PERF_W.task+PERF_W.ev+PERF_W.dev)) PERF_W={task:50,ev:30,dev:20};
+      ownerPersist(); drawPerfBoard(); flashSaved("pwSaved"); return;
+    }
+    if(e.target.closest("#cfgExport")){
+      var keys=["qagcCustom","qagcPrivs","qagcAwards","qagcOwnerCfg","qagcPlanSheet","qagcAiHidden","qagcAiCfg"];
+      var bag={_qagc:"owner-settings", when:PLATFORM_TODAY};
+      keys.forEach(function(k){ var v=localStorage.getItem(k); if(v!==null) bag[k]=v; });
+      dlBlob("qagc-settings.json", new Blob([JSON.stringify(bag,null,1)],{type:"application/json"}));
+      return;
+    }
+  });
+  document.addEventListener("change",function(e){
+    if(e.target && e.target.id==="cfgImport"){
+      var f=e.target.files&&e.target.files[0]; if(!f) return;
+      f.text().then(function(t){
+        var bag=JSON.parse(t);
+        if(bag._qagc!=="owner-settings") throw new Error("not a settings file");
+        Object.keys(bag).forEach(function(k){
+          if(k.indexOf("qagc")===0) localStorage.setItem(k, bag[k]); });
+        var m=document.getElementById("cfgMsg");
+        if(m) m.innerHTML=bi("استُوردت — يُعاد التحميل…","Imported — reloading…");
+        setTimeout(function(){ location.reload(); },700);
+      }).catch(function(){
+        var m=document.getElementById("cfgMsg");
+        if(m) m.innerHTML=bi("الملف ليس ملف إعدادات المنصة.","Not a platform settings file.");
+      });
+      return;
+    }
+    if(e.target && (e.target.id==="setHrsF"||e.target.id==="setHrsT"||e.target.id==="setWkFri"||e.target.id==="setWkSat")){
+      WORK_HRS.f=+((document.getElementById("setHrsF")||{}).value)||9;
+      WORK_HRS.t=+((document.getElementById("setHrsT")||{}).value)||14;
+      WORK_HRS.wk=[];
+      if((document.getElementById("setWkFri")||{}).checked) WORK_HRS.wk.push(5);
+      if((document.getElementById("setWkSat")||{}).checked) WORK_HRS.wk.push(6);
+      ownerPersist(); return;
+    }
+  });
 
   // a refresh keeps the signed-in account on this device; sign-out ends it.
   // (Demo-grade: the built platform restores a server-side session token instead.)
