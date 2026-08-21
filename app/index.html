@@ -3296,6 +3296,28 @@ html[lang="en"] span[lang="en"]{display:inline}
       </div>
 
       <div class="card">
+        <div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 6 12 13 2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></span><div>
+          <span class="ceye"><span lang="ar">حي، من الجسر الفعلي</span><span lang="en">Live, from the real bridge</span></span>
+          <h2><span lang="ar">الوارد من ChatGPT</span><span lang="en">The ChatGPT inbox</span></h2></div></div>
+          <span class="sub" id="aiInbCount"></span></div>
+        <p style="font-size:var(--t-sm);color:var(--ink-3)">
+          <span lang="ar">ما دفعته المساعِدة في ChatGPT يظهر هنا مباشرة من واجهة المنصة الحقيقية. أدخل المفتاح مرة واحدة ثم «اتصال». كل وارد يبقى بانتظار القرار حتى يُدرج في الاعتمادات.</span>
+          <span lang="en">What the assistant pushed in ChatGPT appears here live from the platform's real API. Enter the key once, then connect. Everything arrives pending until taken into Approvals.</span></p>
+        <div class="frow" style="align-items:end">
+          <div class="fld"><label><span lang="ar">عنوان الواجهة</span><span lang="en">Endpoint</span></label>
+            <input id="aiCfgUrl" spellcheck="false" style="direction:ltr;text-align:start"
+              value="https://script.google.com/macros/s/AKfycbyXcZmRRwTd3l9RxsVervXq2waQ6SLyZ8uVQ83H9RuBFJZupisg_s1-5R8wvPQmQIQxgg/exec"></div>
+          <div class="fld"><label><span lang="ar">المفتاح</span><span lang="en">Key</span></label>
+            <input id="aiCfgKey" type="password" autocomplete="off" style="direction:ltr;text-align:start" placeholder="qagc_…"></div>
+        </div>
+        <div style="display:flex;gap:var(--sp-2);margin-top:var(--sp-2);flex-wrap:wrap;align-items:center">
+          <button class="btn btn-p" id="aiConnect"><span lang="ar">اتصال وتحديث</span><span lang="en">Connect &amp; refresh</span></button>
+          <span id="aiConnStatus" style="font-size:var(--t-sm)"></span>
+        </div>
+        <div id="aiInbox" style="margin-top:var(--sp-3)"></div>
+      </div>
+
+      <div class="card">
         <div class="card-h">
           <span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/></svg></span><h2><span lang="ar">الجسر الأول — من ChatGPT إلى المنصة</span><span lang="en">Bridge one — ChatGPT into the platform</span></h2>
           <span class="sub"><span class="pill p-warn"><span lang="ar">يحتاج بناء</span><span lang="en">To build</span></span></span>
@@ -7695,6 +7717,72 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       return;
     }
     if(e.target.closest("#celebOff")){ CELEB.on=false; drawStrips(); return; }
+  });
+
+  // ══ the live ChatGPT inbox: the platform reading its own real API ══
+  var AI_IMPORTED={};        // when-stamp -> true, so a row is taken in once
+  var AI_TAG_MAP={five_year_plan:["t-min","متوافق مع الخطة الخمسية","Five-year plan"],
+                  annual_plan:["t-dir","لتحقيق الخطة السنوية","Annual plan"],
+                  third_category:["t-third","الفئة الثالثة","Third category"]};
+  function aiStatus(msg, ok){
+    var el=document.getElementById("aiConnStatus");
+    if(el) el.innerHTML='<span style="color:var(--'+(ok?"good-ink":"critical-ink")+')">'+msg+'</span>';
+  }
+  async function aiFetchInbox(){
+    var url=(document.getElementById("aiCfgUrl")||{}).value||"";
+    var key=(document.getElementById("aiCfgKey")||{}).value||"";
+    if(!url||!key){ aiStatus(bi("أدخل العنوان والمفتاح أولاً.","Enter the endpoint and key first."),false); return; }
+    aiStatus(bi("جارٍ الاتصال…","Connecting…"),true);
+    try{
+      var r=await fetch(url+"?key="+encodeURIComponent(key)+"&fn=inbox");
+      var j=await r.json();
+      if(!j.ok){ aiStatus(bi("المفتاح مرفوض.","The key was refused."),false); return; }
+      aiStatus(bi("متصل — آخر تحديث الآن.","Connected — just refreshed."),true);
+      renderAiInbox(j.items||[]);
+    }catch(err){
+      aiStatus(bi("تعذّر الاتصال من هذه النسخة — جرّب النسخة المنشورة على github.io.",
+                  "Could not connect from this copy — try the published github.io version."),false);
+    }
+  }
+  function renderAiInbox(items){
+    var host=document.getElementById("aiInbox"); if(!host) return;
+    var cnt=document.getElementById("aiInbCount"); if(cnt) cnt.textContent=String(items.length);
+    if(!items.length){
+      host.innerHTML='<div class="subempty">'+bi("الوارد فارغ — لم تدفع المساعِدة شيئاً بعد.","The inbox is empty — nothing pushed yet.")+'</div>';
+      return;
+    }
+    host.innerHTML=items.slice().reverse().map(function(it){
+      var tg=AI_TAG_MAP[it.tag]||["t-third",String(it.tag||""),String(it.tag||"")];
+      var done=AI_IMPORTED[it.when];
+      return '<div class="subrow" style="grid-template-columns:minmax(0,1fr) auto auto">'+
+        '<span><span class="st2">'+String(it.title||"").slice(0,120)+'</span>'+
+          '<span class="sm"><span class="tag '+tg[0]+'"><span class="dot"></span>'+bi(tg[1],tg[2])+'</span>'+
+          (it.owner?' · '+it.owner:'')+(it.due?' · <span class="tnum">'+it.due+'</span>':'')+
+          (it.budget?' · <span class="tnum">'+it.budget+'</span> '+bi("ر.ع","OMR"):'')+
+          (it.note?' · '+String(it.note).slice(0,60):'')+'</span></span>'+
+        '<span class="sw2 tnum">'+String(it.when||"").slice(0,10)+'</span>'+
+        '<span class="acts">'+(done
+          ? '<span class="pill p-good">'+bi("أُدرجت","Taken in")+'</span>'
+          : (ROLE==="dg"
+             ? '<button class="mini yes" data-aiimport="'+encodeURIComponent(JSON.stringify(it))+'">'+bi("إدراج في الاعتمادات","Take into Approvals")+'</button>'
+             : '<span class="pill p-warn">'+bi("بانتظار القرار","Pending")+'</span>'))+'</span>'+
+      '</div>';
+    }).join("");
+  }
+  document.addEventListener("click",function(e){
+    if(e.target.closest("#aiConnect")){ aiFetchInbox(); return; }
+    var im=e.target.closest("[data-aiimport]");
+    if(im){
+      var it=JSON.parse(decodeURIComponent(im.dataset.aiimport));
+      AI_IMPORTED[it.when]=true;
+      SUBS.push({id:"S"+(++SUBSEQ), kind:"obj", ref:"", title:[it.title,it.title],
+        byId:"chatgpt", by:["مساعد ChatGPT","ChatGPT assistant"], dep:["الجسر الذكي","The assistant bridge"],
+        when:String(it.when||"").slice(0,10)||"2026-11-20", stage:"dg", state:"pending",
+        meta:{under:it.note||"", due:it.due||"", tag:it.tag, amt:it.budget?+it.budget:undefined},
+        note:"", endorsedBy:null, decidedBy:null});
+      afterSubmit(); aiFetchInbox();
+      return;
+    }
   });
 
   function drawLeaveCheck(){
