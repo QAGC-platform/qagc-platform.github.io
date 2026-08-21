@@ -2876,6 +2876,7 @@ body.editmode .screen .head .eyebrow span[lang]:focus{
         <span lang="en">Scope is limited to this directorate — other directorates' objectives and the executive reports do not appear.</span>
       </div>
       <div class="homestrip" id="dirStrip"></div>
+      <div class="card" data-dighost hidden></div>
       <div class="tiles" id="dirTiles"></div>
       <div id="dirPrio" hidden></div>
       <div class="grid2">
@@ -4782,6 +4783,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   // Pinned objectives and the owner's rules about them. Declared here because
   // the annual plan draws — and reads both — well before the dashboard code runs.
   var PINNED={SO1:true, SO4:true, "DO1.1":true};
+  // the platform's single declared today — every date computation reads THIS,
+  // never the machine clock, so demo data and live features agree on the week
+  var PLATFORM_TODAY="2026-11-20";
+  function platformNow(){ return new Date(PLATFORM_TODAY+"T09:00:00"); }
   var PRIO_CFG={n:5, all:false, route:"dg"};   // route: dg | superior
   var ASG_PRIV="dir";                          // who may assign action-plan work: dg | dir | all
   function canAssignPlan(){
@@ -4790,7 +4795,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     return ASG_PRIV==="all";
   }
   document.addEventListener("change",function(e){
-    if(e.target && e.target.id==="setAsgPriv"){ ASG_PRIV=e.target.value; }
+    if(e.target && e.target.id==="setAsgPriv"){ ASG_PRIV=e.target.value; privPersist(); }
   });
 
   // ══ the approval ledger ══
@@ -9012,24 +9017,27 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function perfScore(p){
     var steps=p.steps||[], t=steps.length;
     var o=steps.filter(function(st){return st.st==="overdue";}).length;
-    var task=(t? (t-o)/t : 1)*50;
-    var evAll=[]; 
+    var evAll=[];
     (typeof EV360!=="undefined"?EV360:[]).forEach(function(c){
       if(c.subject===p.id) Object.keys(c.resp).forEach(function(r){
         evAll=evAll.concat(c.resp[r].scores.map(Number));
       });
     });
-    var ev=evAll.length? (evAll.reduce(function(a,b){return a+b;},0)/evAll.length)/5*30 : 24;
     var pdpN=((typeof PDP!=="undefined"&&PDP[p.id])||[]).filter(function(x){return x.status==="approved";}).length;
+    // a number only when there is something real to number — never a polite 84
+    if(!t && !evAll.length && !pdpN) return null;
+    var task=(t? (t-o)/t : 1)*50;
+    var ev=evAll.length? (evAll.reduce(function(a,b){return a+b;},0)/evAll.length)/5*30 : 24;
     var dev=pdpN? Math.min(pdpN,2)/2*20 : 10;
     return Math.round(task+ev+dev);
   }
   function drawPerfBoard(){
     var host=document.getElementById("perfBoard"); if(!host) return;
-    var rows=STAFF.filter(function(p){return p.id!=="dg0";})
-      .map(function(p){return {p:p, s:perfScore(p)};})
-      .sort(function(a,b){return b.s-a.s;});
-    host.innerHTML=rows.slice(0,8).map(function(r,i){
+    var all=STAFF.filter(function(p){return p.id!=="dg0";})
+      .map(function(p){return {p:p, s:perfScore(p)};});
+    var scored=all.filter(function(r){return r.s!==null;}).sort(function(a,b){return b.s-a.s;});
+    var unscored=all.length-scored.length;
+    host.innerHTML=(scored.length? scored.slice(0,8).map(function(r,i){
       var col=r.s>=85?"var(--good-ink)":r.s>=65?"var(--warn-ink)":"var(--critical-ink)";
       return '<div style="display:flex;gap:10px;align-items:center;padding:5px 0">'+
         '<span class="tnum" style="width:22px;color:var(--ink-4)">'+(i+1)+'</span>'+
@@ -9039,7 +9047,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         '<span class="tnum" style="width:36px;font-weight:700;color:'+col+'">'+r.s+'</span>'+
         (i===0?'<span class="awstar" title="'+(isAr()?"مرشح تكريم الشهر":"Month honour candidate")+'">🏆</span>':"")+
       '</div>';
-    }).join("")+
+    }).join("") : '<div class="subempty">'+bi("لا نتائج بعد — المؤشر يُحسب مما يُنجز فعلاً.","No scores yet — the index counts real work only.")+'</div>')+
+    (unscored?'<div class="sm" style="margin-top:6px"><span class="pill p-neutral">'+
+      bi(unscored+" موظفاً: بيانات غير كافية بعد", unscored+" staff: not enough data yet")+'</span></div>':"")+
     '<p class="hint2" style="margin-top:var(--sp-2)">'+
       bi("معادلة معلنة: 50 نقطة للمهام في موعدها، 30 لتقييم 360° (24 عند غيابه)، 20 لعناصر التطوير المعتمدة (10 عند غيابها).",
          "Open formula: 50 for on-time tasks, 30 for the 360° (24 if none), 20 for approved development items (10 if none).")+'</p>';
@@ -9051,8 +9061,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       if(hint){
         var best=STAFF.filter(function(p){return p.id!=="dg0";})
           .map(function(p){return {p:p,s:perfScore(p)};})
+          .filter(function(r){return r.s!==null;})
           .sort(function(a,b){return b.s-a.s;})[0];
-        if(best) hint.innerHTML=bi("الأعلى أداءً هذا الشهر: ","Top performer: ")+
+        if(!best){ hint.innerHTML=bi("لا مؤشر أداء بعد — يُحسب مما يُنجز فعلاً.","No score yet — it counts real work."); return; }
+        hint.innerHTML=bi("الأعلى أداءً هذا الشهر: ","Top performer: ")+
           '<b>'+bi(best.p.who[0],best.p.who[1])+'</b> ('+best.s+') '+
           '<button class="mini yes" data-awpick="'+best.p.id+'">'+bi("جعله موظف الشهر","Make employee of the month")+'</button>';
       }
@@ -9338,7 +9350,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   });
 
   // ── month awards: the golden ribbon every screen carries ──
-  var AWARDS={emp:"m8", dep:"قسم تطوير الخدمات", mon:"أكتوبر 2026"};
+  var AWARDS={emp:"", dep:"", mon:""};   // empty until the DG announces — real names deserve a real decision
+  try{ var _aw=JSON.parse(localStorage.getItem("qagcAwards")||"null"); if(_aw) AWARDS=_aw; }catch(_){}
   function drawAwardsBar(){
     var bar=document.getElementById("awardsBar"); if(!bar) return;
     if(!AWARDS || (!AWARDS.emp && !AWARDS.dep)){ bar.hidden=true; return; }
@@ -9368,13 +9381,15 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       AWARDS={emp:(document.getElementById("aw-emp")||{}).value||"",
               dep:(document.getElementById("aw-dep")||{}).value||"",
               mon:(document.getElementById("aw-mon")||{}).value||""};
+      try{ localStorage.setItem("qagcAwards", JSON.stringify(AWARDS)); }catch(_){}
       drawAwardsBar();
       if(typeof burstConfetti==="function") burstConfetti(null,false);
       var mm=document.getElementById("awSaved");
       if(mm){ mm.classList.add("on"); setTimeout(function(){mm.classList.remove("on");},2600); }
       return;
     }
-    if(e.target.closest("#awClear")){ AWARDS={emp:"",dep:"",mon:""}; drawAwardsBar(); return; }
+    if(e.target.closest("#awClear")){ AWARDS={emp:"",dep:"",mon:""};
+      try{ localStorage.removeItem("qagcAwards"); }catch(_){} drawAwardsBar(); return; }
     if(e.target.closest('[data-go="own"]')) fillAwardSelects();
   });
   drawAwardsBar();
@@ -9809,6 +9824,18 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   // ── the centre calendar: read by everyone, written by chosen hands ──
   var DIRCAL_EDITORS={};       // centre calendar: staff id -> may add; dg + coord always may
   var DGCAL_ALLOWED={"acct:coord":true};   // HER calendar: who may schedule; the DG always may
+  // governance settings must outlive a refresh — they load here and save on every change
+  try{
+    var _pv=JSON.parse(localStorage.getItem("qagcPrivs")||"null");
+    if(_pv){
+      if(_pv.dg) DGCAL_ALLOWED=_pv.dg;
+      if(_pv.dir) DIRCAL_EDITORS=_pv.dir;
+      if(_pv.asg) ASG_PRIV=_pv.asg;
+    }
+  }catch(_){}
+  function privPersist(){
+    try{ localStorage.setItem("qagcPrivs", JSON.stringify({dg:DGCAL_ALLOWED, dir:DIRCAL_EDITORS, asg:ASG_PRIV})); }catch(_){}
+  }
   function canEditDirCal(){
     if(ROLE==="dg"||ROLE==="coord") return true;
     var me=(typeof myPerson==="function")?myPerson():null;
@@ -9842,9 +9869,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   document.addEventListener("change",function(e){
     var d=e.target.closest?e.target.closest("[data-dced]"):null;
-    if(d){ DIRCAL_EDITORS[d.dataset.dced]=d.checked; syncCalForms(); return; }
+    if(d){ DIRCAL_EDITORS[d.dataset.dced]=d.checked; privPersist(); syncCalForms(); return; }
     var g=e.target.closest?e.target.closest("[data-dgced]"):null;
-    if(g){ DGCAL_ALLOWED[g.dataset.dgced]=g.checked; syncCalForms(); return; }
+    if(g){ DGCAL_ALLOWED[g.dataset.dgced]=g.checked; privPersist(); syncCalForms(); return; }
   });
   // linking her personal calendar, from the owner settings — through the bridge
   document.addEventListener("click",function(e){
@@ -9877,9 +9904,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   var DIRCAL_J=null, DIRCAL_MON=0;   // the fetched events, and which month the grid shows
   var MON_AR=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
   function dirCalMonthGrid(items){
-    var base=new Date(); base.setDate(1); base.setMonth(base.getMonth()+DIRCAL_MON);
+    var base=platformNow(); base.setDate(1); base.setMonth(base.getMonth()+DIRCAL_MON);
     var y=base.getFullYear(), m=base.getMonth();
-    var todayS=new Date().toISOString().slice(0,10);
+    var todayS=PLATFORM_TODAY;
     var byDay={};
     items.forEach(function(ev){ var d=String(ev.start).slice(0,10); (byDay[d]=byDay[d]||[]).push(ev); });
     var first=new Date(y,m,1), startDow=first.getDay();
@@ -10028,7 +10055,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   });
   function dgFreeSlots(){
     var host=document.getElementById("dgFreeSlots"); if(!host) return;
-    var slots=[], now=new Date();
+    var slots=[], now=platformNow();
     for(var d=0; d<7 && slots.length<3; d++){
       var day=new Date(now.getTime()+d*86400000);
       var dow=day.getDay(); if(dow===5||dow===6) continue;          // the Omani weekend
@@ -10064,8 +10091,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     dgFreeSlots();
     var wk=document.getElementById("coordDgWk");
     if(wk){
-      var now2=new Date(), in7=new Date(now2.getTime()+7*86400000).toISOString().slice(0,10);
-      var today2=now2.toISOString().slice(0,10);
+      var now2=platformNow(), in7=new Date(now2.getTime()+7*86400000).toISOString().slice(0,10);
+      var today2=PLATFORM_TODAY;
       wk.textContent=String(DGCAL_ITEMS.filter(function(ev){
         var d=String(ev.start).slice(0,10); return d>=today2 && d<=in7; }).length);
     }
@@ -10324,8 +10351,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   function aiReportHtml(it){
     return aiKindSections(it.note).map(function(sc){
-      return (sc.h?'<b style="display:block;margin-top:6px;color:var(--good-ink)">'+sc.h+'</b>':"")+
-        sc.lines.map(function(l){return '<span style="display:block">• '+l+'</span>';}).join("");
+      return (sc.h?'<b dir="auto" style="display:block;margin-top:6px;color:var(--good-ink)">'+sc.h+'</b>':"")+
+        sc.lines.map(function(l){return '<span dir="auto" style="display:block">• '+l+'</span>';}).join("");
     }).join("");
   }
   function drawDigest(){
@@ -10337,8 +10364,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         '<h2>'+String(DIGEST.title)+'</h2></div></div></div>'+
         '<div style="display:flex;gap:8px;margin-bottom:6px"><button class="mini yes" data-digdoc>'+bi("تنزيل الموجز الشامل (Word)","Full digest (Word)")+'</button></div>'+
         aiKindSections(DIGEST.body).map(function(sc){
-          return (sc.h?'<p class="subh">'+sc.h+'</p>':"")+
-            sc.lines.map(function(l){return '<div class="sm" style="padding:2px 0">• '+l+'</div>';}).join("");
+          return (sc.h?'<p class="subh" dir="auto">'+sc.h+'</p>':"")+
+            sc.lines.map(function(l){return '<div class="sm" dir="auto" style="padding:2px 0">• '+l+'</div>';}).join("");
         }).join("");
     });
   }
@@ -10346,13 +10373,13 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   //    then appends whatever sections the assistant wrote. Saved as HTML
   //    that Word opens natively (.doc) — always an openable file. ──
   function compileReportHtml(title, gptSecs){
-    var today="2026-11-20";
-    var esc=xmlEsc;
+    var today=PLATFORM_TODAY, ar=isAr(), esc=xmlEsc;
+    var DIR=ar?"rtl":"ltr";
+    var T=function(a,e){ return ar?a:e; };            // the labels follow the platform's language
     function h2(t){ return '<h2 style="color:#14522E;font-size:16pt;margin:18pt 0 6pt">'+esc(t)+'</h2>'; }
-    function li(t){ return '<p style="margin:2pt 0 2pt 0">• '+esc(t)+'</p>'; }
-    // level-by-level performance
+    function li(t){ return '<p dir="auto" style="margin:2pt 0 2pt 0">• '+esc(t)+'</p>'; }
     var lvRows="";
-    [["المركز","center"],["الدوائر","directorate"],["الأقسام","department"]].forEach(function(L){
+    [[T("المركز","Centre"),"center"],[T("الدوائر","Directorates"),"directorate"],[T("الأقسام","Departments"),"department"]].forEach(function(L){
       var xs=PLAN2027.filter(function(o){return o.l===L[1];});
       var avg=xs.length?Math.round(xs.reduce(function(a,o){return a+progOf(o);},0)/xs.length):0;
       var risk=xs.filter(function(o){return progOf(o)<40;}).length;
@@ -10361,40 +10388,40 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         '<td style="border:1pt solid #C9C1A8;padding:4pt 8pt;text-align:center">'+avg+'%</td>'+
         '<td style="border:1pt solid #C9C1A8;padding:4pt 8pt;text-align:center">'+risk+'</td></tr>';
     });
-    // things to do
     var todo="";
-    var over=[];
     STAFF.forEach(function(p){(p.steps||[]).forEach(function(st){
-      if(st.st==="overdue") over.push((isAr()?st.t[0]:st.t[1])+" — "+(isAr()?p.who[0]:p.who[1]));});});
-    over.slice(0,8).forEach(function(t){ todo+=li("متأخرة: "+t); });
-    subsPending().slice(0,8).forEach(function(x){ todo+=li("بانتظار قرار: "+x.title[0]+" — "+x.by[0]); });
+      if(st.st==="overdue") todo+=li(T("متأخرة: ","Overdue: ")+(ar?st.t[0]:st.t[1])+" — "+(ar?p.who[0]:p.who[1]));});});
+    subsPending().slice(0,8).forEach(function(x){
+      todo+=li(T("بانتظار قرار: ","Awaiting decision: ")+(ar?x.title[0]:x.title[1])+" — "+(ar?x.by[0]:x.by[1])); });
     LVREQ.filter(function(l){return l.state==="pending";}).forEach(function(l){
-      todo+=li("طلب إجازة معلّق: "+l.who[0]+" ("+l.from+" → "+l.to+")"); });
-    if(!todo) todo=li("لا متأخرات ولا قرارات معلّقة.");
-    // upcoming
+      todo+=li(T("طلب إجازة معلّق: ","Pending leave: ")+(ar?l.who[0]:l.who[1])+" ("+l.from+" → "+l.to+")"); });
+    if(!todo) todo=li(T("لا متأخرات ولا قرارات معلّقة.","Nothing overdue, nothing pending."));
     var up="";
     CPD.filter(function(ev){return ev.from>=today;}).slice(0,6).forEach(function(ev){
-      up+=li(ev.from+" — "+ev.t[0]+(ev.confirmed?" (مؤكد)":" (مبدئي)")); });
+      up+=li(ev.from+" — "+(ar?ev.t[0]:ev.t[1])+(ev.confirmed?T(" (مؤكد)"," (confirmed)"):T(" (مبدئي)"," (provisional)"))); });
     AGENDAS.filter(function(a){return a.date&&a.date>=today;}).forEach(function(a){
-      up+=li(a.date+" — اجتماع: "+a.title); });
-    if(!up) up=li("لا مواعيد قادمة مسجّلة.");
-    var body='<div dir="rtl" style="font-family:Arial;color:#26251F">'+
-      '<h1 style="color:#14522E;font-size:22pt;margin:0 0 4pt">'+esc(title)+'</h1>'+
-      '<p style="color:#6D6754;margin:0 0 14pt">مركز ضمان الجودة والحوكمة · '+today+' · مُجمَّع من بيانات المنصة الحية</p>'+
-      h2("الأداء مستوىً بمستوى")+
-      '<table style="border-collapse:collapse;width:100%"><tr>'+
-        '<th style="border:1pt solid #C9C1A8;background:#E7EFE6;padding:4pt 8pt">المستوى</th>'+
-        '<th style="border:1pt solid #C9C1A8;background:#E7EFE6;padding:4pt 8pt">الأهداف</th>'+
-        '<th style="border:1pt solid #C9C1A8;background:#E7EFE6;padding:4pt 8pt">متوسط التقدم</th>'+
-        '<th style="border:1pt solid #C9C1A8;background:#E7EFE6;padding:4pt 8pt">تحت 40%</th></tr>'+lvRows+'</table>'+
-      h2("مطلوب إنجازه")+todo+
-      h2("القادم في التقويم")+up;
+      up+=li(a.date+" — "+T("اجتماع: ","Meeting: ")+a.title); });
+    if(!up) up=li(T("لا مواعيد قادمة مسجّلة.","Nothing upcoming."));
+    var body='<div dir="'+DIR+'" style="font-family:Arial;color:#26251F">'+
+      '<h1 dir="auto" style="color:#14522E;font-size:22pt;margin:0 0 4pt">'+esc(title)+'</h1>'+
+      '<p style="color:#6D6754;margin:0 0 14pt">'+
+        T("مركز ضمان الجودة والحوكمة · ","Quality Assurance & Governance Centre · ")+today+
+        T(" · مُجمَّع من بيانات المنصة الحية"," · compiled from the platform's live data")+'</p>'+
+      h2(T("الأداء مستوىً بمستوى","Performance, level by level"))+
+      '<table dir="'+DIR+'" style="border-collapse:collapse;width:100%"><tr>'+
+        '<th style="border:1pt solid #C9C1A8;background:#E7EFE6;padding:4pt 8pt">'+T("المستوى","Level")+'</th>'+
+        '<th style="border:1pt solid #C9C1A8;background:#E7EFE6;padding:4pt 8pt">'+T("الأهداف","Objectives")+'</th>'+
+        '<th style="border:1pt solid #C9C1A8;background:#E7EFE6;padding:4pt 8pt">'+T("متوسط التقدم","Avg progress")+'</th>'+
+        '<th style="border:1pt solid #C9C1A8;background:#E7EFE6;padding:4pt 8pt">'+T("تحت 40%","Under 40%")+'</th></tr>'+lvRows+'</table>'+
+      h2(T("مطلوب إنجازه","Things to do"))+todo+
+      h2(T("القادم في التقويم","Upcoming"))+up;
     (gptSecs||[]).forEach(function(sc){
-      body+=h2(sc.h||"من المساعد الذكي");
+      body+=h2(sc.h||T("من المساعد الذكي","From the assistant"));
       sc.lines.forEach(function(l){ body+=li(l); });
     });
-    body+='<p style="color:#6D6754;margin-top:18pt;font-size:9pt">أُنشئ من المنصة — الأرقام لحظة التوليد.</p></div>';
-    return '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">'+
+    body+='<p style="color:#6D6754;margin-top:18pt;font-size:9pt">'+
+      T("أُنشئ من المنصة — الأرقام لحظة التوليد.","Generated by the platform — figures as of generation.")+'</p></div>';
+    return '<html dir="'+DIR+'" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">'+
       '<head><meta charset="utf-8"><title>'+esc(title)+'</title></head><body>'+body+'</body></html>';
   }
   // ── the report becomes real files: a deck and a document, built in the page ──
@@ -11441,7 +11468,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     el.innerHTML=bi("الحسابات يصدرها المدير العام أو قسم التنسيق والمتابعة. إن نُسيت كلمة المرور فالإعادة منهما، لا من هذه الصفحة.",
                     "Accounts are issued by the Director General or Coordination & Follow-up. A forgotten password is reset by them, not from this page.")+
       '<br><span style="color:var(--warn-ink)">'+
-      bi("نموذج للعرض: dg / qagc2027","Demonstration build: dg / qagc2027")+'</span>';
+      bi("نموذج للعرض: dg / qagc2027 — الأدوار والصلاحيات تُفرض في المتصفح في هذه النسخة، فلا تصلح لبيانات حقيقية قبل الواجهة الخلفية.",
+         "Demonstration build: dg / qagc2027 — roles are enforced in the browser here; not for real data before the backend.")+'</span>';
   }
   function openApp(a){
     SESSION=a; ROLE=a.role;
