@@ -1,0 +1,220 @@
+<title>جولة تجربة منصة QAGC</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  --paper:#f7f3ea; --card:#fffdf8; --rule:#e3dcc9; --ink:#26251f; --ink2:#6d6754;
+  --green:#14522e; --green-soft:#e7efe6; --gold:#8a6a1f; --gold-soft:#f6eed7;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#181c19; --card:#20261f; --rule:#39402f; --ink:#e8e4d6; --ink2:#a49e8a;
+    --green:#8fc4a1; --green-soft:#24352a; --gold:#d3b25e; --gold-soft:#38321f;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#181c19; --card:#20261f; --rule:#39402f; --ink:#e8e4d6; --ink2:#a49e8a;
+  --green:#8fc4a1; --green-soft:#24352a; --gold:#d3b25e; --gold-soft:#38321f;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:16px/1.85 "IBM Plex Sans Arabic",system-ui,sans-serif;direction:rtl}
+.wrap{max-width:760px;margin:0 auto;padding:48px 22px 80px}
+header{border-bottom:3px solid var(--green);padding-bottom:26px;margin-bottom:34px}
+.eyebrow{font-size:12px;letter-spacing:.14em;color:var(--gold);font-weight:700;
+  text-transform:uppercase;font-family:var(--mono)}
+h1{font-family:"Noto Kufi Arabic",sans-serif;font-weight:700;font-size:34px;
+  margin:8px 0 10px;color:var(--green);text-wrap:balance;line-height:1.4}
+header p{margin:0;color:var(--ink2);max-width:60ch}
+.applink{display:inline-block;margin-top:18px;background:var(--green);color:var(--paper);
+  padding:10px 22px;border-radius:8px;text-decoration:none;font-weight:700}
+:root[data-theme="dark"] .applink, body .applink{color:#f7f3ea}
+.applink:hover{opacity:.9}
+.creds{margin-top:16px;background:var(--card);border:1px solid var(--rule);border-radius:10px;
+  padding:12px 16px;font-size:14px}
+.creds code{font-family:var(--mono);font-size:13px;background:var(--green-soft);
+  color:var(--ink);padding:2px 7px;border-radius:5px;direction:ltr;display:inline-block}
+h2{font-family:"Noto Kufi Arabic",sans-serif;font-size:19px;color:var(--green);margin:40px 0 6px}
+.station{background:var(--card);border:1px solid var(--rule);border-radius:12px;
+  padding:20px 22px;margin-top:16px;position:relative}
+.st-head{display:flex;gap:14px;align-items:baseline}
+.st-num{font-family:var(--mono);font-weight:500;font-size:13px;color:var(--gold);
+  border:1.5px solid var(--gold);border-radius:999px;padding:1px 11px;white-space:nowrap}
+.st-title{font-family:"Noto Kufi Arabic",sans-serif;font-weight:700;font-size:17px}
+.who{font-size:12.5px;color:var(--ink2);margin-inline-start:auto;white-space:nowrap}
+.who code{font-family:var(--mono);font-size:12px;direction:ltr;display:inline-block;
+  background:var(--green-soft);padding:1px 6px;border-radius:4px;color:var(--ink)}
+.station ol{margin:12px 0 0;padding-inline-start:22px}
+.station li{margin:7px 0}
+.station b{color:var(--green)}
+.see{margin-top:14px;background:var(--green-soft);border-inline-start:3px solid var(--green);
+  border-radius:0 8px 8px 0;padding:10px 14px;font-size:14.5px}
+.see::before{content:"ما ينبغي أن تراه — ";font-weight:700;color:var(--green)}
+.setup{margin-top:14px;background:var(--gold-soft);border-inline-start:3px solid var(--gold);
+  border-radius:0 8px 8px 0;padding:10px 14px;font-size:14.5px}
+.setup::before{content:"يلزمه إعداد — ";font-weight:700;color:var(--gold)}
+label.done{display:flex;gap:9px;align-items:center;margin-top:14px;font-size:13.5px;
+  color:var(--ink2);cursor:pointer;user-select:none}
+label.done input{width:17px;height:17px;accent-color:var(--green)}
+.station:has(.done input:checked){border-color:var(--green);opacity:.72}
+.station:has(.done input:checked) .st-title::after{content:" ✓";color:var(--green)}
+footer{margin-top:52px;border-top:1px solid var(--rule);padding-top:20px;
+  font-size:13.5px;color:var(--ink2)}
+footer b{color:var(--green)}
+kbd{font-family:var(--mono);font-size:12.5px;border:1px solid var(--rule);
+  border-bottom-width:2px;border-radius:5px;padding:1px 6px;background:var(--card)}
+a{color:var(--green)}
+@media (prefers-reduced-motion: no-preference){
+  .station{transition:opacity .25s, border-color .25s}
+}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">QAGC · beta walkthrough</div>
+  <h1>جولة تجربة المنصة</h1>
+  <p>عشر محطات تمر على كل ما تحمله النسخة التجريبية. رتبناها لتقليل تبديل الحسابات؛ علِّم على كل محطة أنجزتها. رمز التحقق بخطوتين يظهر داخل مربع التحقق نفسه — اكتب الأرقام الستة التي تعرضها الرسالة.</p>
+  <a class="applink" href="https://qagc-platform.github.io/app/" target="_blank" rel="noopener">فتح المنصة ↗</a>
+  <div class="creds">الحسابات — كلمة المرور واحدة <code>qagc2027</code> :
+    المديرة العامة <code>dg</code> · التنسيق والمتابعة <code>coord</code> ·
+    مدير دائرة <code>dir.gov</code> · موظف <code>sd.head</code></div>
+</header>
+
+<h2>الافتتاح</h2>
+
+<div class="station">
+  <div class="st-head"><span class="st-num">01</span>
+    <span class="st-title">الشريط الذهبي ولوحة القيادة</span>
+    <span class="who">ادخل بحساب <code>dg</code></span></div>
+  <ol>
+    <li>لاحظ <b>شريط تكريم الشهر</b> الذهبي أعلى كل صفحة: موظف الشهر وقسم الشهر، بلمعة متحركة.</li>
+    <li>في لوحة القيادة جرّب «تخصيص اللوحة»: سحب العناصر، تغيير عرضها، إزالتها وإعادتها.</li>
+  </ol>
+  <div class="see">الشريط يبقى ظاهراً مهما بدّلت الشاشات — هذا مقصود: التكريم يُرى في كل مكان.</div>
+  <label class="done"><input type="checkbox"> جرّبتها</label>
+</div>
+
+<div class="station">
+  <div class="st-head"><span class="st-num">02</span>
+    <span class="st-title">إعدادات المالكة</span>
+    <span class="who">ما زلت <code>dg</code></span></div>
+  <ol>
+    <li>افتح الإعدادات ثم «أهداف الموظفين»: غيّر <b>«إسناد خطة العمل»</b> إلى «الجميع» — سنحتاجها في المحطة التالية.</li>
+    <li>في «إدارة الكوادر» جد بطاقة <b>«تكريم الشهر»</b>: بدّل موظف الشهر واضغط «إعلان التكريم» — تنفجر القصاصات ويتغيّر الشريط فوراً.</li>
+    <li>جرّب أيضاً «إزالة الشريط» ثم أعد الإعلان.</li>
+  </ol>
+  <label class="done"><input type="checkbox"> جرّبتها</label>
+</div>
+
+<h2>دورة الهدف الكاملة</h2>
+
+<div class="station">
+  <div class="st-head"><span class="st-num">03</span>
+    <span class="st-title">إنشاء حزمة هدف كاملة</span>
+    <span class="who">اخرج وادخل بـ <code>sd.head</code></span></div>
+  <ol>
+    <li>الخطة السنوية ← «هدف جديد». اكتب العنوان، اختر <b>الصيغة</b> (هدف SMART أو مهمة مباشرة) واملأ الصياغة الذكية.</li>
+    <li>أضف مؤشرين: لكل مؤشر <b>نوعه</b> من القائمة، و<b>الرقم الحالي</b>، و<b>المستهدف</b>، ثم «+ مؤشر آخر».</li>
+    <li>في <b>خطة العمل</b>: أضف مرحلتين، وداخل كل مرحلة خطوات — ولأنك فعّلت الصلاحية، ستجد قائمة <b>الإسناد</b> لكل خطوة: أسند خطوة لموظف آخر.</li>
+    <li>«إضافة إلى الخطة» ← رمز التحقق ← أُرسلت الحزمة.</li>
+  </ol>
+  <div class="see">في «الاعتمادات» (لموظفك): الحزمة «قيد النظر» — ولم يدخل شيء إلى الخطة بعد.</div>
+  <label class="done"><input type="checkbox"> جرّبتها</label>
+</div>
+
+<div class="station">
+  <div class="st-head"><span class="st-num">04</span>
+    <span class="st-title">البوابة: قرار على كل مكوّن</span>
+    <span class="who">عد إلى <code>dg</code></span></div>
+  <ol>
+    <li>في «الاعتمادات» افتح بطاقة الحزمة: الهدف بصياغته، كل مؤشر بنوعه ورقمه الحالي ومستهدفه، وكل مرحلة بخطواتها ومن أُسندت إليه.</li>
+    <li>اعتمد الهدف وحده، ثم <b>أعد مؤشراً للتعديل</b> بملاحظة، ثم جرّب <b>«اعتماد كل المتبقي»</b> — ولاحظ وجود «رفض كل المتبقي» أيضاً.</li>
+    <li>افتح الخطة السنوية: الهدف دخلها ومعه المؤشرات <b>المعتمدة فقط</b>. وافتح «الموظفون»: الخطوات المُسندة صارت مهاماً على أصحابها.</li>
+  </ol>
+  <label class="done"><input type="checkbox"> جرّبتها</label>
+</div>
+
+<h2>الجسور</h2>
+
+<div class="station">
+  <div class="st-head"><span class="st-num">05</span>
+    <span class="st-title">الجسر الذكي والوارد المصنَّف</span>
+    <span class="who"><code>dg</code></span></div>
+  <ol>
+    <li>شاشة «الجسر الذكي»: أدخل المفتاح، علِّم <b>«تذكّر المفتاح على هذا الجهاز»</b>، ثم «اتصال وتحديث».</li>
+    <li>كل صف في الوارد يحمل نوعه: <b>حزمة هدف / مهمة / نشاط تطوير مهني / جدول أعمال</b> — ولكلٍّ زرّه الصحيح وحده.</li>
+    <li>جرّب <b>✕</b> لإزالة صف مكرر — يبقى محذوفاً حتى بعد التحديث.</li>
+  </ol>
+  <div class="setup">يعمل الاتصال من النسخة المنشورة على github.io لا من نسخة العرض. الدفع من ChatGPT نفسه يحتاج إتمام تحديث الـ GPT (النموذج والتعليمات الجديدة).</div>
+  <label class="done"><input type="checkbox"> جرّبتها</label>
+</div>
+
+<div class="station">
+  <div class="st-head"><span class="st-num">06</span>
+    <span class="st-title">الخطة والمؤشرات في Google Sheets</span>
+    <span class="who"><code>dg</code></span></div>
+  <ol>
+    <li>الخطة السنوية ← <b>«نشر إلى Google Sheets»</b>: تُنشأ ورقة الخطة كاملة في درايف حساب المنصة ويظهر زر فتحها — ويبقى بعد إغلاق المتصفح.</li>
+    <li>افتح أي هدف ← إضافة مؤشر ← <b>«إنشاء المؤشر في Google Sheets»</b>: تُفتح ورقة باسمه؛ اكتب فيها قراءات، ثم عد واضغط <b>«سحب القراءات من Sheets»</b> — تُبنى بطاقة المؤشر برسمها وإسقاطها.</li>
+    <li>على أي بطاقة مؤشر جرّب <b>«تحليل عبر المساعد الذكي»</b>: يُرسل كامل الورقة إلى طابور التحليل، واطلب لاحقاً من مساعد ChatGPT «حلّلي المؤشر» — يظهر جوابه في شاشة الجسر تحت «تحليلات المؤشرات».</li>
+  </ol>
+  <label class="done"><input type="checkbox"> جرّبتها</label>
+</div>
+
+<div class="station">
+  <div class="st-head"><span class="st-num">07</span>
+    <span class="st-title">تقويم المديرة العامة وجداول الأعمال</span>
+    <span class="who">ادخل بـ <code>coord</code></span></div>
+  <ol>
+    <li>شاشة «التنسيق والمتابعة»: بطاقة <b>«تقويم المديرة العامة»</b> تعرض جدولها أربعة عشر يوماً. جدولة اجتماع من النموذج تمر برمز التحقق ثم يظهر الموعد في التقويم فوراً.</li>
+    <li>بطاقة <b>«جداول أعمال الاجتماعات»</b>: اكتب اجتماعاً وبنوده (بنداً في كل سطر) وأسند تحضيره لموظف — يجد «تحضير اجتماع: …» في مهامه بموعد الاجتماع.</li>
+  </ol>
+  <div class="setup">حتى تشارك المديرة تقويمها مع حساب المنصة (ومعه خاصية QAGC_DG_CAL والمنطقة الزمنية Asia/Muscat)، يقرأ الجسر تقويم حساب المنصة نفسه — وهو كافٍ للتجربة.</div>
+  <label class="done"><input type="checkbox"> جرّبتها</label>
+</div>
+
+<h2>الناس</h2>
+
+<div class="station">
+  <div class="st-head"><span class="st-num">08</span>
+    <span class="st-title">التقييم 360°</span>
+    <span class="who"><code>dg</code> ثم <code>sd.head</code> ثم <code>dg</code></span></div>
+  <ol>
+    <li>بحساب <code>dg</code>: شاشة «الموظفون» ← بطاقة <b>«التقييم 360°»</b> ← اختر المُقيَّم وعلّم على مقيِّمَين على الأقل ← «فتح الدورة».</li>
+    <li>بحساب <code>sd.head</code>: في الشاشة نفسها تظهر <b>«استمارات مطلوبة منك»</b> — قيّم من ١ إلى ٥ مع ملاحظة، وأرسل (برمز التحقق).</li>
+    <li>عد إلى <code>dg</code>: <b>النتائج المجمّعة</b> — أعمدة ملوّنة لكل معيار، وعدد المستجيبين، والملاحظات <b>بلا أسماء</b>. أغلق الدورة حين تكتمل.</li>
+  </ol>
+  <label class="done"><input type="checkbox"> جرّبتها</label>
+</div>
+
+<div class="station">
+  <div class="st-head"><span class="st-num">09</span>
+    <span class="st-title">لوحة التطوير المهني CPD</span>
+    <span class="who"><code>dg</code> أو <code>coord</code></span></div>
+  <ol>
+    <li>افتح لوحة السنة: الذهبي موعد مبدئي والأخضر مؤكد. انقر شهراً ليتمدد تقويماً كاملاً.</li>
+    <li>افتح نشاطاً: أكّده، أسنده، عدّل تواريخه، فعّل <b>قائمة التحقق التنظيمية</b> (المراحل الإحدى عشرة).</li>
+    <li>في أزرار التقويم لاحظ الفرق: <b>«إلى تقويمي أنا»</b> يضيفه لتقويم من ينقر، و<b>«إلى تقويم المديرة العامة»</b> يرسله عبر الجسر إلى تقويمها هي.</li>
+    <li>من وارد الجسر: نشاط CPD يُدرج على اللوحة مباشرة، ومهمةٌ وصلت مصنَّفة خطأً يعالجها زر «بل على لوحة CPD».</li>
+  </ol>
+  <label class="done"><input type="checkbox"> جرّبتها</label>
+</div>
+
+<div class="station">
+  <div class="st-head"><span class="st-num">10</span>
+    <span class="st-title">بقية الجولة الحرة</span>
+    <span class="who">كل الحسابات</span></div>
+  <ol>
+    <li><b>الإجازات</b>: قدّم طلباً بحساب موظف وقرره بحساب المديرة — ولاحظ أنشطة CPD معلَّمة في تقويم الإجازات.</li>
+    <li><b>التفاعل</b>: رسالة معمَّمة، استطلاع حتى عشرة أسئلة بأنواعه الأربعة، ثيمة اليوم الوطني بأعلامها، بطاقة تهنئة متحركة بمعاينة قبل الإرسال، وأعياد الميلاد تحتفل وحدها.</li>
+    <li><b>التصدير</b>: الخطة Excel وWord، شريحة PowerPoint من أي مؤشر، وملفات التقويم ics.</li>
+    <li><b>دعوات الدخول</b>: من إدارة الحسابات جرّب دعوة موظف — الحقول الأربعة تُقفل بعد الإدخال ورقم الموظف يصير اسم الدخول.</li>
+  </ol>
+  <label class="done"><input type="checkbox"> جرّبتها</label>
+</div>
+
+<footer>
+  <p><b>ثلاثة أشياء وحدها تحتاج إعداداً خارج المنصة:</b> إتمام تحديث الـ GPT في ChatGPT (النموذج والتعليمات من مستودع GitHub) · مشاركة المديرة تقويمها مع حساب المنصة · تضييق مشاركة أوراق Sheets لاحقاً من «متاحة بالرابط» إلى أسماء محددة.</p>
+  <p>النسخة تجريبية ببيانات افتراضية: الحسابات والرموز للعرض، ولا يدخلها أي معرِّف شخصي حقيقي. ما يتغيّر داخل الصفحة لا يُحفظ بين الجلسات — الحفظ الدائم مرحلة الواجهة الخلفية القادمة.</p>
+</footer>
+</div>
