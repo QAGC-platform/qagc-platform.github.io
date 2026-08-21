@@ -95,13 +95,22 @@ before touching anything — it replaces a long build history you cannot see.
   owners pre-select assignees; nothing enters untagged.
 - Line managers decide their team's development requests; the DG oversees
   and comments on everything.
+- Five login roles, one line: `staff` → `head` (department) → `dir`
+  (directorate) → `dg`, with `coord` off to the side. The chain lives in
+  `SUPERIOR`; a submission carries `supTo` so "sup" resolves to the right
+  endorsing desk. A department head decides her department's leave and
+  development, endorses upward, never approves a budget — budgets are the
+  DG's alone. Her scope is computed from her own `dep`, not a hard-coded
+  list, so a second head needs no new code.
 - The owner (DG) customises wording in place (edit mode), reorders the rail
   (drag or arrows), tunes the performance-score weights, the 360 criteria,
   leave rules, working hours — all persisted. Maximising her autonomy is a
   standing goal.
 - Demo sign-ins: `dg`, `coord` (نبيلة الصبحي), `dir.gov` (حمود العامري),
-  `sd.head` (رحمة الراشدي) — password `qagc2027`. The 2FA demo code is
-  displayed inside the verification dialog.
+  `sd.head` (رحمة الراشدي — department head), `sd.staff` (عبدالناصر الهادي —
+  her one report) — password `qagc2027`. The 2FA demo code is displayed
+  inside the verification dialog. The last two share قسم تطوير الخدمات on
+  purpose: they are the demo's line-manager pair.
 
 ## Visual identity
 

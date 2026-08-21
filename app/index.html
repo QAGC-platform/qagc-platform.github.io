@@ -1947,6 +1947,7 @@ body.editmode .card-h h2 span[lang]:focus{
     <div class="nav-group"><span lang="ar">مساحة العمل</span><span lang="en">Workspace</span></div>
     <div class="nav">
       <button data-go="dir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><path d="M7 14v7M17 14v7M3 14h18"/></svg><span lang="ar">لوحة الدائرة</span><span lang="en">Directorate</span></button>
+      <button data-go="head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V9l7-5 7 5v12"/><path d="M9 21v-6h6v6"/></svg><span lang="ar">لوحة القسم</span><span lang="en">Department</span></button>
       <button data-go="coord"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/><circle cx="12" cy="12" r="4"/></svg><span lang="ar">التنسيق والمتابعة</span><span lang="en">Coordination</span></button>
       <button data-go="staffhome"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg><span lang="ar">صفحتي</span><span lang="en">My page</span></button>
       <button data-go="cc" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span lang="ar">مركز القيادة</span><span lang="en">Command centre</span><span class="count tnum">7</span></button>
@@ -1970,6 +1971,7 @@ body.editmode .card-h h2 span[lang]:focus{
         <select id="roleSel">
           <option value="dg">المدير العام · Director General</option>
           <option value="dir">مدير الدائرة · Directorate head</option>
+          <option value="head">رئيس القسم · Department head</option>
           <option value="coord">قسم التنسيق والمتابعة · Coordination</option>
           <option value="staff">موظف · Staff</option>
         </select>
@@ -2794,7 +2796,7 @@ body.editmode .card-h h2 span[lang]:focus{
               <span class="fld"><label><span lang="ar">اسم المستخدم</span><span lang="en">Username</span></label>
                 <input id="cac-user" spellcheck="false" style="direction:ltr;text-align:start" placeholder="a.alharthy"></span>
               <span class="fld"><label><span lang="ar">الصلاحية</span><span lang="en">Role</span></label>
-                <select id="cac-role"><option value="staff">موظف · Staff</option><option value="dir">مدير دائرة · Directorate head</option><option value="coord">تنسيق ومتابعة · Coordination</option></select></span>
+                <select id="cac-role"><option value="staff">موظف · Staff</option><option value="head">رئيس قسم · Department head</option><option value="dir">مدير دائرة · Directorate head</option><option value="coord">تنسيق ومتابعة · Coordination</option></select></span>
             </div>
             <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-2);flex-wrap:wrap">
               <button class="btn btn-p" id="coordAccAdd"><span lang="ar">إصدار الحساب</span><span lang="en">Issue it</span></button>
@@ -2901,10 +2903,42 @@ body.editmode .card-h h2 span[lang]:focus{
       </div>
     </section>
 
+    <!-- ══════════ DEPARTMENT HEAD ══════════ -->
+    <section class="screen" id="head">
+      <div class="head">
+        <p class="eyebrow"><span lang="ar">قسم تطوير الخدمات</span><span lang="en">Service Development</span></p>
+        <h1><span lang="ar">لوحة رئيس القسم</span><span lang="en">Department head</span></h1>
+        <p><span lang="ar">القسم وحده: من يعمل فيه، وما ينتظر قراري، وما أُزكّيه فيرتفع إلى مدير الدائرة.</span>
+           <span lang="en">The department alone: who works in it, what awaits my decision, and what I endorse upward to the directorate.</span></p>
+      </div>
+      <div class="rolebar">
+        <span lang="ar">الإجازة والتطوير يُبتّان هنا لموظفي القسم. تقديرات الميزانية تُرفع دائماً — لا تُعتمد في هذا المستوى.</span>
+        <span lang="en">Leave and development are decided here for the department's staff. Budget estimates always escalate — they are never approved at this level.</span>
+      </div>
+      <div class="homestrip" id="headStrip"></div>
+      <div class="card" data-dighost hidden></div>
+      <div class="tiles" id="headTiles"></div>
+      <div id="headPrio" hidden></div>
+      <div class="grid2">
+        <div class="stack"><div class="card">
+          <div class="card-h"><div class="chrow"><span class="ib crit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></span><div>
+            <span class="ceye"><span lang="ar">ضمن القسم</span><span lang="en">Within the department</span></span>
+            <h2><span lang="ar">بانتظار قراري</span><span lang="en">Awaiting my decision</span></h2></div></div></div>
+          <div id="headQueue"></div>
+        </div></div>
+        <div class="card">
+          <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 20a6.2 6.2 0 0 1 12.4 0"/><path d="M17 5.3a3.2 3.2 0 0 1 0 5.4M18.4 20a6.2 6.2 0 0 0-2.6-4.4"/></svg></span><div>
+            <span class="ceye"><span lang="ar">من يعمل معي</span><span lang="en">Who works with me</span></span>
+            <h2><span lang="ar">فريق القسم</span><span lang="en">The department team</span></h2></div></div></div>
+          <div id="headTeam"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- ══════════ STAFF ══════════ -->
     <section class="screen" id="staffhome">
       <div class="head">
-        <p class="eyebrow"><span lang="ar">رئيس قسم تطوير الخدمات</span><span lang="en">Head of Service Development</span></p>
+        <p class="eyebrow"><span lang="ar">أخصائي تربية خاصة · قسم تطوير الخدمات</span><span lang="en">Special Education Specialist · Service Development</span></p>
         <h1><span lang="ar">صفحتي</span><span lang="en">My page</span></h1>
         <p><span lang="ar">ما هو مسند إليّ، وما يجب أن أفعله هذا الأسبوع، وإجازتي وتطويري.</span>
            <span lang="en">What is assigned to me, what I owe this week, and my leave and development.</span></p>
@@ -3311,7 +3345,7 @@ body.editmode .card-h h2 span[lang]:focus{
               <span class="fld"><label><span lang="ar">اسم المستخدم</span><span lang="en">Username</span></label>
                 <input id="ac-user" spellcheck="false" style="direction:ltr;text-align:start" placeholder="a.alharthy"></span>
               <span class="fld"><label><span lang="ar">الصلاحية</span><span lang="en">Role</span></label>
-                <select id="ac-role"><option value="staff">موظف · Staff</option><option value="dir">مدير دائرة · Directorate head</option><option value="coord">تنسيق ومتابعة · Coordination</option></select></span>
+                <select id="ac-role"><option value="staff">موظف · Staff</option><option value="head">رئيس قسم · Department head</option><option value="dir">مدير دائرة · Directorate head</option><option value="coord">تنسيق ومتابعة · Coordination</option></select></span>
             </div>
             <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-2);flex-wrap:wrap">
               <button class="btn btn-p" id="accAdd"><span lang="ar">إصدار الحساب</span><span lang="en">Issue it</span></button>
@@ -4880,11 +4914,13 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   // Where the request stops first. A budget is a financial decision and always
   // goes to the Director General; an objective may be routed through the
   // person's own superior when the owner has set it that way.
-  var SUPERIOR={staff:"dir", coord:"dg", dir:"dg"};
+  // the line: a member of staff answers to their department head, the head to
+  // the directorate, the directorate to the Director General.
+  var SUPERIOR={staff:"head", head:"dir", coord:"dg", dir:"dg"};
   function firstStop(kind){
     if(kind==="bud") return "dg";
     if(PRIO_CFG.route!=="superior") return "dg";
-    return SUPERIOR[ROLE]==="dir" ? "sup" : "dg";
+    return (SUPERIOR[ROLE] && SUPERIOR[ROLE]!=="dg") ? "sup" : "dg";
   }
   function submitFor(kind, ref, title, meta){
     var me = (typeof myPerson==="function" ? myPerson() : null);
@@ -4895,6 +4931,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             when:"2026-11-20", meta:meta||null, note:"",
             state: needsApproval() ? "pending" : "approved",
             stage: needsApproval() ? firstStop(kind) : "dg",
+            supTo: SUPERIOR[ROLE]||"dir",   // which endorsing desk "sup" means
             endorsed: null,
             self: !needsApproval() };
     SUBS.push(s);
@@ -6449,10 +6486,17 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     dg:    null,                                              // the whole centre
     coord: null,                                              // adds staff centre-wide
     dir:   ["قسم الحوكمة ومعايير الجودة","قسم تطوير الخدمات"], // this directorate's departments
+    head:  "own-dep",                                         // resolved from the person, below
     staff: []                                                 // no roster at all
   };
   function peopleInScope(){
     if(typeof ALL_TABS!=="undefined" && ALL_TABS) return STAFF;   // review mode sees the whole roster
+    // a department head's scope is not a fixed list: it is whichever department
+    // the signed-in person actually heads, so a second head needs no new code
+    if(ROLE==="head"){
+      var mh=(typeof myPerson==="function")?myPerson():null;
+      return mh ? STAFF.filter(function(p){ return p.dep[0]===mh.dep[0]; }) : [];
+    }
     var sc=ROLE_SCOPE[ROLE];
     if(sc===null||sc===undefined) return STAFF;
     return STAFF.filter(function(p){ return sc.indexOf(p.dep[0])>=0; });
@@ -7340,7 +7384,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   // the same card on the other roles' home pages, when the owner allows it
   function drawPrioEverywhere(){
-    ["dirPrio","coordPrio","staffPrio"].forEach(function(id){
+    ["dirPrio","coordPrio","staffPrio","headPrio"].forEach(function(id){
       var host=document.getElementById(id); if(!host) return;
       host.hidden = !PRIO_CFG.all;
       host.innerHTML = PRIO_CFG.all ? prioCard() : "";
@@ -7681,6 +7725,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(l && typeof ROLE_NAV!=="undefined" && ROLE_NAV){
       var NAMES={cc:["مركز القيادة","Command centre"],dir:["لوحة الدائرة","Directorate"],
                  coord:["التنسيق والمتابعة","Coordination"],staffhome:["صفحتي","My page"],
+                 head:["لوحة القسم","Department"],
                  annual:["الخطة السنوية","Annual plan"],people:["الموظفون","People"],
                  leave:["الإجازات","Leave"],dept:["سجل الأقسام","Department register"],
                  master:["الخطة المرجعية","Master plan"],ai:["المساعد","Assistant"]};
@@ -7732,6 +7777,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   var LEAVE_TABS={
     dg:    ["lv-over","lv-appr","lv-cal","lv-marks","lv-staff"],
     dir:   ["lv-mine","lv-submit","lv-appr","lv-cal"],
+    head:  ["lv-mine","lv-submit","lv-appr","lv-cal"],
     coord: ["lv-mine","lv-submit","lv-cal","lv-marks","lv-staff"],
     staff: ["lv-mine","lv-submit","lv-cal"]
   };
@@ -7763,6 +7809,18 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   ];
   function lvDays(r){ return Math.round((new Date(r.to)-new Date(r.from))/86400000)+1; }
   function lvPending(){ return LVREQ.filter(function(r){return r.state==="pending";}); }
+  // whose requests stop at this desk. A department head sees her own department
+  // and never her own request — that one rises to the directorate head.
+  function lvQueue(){
+    var q=lvPending();
+    if(ROLE!=="head") return q;
+    var me=(typeof myPerson==="function")?myPerson():null; if(!me) return [];
+    return q.filter(function(r){
+      if(r.byId===me.id) return false;
+      var p=STAFF.filter(function(x){return x.id===r.byId;})[0];
+      return !!p && p.dep[0]===me.dep[0];
+    });
+  }
   var LVSTATE={
     pending: ["p-warn","بانتظار الاعتماد النهائي","Awaiting final approval"],
     approved:["p-good","معتمدة","Approved"],
@@ -7786,7 +7844,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   function drawLvAppr(){
     var host=document.getElementById("lvApprList"); if(!host) return;
-    var q=lvPending();
+    var q=lvQueue();
     var sub=document.getElementById("lvApprSub"); if(sub) sub.textContent=String(q.length);
     host.innerHTML = q.length ? q.map(function(r){
       return '<div class="subrow"><span class="kind k-obj"><i></i>'+bi("إجازة","Leave")+'</span>'+
@@ -7809,11 +7867,13 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function lvBadge(){
     var b=document.querySelector('[data-go="leave"] .count'); if(!b) return;
     var meId=(typeof myPerson==="function"?myPerson().id:"");
-    var n=(ROLE==="dg"||ROLE==="coord") ? lvPending().length
+    var n=(ROLE==="dg"||ROLE==="coord"||ROLE==="head") ? lvQueue().length
       : LVREQ.filter(function(r){return r.byId===meId&&(r.state==="pending"||r.state==="returned");}).length;
     b.textContent=String(n);
   }
-  function lvAfter(){ drawLvMine(); drawLvAppr(); lvBadge(); if(typeof drawDash==="function") drawDash(); }
+  function lvAfter(){ drawLvMine(); drawLvAppr(); lvBadge();
+    if(typeof drawDash==="function") drawDash();
+    if(typeof drawHead==="function") drawHead(); }
   function applyLvDecision(id, state, note){
     delete LVRETURNING[id];
     var r=LVREQ.filter(function(x){return x.id===id;})[0]; if(!r) return;
@@ -8528,7 +8588,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     document.body.setAttribute("data-celeb", CELEB.on?CELEB.kind:"");
     applyCelebPalette();
     syncFlagBand();
-    ["staffStrip","dirStrip","coordStrip"].forEach(function(id){
+    ["staffStrip","dirStrip","coordStrip","headStrip"].forEach(function(id){
       var el=document.getElementById(id); if(el) el.innerHTML=stripHtml();
     });
     // the animated cards get their confetti after the DOM lands
@@ -9075,10 +9135,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     });
     return hit;
   }
-  function canAssignTasks(){ return ROLE==="dg"||ROLE==="dir"; }
+  function canAssignTasks(){ return ROLE==="dg"||ROLE==="dir"||ROLE==="head"; }
   function asgScope(){
     if(ROLE==="dg") return STAFF.filter(function(p){return p.id!=="dg0";});
-    if(ROLE==="dir") return pdpTeamOf();
+    if(ROLE==="dir"||ROLE==="head") return pdpTeamOf();
     return [];
   }
   function drawAsgForm(){
@@ -9230,6 +9290,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   function pdpTeamOf(){
     var me=(typeof myPerson==="function")?myPerson():null;
+    if(ROLE==="head") return me ? STAFF.filter(function(p){return p.id!==me.id && p.dep[0]===me.dep[0];}) : [];
     if(ROLE==="dir") return STAFF.filter(function(p){return p.id!==(me&&me.id) && pdpManagedBy(p)==="dir";});
     if(ROLE==="dg") return STAFF.filter(function(p){return p.id!=="dg0" && pdpManagedBy(p)==="dg";});
     return [];
@@ -9314,7 +9375,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         ? (mine.length? mine.map(function(it){return pdpItemRow(me.id,it,{});}).join("")
             : '<div class="subempty">'+bi("لا عناصر بعد — اطلب دورتك الأولى أدناه.","Nothing yet — request your first course below.")+'</div>')+myForm
         : "";
-      var teamBlock=(dg||ROLE==="dir")? pdpTeamSection() : "";
+      var teamBlock=(dg||ROLE==="dir"||ROLE==="head")? pdpTeamSection() : "";
       // the DG additionally reads everyone, commenting where the decision is not hers
       var othersBlock="";
       if(dg){
@@ -9327,10 +9388,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       }
       hMe.innerHTML='<div class="card"><div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span><div>'+
         '<span class="ceye">'+(dg?bi("القرار عند الرئيس المباشر، والإشراف هنا","Line managers decide; oversight lives here")
-          :ROLE==="dir"?bi("خطتي، وخطط من يعملون معي","Mine, and my team's")
+          :(ROLE==="dir"||ROLE==="head")?bi("خطتي، وخطط من يعملون معي","Mine, and my team's")
           :bi("ما أتعلّمه هذا العام","What I learn this year"))+'</span>'+
         '<h2>'+(dg?bi("الخطط الشخصية — الإشراف العام","Personal plans — oversight")
-          :ROLE==="dir"?bi("خطتي وفريقي","My plan and my team's")
+          :(ROLE==="dir"||ROLE==="head")?bi("خطتي وفريقي","My plan and my team's")
           :bi("خطتي التطويرية","My development plan"))+'</h2></div></div></div>'+
         myBlock+teamBlock+othersBlock+'</div>';
     }
@@ -9423,6 +9484,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         it.status=act==="v"?"approved":"returned";
         if(act!=="v" && !it.comment) it.comment=isAr()?"يُرجى مراجعة التوقيت أو المسوّغ.":"Please revisit the timing or rationale.";
         drawPdp();
+        if(typeof drawHead==="function") drawHead();
       });
       return;
     }
@@ -9874,7 +9936,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
 
   // ── meeting agendas: written or imported, then assigned to a person ──
   var AGENDAS=[], AGSEQ=0;
-  function canAssignAgenda(){ return ROLE==="dg"||ROLE==="dir"||ROLE==="coord"; }
+  function canAssignAgenda(){ return ROLE==="dg"||ROLE==="dir"||ROLE==="coord"||ROLE==="head"; }
   function drawAgendas(){
     var host=document.getElementById("agList"); if(!host) return;
     var selHost=document.getElementById("ag-asg");
@@ -10829,7 +10891,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
 
   // ── my assignments ──
   function myPerson(){
-    return STAFF.filter(function(p){return p.id===(ROLE==="staff"?"m7":ROLE==="dir"?"m4":ROLE==="coord"?"m1":"dg0");})[0]||STAFF[0];
+    return STAFF.filter(function(p){return p.id===(
+      ROLE==="staff"?"m8" : ROLE==="head"?"m7" : ROLE==="dir"?"m4" : ROLE==="coord"?"m1" : "dg0");})[0]||STAFF[0];
   }
   var MYADDED=[];
   function drawMine(){
@@ -11098,14 +11161,16 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     return out;
   }
   function queueRows(){
-    var want = ROLE==="dir" ? "sup" : "dg";
-    var mine=subsPending().filter(function(s){ return (s.stage||"dg")===want; })
+    var sup = (ROLE==="dir"||ROLE==="head");   // an endorsing desk, not a deciding one
+    var want = sup ? "sup" : "dg";
+    var mine=subsPending().filter(function(s){
+        return (s.stage||"dg")===want && (!sup || (s.supTo||"dir")===ROLE); })
       .map(function(s){
         return {key:s.id, kind:s.kind, title:s.title, by:s.by, dep:s.dep, when:s.when,
                 meta:s.meta, endorse:(want==="sup"), byId:s.byId};
       });
     // step budgets are the Director General's alone
-    return ROLE==="dir" ? mine : mine.concat(stepBudgets());
+    return sup ? mine : mine.concat(stepBudgets());
   }
   function metaLine(kind,m){
     if(!m) return "";
@@ -11229,7 +11294,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   function drawApprovals(){
     var host=document.getElementById("apprList"); if(!host) return;
-    var dg=(ROLE==="dg"), dir=(ROLE==="dir");
+    var dg=(ROLE==="dg"), isHead=(ROLE==="head"), dir=(ROLE==="dir"||isHead);
     var decider=dg||dir;                       // this desk decides on other people's requests
     var q=decider?queueRows():[];
     var meId=(typeof myPerson==="function"?myPerson().id:"dg");
@@ -11242,6 +11307,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     document.getElementById("apprLede").innerHTML=
       dg? bi("كل هدف أو مهمة أو مؤشر أو تقدير ميزانية يُضيفه أي موظف يمر من هنا قبل أن يسري. القرار ثلاثة: اعتماد، أو إعادة بطلب تعديل، أو رفض.",
              "Every objective, task, KPI and budget estimate added by anyone passes through here before it takes effect. There are three answers: approve, return for amendment, or refuse.")
+        : isHead? bi("ما يضيفه موظفو قسمك يقف عندك أولاً حين يكون المسار كذلك. التزكية ترفعه إلى المدير العام، والإعادة أو الرفض ينهيانه هنا. وأسفل الصفحة طلباتك أنت — وهي ترتفع إلى مدير الدائرة.",
+                  "What your department's staff add stops with you first when the route is set that way. Endorsing passes it up to the Director General; returning or refusing ends it here. Your own submissions are below — those rise to the directorate head.")
         : dir? bi("ما يضيفه موظفو الدائرة يقف عندك أولاً حين يكون المسار كذلك. التزكية ترفعه إلى المدير العام، والإعادة أو الرفض ينهيانه هنا. وأسفل الصفحة طلباتك أنت.",
                   "What the directorate's staff add stops with you first when the route is set that way. Endorsing passes it up to the Director General; returning or refusing ends it here. Your own submissions are below.")
         : bi("ما أرسلته للاعتماد وأين وصل. المُعاد بطلب تعديل يمكن تصحيحه وإعادة إرساله من صفحة مهامي.",
@@ -11345,9 +11412,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var meId=(typeof myPerson==="function"?myPerson().id:"dg");
       var own=SUBS.filter(function(s){
         return !s.self && s.byId===meId && (s.state==="pending"||s.state==="returned"); }).length;
-      b.textContent = String((ROLE==="dg"||ROLE==="dir") ? queueRows().length+own : own);
+      b.textContent = String((ROLE==="dg"||ROLE==="dir"||ROLE==="head") ? queueRows().length+own : own);
     }
     drawApprovals();
+    if(typeof drawHead==="function") drawHead();
   }
   document.addEventListener("click",function(e){
     var d=e.target.closest("[data-dec]");
@@ -11557,9 +11625,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   // a queue that starts empty teaches nothing — these are live requests waiting
   (function seedQueue(){
-    function mk(kind,byId,title,by,dep,when,meta){
+    function mk(kind,byId,title,by,dep,when,meta,stage,supTo){
       SUBS.push({id:"S"+(++SUBSEQ), kind:kind, ref:"", title:title, byId:byId, by:by, dep:dep,
-                 when:when, meta:meta, note:"", state:"pending", self:false});
+                 when:when, meta:meta, note:"", state:"pending", self:false,
+                 stage:stage||"dg", supTo:supTo||"dir"});
     }
     mk("obj","m7",["إعداد دليل موحّد لمؤشرات مراكز التأهيل","A unified indicator manual for the rehabilitation centres"],
        ["رحمة بنت حمود بن مبارك الراشدي","Rahma Al Rashdi"],["قسم تطوير الخدمات","Service Development"],
@@ -11570,6 +11639,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     mk("bud","m7",["ورشة تعريفية لمراكز المحافظات","Orientation workshop for the governorate centres"],
        ["رحمة بنت حمود بن مبارك الراشدي","Rahma Al Rashdi"],["قسم تطوير الخدمات","Service Development"],
        "2026-11-19",{under:"رفع كفاءة الخدمات المقدَّمة", due:"2027-02-15", amt:1800});
+    // one request stopped at the department head's desk, so hers is not empty
+    mk("obj","m8",["دليل إجراءات استقبال الحالات الجديدة","A procedure guide for receiving new cases"],
+       ["عبدالناصر إبراهيم محمد الهادي","Abdulnasser Al Hadi"],["قسم تطوير الخدمات","Service Development"],
+       "2026-11-18",{under:"رفع كفاءة الخدمات المقدَّمة للأشخاص ذوي الإعاقة", due:"2027-04-30"},"sup","head");
   })();
 
   // ══ accounts, sign-in, and the second step ══
@@ -11584,8 +11657,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
      who:["نبيلة بنت علي الصبحي — التنسيق والمتابعة","Nabila Al Subhi — Coordination"], dep:["مكتب المدير العام","Director General Office"]},
     {u:"dir.gov",p:"qagc2027",role:"dir",   sid:"m4", must:false, active:true, twofa:true,
      who:["حمود بن حمد العامري — مدير مساعد","Hamood Al Amri — Assistant Director"], dep:["دائرة الحوكمة ومعايير الجودة وتطوير الخدمات","Governance, Quality Standards & Service Development"]},
-    {u:"sd.head",p:"qagc2027",role:"staff", sid:"m7", must:false, active:true, twofa:false,
-     who:["رحمة بنت حمود الراشدي — رئيس قسم تطوير الخدمات","Rahma Al Rashdi — Head of Service Development"], dep:["قسم تطوير الخدمات","Service Development"]}
+    {u:"sd.head",p:"qagc2027",role:"head",  sid:"m7", must:false, active:true, twofa:false,
+     who:["رحمة بنت حمود الراشدي — رئيس قسم تطوير الخدمات","Rahma Al Rashdi — Head of Service Development"], dep:["قسم تطوير الخدمات","Service Development"]},
+    {u:"sd.staff",p:"qagc2027",role:"staff", sid:"m8", must:false, active:true, twofa:false,
+     who:["عبدالناصر إبراهيم الهادي — أخصائي تربية خاصة","Abdulnasser Al Hadi — Special Education Specialist"], dep:["قسم تطوير الخدمات","Service Development"]}
   ];
   var SESSION=null;
   var PENDING_NEW=null;              // the account being forced to set a password
@@ -11762,7 +11837,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     gateMsg("", "");
     document.getElementById("giIntro").innerHTML=
       bi("دعوة للانضمام إلى منصة ضمان الجودة بصفة: ","You are invited to join the platform as: ")+
-      "<b>"+bi(ROLE_LBL[inv.role][0],ROLE_LBL[inv.role][1])+"</b>"+
+      "<b>"+bi(roleLbl(inv.role)[0],roleLbl(inv.role)[1])+"</b>"+
       bi(" — أكمل بياناتك لتفعيل حسابك."," — complete your details to activate the account.");
     var nm=document.getElementById("gv-name"); if(nm) nm.value=inv.name||"";
     // directorate/department selects share the add-staff logic
@@ -11830,7 +11905,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       host.innerHTML=INVITES.length? INVITES.map(function(inv){
         return '<div class="acrow">'+
           '<span><b>'+inv.name+'</b><span class="au">'+inv.email+'</span></span>'+
-          '<span>'+bi(ROLE_LBL[inv.role][0],ROLE_LBL[inv.role][1])+'</span>'+
+          '<span>'+bi(roleLbl(inv.role)[0],roleLbl(inv.role)[1])+'</span>'+
           '<span>'+(inv.state==="accepted"
             ?'<span class="pill p-good">'+bi("فُعِّل الحساب","Activated")+'</span>'
             :'<span class="pill p-warn">'+bi("دعوة مرسلة","Invitation sent")+'</span>')+'</span>'+
@@ -11868,7 +11943,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
 
   // ── the accounts panel, shown to the owner and to coordination ──
   var ROLE_LBL={dg:["المدير العام","Director General"],dir:["مدير دائرة","Directorate head"],
+                head:["رئيس قسم","Department head"],
                 coord:["تنسيق ومتابعة","Coordination"],staff:["موظف","Staff"]};
+  // an unlabelled role must not take the whole accounts panel down with it
+  function roleLbl(r){ return ROLE_LBL[r]||[r,r]; }
   function drawAccounts(){
     ["accList","coordAccList"].forEach(function(id){
       var host=document.getElementById(id); if(!host) return;
@@ -11878,7 +11956,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         ACCOUNTS.map(function(a,i){
           return '<div class="acrow'+(a.active?"":" off")+'">'+
             '<span><b>'+bi(a.who[0],a.who[1])+'</b><span class="au">'+a.u+'</span></span>'+
-            '<span>'+bi(ROLE_LBL[a.role][0],ROLE_LBL[a.role][1])+'</span>'+
+            '<span>'+bi(roleLbl(a.role)[0],roleLbl(a.role)[1])+'</span>'+
             '<span>'+(a.must
               ? '<span class="pill p-warn">'+bi("مؤقتة","Temporary")+'</span>'
               : a.active ? '<span class="pill p-good">'+bi("نشط","Active")+'</span>'
@@ -11953,15 +12031,17 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   var ROLE_NAV={
     dg:    ["cc","master","annual","dept","people","mine","approvals","leave","cpd","ccal","coord","ai","prefs","own"],
     dir:   ["dir","master","annual","dept","people","mine","approvals","leave","cpd","ccal","prefs"],
+    head:  ["head","master","annual","people","mine","approvals","leave","cpd","ccal","prefs"],
     coord: ["coord","master","annual","people","mine","approvals","leave","cpd","ccal","prefs"],
     staff: ["staffhome","master","annual","mine","approvals","leave","cpd","ccal","prefs"]
   };
-  var ROLE_HOME={dg:"cc",dir:"dir",coord:"coord",staff:"staffhome"};
+  var ROLE_HOME={dg:"cc",dir:"dir",head:"head",coord:"coord",staff:"staffhome"};
   var ROLE_WHO={
     dg:   [["المدير العام","Director General"],["مركز ضمان الجودة والحوكمة","Quality Assurance & Governance"],"DG"],
     dir:  [["مدير الدائرة","Directorate head"],["الحوكمة ومعايير الجودة وتطوير الخدمات","Governance & Service Development"],"DH"],
     coord:[["قسم التنسيق والمتابعة","Coordination & Follow-up"],["مكتب المدير العام","Director General Office"],"CF"],
-    staff:[["رئيس قسم تطوير الخدمات","Head of Service Development"],["قسم تطوير الخدمات","Service Development"],"SD"]
+    head: [["رحمة الراشدي — رئيسة قسم تطوير الخدمات","Rahma Al Rashdi — Head of Service Development"],["قسم تطوير الخدمات","Service Development"],"SD"],
+    staff:[["عبدالناصر الهادي — أخصائي تربية خاصة","Abdulnasser Al Hadi — Special Education Specialist"],["قسم تطوير الخدمات","Service Development"],"AH"]
   };
   var ALL_TABS=false;      // review aid: show every tab whatever the persona
   function applyRole(){
@@ -11998,7 +12078,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     // the plan itself reads differently per role — watch box, and my own steps
     drawPlan(); drawDash();
     applyLeaveTabs(); drawMine(); afterSubmit(); drawPrioEverywhere(); lvAfter(); drawCpd(); drawStrips();
-    drawCoord(); drawDir(); drawStaffHome(); drawPrefs(); drawAccounts();
+    drawCoord(); drawDir(); drawHead(); drawStaffHome(); drawPrefs(); drawAccounts();
   }
   var rs=document.getElementById("roleSel");
   if(rs) rs.addEventListener("change",function(){ ROLE=this.value; applyRole(); });
@@ -12154,7 +12234,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function drawDir(){
     var t=document.getElementById("dirTiles"); if(!t) return;
     var mine=PLAN2027.filter(function(o){return o.l!=="center";}).slice(0,12);
-    var deps=["قسم معايير الجودة","قسم تطوير الخدمات"];
+    var deps=["قسم الحوكمة ومعايير الجودة","قسم تطوير الخدمات"];
     var people=STAFF.filter(function(p){return deps.indexOf(p.dep[0])>=0;});
     var budgets=people.reduce(function(a,p){
       return a+(p.steps||[]).filter(function(x){return x.budget&&x.budget.state==="proposed";}).length;},0);
@@ -12196,10 +12276,90 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     }).join("");
   }
 
+  // ── department head: the first line manager the platform has ──
+  function drawHead(){
+    var t=document.getElementById("headTiles"); if(!t) return;
+    var me=(typeof myPerson==="function")?myPerson():null; if(!me) return;
+    var team=STAFF.filter(function(p){ return p.id!==me.id && p.dep[0]===me.dep[0]; });
+
+    // three things stop at this desk, and one thing never does
+    var lv=(ROLE==="head") ? lvQueue()
+         : LVREQ.filter(function(r){ return r.state==="pending" && r.byId!==me.id &&
+             (STAFF.filter(function(x){return x.id===r.byId;})[0]||{dep:["",""]}).dep[0]===me.dep[0]; });
+    var endorse=SUBS.filter(function(s){
+      return s.state==="pending" && (s.stage||"dg")==="sup" && (s.supTo||"dir")==="head" &&
+             team.filter(function(p){return p.id===s.byId;}).length; });
+    var devReq=team.reduce(function(a,p){
+      return a+((typeof PDP!=="undefined"&&PDP[p.id]||[]).filter(function(x){return x.status==="requested";}).length); },0);
+    var openSteps=team.reduce(function(a,p){
+      return a+(p.steps||[]).filter(function(x){return x.st!=="completed";}).length; },0);
+    var budUp=team.reduce(function(a,p){
+      return a+(p.steps||[]).filter(function(x){return x.budget&&x.budget.state==="proposed";}).length; },0);
+    var waiting=lv.length+endorse.length+devReq;
+
+    t.innerHTML=
+      '<div class="tile"><div class="th"><span class="tl">'+bi("فريق القسم","Department team")+'</span></div>'+
+        '<div class="tv">'+team.length+'</div><div class="ts">'+bi("عدا نفسي","excluding myself")+'</div></div>'+
+      '<div class="tile'+(waiting?" warn":"")+'"><div class="th"><span class="tl">'+bi("بانتظار قراري","Awaiting my decision")+'</span></div>'+
+        '<div class="tv">'+waiting+'</div><div class="ts">'+bi("إجازة وتزكية وتطوير","leave, endorsement, development")+'</div></div>'+
+      '<div class="tile"><div class="th"><span class="tl">'+bi("مهام مفتوحة للفريق","The team's open work")+'</span></div>'+
+        '<div class="tv">'+openSteps+'</div><div class="ts">'+bi("خطوة لم تُغلق بعد","steps not yet closed")+'</div></div>'+
+      '<div class="tile"><div class="th"><span class="tl">'+bi("ميزانيات مقترحة","Budgets proposed")+'</span></div>'+
+        '<div class="tv">'+budUp+'</div><div class="ts">'+bi("تُرفع للمدير العام","escalate to the DG")+'</div></div>';
+
+    var q=document.getElementById("headQueue");
+    if(q){
+      var rows=[];
+      // Arabic takes the bare singular after a numeral; English does not
+      var pl=function(k,one,many){ return k+" "+(k===1?one:many); };
+      if(lv.length) rows.push(['var(--warn)',
+        bi(lv.length+" طلب إجازة من القسم",pl(lv.length,"leave request","leave requests")+" from the department"),
+        bi("الاعتماد عندي، والرصيد ينقص باعتمادها.","Mine to approve; approving consumes the balance."),
+        "leave", bi("فتح","Open")]);
+      if(endorse.length) rows.push(['var(--warn)',
+        bi(endorse.length+" طلب بانتظار تزكيتي",pl(endorse.length,"submission","submissions")+" awaiting my endorsement"),
+        bi("التزكية ترفعه إلى المدير العام، والإعادة تنهيه هنا.","Endorsing sends it to the DG; returning ends it here."),
+        "approvals", bi("مراجعة","Review")]);
+      if(devReq) rows.push(['var(--serious)',
+        bi(devReq+" طلب تطوير من الفريق",pl(devReq,"development request","development requests")+" from the team"),
+        bi("قرار الرئيس المباشر — والمديرة تُعلّق ولا تقرر.","The line manager's decision — the DG comments, she does not decide."),
+        "cpd", bi("فتح","Open")]);
+      q.innerHTML = rows.length ? rows.map(function(r){
+        return '<div class="q-item"><span class="q-dot" style="background:'+r[0]+'"></span><div class="q-b">'+
+          '<div class="t">'+r[1]+'</div><div class="d">'+r[2]+'</div></div>'+
+          '<button class="q-act" data-goto="'+r[3]+'">'+r[4]+'</button></div>';
+      }).join("") : '<div class="subempty">'+
+        bi("لا شيء بانتظار قرارك. كل ما وصل من القسم جرى البتّ فيه.",
+           "Nothing is waiting on you. Everything from the department has been decided.")+'</div>';
+    }
+
+    var tl=document.getElementById("headTeam");
+    if(tl){
+      tl.innerHTML = team.length ? team.map(function(p){
+        var open=(p.steps||[]).filter(function(x){return x.st!=="completed";}).length;
+        var sc=(typeof perfScore==="function")?perfScore(p):null;
+        var col=sc===null?"var(--ink-4)":sc>=85?"var(--good-ink)":sc>=65?"var(--warn-ink)":"var(--critical-ink)";
+        var away=LVREQ.filter(function(r){return r.byId===p.id&&r.state==="approved";}).length;
+        return '<div class="cov-row"><div class="cov-t"><div class="g">'+bi(p.who[0],p.who[1])+'</div>'+
+          '<div class="c">'+bi(open+" مهمة مفتوحة",open+(open===1?" open task":" open tasks"))+' · '+
+            bi("رصيد "+p.balance+" يوماً","balance "+p.balance+" days")+
+            (away?' · '+bi("إجازة معتمدة","leave approved"):"")+'</div></div>'+
+          '<div class="bar'+(sc!==null&&sc<60?" low":"")+'"><i style="width:'+(sc===null?0:sc)+'%"></i></div>'+
+          '<div class="cov-n tnum" style="color:'+col+'">'+(sc===null?"—":sc)+'</div></div>';
+      }).join("")+'<p class="hint2" style="margin-top:var(--sp-2)">'+
+        bi("الشريط مؤشر الأداء بالمعادلة المعلنة التي تضبطها المديرة العامة، و«—» تعني بيانات غير كافية بعد.",
+           "The bar is the performance index on the open formula the DG tunes; \u201c\u2014\u201d means not enough data yet.")+'</p>'
+      : '<div class="subempty">'+bi("لا أحد مسجّل في هذا القسم بعد.","Nobody is on this department's roster yet.")+'</div>';
+    }
+  }
+
   // ── staff ──
   function drawStaffHome(){
     var t=document.getElementById("staffTiles"); if(!t) return;
-    var me=STAFF.filter(function(p){return p.id==="m7";})[0];
+    // the page belongs to whoever is signed in as staff; off-role it previews the demo one
+    var me=(ROLE==="staff"&&typeof myPerson==="function") ? myPerson()
+          : STAFF.filter(function(p){return p.id==="m8";})[0];
+    if(!me) return;
     var steps=me.steps||[];
     var due=steps.filter(function(x){return x.st!=="completed";}).length;
     var clash=clashes(me).length;
@@ -12214,11 +12374,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       '<div class="tile"><div class="th"><span class="tl">'+bi("رصيد إجازاتي","My leave balance")+'</span></div>'+
         '<div class="tv">'+me.balance+'</div><div class="ts">'+bi("يوماً","days")+'</div></div>';
     var b=document.getElementById("staffBody");
-    var saveSel=SEL; SEL="m7";
+    var saveSel=SEL; SEL=me.id;
     var host=document.getElementById("personBody");
     if(host){
       var keep=host.innerHTML;
-      openPerson("m7");
+      openPerson(me.id);
       b.innerHTML=host.innerHTML;
       host.innerHTML=keep;
     }
