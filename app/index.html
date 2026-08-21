@@ -3317,8 +3317,14 @@ html[lang="en"] span[lang="en"]{display:inline}
         </div>
         <div style="display:flex;gap:var(--sp-2);margin-top:var(--sp-2);flex-wrap:wrap;align-items:center">
           <button class="btn btn-p" id="aiConnect"><span lang="ar">اتصال وتحديث</span><span lang="en">Connect &amp; refresh</span></button>
+          <label style="display:inline-flex;gap:6px;align-items:center;font-size:var(--t-sm);cursor:pointer">
+            <input type="checkbox" id="aiRemember">
+            <span lang="ar">تذكّر المفتاح على هذا الجهاز</span><span lang="en">Remember the key on this device</span></label>
           <span id="aiConnStatus" style="font-size:var(--t-sm)"></span>
         </div>
+        <p style="font-size:var(--t-xs);color:var(--ink-3);margin:4px 0 0">
+          <span lang="ar">يُحفَظ المفتاح في متصفح هذا الجهاز فقط — لا يدخل الصفحة المنشورة ولا يغادر جهازك. أزيلي العلامة لمسحه.</span>
+          <span lang="en">Stored only in this device's browser — never in the published page, never leaves your machine. Untick to erase it.</span></p>
         <div id="aiInbox" style="margin-top:var(--sp-3)"></div>
       </div>
 
@@ -7773,6 +7779,32 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var el=document.getElementById("aiConnStatus");
     if(el) el.innerHTML='<span style="color:var(--'+(ok?"good-ink":"critical-ink")+')">'+msg+'</span>';
   }
+  // the key can live in THIS browser's storage, by explicit choice — it is
+  // never written into the page itself, which is public on github.io
+  function aiSaveCfg(url,key){
+    try{
+      if((document.getElementById("aiRemember")||{}).checked)
+        localStorage.setItem("qagcAiCfg", JSON.stringify({url:url,key:key}));
+      else localStorage.removeItem("qagcAiCfg");
+    }catch(_){}
+  }
+  function aiLoadCfg(){
+    try{
+      var c=JSON.parse(localStorage.getItem("qagcAiCfg")||"null");
+      if(!c||!c.key) return;
+      var u=document.getElementById("aiCfgUrl"), k=document.getElementById("aiCfgKey"),
+          r=document.getElementById("aiRemember");
+      if(u&&c.url) u.value=c.url;
+      if(k){ k.value=c.key; aiStatus(bi("المفتاح محفوظ على هذا الجهاز — اضغطي اتصال.","Key remembered on this device — press connect."),true); }
+      if(r) r.checked=true;
+    }catch(_){}
+  }
+  document.addEventListener("change",function(e){
+    if(e.target && e.target.id==="aiRemember" && !e.target.checked){
+      try{ localStorage.removeItem("qagcAiCfg"); }catch(_){}
+      aiStatus(bi("مُسح المفتاح من هذا الجهاز.","The key was erased from this device."),true);
+    }
+  });
   async function aiFetchInbox(){
     var url=(document.getElementById("aiCfgUrl")||{}).value||"";
     var key=(document.getElementById("aiCfgKey")||{}).value||"";
@@ -7783,6 +7815,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var j=await r.json();
       if(!j.ok){ aiStatus(bi("المفتاح مرفوض.","The key was refused."),false); return; }
       aiStatus(bi("متصل — آخر تحديث الآن.","Connected — just refreshed."),true);
+      aiSaveCfg(url,key);
       renderAiInbox(j.items||[]);
     }catch(err){
       aiStatus(bi("تعذّر الاتصال من هذه النسخة — جرّب النسخة المنشورة على github.io.",
@@ -7821,6 +7854,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(Array.isArray(it.kpis)) return it.kpis;
     try{ var a=JSON.parse(it.kpis||"[]"); return Array.isArray(a)?a:[]; }catch(_){ return []; }
   }
+  aiLoadCfg();
   document.addEventListener("click",function(e){
     if(e.target.closest("#aiConnect")){ aiFetchInbox(); return; }
     var im=e.target.closest("[data-aiimport]");
