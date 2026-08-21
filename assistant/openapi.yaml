@@ -22,10 +22,21 @@ paths:
         - name: fn
           in: query
           required: true
-          schema: { type: string, enum: [ping, objectives, inbox, analysis] }
+          schema: { type: string, enum: [ping, objectives, inbox, analysis, calendar] }
           description: >
-            analysis يعيد طابور طلبات تحليل المؤشرات المرسلة من المنصة —
-            كل صف فيه kpi وquestion وdata (سلسلة القراءات JSON) وid.
+            analysis يعيد طابور طلبات تحليل المؤشرات المرسلة من المنصة.
+            calendar يعيد مواعيد الأيام القادمة — استخدميه قبل دفع أي عنصر
+            مؤرَّخ للتحقق من تعارض الجدولة.
+        - name: which
+          in: query
+          required: false
+          schema: { type: string, enum: [dir, dg] }
+          description: dir لتقويم المركز (الافتراضي للتحقق من التعارض)، dg لتقويم المديرة
+        - name: days
+          in: query
+          required: false
+          schema: { type: integer }
+          description: نافذة الأيام القادمة، حتى 60
       responses:
         "200":
           description: JSON result.
@@ -86,7 +97,12 @@ paths:
                   type: string
                   enum: [five_year_plan, annual_plan, third_category]
                   description: التصنيف — إلزامي، لا تُقبل مهمة بلا فئة
-                owner: { type: string, description: "الجهة أو الشخص المقترح" }
+                owner:
+                  type: string
+                  description: >
+                    للإسناد إلى موظف بعينه اكتبي اسمه الكامل كما في كشف القرار —
+                    المنصة تتعرف عليه وتجهّز إسناده تلقائياً. ومع kind=pdp هو
+                    صاحب الخطة، إلزامياً.
                 due: { type: string, description: "YYYY-MM-DD" }
                 budget: { type: number, description: "تقدير بالريال العماني، إن وجد" }
                 note: { type: string }
