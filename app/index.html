@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 25">
+<meta name="qagc-ver" content="beta 26">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -9465,20 +9465,29 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     });
     return hit;
   }
-  function canAssignTasks(){ return ROLE==="dg"||ROLE==="dir"||ROLE==="head"; }
+  function canAssignTasks(){ return (ROLE==="dg"||ROLE==="coord")||ROLE==="dir"||ROLE==="head"; }
+  // the DG — and the coordinator acting for her office — assign to anyone in the centre, the DG included;
+  // a director assigns within the whole directorate (heads and staff); a department head within the department
   function asgScope(){
-    if(ROLE==="dg") return STAFF.filter(function(p){return p.id!=="dg0";});
-    if(ROLE==="dir"||ROLE==="head") return pdpTeamOf();
+    var me=(typeof myPerson==="function")?myPerson():null;
+    if(ROLE==="dg"||ROLE==="coord") return STAFF.slice();
+    if(ROLE==="dir") return STAFF.filter(function(p){ return me && p.id!==me.id && p.dir && me.dir && p.dir[0]===me.dir[0]; });
+    if(ROLE==="head") return STAFF.filter(function(p){ return me && p.id!==me.id && p.dep && me.dep && p.dep[0]===me.dep[0]; });
     return [];
   }
   function drawAsgForm(){
     var sel=document.getElementById("asg-p"); if(!sel) return;
-    var scope=asgScope();
-    sel.innerHTML=scope.map(function(p){return '<option value="'+p.id+'">'+bi(p.who[0],p.who[1])+'</option>';}).join("");
+    var scope=asgScope(), groups={}, order=[];
+    scope.forEach(function(p){ var g=(ROLE==="head"||ROLE==="dir")?(p.dep?p.dep[0]:""):(p.dir?p.dir[0]:""); if(!groups[g]){ groups[g]=[]; order.push(g); } groups[g].push(p); });
+    var opt=function(p){ var d=p.desig?(isAr()?p.desig[0]:p.desig[1]):""; return '<option value="'+p.id+'">'+(isAr()?p.who[0]:p.who[1])+(d?" — "+d:"")+'</option>'; };
+    sel.innerHTML = order.length>1
+      ? order.map(function(g){ return '<optgroup label="'+g+'">'+groups[g].map(opt).join("")+'</optgroup>'; }).join("")
+      : scope.map(opt).join("");
     var eye=document.getElementById("asgScopeEye");
-    if(eye) eye.innerHTML=(ROLE==="dg")
-      ? bi("المديرة العامة تُسند لأي موظف في المركز","The DG assigns to anyone in the centre")
-      : bi("الرئيس المباشر يُسند لفريقه","A line manager assigns within the team");
+    if(eye) eye.innerHTML=(ROLE==="dg"||ROLE==="coord")
+      ? bi("المديرة العامة ومكتبها يُسندان لأي موظف في المركز بالاسم والمسمى — بما في ذلك المديرة العامة","The DG and her office assign to anyone in the centre by name and designation — the DG included")
+      : ROLE==="dir" ? bi("مدير الدائرة يُسند داخل دائرته بالاسم والمسمى — رؤساء الأقسام وموظفيها","A director assigns within the directorate by name and designation — heads and staff")
+      : bi("رئيس القسم يُسند داخل قسمه بالاسم والمسمى","A department head assigns within the department by name and designation");
     asgLeaveCheck();
   }
   function asgLeaveCheck(){
