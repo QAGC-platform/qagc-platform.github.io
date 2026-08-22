@@ -52,6 +52,11 @@ before touching anything — it replaces a long build history you cannot see.
    date computation. Never call `new Date()` for "now" — use `platformNow()`.
 6. **Bilingual always**: every visible string is `bi(ar, en)` or paired
    `span[lang]` markup. Arabic is primary; English must be real, not filler.
+   **Gender-neutral always** (her ruling, beta 24): never address the
+   reader with a gendered verb or pronoun (no اكتبي/اضغطي/أدخلي, no
+   لكِ/أنتِ). Use nominal or passive phrasing — «تشغيل التحرير ثم النقر»,
+   «يلزم المفتاح أولاً», «تُضاف القراءات» — or «يمكن …». Role titles that
+   name a specific person (المديرة العامة) stay as they are.
 7. **Persistence pattern**: device-level stores in localStorage —
    `qagcSession`, `qagcAiCfg` (bridge key — sensitive), `qagcCustom`
    (wording/order), `qagcPrivs`, `qagcAwards`, `qagcOwnerCfg` (rules,
