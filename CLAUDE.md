@@ -61,7 +61,8 @@ before touching anything — it replaces a long build history you cannot see.
    `qagcSession`, `qagcAiCfg` (bridge key — sensitive), `qagcCustom`
    (wording/order), `qagcPrivs`, `qagcAwards`, `qagcOwnerCfg` (rules,
    weights, criteria, hours), `qagcPlanSheet`, `qagcAiHidden`,
-   `qagcNotes` (review-mode comments). The
+   `qagcNotes` (review-mode comments), `qagcGen` (the objective
+   generator's objectives — drafts and approved, versioned `v:2`). The
    settings screen exports/imports all of them as one JSON. Work data
    (submissions, plans, 360 cycles) is in-memory by design until the thin
    backend exists — never promise it persists.
@@ -177,6 +178,17 @@ calendars with privacy and clash detection, meetings from my-calendar,
 Training & Development hub (CPD + 3 plan tiers), 360°, performance score,
 weekly digest + compiled bilingual reports (.doc), roster from Decision
 128/2026, owner customisation + settings export/import.
+
+**مولّد الأهداف (beta 27)** — rail screen `#gen`, code prefixed `gx*` at
+the end of the IIFE: the objective as a row on a fitted calendar
+(year/quarter/month/week), phases and steps nested in strict periods,
+scope and assignment from `STAFF`/`ROLE` by line of management (DG and
+coordinator reach everyone), KPI cards on the MoH guideline's Appendix 6
+with plan-driven auto-drafting, and a readings feeder (on-site table with
+formulas/pivot, CSV drop, Sheet link). Three plan objectives are seeded
+as editable drafts and three as approved/tracked with ready readings;
+step status feeds the completion KPIs. Submitting a draft is in-memory
+until the backend exists.
 
 Open, in priority order:
 1. **Thin backend** — the one big remaining step: real persistence for work

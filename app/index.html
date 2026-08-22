@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 26">
+<meta name="qagc-ver" content="beta 27">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -1926,6 +1926,175 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 .orgp .pd{color:var(--ink-3);font-size:var(--t-xs)}
 .orgnone{font-size:var(--t-xs);color:var(--ink-4);padding:5px 0}
 .orgflag{font-size:var(--t-xs);color:var(--gold-ink);padding:4px 0}
+
+/* ── مولّد الأهداف — the objective generator, on the platform's own tokens ── */
+#gen .gx-strip{display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center;margin-bottom:var(--sp-3)}
+#gen .gx-strip .lab{font-size:var(--t-xs);color:var(--ink-3);font-weight:700;letter-spacing:.06em;margin-inline-end:4px}
+#gen .gx-chip{font:inherit;font-size:var(--t-sm);padding:6px 12px;border-radius:var(--r-pill);border:1px solid var(--rule-strong);background:var(--surface);color:var(--ink-2);cursor:pointer;display:inline-flex;gap:6px;align-items:center;max-width:360px}
+#gen .gx-chip b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#gen .gx-chip .ref{font-size:var(--t-xs);color:var(--ink-3)}
+#gen .gx-chip.on{border-color:var(--brand-ink);background:var(--surface-ink);color:#fff}
+#gen .gx-chip.on .ref{color:var(--rail-ink-2)}
+#gen .gx-chip.appr{border-style:dashed}
+#gen .gx-chip.new{border-color:var(--gold-ink);color:var(--gold-ink)}
+#gen .gx-bar{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;margin-bottom:var(--sp-3)}
+#gen .gx-mode{font-size:var(--t-xs);font-weight:700;padding:3px 10px;border-radius:var(--r-pill);background:var(--warn-bg);color:var(--warn-ink);border:1px solid var(--warn-rule)}
+#gen .gx-mode.appr{background:var(--good-bg);color:var(--good-ink);border-color:var(--good-rule)}
+#gen .gx-tabs{display:flex;gap:2px;border:1px solid var(--rule-strong);border-radius:var(--r);padding:2px;background:var(--surface-2)}
+#gen .gx-tabs button{font:inherit;font-size:var(--t-sm);font-weight:600;border:none;background:transparent;color:var(--ink-3);padding:6px 14px;border-radius:calc(var(--r) - 2px);cursor:pointer}
+#gen .gx-tabs button.on{background:var(--surface);color:var(--brand-ink);box-shadow:var(--shadow)}
+#gen .gx-me{margin-inline-start:auto;font-size:var(--t-xs);color:var(--ink-3)}
+#gen .gx-pane{display:none}#gen .gx-pane.on{display:block}
+
+/* timeline */
+#gen .gx-gwrap{border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;background:var(--surface)}
+#gen .gx-g{display:grid;grid-template-columns:380px minmax(0,1fr)}
+#gen .gx-labels{border-inline-end:2px solid var(--rule-strong);background:var(--surface)}
+#gen .gx-lh,#gen .gx-lr{display:grid;grid-template-columns:minmax(0,1fr) 82px 34px 82px;align-items:center}
+#gen .gx-lh{height:44px;font-size:var(--t-xs);letter-spacing:.06em;color:var(--ink-3);font-weight:700;border-bottom:1px solid var(--rule);background:var(--surface-2)}
+#gen .gx-lh span,#gen .gx-lr>span{padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#gen .gx-lr{height:32px;border-bottom:1px solid var(--rule)}
+#gen .gx-lr.obj{background:color-mix(in srgb,var(--brand-ink) 10%,var(--surface));font-weight:700;height:36px}
+#gen .gx-lr.obj .name{display:flex;align-items:center;gap:6px;min-width:0}
+#gen .gx-car{display:inline-block;width:14px;font-size:10px;flex:none;cursor:pointer;color:var(--ink-3);transition:transform .15s}
+#gen .open>.name .gx-car{transform:rotate(90deg)}
+#gen .gx-lr.obj input.gx-title{font-size:var(--t-body);font-weight:700;flex:1;min-width:0}
+#gen .gx-lr.obj input.gx-title::placeholder{color:var(--gold-ink);font-weight:600}
+#gen .gx-lr.obj.open,#gen .gx-tr.obj.open{height:118px}
+#gen .gx-lr.ph{background:color-mix(in srgb,var(--brand-gold) 28%,var(--surface));font-weight:600}
+#gen .gx-lr.ph input::placeholder{color:var(--gold-ink)}
+#gen .gx-lr.tk{cursor:pointer}
+#gen .gx-lr.tk .name{display:flex;align-items:center;gap:6px;min-width:0;padding-inline-start:12px}
+#gen .gx-lr.tk .name .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+#gen .gx-lr.tk .name .meta{font-size:var(--t-xs);color:var(--ink-3);white-space:nowrap;flex:none}
+#gen .gx-lr.tk.open,#gen .gx-tr.tk.open{height:130px}
+#gen .gx-lr.open{align-items:start;padding-top:4px}
+#gen .gx-det{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px 8px;padding:4px 8px 6px 16px;align-self:start}
+#gen .gx-det .f.w{grid-column:1/-1}
+#gen .gx-lr.form,#gen .gx-tr.form{height:auto;min-height:130px}
+#gen .gx-lr.form{align-items:start;padding:4px 0}
+#gen .gx-acts{grid-column:1/-1;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#gen .gx-lr input,#gen .gx-lr select{width:100%;font:inherit;font-size:var(--t-sm);border:none;background:transparent;color:var(--ink-1);padding:2px 5px;border-radius:var(--r-sm)}
+#gen .gx-lr input:focus,#gen .gx-lr select:focus{outline:none;background:var(--surface-2);box-shadow:inset 0 0 0 1.5px var(--brand-ink)}
+#gen .gx-lr input[type=date]{font-size:var(--t-xs)}
+#gen .gx-lr .n{font-variant-numeric:tabular-nums;color:var(--ink-2);font-size:var(--t-xs);text-align:center}
+#gen .gx-add{font-size:var(--t-xs);color:var(--brand-ink);background:none;border:none;cursor:pointer;font:inherit;font-weight:700;padding:0 6px}
+#gen .gx-del{opacity:0;font-size:var(--t-xs);color:var(--ink-3);background:none;border:none;cursor:pointer;padding:0 4px}
+#gen .gx-lr:hover .gx-del{opacity:1}
+#gen .gx-lr.new{height:30px}
+#gen .gx-lr.new button{grid-column:1/-1;justify-self:start;margin-inline-start:8px}
+#gen .f label{display:block;font-size:var(--t-xs);color:var(--ink-3);font-weight:700;margin-bottom:3px}
+#gen .f input,#gen .f select{width:100%;font:inherit;font-size:var(--t-sm);padding:6px 9px;border:1px solid var(--rule-strong);border-radius:var(--r-sm);background:var(--surface);color:var(--ink-1)}
+#gen .f input:focus,#gen .f select:focus{outline:none;border-color:var(--brand-ink)}
+#gen .gx-scope{font-size:var(--t-xs);color:var(--gold-ink);font-weight:700;margin-inline-start:6px}
+#gen .gx-sum{font-size:var(--t-xs);color:var(--ink-3);font-weight:400;margin-inline-start:6px;font-variant-numeric:tabular-nums}
+#gen .gx-time{position:relative;min-width:0;overflow:hidden}
+#gen .gx-th{height:44px;border-bottom:1px solid var(--rule);position:relative;background:var(--surface-2)}
+#gen .gx-th .mo{position:absolute;top:0;height:22px;line-height:22px;font-size:var(--t-xs);font-weight:700;color:var(--ink-2);border-inline-start:1.5px solid var(--rule-strong);padding:0 6px;white-space:nowrap;overflow:hidden}
+#gen .gx-th .mo.alt{background:color-mix(in srgb,var(--brand-gold) 18%,var(--surface-2))}
+#gen .gx-th .un{position:absolute;top:22px;height:22px;line-height:22px;font-size:10px;color:var(--ink-3);text-align:center;border-inline-start:1px solid var(--rule);font-variant-numeric:tabular-nums;overflow:hidden;white-space:nowrap}
+#gen .gx-th.z-year .un{font-size:8.5px;padding:0}
+#gen .gx-th .un.we{background:color-mix(in srgb,var(--ink-4) 18%,transparent)}
+#gen .gx-th .un b{display:block;font-size:8.5px;line-height:8px;font-weight:600;color:var(--ink-3)}
+#gen .gx-bg{position:absolute;top:44px;bottom:0;inset-inline-start:0;pointer-events:none;z-index:0}
+#gen .gx-bg .mband{position:absolute;top:0;bottom:0;border-inline-start:1.5px solid var(--rule-strong)}
+#gen .gx-bg .mband.alt{background:color-mix(in srgb,var(--brand-gold) 9%,transparent)}
+#gen .gx-bg .wk{position:absolute;top:0;bottom:0;border-inline-start:1px solid var(--rule)}
+#gen .gx-bg .dy{position:absolute;top:0;bottom:0;border-inline-start:1px dotted var(--rule)}
+#gen .gx-bg .we{position:absolute;top:0;bottom:0;background:repeating-linear-gradient(135deg,transparent 0 5px,color-mix(in srgb,var(--ink-4) 22%,transparent) 5px 6px)}
+#gen .gx-bg .period{position:absolute;top:0;bottom:0;background:color-mix(in srgb,var(--brand-ink) 7%,transparent);border-inline:1.5px dashed color-mix(in srgb,var(--brand-ink) 45%,transparent)}
+#gen .gx-bg .today{position:absolute;top:0;bottom:0;width:0;border-inline-start:2px solid var(--critical)}
+#gen .gx-bg .today i{position:absolute;top:6px;inset-inline-start:-1px;transform:translateX(-50%);font-style:normal;font-size:10px;font-weight:700;color:#fff;background:var(--critical);padding:1px 7px;border-radius:var(--r-pill);white-space:nowrap}
+#gen .gx-tr{height:32px;border-bottom:1px solid var(--rule);position:relative;user-select:none;cursor:crosshair;z-index:1}
+#gen .gx-tr:hover{background:color-mix(in srgb,var(--brand-ink) 5%,transparent)}
+#gen .gx-tr.obj{height:36px}#gen .gx-tr.new{height:30px;cursor:default}#gen .gx-tr.ro{cursor:default}
+#gen .gx-gh{position:absolute;inset:0;display:flex;align-items:center;padding:0 14px;font-size:var(--t-xs);color:var(--ink-3);pointer-events:none;white-space:nowrap;overflow:hidden}
+#gen .gx-barx{position:absolute;top:6px;height:20px;border-radius:6px;background:color-mix(in srgb,var(--brand-ink) 16%,var(--surface));border:1px solid var(--brand-ink);overflow:hidden;min-width:4px;box-shadow:var(--shadow)}
+#gen .gx-barx .lbl{position:absolute;inset:0;font-size:var(--t-xs);line-height:18px;padding:0 8px;white-space:nowrap;color:var(--ink-1);font-weight:600}
+#gen .gx-barx .fill{position:absolute;inset:0;inset-inline-end:var(--rest,100%);background:color-mix(in srgb,var(--brand-ink) 55%,var(--surface))}
+#gen .gx-barx.obj{top:5px;height:26px;background:linear-gradient(180deg,color-mix(in srgb,var(--brand-ink) 85%,#fff),var(--brand-ink));border-color:var(--brand-ink)}
+#gen .gx-barx.obj .lbl{color:#fff;line-height:24px;font-size:var(--t-sm)}
+#gen .gx-barx.ph{background:transparent;border:none;height:10px;top:11px;box-shadow:none;overflow:visible}
+#gen .gx-barx.ph::before{content:"";position:absolute;inset:3px 0;background:var(--brand-gold);border-radius:99px}
+#gen .gx-barx.ph::after{content:"";position:absolute;top:0;bottom:0;inset-inline:0;border-inline:3px solid var(--gold-ink);border-radius:2px}
+#gen .gx-barx.out{border-color:var(--critical);border-style:dashed}
+#gen .gx-barx.done{border-color:var(--good);background:var(--good-bg)}#gen .gx-barx.late{border-color:var(--critical);background:var(--critical-bg)}
+#gen .gx-barx.cut-s{border-inline-start-style:dotted}#gen .gx-barx.cut-e{border-inline-end-style:dotted}
+#gen .gx-kmark{position:absolute;top:9px;width:12px;height:12px;transform:rotate(45deg) translateX(-50%);background:var(--brand-gold);border:1.5px solid var(--gold-ink);z-index:2;cursor:help}
+#gen .gx-foot{font-size:var(--t-xs);color:var(--ink-3);padding:8px 12px;border-top:1px solid var(--rule);display:flex;gap:14px;flex-wrap:wrap;align-items:center;background:var(--surface)}
+#gen .gx-foot b{color:var(--ink-2)}
+#gen .gx-foot.save{border-top:none;border-bottom:1px solid var(--rule);background:var(--surface-2)}
+#gen .gx-warn{color:var(--critical-ink);font-weight:700}
+#gen .gx-nav{display:flex;align-items:center;gap:6px;margin-inline-start:auto}
+#gen .gx-nav .win{font-weight:700;color:var(--ink-2);min-width:150px;text-align:center;font-variant-numeric:tabular-nums}
+#gen .gx-nav button{font:inherit;border:1px solid var(--rule-strong);background:var(--surface);color:var(--ink-2);border-radius:var(--r-sm);padding:3px 9px;cursor:pointer;font-size:var(--t-xs)}
+#gen .gx-zoom{display:flex;gap:3px;background:var(--surface-2);border:1px solid var(--rule-strong);border-radius:var(--r-sm);padding:2px}
+#gen .gx-zoom button{border:none;background:transparent;padding:4px 10px;border-radius:4px}
+#gen .gx-zoom button.on{background:var(--brand-ink);color:#fff;font-weight:700}
+#gen .gx-st{font:inherit;font-size:10px;border:1px solid var(--rule-strong);border-radius:var(--r-pill);padding:1px 8px;background:var(--surface);cursor:pointer;color:var(--ink-2)}
+#gen .gx-st.done{background:var(--good-bg);color:var(--good-ink);border-color:var(--good-rule)}
+#gen .gx-st.late{background:var(--critical-bg);color:var(--critical-ink);border-color:var(--critical-rule)}
+#gen .gx-prog{display:inline-flex;align-items:center;gap:6px;font-size:var(--t-xs);color:var(--ink-2);font-variant-numeric:tabular-nums}
+#gen .gx-prog i{width:90px;height:6px;border-radius:99px;background:var(--rule);position:relative;overflow:hidden;display:inline-block}
+#gen .gx-prog i::after{content:"";position:absolute;inset:0;inset-inline-end:var(--rest,100%);background:var(--good)}
+
+/* KPIs + feeder */
+#gen .gx-kwrap{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:var(--sp-3);align-items:start}
+@media (max-width:980px){#gen .gx-kwrap{grid-template-columns:1fr}}
+#gen .gx-kcol{display:flex;flex-direction:column;gap:var(--sp-3);min-width:0}
+#gen .gx-card{border:1px solid var(--rule);border-radius:var(--r);background:var(--surface);padding:var(--sp-3) var(--sp-4)}
+#gen .gx-card h3{font-size:var(--t-h2);font-weight:600;margin:0 0 var(--sp-2)}
+#gen .gx-card .lede{font-size:var(--t-xs);color:var(--ink-3);margin:0 0 var(--sp-2)}
+#gen .gx-card.auto{border-color:var(--warn-rule);background:var(--warn-bg)}
+#gen .gx-sec{font-size:var(--t-xs);letter-spacing:.06em;color:var(--gold-ink);font-weight:800;margin:var(--sp-3) 0 6px}
+#gen .gx-kgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px 10px}
+#gen .gx-kgrid .f.w2{grid-column:span 2}#gen .gx-kgrid .f.w3{grid-column:span 3}#gen .gx-kgrid .f.w6{grid-column:1/-1}
+@media (max-width:760px){#gen .gx-kgrid{grid-template-columns:repeat(2,1fr)}#gen .gx-kgrid .f.w3{grid-column:span 2}}
+#gen .gx-seg{display:flex;border:1px solid var(--rule-strong);border-radius:var(--r-sm);overflow:hidden}
+#gen .gx-seg button{flex:1;font:inherit;font-size:var(--t-xs);padding:6px 8px;border:none;background:transparent;color:var(--ink-2);cursor:pointer}
+#gen .gx-seg button.on{background:var(--brand-ink);color:#fff;font-weight:700}
+#gen .gx-draft{border:1px dashed var(--warn-rule);border-radius:var(--r-sm);padding:8px 10px;background:var(--surface);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;margin-top:6px}
+#gen .gx-draft .dn{font-weight:600;font-size:var(--t-sm)}
+#gen .gx-draft .dm{font-size:var(--t-xs);color:var(--ink-3);grid-column:1/-1}
+#gen .gx-draft .da{display:flex;gap:6px}
+#gen .gx-tag{font-size:10px;padding:1px 7px;border-radius:var(--r-pill);background:var(--warn-bg);color:var(--warn-ink);font-weight:700;margin-inline-start:6px}
+#gen .gx-kitem{border:1px solid var(--rule);border-radius:var(--r-sm);padding:8px 10px;background:var(--surface-2);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;cursor:pointer;margin-top:6px}
+#gen .gx-kitem:hover{border-color:var(--brand-ink)}
+#gen .gx-kitem .kn{font-weight:600;font-size:var(--t-sm)}
+#gen .gx-kitem .km{font-size:var(--t-xs);color:var(--ink-3);grid-column:1/-1}
+#gen .gx-spark{width:100%;height:92px;display:block}
+#gen .gx-thr{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0;font-size:var(--t-xs);text-align:center}
+#gen .gx-thr div{border-radius:var(--r-sm);padding:6px 4px;border:1px solid var(--rule)}
+#gen .gx-thr .a{background:var(--good-bg)}#gen .gx-thr .t{background:var(--warn-bg)}#gen .gx-thr .b{background:var(--critical-bg)}
+#gen .gx-thr b{display:block;font-variant-numeric:tabular-nums}
+#gen .gx-sm{display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:var(--t-xs)}
+#gen .gx-sm div{border:1px solid var(--rule);border-radius:var(--r-sm);padding:5px 8px;display:flex;justify-content:space-between;gap:6px}
+#gen .gx-sm .ok{color:var(--good-ink);font-weight:700}#gen .gx-sm .no{color:var(--critical-ink);font-weight:700}
+#gen .gx-mil{width:100%;border-collapse:collapse;font-size:var(--t-xs);font-variant-numeric:tabular-nums}
+#gen .gx-mil th,#gen .gx-mil td{text-align:start;padding:4px 6px;border-bottom:1px solid var(--rule)}
+#gen .gx-mil input{width:72px;font:inherit;font-size:var(--t-xs);padding:2px 6px;border:1px solid var(--rule-strong);border-radius:4px;background:var(--surface);color:var(--ink-1)}
+#gen .gx-fz{border:2px dashed var(--rule-strong);border-radius:var(--r);padding:16px;text-align:center;color:var(--ink-2);font-size:var(--t-sm);background:var(--surface-2)}
+#gen .gx-fz.over{border-color:var(--brand-ink)}
+#gen .gx-grid{overflow:auto;margin-top:8px}
+#gen .gx-grid table{border-collapse:collapse;font-size:var(--t-xs);font-variant-numeric:tabular-nums;min-width:100%}
+#gen .gx-grid th,#gen .gx-grid td{border:1px solid var(--rule);padding:0;min-width:92px;position:relative}
+#gen .gx-grid th{background:var(--surface-2);font-weight:700;color:var(--ink-2);padding:4px 6px}
+#gen .gx-grid th.rn{min-width:34px;text-align:center;color:var(--ink-3)}
+#gen .gx-grid td input{width:100%;border:none;background:transparent;font:inherit;padding:5px 6px;color:var(--ink-1);direction:ltr;text-align:right}
+#gen .gx-grid td.fx{background:var(--warn-bg)}
+#gen .gx-grid td .v{position:absolute;inset-inline-end:4px;bottom:0;font-size:9px;color:var(--gold-ink)}
+#gen .gx-grid th .x{float:left;color:var(--ink-3);cursor:pointer;font-size:10px;margin-inline-start:4px}
+#gen .gx-ftools{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:8px;font-size:var(--t-xs)}
+#gen .gx-ftools select,#gen .gx-ftools input{font:inherit;font-size:var(--t-xs);padding:3px 6px;border:1px solid var(--rule-strong);border-radius:var(--r-sm);background:var(--surface);color:var(--ink-1)}
+#gen .gx-rd{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:8px;font-size:var(--t-xs)}
+#gen .gx-rd .st{padding:2px 9px;border-radius:var(--r-pill);font-weight:700}
+#gen .gx-rd .st.a{background:var(--good-bg);color:var(--good-ink)}#gen .gx-rd .st.t{background:var(--warn-bg);color:var(--warn-ink)}#gen .gx-rd .st.b{background:var(--critical-bg);color:var(--critical-ink)}
+#gen .gx-ex{background:none;border:none;color:var(--brand-ink);font:inherit;font-size:var(--t-xs);font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+#gen .gx-toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--brand-ink);color:#fff;padding:9px 16px;border-radius:var(--r);font-weight:600;box-shadow:var(--shadow);opacity:0;transition:opacity .25s;pointer-events:none;z-index:90;font-size:var(--t-sm)}
+#gen .gx-toast.on{opacity:1}
+#gen .gx-ro input[readonly],#gen .gx-ro select[disabled]{opacity:.75;pointer-events:none}
+@media (prefers-reduced-motion:reduce){#gen .gx-toast,#gen .gx-car{transition:none}}
+
 </style>
 
 <div class="gate" id="gate">
@@ -2070,6 +2239,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       <button data-go="cc" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span lang="ar">مركز القيادة</span><span lang="en">Command centre</span><span class="count tnum">7</span></button>
       <button data-go="master"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v18H5.5A1.5 1.5 0 0 1 4 19.5z"/><path d="M8 8h7M8 12h7"/></svg><span lang="ar">الخطة المرجعية</span><span lang="en">Master plan</span></button>
       <button data-go="annual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="17" rx="2"/><path d="M8 2v4M16 2v4M8 12l2 2 4-4"/></svg><span lang="ar">الخطة السنوية</span><span lang="en">Annual plan</span><span class="count tnum">3</span></button>
+      <button data-go="gen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h6M7 13h10M7 17h4"/></svg><span lang="ar">مولّد الأهداف</span><span lang="en">Objective generator</span></button>
       <button data-go="dept"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-5h6v5"/><path d="M9 11h.01M15 11h.01"/></svg><span lang="ar">سجل الأقسام</span><span lang="en">Department register</span></button>
       <button data-go="people"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 20a6.2 6.2 0 0 1 12.4 0"/><path d="M17 5.3a3.2 3.2 0 0 1 0 5.4M18.4 20a6.2 6.2 0 0 0-2.6-4.4"/></svg><span lang="ar">الموظفون</span><span lang="en">People</span><span class="count tnum">3</span></button>
       <button data-go="mine"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="3.5"/><path d="M3.5 20a6.5 6.5 0 0 1 11.4-4.3"/><path d="m15.5 18.5 2 2 4-4"/></svg><span lang="ar">المهام والأهداف</span><span lang="en">Assignments &amp; objectives</span></button>
@@ -4052,6 +4222,77 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       <span lang="ar">نموذج أولي للتصميم. جميع البيانات المعروضة توضيحية وليست بيانات حقيقية، وأسماء المسؤولين مذكورة بالمسمى الوظيفي فقط. الغرض منه عرض بنية الخطة المقترحة: الخطة المرجعية المستخرجة من وثيقة الوزارة، ومطابقة كل هدف عليها، والإسناد إلى موظف، والميزانية الاختيارية على مستوى الخطوة.</span>
       <span lang="en">Design prototype. All data shown is illustrative, not real, and owners are named by role only. Its purpose is to show the proposed plan structure: a master plan derived from the Ministry document, every objective assessed against it, assignment to a person, and an optional budget at step level.</span>
     </p>
+
+    <section class="screen" id="gen">
+      <div class="head">
+        <p class="eyebrow"><span lang="ar">الخطة السنوية · إنشاء ومتابعة</span><span lang="en">Annual plan · create and track</span></p>
+        <h1><span lang="ar">مولّد الأهداف</span><span lang="en">Objective generator</span></h1>
+        <p><span lang="ar">الهدف صفٌّ على التقويم، ومراحله وخطواته تحته داخل مدته، ومؤشراته على بطاقة دليل مؤشرات الأداء. المسودات تُحرَّر وتُرسل في مسار الاعتماد؛ المعتمدة تُتابَع هنا نفسها: حالة كل خطوة تغذّي مؤشرات الإنجاز، وقراءات النتيجة تأتي من المغذّي.</span>
+           <span lang="en">The objective is a row on the calendar, its phases and steps nested inside its period, its KPIs on the guideline's card. Drafts are edited and routed for approval; approved objectives are tracked right here — step status feeds the completion KPIs, outcome readings come from the feeder.</span></p>
+      </div>
+      <div class="gx-strip" id="gxStrip"></div>
+      <div class="card">
+        <div class="gx-bar">
+          <span class="gx-mode" id="gxMode"></span>
+          <div class="gx-tabs" id="gxTabs">
+            <button class="on" data-gxtab="tl"><span lang="ar">الجدول الزمني</span><span lang="en">Timeline</span></button>
+            <button data-gxtab="kpi"><span lang="ar">المؤشرات</span><span lang="en">KPIs</span> <span class="badge" id="gxKcnt">0</span></button>
+            <button data-gxtab="feed"><span lang="ar">المغذّي</span><span lang="en">Feeder</span></button>
+          </div>
+          <span class="gx-me" id="gxMe"></span>
+        </div>
+        <div class="gx-pane on" id="gxp-tl">
+          <div class="gx-gwrap">
+            <div class="gx-g" id="gxG"></div>
+            <div class="gx-foot save" id="gxSaveBar"></div>
+            <div class="gx-foot">
+              <span id="gxStage"></span><span id="gxOob"></span>
+              <div class="gx-nav">
+                <button id="gxPrev" title="›">›</button><span class="win" id="gxWin"></span><button id="gxNext" title="‹">‹</button>
+                <button id="gxHome"><span lang="ar">بداية الهدف</span><span lang="en">Start</span></button>
+                <span class="gx-zoom" id="gxZoom"><button data-gz="year" class="on"><span lang="ar">سنة</span><span lang="en">Year</span></button><button data-gz="quarter"><span lang="ar">ربع</span><span lang="en">Quarter</span></button><button data-gz="month"><span lang="ar">شهر</span><span lang="en">Month</span></button><button data-gz="week"><span lang="ar">أسبوع</span><span lang="en">Week</span></button></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="gx-pane" id="gxp-kpi">
+          <div class="gx-kwrap">
+            <div class="gx-kcol">
+              <div class="gx-card auto">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+                  <div><h3 id="gxKObj">—</h3><p class="lede" style="margin:0"><span lang="ar">مسوّدات يقترحها النظام من الهدف وخطته: الالتزام بإنجاز الخطوات في مواعيدها أولاً، ثم مؤشر نتيجة من صياغة الهدف — بطاقات كاملة وفق الملحق 6 من دليل مؤشرات الأداء.</span><span lang="en">Drafts the system proposes from the objective and its plan — step completion on schedule first, then an outcome KPI from the wording — as full Appendix-6 cards.</span></p></div>
+                  <button class="btn btn-p" id="gxAuto">✦ <span lang="ar">اقتراح مؤشرات من الخطة</span><span lang="en">Suggest KPIs from the plan</span></button>
+                </div>
+                <div id="gxDrafts"></div>
+              </div>
+              <div class="gx-card">
+                <h3 id="gxKTitle"><span lang="ar">بطاقة المؤشر</span><span lang="en">KPI card</span></h3>
+                <p class="lede"><span lang="ar">وفق «بطاقة مؤشر الأداء» — الملحق 6 من دليل مؤشرات الأداء الرئيسية (MoH/QAC/GUD/004، الإصدار 1، أكتوبر 2023) — مواءمةً لنطاق قطاع الأشخاص ذوي الإعاقة.</span><span lang="en">After the KPI card — Appendix 6 of the KPIs Guideline (MoH/QAC/GUD/004 v1, Oct 2023) — tailored to the disability sector.</span></p>
+                <div class="gx-sec">١ · <span lang="ar">التعريف</span><span lang="en">Definition</span></div><div class="gx-kgrid" id="gxf1"></div>
+                <div class="gx-sec">٢ · <span lang="ar">الحساب</span><span lang="en">Calculation</span></div><div class="gx-kgrid" id="gxf2"></div>
+                <div class="gx-sec">٣ · <span lang="ar">المستهدف والعتبات</span><span lang="en">Target and thresholds</span></div><div class="gx-kgrid" id="gxf3"></div>
+                <div class="gx-sec">٤ · <span lang="ar">البيانات والرصد والتقارير</span><span lang="en">Data, monitoring, reporting</span></div><div class="gx-kgrid" id="gxf4"></div>
+                <div class="gx-acts" style="margin-top:10px"><button class="btn btn-p" id="gxKSave"></button><button class="btn" id="gxKNew" hidden><span lang="ar">مؤشر جديد</span><span lang="en">New KPI</span></button></div>
+              </div>
+              <div class="gx-card"><h3><span lang="ar">المعالم المرحلية</span><span lang="en">Milestones</span></h3><div id="gxMil"></div></div>
+            </div>
+            <div class="gx-kcol">
+              <div class="gx-card"><h3><span lang="ar">مسار المؤشر وعتباته</span><span lang="en">Path and thresholds</span></h3><svg class="gx-spark" id="gxSpark" viewBox="0 0 320 92" preserveAspectRatio="none"></svg><div class="gx-thr" id="gxThr"></div><div class="gx-sm" id="gxSmart"></div></div>
+              <div class="gx-card"><h3><span lang="ar">مؤشرات هذا الهدف</span><span lang="en">This objective's KPIs</span></h3><div id="gxKList"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="gx-pane" id="gxp-feed">
+          <div class="gx-card">
+            <h3><span lang="ar">مغذّي القراءات</span><span lang="en">Readings feeder</span> <span class="sub" id="gxFeedFor"></span></h3>
+            <p class="lede"><span lang="ar">من أين تأتي قراءات المؤشر المختار: جدول داخل المنصة (صفوف وأعمدة وصيغ وعرض محوري)، أو ملف CSV/Excel، أو ورقة Google Sheets عبر الجسر. عمودا التاريخ والقراءة هما ما يغذّي المسار.</span><span lang="en">Where the selected KPI's readings come from: an on-site table (rows, columns, formulas, pivot), a CSV/Excel file, or a Google Sheet through the bridge.</span></p>
+            <div class="gx-seg" id="gxFeedMode" style="max-width:520px"><button type="button" data-gfm="table"><span lang="ar">جدول داخل المنصة</span><span lang="en">On-site table</span></button><button type="button" data-gfm="file"><span lang="ar">ملف CSV / Excel</span><span lang="en">CSV / Excel file</span></button><button type="button" data-gfm="sheet"><span lang="ar">Google Sheets</span><span lang="en">Google Sheets</span></button></div>
+            <div id="gxFeed" style="margin-top:10px"></div>
+          </div>
+        </div>
+      </div>
+      <div class="gx-toast" id="gxToast"></div>
+    </section>
   </main>
 </div>
 
@@ -13418,5 +13659,390 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     document.documentElement.dir  = ar ? "ltr" : "rtl";
     if(window._redrawLeave) window._redrawLeave();
   });
+
+  // ══════════════════════════════════════════════════════════════════════
+  // مولّد الأهداف — the objective generator: timeline, KPI cards, feeder.
+  // Drafts are edited here and routed for approval; approved objectives are
+  // tracked here (step status feeds the completion KPIs). State: qagcGen.
+  // ══════════════════════════════════════════════════════════════════════
+  var GXD=86400000;
+  function gxP(s){ var a=String(s).split("-"); return Date.UTC(+a[0],+a[1]-1,+a[2]); }
+  function gxIso(t){ return new Date(t).toISOString().slice(0,10); }
+  function gxDays(a,b){ return Math.round((gxP(b)-gxP(a))/GXD)+1; }
+  function gxEsc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+  function gxToast(ar,en){ var t=document.getElementById("gxToast"); if(!t) return; t.innerHTML=bi(ar,en||ar); t.classList.add("on"); clearTimeout(t._t); t._t=setTimeout(function(){ t.classList.remove("on"); },2600); }
+  function gxMoney(n){ return n?Number(n).toLocaleString("en")+" "+(isAr()?"ر.ع.":"OMR"):"—"; }
+  var GX_MO=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+  var GX_MOE=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var GX_WD=["ح","ن","ث","ر","خ","ج","س"];
+  var GX_SCOPE={mine:["هدفي","Mine"],department:["للقسم","Department"],directorate:["للدائرة","Directorate"],centre:["للمركز","Centre"]};
+  var GX_DIMS=["سلامة المستفيدين","الوقت المناسب (الاستجابة)","الفاعلية","الكفاءة","العدالة والإتاحة","التمحور حول المستفيد وأسرته"];
+  var GX_KIND={process:["عملية (إجرائي)","Process"],output:["مخرج","Output"],outcome:["نتيجة (أثر)","Outcome"]};
+  var GX_FREQ={w:["أسبوعي","Weekly"],m:["شهري","Monthly"],q:["ربع سنوي","Quarterly"],h:["نصف سنوي","Semi-annual"],y:["سنوي","Annual"]};
+  var GX_TYPES=[["نسبة مئوية","%"],["عدد",""],["معدل",""],["درجة",""],["مدة","يوم"]];
+  var GX_REPORTS=["تقرير أداء المركز الربعي","تقرير المديرة العامة الشهري","تقرير الدائرة","لوحة مؤشرات المنصة"];
+
+  // ── people, from the platform's own roster and chain ──
+  function gxRole(p){ if(p.id==="dg0") return "dg"; if(p.id==="m1") return "coord"; var d=(p.desig&&p.desig[0])||""; if(/^مدير/.test(d) && p.dep[0]===p.dir[0]) return "dir"; if(/رئيس قسم/.test(d)) return "head"; return "staff"; }
+  function gxMe(){ var me=(typeof myPerson==="function")?myPerson():STAFF[0]; return {p:me, role:ROLE, name:me.who[0], dir:me.dir[0], dep:me.dep[0]}; }
+  function gxIsTop(){ return ROLE==="dg"||ROLE==="coord"; }
+  function gxScopes(){ return gxIsTop()?["centre","directorate","department","mine"] : ROLE==="dir"?["mine","directorate","department"] : ROLE==="head"?["mine","department"] : ["mine"]; }
+  function gxUnits(scope){ var me=gxMe();
+    if(scope==="directorate") return gxIsTop()? STAFF.filter(function(p){return gxRole(p)==="dir";}).map(function(p){return p.dir[0];}) : [me.dir];
+    if(scope==="department"){ var deps=STAFF.filter(function(p){ return p.dep[0]!==p.dir[0] && (gxIsTop()||p.dir[0]===me.dir) && (ROLE!=="head"||p.dep[0]===me.dep); }).map(function(p){return p.dep[0];}); return deps.filter(function(d,i){return deps.indexOf(d)===i;}); }
+    return []; }
+  function gxAssignees(scope,unit){ var me=gxMe();
+    var pool = scope==="department"? STAFF.filter(function(p){return p.dep[0]===unit;}) : scope==="directorate"? STAFF.filter(function(p){return p.dir[0]===unit;}) : STAFF.slice();
+    if(!gxIsTop()) pool=pool.filter(function(p){ return ROLE==="dir" ? p.dir[0]===me.dir : p.dep[0]===me.dep; });
+    var groups={}, order=[]; pool.forEach(function(p){ var g= scope==="centre"? p.dir[0] : p.dep[0]; if(!groups[g]){ groups[g]=[]; order.push(g); } groups[g].push(p); }); return {groups:groups, order:order}; }
+  function gxOwnerField(attrs,value,S){
+    if(S.scope==="mine") return '<div class="f"><label>'+bi("المسؤول","Owner")+'</label><div style="font-size:var(--t-sm);padding:5px 0;color:var(--ink-2)">'+gxEsc(gxMe().name)+' <span style="color:var(--ink-3)">('+bi("هدفي","mine")+')</span></div></div>';
+    var a=gxAssignees(S.scope,S.unit), seen=false;
+    var opts='<option value="">— '+(isAr()?"الاختيار بالاسم والمسمى":"Pick by name and designation")+'</option>';
+    a.order.forEach(function(g){ opts+='<optgroup label="'+gxEsc(g)+'">'+a.groups[g].map(function(p){ var nm=p.who[0]; if(nm===value) seen=true; return '<option value="'+gxEsc(nm)+'"'+(nm===value?" selected":"")+'>'+gxEsc(nm)+' — '+gxEsc(p.desig?p.desig[0]:"")+'</option>'; }).join("")+'</optgroup>'; });
+    if(value&&!seen) opts+='<option value="'+gxEsc(value)+'" selected>'+gxEsc(value)+'</option>';
+    return '<div class="f"><label>'+bi("الإسناد","Assign to")+'</label><select '+attrs+'>'+opts+'</select></div>'; }
+  function gxRoute(S){ var me=gxMe(), chain=[], dest=[];
+    var headOf=function(dep){ return STAFF.filter(function(p){return gxRole(p)==="head"&&p.dep[0]===dep;})[0]; }, dirOf=function(dir){ return STAFF.filter(function(p){return gxRole(p)==="dir"&&p.dir[0]===dir;})[0]; };
+    if(S.scope==="mine"){ var h=ROLE==="staff"?headOf(me.dep):null, d=(ROLE==="staff"||ROLE==="head")?dirOf(me.dir):null; if(h) chain.push((isAr()?"رئيس القسم: ":"Head: ")+h.who[0]); if(d) chain.push((isAr()?"مدير الدائرة: ":"Director: ")+d.who[0]); chain.push(isAr()?"المديرة العامة":"the DG"); dest=[me.dir, me.dep!==me.dir?me.dep:null, isAr()?"أهداف الموظفين":"staff objectives"]; }
+    else if(S.scope==="department"){ var dd=STAFF.filter(function(p){return p.dep[0]===S.unit;})[0]; var dr=dd?dirOf(dd.dir[0]):null; if(dr) chain.push((isAr()?"مدير الدائرة: ":"Director: ")+dr.who[0]); chain.push(isAr()?"المديرة العامة":"the DG"); dest=[isAr()?"مستوى القسم":"department level", S.unit]; }
+    else if(S.scope==="directorate"){ chain.push(isAr()?"المديرة العامة":"the DG"); dest=[isAr()?"مستوى الدائرة":"directorate level", S.unit]; }
+    else { chain.push(isAr()?"المديرة العامة (اعتماد مباشر)":"the DG (direct)"); dest=[isAr()?"مستوى المركز":"centre level"]; }
+    return {chain:chain, dest:dest.filter(Boolean)}; }
+
+  // ── state ──
+  var GX={list:[], cur:null, z:"year", V:null, tab:"tl", formFor:null, K:null, KD:null, drafts:[]};
+  function gxBlankFeed(){ return {mode:"table", cols:["التاريخ","القراءة"], rows:[], dateCol:0, valCol:1, pivot:{on:false,row:0,val:1,agg:"avg"}, file:"", sheet:""}; }
+  function gxBlankK(){ return {name:"",dim:GX_DIMS[2],kind:"outcome",desc:"",rationale:"",num:"",den:"",excl:"",elements:"",limits:"",type:"نسبة مئوية",unit:"%",base:"",baseDate:"",target:"",targetDate:"",dir:"up",tol:10,source:"",cfreq:"m",mfreq:"m",reader:"",rfreq:"q",report:GX_REPORTS[0],related:"",phase:"",sheet:true,mil:{},auto:false,plan:null,feed:gxBlankFeed()}; }
+  function gxNormK(k){ var b=gxBlankK(); Object.keys(b).forEach(function(key){ if(k[key]===undefined) k[key]=b[key]; }); if(!k.feed) k.feed=gxBlankFeed(); return k; }
+  function gxSave(){ try{ localStorage.setItem("qagcGen", JSON.stringify({v:2, list:GX.list})); }catch(_){} }
+  // three approved objectives come with ready data; three drafts stay editable — all from the plan itself
+  function gxSeedFrom(o, status){
+    var acts=actsOf(o), n=acts.length, me=gxMe();
+    var names=[["التحضير","Preparation"],["التنفيذ","Delivery"],["التحقق","Verification"]];
+    var cut=[0, Math.max(1,Math.floor(n/3)), Math.max(2,Math.floor(2*n/3))];
+    var phases=[]; for(var i=0;i<3;i++){ var from=cut[i], to=(i<2?cut[i+1]:n); var grp=acts.slice(from,to); if(!grp.length) continue;
+      phases.push({name:names[i][0], from:grp[0].s, to:grp[grp.length-1].e, tasks:grp.map(function(a,j){ var late=status==="approved" && a.pr<100 && gxP(a.e)<gxP(PLATFORM_TODAY); return {name:a.t[0], owner:o.o, from:a.s, to:a.e, budget: o.b>0?Math.round(o.b/n):0, note:"", st: status==="approved"? (a.pr>=100?"done": late?"late":"todo") : "todo", done: (status==="approved"&&a.pr>=100)?a.e:""}; })}); }
+    var k1=gxNormK({name:o.k, dim:GX_DIMS[2], kind:"outcome", desc:o.d.slice(0,160), rationale:"مؤشر الهدف "+o.r+" كما في الخطة السنوية", num:o.k, den:isAr()?"المجتمع المستهدف":"Target population", type: String(o.u||"").indexOf("%")>-1?"نسبة مئوية":"عدد", unit:o.u||"", base: status==="approved"? Math.round(progOf(o)*0.4):"", baseDate:gxIso(gxP(o.s)-GXD), target: parseFloat(String(o.g).replace(/[^\d.]/g,""))||100, targetDate:o.e, dir:"up", tol:10, source:isAr()?"سجلات المنصة — الخطة السنوية":"Platform records", cfreq:"m", mfreq:"m", reader:o.o, rfreq:"q", phase:"", auto:false});
+    if(status==="approved"){ // ready readings: the first months of the objective's own period, so the tracking view has something to show
+      var t0=gxP(o.s), rows=[], v=+k1.base||0, step=((+k1.target||100)-v)/8; for(var m=1;m<=5;m++){ var d=new Date(Date.UTC(new Date(t0).getUTCFullYear(), new Date(t0).getUTCMonth()+m, 0)); if(d.getTime()>gxP(o.e)) break; v=Math.round((v+step*(0.6+((hash(o.r+m)%50)/100)))*10)/10; rows.push([gxIso(d.getTime()), String(v)]); } k1.feed.rows=rows; }
+    var S={id:o.r, ref:o.r, title:o.t, scope: o.l==="center"?"centre": o.l==="directorate"?"directorate":"department", unit:(o.l==="center"?"":(o.l==="directorate"?(DIR_BY_CODE[o.dir]||{}).ar:(DEP_BY_CODE[o.dep]||{}).ar)||""), from:o.s, to:o.e, phases:phases, kpis:[k1], status:status, objOpen:false, tag:tagOf(o)};
+    if(status==="approved"){ var kp=gxAutoDraft(S).filter(function(k){return k.plan&&!k.plan.phase;})[0]; if(kp){ kp.auto=true; S.kpis.push(kp); } }
+    return S;
+  }
+  function gxLoad(){
+    var saved=null; try{ saved=JSON.parse(localStorage.getItem("qagcGen")||"null"); }catch(_){}
+    if(saved&&saved.v===2&&saved.list&&saved.list.length){ GX.list=saved.list; GX.list.forEach(function(S){ S.kpis.forEach(gxNormK); }); }
+    else {
+      var deps=PLAN2027.filter(function(o){return o.l==="department";}).slice(0,3), dirs=PLAN2027.filter(function(o){return o.l==="directorate";}).slice(0,3);
+      GX.list=dirs.map(function(o){return gxSeedFrom(o,"approved");}).concat(deps.map(function(o){return gxSeedFrom(o,"draft");}));
+      gxSave();
+    }
+    GX.cur=GX.list[0]||null; GX.V=GX.cur?GX.cur.from:null;
+  }
+  function gxNew(){ var S={id:"N"+Date.now(), ref:"", title:"", scope:gxScopes()[0], unit:"", from:"", to:"", phases:[], kpis:[], status:"draft", objOpen:true, tag:"t-none"}; S.unit=gxUnits(S.scope)[0]||""; GX.list.push(S); GX.cur=S; GX.V=null; gxSave(); return S; }
+  function gxRO(){ return GX.cur && GX.cur.status==="approved"; }
+  function gxYear(){ var S=GX.cur; return S&&S.from?+S.from.slice(0,4):2027; }
+  function gxHasDates(){ var S=GX.cur; return !!(S&&S.from&&S.to); }
+  function gxWithin(a,b,lo,hi){ return !lo||!hi || (gxP(a)>=gxP(lo) && gxP(b)<=gxP(hi)); }
+  function gxClamp(a,b,lo,hi){ if(!lo||!hi) return [a,b]; var x=gxIso(Math.max(gxP(a),gxP(lo))), y=gxIso(Math.min(gxP(b),gxP(hi))); return gxP(x)>gxP(y)?null:[x,y]; }
+  function gxProgress(S){ var all=[]; S.phases.forEach(function(ph){ ph.tasks.forEach(function(t){ all.push(t); }); }); if(!all.length) return 0; return Math.round(all.filter(function(t){return t.st==="done";}).length/all.length*100); }
+
+  // ── the window: the chosen scale fitted to the page ──
+  function gxAnchor(){ var S=GX.cur; if(!GX.V) GX.V=(S&&S.from)||(gxYear()+"-01-01"); return gxP(GX.V); }
+  function gxWindow(){ var a=gxAnchor(), d=new Date(a), t0,t1, z=GX.z;
+    if(z==="year"){ t0=Date.UTC(d.getUTCFullYear(),0,1); t1=Date.UTC(d.getUTCFullYear(),11,31); }
+    else if(z==="quarter"){ var q=Math.floor(d.getUTCMonth()/3)*3; t0=Date.UTC(d.getUTCFullYear(),q,1); t1=Date.UTC(d.getUTCFullYear(),q+3,0); }
+    else if(z==="month"){ t0=Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),1); t1=Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,0); }
+    else { t0=a-d.getUTCDay()*GXD; t1=t0+6*GXD; }
+    var g=document.getElementById("gxG"); var cw=(g&&g.clientWidth)||900; var avail=cw-380-2; if(avail<300) avail=700;
+    var n=Math.round((t1-t0)/GXD)+1; return {t0:t0,t1:t1,n:n,px:avail/n,W:avail}; }
+  function gxWinLabel(w){ var d=new Date(w.t0), e=new Date(w.t1), MO=isAr()?GX_MO:GX_MOE;
+    if(GX.z==="year") return (isAr()?"سنة ":"Year ")+d.getUTCFullYear();
+    if(GX.z==="quarter") return (isAr()?"الربع "+["الأول","الثاني","الثالث","الرابع"][Math.floor(d.getUTCMonth()/3)]:"Q"+(Math.floor(d.getUTCMonth()/3)+1))+" "+d.getUTCFullYear();
+    if(GX.z==="month") return MO[d.getUTCMonth()]+" "+d.getUTCFullYear();
+    return d.getUTCDate()+" "+MO[d.getUTCMonth()]+" – "+e.getUTCDate()+" "+MO[e.getUTCMonth()]+" "+e.getUTCFullYear(); }
+  function gxShift(dir){ var w=gxWindow(), d=new Date(w.t0);
+    if(GX.z==="year") GX.V=gxIso(Date.UTC(d.getUTCFullYear()+dir,0,1)); else if(GX.z==="quarter") GX.V=gxIso(Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+3*dir,1)); else if(GX.z==="month") GX.V=gxIso(Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+dir,1)); else GX.V=gxIso(w.t0+7*dir*GXD); gxDraw(); }
+
+  // ── the strip of objectives and the mode ──
+  function gxDrawStrip(){
+    var host=document.getElementById("gxStrip"); if(!host) return;
+    var chip=function(S){ return '<button class="gx-chip'+(S===GX.cur?" on":"")+(S.status==="approved"?" appr":"")+'" data-gxsel="'+S.id+'"><span class="ref">'+gxEsc(S.ref||"—")+'</span><b>'+gxEsc(S.title||(isAr()?"هدف جديد":"New objective"))+'</b>'+(S.status==="approved"?'<span class="ref">'+gxProgress(S)+'%</span>':'')+'</button>'; };
+    var drafts=GX.list.filter(function(S){return S.status!=="approved";}), appr=GX.list.filter(function(S){return S.status==="approved";});
+    host.innerHTML='<span class="lab">'+bi("مسودات","Drafts")+' '+drafts.length+'</span>'+drafts.map(chip).join("")+'<button class="gx-chip new" id="gxNewBtn">＋ '+bi("هدف جديد","New objective")+'</button>'+
+      '<span class="lab" style="margin-inline-start:12px">'+bi("معتمدة — متابعة","Approved — tracking")+' '+appr.length+'</span>'+appr.map(chip).join("");
+    var m=document.getElementById("gxMode"); if(m&&GX.cur){ m.className="gx-mode"+(gxRO()?" appr":""); m.innerHTML= gxRO()? bi("معتمد · متابعة — حالة الخطوات تغذّي المؤشرات","Approved · tracking — step status feeds the KPIs") : bi("مسودة · قابلة للتحرير","Draft · editable"); }
+    var me=document.getElementById("gxMe"); if(me){ var x=gxMe(); me.innerHTML=bi(x.name,x.p.who[1])+' · '+bi(x.dep,x.p.dep[1]); }
+    var kc=document.getElementById("gxKcnt"); if(kc) kc.textContent=GX.cur?GX.cur.kpis.length:0;
+  }
+
+  // ── the timeline ──
+  function gxDraw(){
+    var S=GX.cur; var host=document.getElementById("gxG"); if(!host) return;
+    gxDrawStrip();
+    if(!S){ host.innerHTML='<div class="noresult">'+bi("لا هدف محدداً — «هدف جديد» يبدأ واحداً.","No objective selected — “New objective” starts one.")+'</div>'; return; }
+    var ro=gxRO();
+    if(S.title && !S.phases.length && !ro) S.phases.push({name:"",from:"",to:"",tasks:[]});
+    var act=document.activeElement, actId=act&&act.id, caret=(act&&act.selectionEnd!==undefined)?act.selectionEnd:null;
+    var w=gxWindow(), px=w.px, t0=w.t0, t1=w.t1, W=w.W, MO=isAr()?GX_MO:GX_MOE;
+    var X=function(d){ return (gxP(d)-t0)/GXD*px; };
+    var tone=(GX.z==="week"||GX.z==="month")?"day":"week";
+    var h='<div class="gx-th z-'+GX.z+'" style="width:'+W+'px">';
+    for(var t=t0;t<=t1;t+=GXD){ var d=new Date(t); if(d.getUTCDate()===1||t===t0){ var end=Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,1); var mw=(Math.min(end,t1+GXD)-t)/GXD*px; h+='<div class="mo'+(d.getUTCMonth()%2?' alt':'')+'" style="inset-inline-start:'+((t-t0)/GXD*px)+'px;width:'+mw+'px">'+MO[d.getUTCMonth()]+(GX.z==="year"?'':' '+d.getUTCFullYear())+'</div>'; } }
+    if(tone==="day"){ for(var t=t0;t<=t1;t+=GXD){ var d=new Date(t), wd=d.getUTCDay(); h+='<div class="un'+((wd===5||wd===6)?' we':'')+'" style="inset-inline-start:'+((t-t0)/GXD*px)+'px;width:'+px+'px">'+(GX.z==="week"?'<b>'+GX_WD[wd]+'</b>':'')+d.getUTCDate()+'</div>'; } }
+    else { for(var t=t0;t<=t1;t+=GXD){ var d=new Date(t); if(d.getUTCDay()===0||t===t0){ var ww=Math.min(7-(t===t0?d.getUTCDay():0),(t1-t)/GXD+1); h+='<div class="un" style="inset-inline-start:'+((t-t0)/GXD*px)+'px;width:'+(ww*px)+'px">'+d.getUTCDate()+'</div>'; } } }
+    h+='</div>';
+    var BG='<div class="gx-bg" style="width:'+W+'px">';
+    for(var t=t0;t<=t1;t+=GXD){ var d=new Date(t); if(d.getUTCDate()===1||t===t0){ var end=Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,1); var mw=(Math.min(end,t1+GXD)-t)/GXD*px; BG+='<div class="mband'+(d.getUTCMonth()%2?' alt':'')+'" style="inset-inline-start:'+((t-t0)/GXD*px)+'px;width:'+mw+'px"></div>'; } }
+    for(var t=t0;t<=t1;t+=GXD){ var d=new Date(t), wd=d.getUTCDay(); if(wd===0&&t!==t0) BG+='<div class="wk" style="inset-inline-start:'+((t-t0)/GXD*px)+'px"></div>'; if(tone==="day"&&t!==t0) BG+='<div class="dy" style="inset-inline-start:'+((t-t0)/GXD*px)+'px"></div>'; if(wd===5) BG+='<div class="we" style="inset-inline-start:'+((t-t0)/GXD*px)+'px;width:'+(Math.min(2,(t1-t)/GXD+1)*px)+'px"></div>'; }
+    if(gxHasDates()){ var ps=Math.max(gxP(S.from),t0), pe=Math.min(gxP(S.to),t1); if(ps<=pe) BG+='<div class="period" style="inset-inline-start:'+((ps-t0)/GXD*px)+'px;width:'+(((pe-ps)/GXD+1)*px)+'px"></div>'; }
+    if(gxP(PLATFORM_TODAY)>=t0&&gxP(PLATFORM_TODAY)<=t1) BG+='<div class="today" style="inset-inline-start:'+X(PLATFORM_TODAY)+'px"><i>'+(isAr()?"اليوم":"Today")+'</i></div>';
+    BG+='</div>';
+    function bar(cls,from,to,label,out,extra){ var a=gxP(from), b=gxP(to); if(b<t0||a>t1) return ''; var ca=Math.max(a,t0), cb=Math.min(b,t1); return '<div class="gx-barx '+cls+(out?' out':'')+(a<t0?' cut-s':'')+(b>t1?' cut-e':'')+'" style="inset-inline-start:'+((ca-t0)/GXD*px)+'px;width:'+(((cb-ca)/GXD+1)*px)+'px">'+(extra||'')+'<div class="lbl">'+gxEsc(label)+'</div></div>'; }
+    function track(cls,inner,attr){ return '<div class="gx-tr '+cls+(ro?' ro':'')+'" style="width:'+W+'px" '+(ro?'':(attr||''))+'>'+inner+'</div>'; }
+    function kmarks(){ return S.kpis.filter(function(k){return k.targetDate&&gxP(k.targetDate)>=t0&&gxP(k.targetDate)<=t1;}).map(function(k){ return '<div class="gx-kmark" title="'+gxEsc(k.name)+' → '+gxEsc(k.target)+gxEsc(k.unit)+'" style="inset-inline-start:'+X(k.targetDate)+'px"></div>'; }).join(""); }
+    var L='<div class="gx-lh"><span>'+bi("الهدف · المراحل · الخطوات","Objective · phases · steps")+'</span><span>'+bi("من","From")+'</span><span>'+bi("أيام","Days")+'</span><span>'+bi("إلى","To")+'</span></div>';
+    var T=h, oob=0, total=0, stage="";
+    S.phases.forEach(function(ph){ ph.tasks.forEach(function(t){ total+=+t.budget||0; }); });
+    var oOpen=!!S.title && S.objOpen!==false && !ro;
+    var scopeLbl=GX_SCOPE[S.scope]||GX_SCOPE.centre;
+    L+='<div class="gx-lr obj'+(oOpen?' open':'')+'"><span class="name">'+(S.title&&!ro?'<span class="gx-car" data-gxobjtoggle="1">▶</span>':'')+
+      (ro?'<span style="font-weight:700">'+gxEsc(S.title)+'</span>':'<input class="gx-title" id="gx-title" value="'+gxEsc(S.title)+'" placeholder="'+(isAr()?"الهدف هنا — وبه يُفتح الباقي":"The objective — the rest unlocks from it")+'">')+
+      (S.title&&!oOpen?'<span class="gx-scope">'+bi(scopeLbl[0],scopeLbl[1])+(S.scope==="mine"?' — '+gxEsc(gxMe().name):S.unit?' — '+gxEsc(S.unit):'')+' · '+gxYear()+'</span><span class="gx-sum">'+(total?bi("ميزانية مقترحة ","Proposed budget ")+gxMoney(total):"")+(ro?' · <span class="gx-prog"><i style="--rest:'+(100-gxProgress(S))+'%"></i>'+gxProgress(S)+'%</span>':'')+'</span>':'')+'</span>'+
+      '<span class="n">'+(S.from||"—")+'</span><span class="n">'+(gxHasDates()?gxDays(S.from,S.to):"")+'</span><span class="n">'+(S.to||"—")+'</span>'+
+      (oOpen?'<div class="gx-det"><div class="f"><label>'+bi("لمن الهدف؟","For whom?")+'</label><select id="gx-scope">'+gxScopes().map(function(k){return '<option value="'+k+'"'+(S.scope===k?" selected":"")+'>'+(isAr()?GX_SCOPE[k][0]:GX_SCOPE[k][1])+'</option>';}).join("")+'</select></div>'+
+        (gxUnits(S.scope).length?'<div class="f w"><label>'+(S.scope==="department"?bi("القسم","Department"):bi("الدائرة","Directorate"))+'</label><select id="gx-unit">'+gxUnits(S.scope).map(function(u){return '<option'+(S.unit===u?" selected":"")+'>'+gxEsc(u)+'</option>';}).join("")+'</select></div>':'')+
+        '<div class="f"><label>'+bi("يبدأ","Starts")+'</label><input type="date" id="gx-from" value="'+S.from+'"></div><div class="f"><label>'+bi("ينتهي","Ends")+'</label><input type="date" id="gx-to" value="'+S.to+'"></div>'+
+        (total?'<div class="f w" style="font-size:var(--t-xs);color:var(--ink-3)">'+bi("ميزانية مقترحة من الخطوات: ","Proposed from the steps: ")+gxMoney(total)+'</div>':'')+'</div>':'')+'</div>';
+    if(!S.title){ T+=track("obj",'<div class="gx-gh">'+bi("كتابة الهدف في الصف الأول — ثم السحب على هذا الصف لتحديد مدته، أو اختيار التاريخين في التفاصيل","Write the objective in the first row, then drag on this row or pick the dates")+'</div>'); stage=bi("<b>الخطوة الآن:</b> كتابة الهدف.","<b>Now:</b> write the objective."); }
+    else {
+      T+=track("obj"+(oOpen?' open':''), (gxHasDates()?bar("obj",S.from,S.to,S.title):'<div class="gx-gh">'+bi("السحب على هذا الصف لتحديد مدة الهدف — أو اختيار التاريخين في التفاصيل","Drag here to set the period, or pick the dates")+'</div>')+kmarks(), 'data-gxobjrow="1"');
+      S.phases.forEach(function(ph,pi){
+        var sp=(ph.from&&ph.to)?{from:ph.from,to:ph.to}:null, pok=!sp||gxWithin(ph.from,ph.to,S.from,S.to); if(!pok) oob++;
+        L+='<div class="gx-lr ph"><span class="name">'+(ro?'<span>'+gxEsc(ph.name)+'</span>':'<input data-gxph="'+pi+'" data-f="name" value="'+gxEsc(ph.name)+'" placeholder="'+(isAr()?"المرحلة "+(pi+1)+" — اسمها هنا":"Phase "+(pi+1)+" — its name")+'"'+(ph.name?'':' data-gxfocus="1"')+'>')+'</span>'+
+          (ph.name?(ro?'<span class="n">'+(sp?sp.from:"—")+'</span>':'<span><input type="date" data-gxph="'+pi+'" data-f="from" value="'+gxEsc(ph.from)+'"'+(S.from?' min="'+S.from+'" max="'+S.to+'"':'')+'></span>')+'<span class="n">'+(sp?gxDays(sp.from,sp.to):"")+'</span>'+(ro?'<span class="n">'+(sp?sp.to:"—"):'<span><input type="date" data-gxph="'+pi+'" data-f="to" value="'+gxEsc(ph.to)+'"'+(S.from?' min="'+S.from+'" max="'+S.to+'"':'')+'>'):'<span class="n">—</span><span class="n"></span><span class="n">—')+
+          (!ro&&(ph.tasks.length||pi>0)?'<button class="gx-del" data-gxdelph="'+pi+'">✕</button>':'')+'</span></div>';
+        T+=track("ph", sp?bar("ph",sp.from,sp.to,"",!pok):(ph.name?'<div class="gx-gh">'+bi("السحب هنا لتحديد مدة المرحلة «"+gxEsc(ph.name)+"» — أو اختيار تاريخيها في الصف","Drag here to set the phase period, or pick its dates")+'</div>':''), ph.name?'data-gxphrow="'+pi+'"':'');
+        if(!ph.name){ stage=stage||bi("<b>الخطوة الآن:</b> تسمية المرحلة "+(pi+1)+".","<b>Now:</b> name phase "+(pi+1)+"."); return; }
+        if(!sp){ stage=stage||bi("<b>الخطوة الآن:</b> تحديد مدة المرحلة «"+gxEsc(ph.name)+"» داخل مدة الهدف — ثم تُفتح خطواتها.","<b>Now:</b> set the period of “"+gxEsc(ph.name)+"” inside the objective's."); return; }
+        ph.tasks.forEach(function(t,ti){
+          var ok=gxWithin(t.from,t.to,S.from,S.to)&&gxWithin(t.from,t.to,ph.from,ph.to); if(!ok) oob++; var open=!!t.open, id=pi+":"+ti;
+          var stBtn = ro ? '<button class="gx-st '+t.st+'" data-gxst="'+id+'">'+(t.st==="done"?bi("✓ منجزة","✓ done"):t.st==="late"?bi("متأخرة","late"):bi("قيد التنفيذ","in progress"))+'</button>' : '';
+          L+='<div class="gx-lr tk'+(open?' open':'')+'" data-gxtk="'+id+'"><span class="name"><span class="gx-car">▶</span><span class="t">'+gxEsc(t.name)+'</span>'+stBtn+(!open&&t.owner?'<span class="meta">· '+gxEsc(t.owner)+(t.budget?' · '+gxMoney(t.budget):'')+'</span>':'')+'</span>'+
+            '<span class="n">'+t.from+'</span><span class="n">'+gxDays(t.from,t.to)+'</span><span class="n">'+t.to+'</span>'+
+            (open?'<div class="gx-det'+(ro?' gx-ro':'')+'"><div class="f w"><label>'+bi("الخطوة","Step")+'</label><input data-gxtk="'+id+'" data-f="name" value="'+gxEsc(t.name)+'"'+(ro?' readonly':'')+'></div>'+gxOwnerField('data-gxtk="'+id+'" data-f="owner"'+(ro?' disabled':''),t.owner,S)+'<div class="f"><label>'+bi("من","From")+'</label><input type="date" data-gxtk="'+id+'" data-f="from" value="'+t.from+'"'+(ro?' readonly':'')+'></div><div class="f"><label>'+bi("إلى","To")+'</label><input type="date" data-gxtk="'+id+'" data-f="to" value="'+t.to+'"'+(ro?' readonly':'')+'></div><div class="f"><label>'+bi("الميزانية (ر.ع.)","Budget (OMR)")+'</label><input type="number" min="0" data-gxtk="'+id+'" data-f="budget" value="'+(t.budget||"")+'"'+(ro?' readonly':'')+'></div><div class="f w"><label>'+bi("ملاحظة","Note")+'</label><input data-gxtk="'+id+'" data-f="note" value="'+gxEsc(t.note)+'"></div>'+(ro?'':'<button class="gx-del" style="opacity:1;color:var(--critical-ink)" data-gxdelt="'+id+'">'+bi("حذف الخطوة","Delete step")+'</button>')+'</div>':'')+'</div>';
+          T+=track("tk"+(open?' open':''), bar(t.st==="done"?"done":t.st==="late"?"late":"",t.from,t.to,t.name,!ok), 'data-gxrow="'+id+'"');
+        });
+        if(ro) return;
+        var showForm = GX.formFor===pi || !ph.tasks.length;
+        if(showForm){ var last=ph.tasks[ph.tasks.length-1]; var f=last?gxIso(Math.min(gxP(last.to)+GXD,gxP(ph.to))):ph.from; if(gxP(f)<gxP(ph.from)) f=ph.from; var tt=gxIso(Math.min(gxP(f)+13*GXD,gxP(ph.to)));
+          L+='<div class="gx-lr form"><div class="gx-det"><div class="f w"><label>'+bi("الخطوة "+(ph.tasks.length+1),"Step "+(ph.tasks.length+1))+'</label><input id="gx-nf-name" placeholder="'+(isAr()?"ما الذي يُنجَز؟":"What gets done?")+'"'+(ph.name&&!ph.tasks.length?' data-gxfocus="1"':'')+'></div>'+gxOwnerField('id="gx-nf-owner"',"",S)+'<div class="f"><label>'+bi("من","From")+'</label><input type="date" id="gx-nf-from" value="'+f+'" min="'+ph.from+'" max="'+ph.to+'"></div><div class="f"><label>'+bi("إلى","To")+'</label><input type="date" id="gx-nf-to" value="'+tt+'" min="'+ph.from+'" max="'+ph.to+'"></div><div class="f"><label>'+bi("الميزانية (ر.ع.)","Budget (OMR)")+'</label><input type="number" min="0" id="gx-nf-budget" placeholder="0"></div><div class="gx-acts"><button class="btn btn-p" data-gxsavet="'+pi+'">'+bi("إضافة الخطوة","Add step")+'</button>'+(ph.tasks.length?'<button class="btn" data-gxcancelt="1">'+bi("إلغاء","Cancel")+'</button>':'')+'</div></div></div>';
+          T+=track("form", bar("",f,tt,"",false)+'<div class="gx-gh" style="inset-inline-start:'+Math.min(W-220,X(tt)+8)+'px">'+bi("السحب هنا لرسم مدة الخطوة","Drag here to draw the step")+'</div>', 'data-gxformrow="1"');
+          stage=stage||bi("<b>الخطوة الآن:</b> تفاصيل الخطوة "+(ph.tasks.length+1)+" ثم «إضافة الخطوة».","<b>Now:</b> step "+(ph.tasks.length+1)+" then “Add step”."); }
+        else { L+='<div class="gx-lr new"><button class="gx-add" data-gxaddt="'+pi+'">＋ '+bi("خطوة أخرى في «"+gxEsc(ph.name)+"»","Another step in “"+gxEsc(ph.name)+"”")+'</button></div>'; T+=track("new",""); }
+      });
+      var lastPh=S.phases[S.phases.length-1];
+      if(!ro && lastPh && lastPh.name && lastPh.tasks.length && GX.formFor===null){ L+='<div class="gx-lr new"><button class="gx-add" data-gxaddph="1">＋ '+bi("مرحلة جديدة","New phase")+'</button></div>'; T+=track("new",""); stage=stage||bi("<b>الخطوة الآن:</b> خطوة أخرى، أو مرحلة جديدة — أو تبويب «المؤشرات».","<b>Now:</b> another step, a new phase — or the KPIs tab."); }
+      if(ro) stage=bi("<b>المتابعة:</b> النقر على حالة أي خطوة يحدّثها؛ التحديث يغذّي مؤشر الإنجاز.","<b>Tracking:</b> click a step's status to update it; it feeds the completion KPI.");
+    }
+    host.innerHTML='<div class="gx-labels">'+L+'</div><div class="gx-time">'+BG+T+'</div>';
+    document.getElementById("gxStage").innerHTML=stage;
+    document.getElementById("gxOob").innerHTML= !S.title?"" : !gxHasDates()?'<span class="gx-warn">'+bi("مدة الهدف غير محددة.","Objective period not set.")+'</span>' : oob?'<span class="gx-warn">'+oob+' '+bi("عنصر خارج مدة مستواه الأعلى.","item(s) outside the level above.")+'</span>':'<span>'+bi("المراحل داخل الهدف والخطوات داخل مراحلها ✓","Phases inside the objective, steps inside their phases ✓")+'</span>';
+    document.getElementById("gxWin").textContent=gxWinLabel(w);
+    document.querySelectorAll("#gxZoom button").forEach(function(b){b.classList.toggle("on",b.dataset.gz===GX.z);});
+    var rt=gxRoute(S); var sb=document.getElementById("gxSaveBar");
+    sb.innerHTML= ro ? '<span>'+bi("<b>معتمد</b> — أُدرج في الخطة السنوية: ","<b>Approved</b> — in the annual plan: ")+gxEsc(rt.dest.join(" ← "))+'</span><button class="gx-ex" data-goobj="'+gxEsc(S.ref)+'">↗ '+bi("فتحه في الخطة السنوية الكاملة","Open in the full annual plan")+'</button>'
+      : '<button class="btn" id="gxSaveDraft">'+bi("حفظ كمسودة","Save draft")+'</button><button class="btn btn-p" id="gxSubmit">'+(S.scope==="mine"?bi("إرسال إلى المدير المباشر","Send to line manager"):S.scope==="centre"?bi("اعتماد وإدراج في الخطة","Approve and add to the plan"):bi("إرسال للاعتماد","Send for approval"))+'</button><span style="font-size:var(--t-xs);color:var(--ink-2)"><b>'+bi("المسار:","Route:")+'</b> '+rt.chain.map(gxEsc).join(" ← ")+' · <b>'+bi("بعد الاعتماد:","After approval:")+'</b> '+bi("الخطة السنوية ← ","Annual plan ← ")+gxEsc(rt.dest.join(" ← "))+'</span>';
+    if(actId){ var again=document.getElementById(actId); if(again){ again.focus(); if(caret!==null&&again.setSelectionRange){ try{ again.setSelectionRange(caret,caret); }catch(_){} } } }
+    else { var fo=host.querySelector("[data-gxfocus]"); if(fo) fo.focus(); }
+  }
+  function gxFind(id){ var a=id.split(":"); return GX.cur.phases[+a[0]].tasks[+a[1]]; }
+
+  // ── KPIs ──
+  function gxThresholds(k){ if(k.target==="") return null; var t=+k.target, span=Math.abs(t-(+k.base||0))||Math.abs(t)||1, tol=span*(+k.tol||0)/100; return k.dir==="up"?{above:t,tolLo:t-tol}:{above:t,tolLo:t+tol}; }
+  function gxMilestones(k){ var S=GX.cur, out=[]; if(k.baseDate===""||k.targetDate===""||k.base===""||k.target==="") return out; var a=gxP(k.baseDate), b=gxP(k.targetDate); if(b<=a) return out;
+    if(k.plan){ var steps=[]; S.phases.forEach(function(ph){ if(!k.plan.phase||k.plan.phase===ph.name) ph.tasks.forEach(function(t){steps.push(t);}); }); var n=steps.length||1; var ends=[]; S.phases.forEach(function(ph){ if(ph.to&&(!k.plan.phase||k.plan.phase===ph.name)) ends.push(ph.to); }); ends=ends.filter(function(d,i,arr){return arr.indexOf(d)===i&&gxP(d)>a&&gxP(d)<b;}).sort();
+      ends.forEach(function(d){ var due=steps.filter(function(t){return gxP(t.to)<=gxP(d);}).length; var v=Math.round(due/n*100); out.push({date:d,auto:v,val:(k.mil&&k.mil[d]!==undefined)?k.mil[d]:v,why:due+" / "+n}); }); out.push({date:k.targetDate,auto:+k.target,val:+k.target,final:true}); return out; }
+    var step= k.cfreq==="m"?1 : k.cfreq==="q"?3 : k.cfreq==="h"?6 : k.cfreq==="y"?12 : 1; var d=new Date(a), i=0;
+    while(true){ i++; var t=Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+step*i,d.getUTCDate()); if(t>=b) break; var frac=(t-a)/(b-a); var v=+k.base+(+k.target-+k.base)*frac, key=gxIso(t); out.push({date:key,auto:Math.round(v*10)/10,val:(k.mil&&k.mil[key]!==undefined)?k.mil[key]:Math.round(v*10)/10}); }
+    out.push({date:k.targetDate,auto:+k.target,val:+k.target,final:true}); return out; }
+  function gxSmart(k){ var S=GX.cur; return [
+    [bi("عنوان ووصف ومسوّغ","Title, description, rationale"), !!k.name&&!!k.desc&&!!k.rationale],
+    [bi("بسط ومقام","Numerator and denominator"), !!k.num&&!!k.den],
+    [bi("رقم حالي ومستهدف مختلفان","Distinct current and target"), k.base!==""&&k.target!==""&&+k.base!==+k.target],
+    [bi("الاتجاه متسق","Direction consistent"), k.dir==="up"?+k.target>+k.base:+k.target<+k.base],
+    [bi("موعد المستهدف داخل مدة الهدف","Target date inside the period"), !!k.targetDate&&(!S.from||!S.to||(gxP(k.targetDate)>=gxP(S.from)&&gxP(k.targetDate)<=gxP(S.to)))],
+    [bi("مصدر بيانات وجهة رصد","Source and monitor"), !!k.source&&!!k.reader],
+    [bi("عتبات محددة","Thresholds set"), k.tol!==""&&+k.tol>=0],
+    [bi("مرتبط بمرحلة أو بالهدف","Linked to a phase or the objective"), !!k.phase||!!k.plan]]; }
+  var GX_OUT=[[/شكو|شكاو|تظلم/,{name:"نسبة الشكاوى المغلقة خلال ١٤ يوماً",dim:GX_DIMS[1],num:"عدد الشكاوى المغلقة خلال ١٤ يوماً من استلامها",den:"مجموع الشكاوى المستلمة في الفترة",source:"سجل الشكاوى — المنصة",elements:"رقم الشكوى، تاريخ الاستلام، تاريخ الإغلاق، المؤسسة"}],
+    [/تدريب|تأهيل|ورش|كفاء/,{name:"نسبة العاملين المستهدفين الذين أتمّوا التدريب",dim:GX_DIMS[2],num:"عدد العاملين الذين أتمّوا البرنامج",den:"عدد العاملين المستهدفين",source:"سجلات التدريب — المنصة",elements:"الاسم الوظيفي، البرنامج، تاريخ الإتمام"}],
+    [/لجنة|لجان/,{name:"نسبة المؤسسات التي لديها لجنة جودة فاعلة",dim:GX_DIMS[2],num:"عدد المؤسسات ذات لجنة موثقة الاجتماعات",den:"عدد مؤسسات القطاع",source:"محاضر اللجان",elements:"المؤسسة، تاريخ الاجتماع"}],
+    [/رضا|رضى/,{name:"نسبة رضا المستفيدين وأسرهم",dim:GX_DIMS[5],num:"عدد المستجيبين الراضين (٤ فأكثر من ٥)",den:"عدد المستجيبين",source:"استبانة الرضا",elements:"المؤسسة، الخدمة، الدرجة"}],
+    [/إتاح|وصول|ميسّر|ميسر|دامج/,{name:"نسبة المرافق والخدمات الميسّرة",dim:GX_DIMS[4],num:"عدد المرافق المستوفية لمعايير الإتاحة",den:"عدد المرافق المقيَّمة",source:"تقييم الإتاحة",elements:"المرفق، المعيار، النتيجة"}],
+    [/تقييم|تدقيق|امتثال|معيار|اعتماد|حوكم|جودة/,{name:"نسبة المؤسسات المستوفية للمعايير المعتمدة",dim:GX_DIMS[2],num:"عدد المؤسسات التي حققت ٨٠٪ فأكثر",den:"عدد المؤسسات المقيَّمة",source:"تقارير التدقيق والامتثال",elements:"المؤسسة، المعيار، الدرجة"}],
+    [/انتظار|مدة|زمن/,{name:"متوسط مدة الانتظار للخدمة (يوم)",dim:GX_DIMS[1],type:"مدة",unit:"يوم",dir:"down",num:"مجموع أيام الانتظار",den:"عدد الحالات المنجزة",source:"سجل الخدمات",elements:"الحالة، تاريخ الطلب، تاريخ التقديم"}]];
+  function gxCtx(){ var S=GX.cur, hit=GX_OUT.filter(function(o){return o[0].test(S.title||"");})[0], o=hit?hit[1]:null, t=S.title||(isAr()?"الهدف":"the objective");
+    return {name:o?o.name:"نسبة تحقق «"+t+"»", desc:o?("ما يقيسه: "+o.name):("ما يتغيّر فعلاً بتحقق «"+t+"»، ولمن"), rationale:"لماذا نحتاج هذا المؤشر لهدف «"+t+"»", num:o?o.num:"ما يستوفي معيار «"+t+"»", den:o?o.den:"المجتمع المستهدف", excl:"ما يُستثنى من القياس", elements:o?o.elements:"الحقول اللازمة للحساب", source:o?o.source:"أين تُؤخذ البيانات", limits:"ما قد يُضعف الدقة", related:"مؤشر آخر يفسّر «"+t+"»"}; }
+  function gxAutoDraft(S){ S=S||GX.cur; var out=[]; if(!S.title) return out; var all=[]; S.phases.forEach(function(ph){ ph.tasks.forEach(function(t){all.push(t);}); }); var base0=S.from?gxIso(gxP(S.from)-GXD):"";
+    if(all.length){ out.push(gxNormK({auto:true,plan:{phase:""},name:"نسبة خطوات خطة العمل المنجزة في موعدها المحدد",dim:GX_DIMS[1],kind:"process",desc:"إنجاز خطوات خطة عمل الهدف «"+S.title+"» في المواعيد المرسومة ("+all.length+" خطوة).",rationale:"الخطة وعدٌ زمني؛ تراكم التأخير أول إنذار على تعثّر الهدف.",num:"عدد الخطوات المنجزة في موعدها أو قبله",den:"عدد خطوات الخطة ("+all.length+")",excl:"خطوات أُلغيت باعتماد المديرة العامة",elements:"الخطوة، المرحلة، الموعد، تاريخ الإنجاز، المسؤول",type:"نسبة مئوية",unit:"%",base:0,baseDate:base0,target:100,targetDate:S.to,dir:"up",tol:10,source:"خطة العمل على المنصة — حالة الخطوات",cfreq:"w",mfreq:"m",reader:"قسم التنسيق والمتابعة",rfreq:"m",report:GX_REPORTS[1]}));
+      S.phases.forEach(function(ph){ if(!ph.name||!ph.to||!ph.tasks.length) return; out.push(gxNormK({auto:true,plan:{phase:ph.name},name:"نسبة إنجاز مرحلة «"+ph.name+"» بحلول "+ph.to,dim:GX_DIMS[1],kind:"output",phase:ph.name,desc:"اكتمال خطوات مرحلة «"+ph.name+"» ("+ph.tasks.length+") ضمن مدتها.",rationale:"كل مرحلة تمهّد لما بعدها.",num:"عدد خطوات المرحلة المنجزة",den:"عدد خطوات المرحلة ("+ph.tasks.length+")",type:"نسبة مئوية",unit:"%",base:0,baseDate:gxIso(gxP(ph.from)-GXD),target:100,targetDate:ph.to,dir:"up",tol:0,source:"خطة العمل على المنصة",cfreq:"w",mfreq:"w",reader:ph.tasks[0].owner||"",rfreq:"m",report:GX_REPORTS[1]})); });
+      var budget=all.reduce(function(a,t){return a+(+t.budget||0);},0); if(budget>0) out.push(gxNormK({auto:true,name:"نسبة الإنفاق الفعلي إلى الميزانية المقترحة",dim:GX_DIMS[3],kind:"process",desc:"الالتزام بالميزانية المقترحة ("+gxMoney(budget)+").",rationale:"تجاوز الميزانية يهدد الخطوات التالية.",num:"مجموع المصروف الفعلي",den:"الميزانية المقترحة",type:"نسبة مئوية",unit:"%",base:0,baseDate:base0,target:100,targetDate:S.to,dir:"down",tol:5,source:"سجل الصرف",cfreq:"m",mfreq:"q",reader:"دائرة الرقابة والامتثال",rfreq:"q",report:GX_REPORTS[0]})); }
+    var hit=GX_OUT.filter(function(o){return o[0].test(S.title);})[0]; var o=hit?hit[1]:{name:"نسبة تحقق الهدف: "+S.title,dim:GX_DIMS[2],num:"ما تحقق من الهدف وفق معيار القياس",den:"المستهدف الكامل",source:"تقارير المتابعة — المنصة",elements:"المعيار، القراءة، التاريخ"};
+    out.push(gxNormK(Object.assign({auto:true,kind:"outcome",desc:"الأثر الذي يسعى إليه الهدف «"+S.title+"».",rationale:"مؤشر نتيجة يقيس ما يتغيّر فعلاً.",type:"نسبة مئوية",unit:"%",base:"",baseDate:base0,target:"",targetDate:S.to,dir:"up",tol:10,cfreq:"m",mfreq:"m",reader:"قسم التنسيق والمتابعة",rfreq:"q",report:GX_REPORTS[0]},o))); return out; }
+  // plan-completion KPIs read themselves from the steps
+  function gxPlanReading(k){ var S=GX.cur; if(!k.plan) return null; var steps=[]; S.phases.forEach(function(ph){ if(!k.plan.phase||k.plan.phase===ph.name) ph.tasks.forEach(function(t){steps.push(t);}); }); if(!steps.length) return null; return Math.round(steps.filter(function(t){return t.st==="done";}).length/steps.length*100); }
+  function gxF(label,key,k,o){ o=o||{}; var w=o.w?' w'+o.w:'', v=k[key], inner;
+    if(o.sel) inner='<select data-gxk="'+key+'">'+o.sel.map(function(x){ var val=Array.isArray(x)?x[0]:x, lab=Array.isArray(x)?x[1]:x; return '<option value="'+gxEsc(val)+'"'+(String(v)===String(val)?" selected":"")+'>'+gxEsc(lab)+'</option>'; }).join("")+'</select>';
+    else inner='<input'+(o.type?' type="'+o.type+'"':'')+(o.list?' list="'+o.list+'"':'')+(o.min?' min="'+o.min+'"':'')+(o.max?' max="'+o.max+'"':'')+(o.step?' step="'+o.step+'"':'')+' data-gxk="'+key+'" value="'+gxEsc(v)+'" placeholder="'+gxEsc(o.ph||"")+'">';
+    return '<div class="f'+w+'"><label>'+label+'</label>'+inner+'</div>'; }
+  function gxDrawK(){ gxDrawKForm(); gxDrawKSide(); gxDrawDrafts(); }
+  function gxDrawKForm(){ var S=GX.cur; if(!S) return; if(!GX.KD) GX.KD=gxBlankK(); var k=GX.KD, C=gxCtx();
+    if(!k.targetDate&&S.to) k.targetDate=S.to; if(!k.baseDate&&S.from) k.baseDate=gxIso(gxP(S.from)-GXD);
+    document.getElementById("gxKObj").textContent=S.title||"—";
+    document.getElementById("gxKTitle").innerHTML= GX.K===null ? (k.auto?bi("بطاقة مسودة مقترحة — للمراجعة","Proposed draft card — review"):bi("بطاقة مؤشر جديد","New KPI card")) : bi("تعديل بطاقة المؤشر","Edit KPI card");
+    var ph=[["",isAr()?"— الهدف كله":"— whole objective"]].concat(S.phases.filter(function(x){return x.name;}).map(function(x){return [x.name,x.name];}));
+    document.getElementById("gxf1").innerHTML= gxF(bi("عنوان المؤشر","Title"),"name",k,{w:6,ph:C.name})+gxF(bi("البُعد","Dimension"),"dim",k,{w:2,sel:GX_DIMS})+gxF(bi("النوع","Type"),"kind",k,{w:2,sel:Object.keys(GX_KIND).map(function(x){return [x,isAr()?GX_KIND[x][0]:GX_KIND[x][1]];})})+gxF(bi("مرتبط بـ","Linked to"),"phase",k,{w:2,sel:ph})+gxF(bi("الوصف","Description"),"desc",k,{w:6,ph:C.desc})+gxF(bi("المسوّغ","Rationale"),"rationale",k,{w:6,ph:C.rationale});
+    document.getElementById("gxf2").innerHTML= gxF(bi("البسط","Numerator"),"num",k,{w:3,ph:C.num})+gxF(bi("المقام","Denominator"),"den",k,{w:3,ph:C.den})+gxF(bi("الاستثناءات","Exclusions"),"excl",k,{w:3,ph:C.excl})+gxF(bi("عناصر البيانات","Data elements"),"elements",k,{w:3,ph:C.elements})+gxF(bi("نوع القياس","Measure type"),"type",k,{w:2,sel:GX_TYPES.map(function(t){return t[0];})})+gxF(bi("الوحدة","Unit"),"unit",k,{w:1,ph:"%"})+gxF(bi("الرقم الحالي","Current"),"base",k,{w:1,type:"number",step:"any",ph:"45"})+gxF(bi("بتاريخ","As of"),"baseDate",k,{w:2,type:"date"});
+    document.getElementById("gxf3").innerHTML= gxF(bi("المستهدف","Target"),"target",k,{w:1,type:"number",step:"any",ph:"90"})+gxF(bi("بحلول","By"),"targetDate",k,{w:2,type:"date",min:S.from||"",max:S.to||""})+'<div class="f w2"><label>'+bi("الاتجاه","Trend")+'</label><div class="gx-seg"><button type="button" data-gxdir="up" class="'+(k.dir==="up"?"on":"")+'">'+bi("تصاعدي ↑","Increasing ↑")+'</button><button type="button" data-gxdir="down" class="'+(k.dir==="down"?"on":"")+'">'+bi("تنازلي ↓","Decreasing ↓")+'</button></div></div>'+gxF(bi("نطاق التفاوت %","Tolerance %"),"tol",k,{w:1,type:"number",min:"0",max:"100",ph:"10"});
+    var fr=Object.keys(GX_FREQ).map(function(x){return [x,isAr()?GX_FREQ[x][0]:GX_FREQ[x][1]];});
+    document.getElementById("gxf4").innerHTML= gxF(bi("مصدر البيانات","Data source"),"source",k,{w:3,ph:C.source})+gxF(bi("المحددات","Limitations"),"limits",k,{w:3,ph:C.limits})+gxF(bi("وتيرة الجمع","Collection"),"cfreq",k,{w:2,sel:fr})+gxF(bi("وتيرة الرصد","Monitoring"),"mfreq",k,{w:2,sel:fr})+gxF(bi("جهة الرصد","Monitored by"),"reader",k,{w:2,list:"gxPeople",ph:isAr()?"اسم من الكشف أو وحدة":"A name or a unit"})+gxF(bi("وتيرة التقرير","Reporting"),"rfreq",k,{w:2,sel:fr})+gxF(bi("يُدرج في","Reported in"),"report",k,{w:4,sel:GX_REPORTS});
+    document.getElementById("gxKSave").innerHTML= GX.K===null?bi("إضافة المؤشر","Add KPI"):bi("حفظ التعديل","Save changes"); document.getElementById("gxKNew").hidden= GX.K===null&&!k.auto;
+  }
+  function gxReadings(fd){ var out=[]; (fd.rows||[]).forEach(function(row,r){ var d=String(row[fd.dateCol]||"").trim(); var v=gxCell(fd,r,fd.valCol); if(/^\d{4}-\d{2}-\d{2}$/.test(d)&&typeof v==="number") out.push({date:d,v:v}); }); return out.sort(function(a,b){return gxP(a.date)-gxP(b.date);}); }
+  function gxStatusOf(k,v){ var th=gxThresholds(k); if(!th||typeof v!=="number") return null; if(k.dir==="up") return v>=th.above?"a":v>=th.tolLo?"t":"b"; return v<=th.above?"a":v<=th.tolLo?"t":"b"; }
+  function gxDrawKSide(){ var S=GX.cur; if(!S||!GX.KD) return; var k=GX.KD, ms=gxMilestones(k), u=gxEsc(k.unit);
+    var milFocused=document.activeElement&&document.activeElement.dataset&&document.activeElement.dataset.gxmil;
+    if(!milFocused) document.getElementById("gxMil").innerHTML= ms.length ? '<table class="gx-mil"><tr><th>'+bi("التاريخ","Date")+'</th><th>'+bi("المقترح","Proposed")+'</th><th>'+bi("المعتمد","Adopted")+'</th><th></th></tr>'+ms.map(function(m){return '<tr><td>'+m.date+'</td><td>'+m.auto+u+'</td><td>'+(m.final?'<b>'+m.val+u+'</b>':'<input type="number" step="any" data-gxmil="'+m.date+'" value="'+m.val+'">')+'</td><td>'+(m.final?bi("المستهدف النهائي","final target"):(m.val!==m.auto?'<span style="color:var(--gold-ink)">'+bi("معدَّل","edited")+'</span>':(m.why||'')))+'</td></tr>';}).join("")+'</table>' : '<div style="font-size:var(--t-xs);color:var(--ink-3)">'+bi("تظهر المعالم بعد إدخال الرقم الحالي والمستهدف وتاريخيهما.","Milestones appear once both figures and dates exist.")+'</div>';
+    var pts=[]; if(k.baseDate&&k.base!=="") pts.push({d:gxP(k.baseDate),v:+k.base}); ms.forEach(function(m){pts.push({d:gxP(m.date),v:+m.val});});
+    var svg=document.getElementById("gxSpark"), th=gxThresholds(k);
+    var RD=gxReadings(k.feed||gxBlankFeed()); var pr=gxPlanReading(k); if(pr!==null) RD=RD.concat([{date:PLATFORM_TODAY,v:pr,plan:true}]);
+    if(pts.length>=2){ var x0=pts[0].d,x1=pts[pts.length-1].d, vs=pts.map(function(q){return q.v;}); if(th) vs.push(th.tolLo); RD=RD.filter(function(q){return gxP(q.date)>=x0&&gxP(q.date)<=x1;}); RD.forEach(function(q){vs.push(q.v);}); var lo=Math.min.apply(null,vs), hi=Math.max.apply(null,vs); if(hi===lo) hi=lo+1; var Y=function(v){return 80-((v-lo)/(hi-lo))*64;}; var P=pts.map(function(q){return [(q.d-x0)/(x1-x0)*300+10,Y(q.v)];});
+      var band= th?'<rect x="10" y="'+Math.min(Y(th.above),Y(th.tolLo))+'" width="300" height="'+Math.abs(Y(th.above)-Y(th.tolLo))+'" fill="var(--brand-gold)" opacity=".35"/>':'';
+      var RP=RD.map(function(q){ var st=gxStatusOf(k,q.v); return '<circle cx="'+((gxP(q.date)-x0)/(x1-x0)*300+10)+'" cy="'+Y(q.v)+'" r="3.5" fill="'+(st==="a"?"var(--good)":st==="t"?"var(--warn)":"var(--critical)")+'" stroke="var(--surface)" stroke-width="1.2"><title>'+q.date+': '+q.v+'</title></circle>'; }).join("");
+      svg.innerHTML=band+'<path d="M'+P.map(function(a){return a[0]+','+a[1];}).join(' L')+' L'+P[P.length-1][0]+',84 L'+P[0][0]+',84 Z" fill="var(--brand-ink)" opacity=".08"/><path d="M'+P.map(function(a){return a[0]+','+a[1];}).join(' L')+'" fill="none" stroke="var(--brand-ink)" stroke-width="2" stroke-dasharray="'+(RD.length?'4 3':'0')+'"/>'+P.map(function(a,i){return '<circle cx="'+a[0]+'" cy="'+a[1]+'" r="'+(i===0||i===P.length-1?4:2.5)+'" fill="'+(i===P.length-1?'var(--gold-ink)':'var(--brand-ink)')+'"/>';}).join("")+RP+'<text x="10" y="90" font-size="9" fill="var(--ink-3)">'+gxEsc(k.base)+u+'</text><text x="310" y="90" font-size="9" text-anchor="end" fill="var(--ink-3)">'+gxEsc(k.target)+u+'</text>';
+    } else svg.innerHTML='<text x="160" y="50" font-size="11" text-anchor="middle" fill="var(--ink-3)">'+(isAr()?"يُرسم المسار بعد إدخال الرقمين وتاريخيهما":"The path draws once both figures and dates exist")+'</text>';
+    document.getElementById("gxThr").innerHTML= th?'<div class="a">'+bi("فوق المستهدف","Above")+'<b>'+(k.dir==="up"?"≥ ":"≤ ")+th.above+u+'</b></div><div class="t">'+bi("ضمن التفاوت","In tolerance")+'<b>'+(k.dir==="up"?th.tolLo.toFixed(1)+" – "+th.above:th.above+" – "+th.tolLo.toFixed(1))+u+'</b></div><div class="b">'+bi("دون المستهدف","Below")+'<b>'+(k.dir==="up"?"< ":"> ")+th.tolLo.toFixed(1)+u+'</b></div>':'';
+    document.getElementById("gxSmart").innerHTML=gxSmart(k).map(function(r){return '<div><span>'+r[0]+'</span><span class="'+(r[1]?"ok":"no")+'">'+(r[1]?"✓":"—")+'</span></div>';}).join("");
+    document.getElementById("gxKList").innerHTML= S.kpis.length ? S.kpis.map(function(x,i){ var ok=gxSmart(x).filter(function(r){return r[1];}).length; var last=gxReadings(x.feed||gxBlankFeed()).pop(); var prx=gxPlanReading(x); var cur= prx!==null?prx : last?last.v:null; var st=cur!==null?gxStatusOf(x,cur):null;
+      return '<div class="gx-kitem" data-gxki="'+i+'"><span class="kn">'+gxEsc(x.name)+'</span><span class="pill '+(ok<5?'p-warn':'p-good')+'">'+ok+'/8</span><span class="km">'+gxEsc(x.dim)+' · '+gxEsc(x.base)+gxEsc(x.unit)+' ← '+gxEsc(x.target)+gxEsc(x.unit)+' '+bi("بحلول","by")+' '+gxEsc(x.targetDate)+(cur!==null?' · <b>'+bi("الآن","now")+' '+cur+gxEsc(x.unit)+'</b>'+(st?' <span class="gx-rd"><span class="st '+st+'">'+(st==="a"?bi("فوق المستهدف","above"):st==="t"?bi("ضمن التفاوت","tolerance"):bi("دون المستهدف","below"))+'</span></span>':''):'')+(x.auto?' <span class="gx-tag">'+bi("مقترح آلياً","auto")+'</span>':'')+(GX.cur.status!=="approved"?' <button class="gx-del" style="opacity:1" data-gxdelk="'+i+'">'+bi("حذف","Delete")+'</button>':'')+'</span></div>'; }).join("") : '<div style="font-size:var(--t-xs);color:var(--ink-3)">'+bi("لا مؤشرات بعد — كل هدف يحتاج مؤشراً واحداً على الأقل.","No KPIs yet — every objective needs at least one.")+'</div>';
+    var kc=document.getElementById("gxKcnt"); if(kc) kc.textContent=S.kpis.length;
+  }
+  function gxDrawDrafts(){ var host=document.getElementById("gxDrafts"); if(!host) return; var S=GX.cur;
+    host.innerHTML= GX.drafts.length ? GX.drafts.map(function(d,i){ var need=d.base===""||d.target===""; return '<div class="gx-draft"><span class="dn">'+gxEsc(d.name)+'<span class="gx-tag">'+(isAr()?GX_KIND[d.kind][0]:GX_KIND[d.kind][1])+'</span>'+(d.plan?'<span class="gx-tag">'+bi("من خطة العمل","from the plan")+'</span>':'')+'</span><span class="da"><button class="btn btn-p" style="padding:4px 10px" data-gxdacc="'+i+'">'+(need?bi("إكمال ثم اعتماد","Complete, then adopt"):bi("اعتماد","Adopt"))+'</button><button class="btn" style="padding:4px 10px" data-gxdedit="'+i+'">'+bi("تعديل","Edit")+'</button><button class="btn" style="padding:4px 10px" data-gxdskip="'+i+'">'+bi("تجاهل","Skip")+'</button></span><span class="dm">'+gxEsc(d.dim)+' · '+gxEsc(d.num)+' ÷ '+gxEsc(d.den)+(d.target!==""?' · '+bi("المستهدف","target")+' '+gxEsc(d.target)+gxEsc(d.unit)+' '+bi("بحلول","by")+' '+gxEsc(d.targetDate):'')+'</span></div>'; }).join("")
+      : '<div style="font-size:var(--t-xs);color:var(--ink-3);margin-top:6px">'+(S&&S.title?bi("بالضغط على «اقتراح مؤشرات من الخطة» تُقترح مؤشرات الإنجاز من الخطوات ومواعيدها، ومؤشر نتيجة من صياغة الهدف.","Press “Suggest KPIs from the plan” — completion KPIs from the steps and dates, an outcome KPI from the wording."):bi("الهدف وخطته يُكتبان في تبويب الجدول الزمني أولاً.","Write the objective and plan first."))+'</div>'; }
+
+  // ── feeder: an on-site table with formulas and pivot, CSV drop, or a Google Sheet ──
+  function gxColName(i){ var n=""; i++; while(i>0){ var m=(i-1)%26; n=String.fromCharCode(65+m)+n; i=Math.floor((i-1)/26); } return n; }
+  function gxColIndex(nm){ var i=0; nm.toUpperCase().split("").forEach(function(ch){ i=i*26+(ch.charCodeAt(0)-64); }); return i-1; }
+  function gxCell(fd,r,c,depth){ depth=depth||0; var raw=(fd.rows[r]||[])[c]; if(raw==null) return ""; raw=String(raw).trim(); if(raw.charAt(0)!=="="){ var n=parseFloat(raw.replace(/,/g,"")); return isNaN(n)?raw:n; } if(depth>20) return "#!"; try{ return gxEval(fd,raw.slice(1),depth+1); }catch(_){ return "#!"; } }
+  function gxRange(fd,a,b,depth){ var m1=a.match(/^([A-Z]+)(\d+)$/), m2=b.match(/^([A-Z]+)(\d+)$/); if(!m1||!m2) return []; var c1=gxColIndex(m1[1]),r1=+m1[2]-1,c2=gxColIndex(m2[1]),r2=+m2[2]-1,out=[]; for(var r=Math.min(r1,r2);r<=Math.max(r1,r2);r++) for(var c=Math.min(c1,c2);c<=Math.max(c1,c2);c++){ var v=gxCell(fd,r,c,depth); if(typeof v==="number") out.push(v); } return out; }
+  function gxEval(fd,expr,depth){ expr=expr.toUpperCase().replace(/\s+/g,"");
+    expr=expr.replace(/(SUM|AVG|AVERAGE|COUNT|MIN|MAX)\(([A-Z]+\d+):([A-Z]+\d+)\)/g,function(_,fn,a,b){ var v=gxRange(fd,a,b,depth); if(!v.length) return "0"; if(fn==="SUM") return String(v.reduce(function(x,y){return x+y;},0)); if(fn==="AVG"||fn==="AVERAGE") return String(v.reduce(function(x,y){return x+y;},0)/v.length); if(fn==="COUNT") return String(v.length); if(fn==="MIN") return String(Math.min.apply(null,v)); return String(Math.max.apply(null,v)); });
+    expr=expr.replace(/([A-Z]+)(\d+)/g,function(_,cn,rn){ var v=gxCell(fd,+rn-1,gxColIndex(cn),depth); return typeof v==="number"?"("+v+")":"0"; });
+    if(!/^[0-9.+\-*/()%]+$/.test(expr)) throw 0; var v=Function('"use strict";return ('+expr+')')(); return isFinite(v)?Math.round(v*1000)/1000:"#!"; }
+  function gxParseCSV(txt){ var lines=txt.replace(/\r/g,"").split("\n").filter(function(l){return l.trim();}); var sep=(lines[0]||"").indexOf("\t")>-1?"\t":(lines[0]||"").indexOf(";")>-1?";":","; return lines.map(function(l){ return l.split(sep).map(function(c){return c.replace(/^"|"$/g,"").trim();}); }); }
+  function gxDrawFeed(){ var host=document.getElementById("gxFeed"); if(!host) return; var S=GX.cur; var k=GX.K!==null?S.kpis[GX.K]:GX.KD; if(!k){ host.innerHTML=""; return; } if(!k.feed) k.feed=gxBlankFeed(); var fd=k.feed;
+    document.getElementById("gxFeedFor").innerHTML= k.name?gxEsc(k.name):bi("— اختيار مؤشر من قائمة «مؤشرات هذا الهدف» أولاً","— pick a KPI from the list first");
+    document.querySelectorAll("#gxFeedMode button").forEach(function(b){b.classList.toggle("on",b.dataset.gfm===fd.mode);});
+    var html="", cols=fd.cols, rows=fd.rows;
+    if(fd.mode==="file") html+='<div class="gx-fz" id="gxFz">'+bi("إسقاط ملف CSV أو Excel هنا، أو ","Drop a CSV/Excel file here, or ")+'<label style="color:var(--brand-ink);cursor:pointer;text-decoration:underline">'+bi("اختياره من الجهاز","choose one")+'<input type="file" id="gxFf" accept=".csv,.xlsx,.xls,.txt" style="display:none"></label><div style="font-size:var(--t-xs);margin-top:6px;color:var(--ink-3)">'+bi("CSV يُقرأ هنا مباشرة؛ ملفات Excel تُقرأ بأداة تحليل المؤشرات عبر الجسر.","CSV is read here; Excel goes through the bridge's KPI analysis tool.")+'</div>'+(fd.file?'<div style="margin-top:6px;font-weight:700">'+gxEsc(fd.file)+'</div>':'')+'</div>';
+    else if(fd.mode==="sheet") html+='<div class="gx-kgrid"><div class="f w4"><label>'+bi("رابط ورقة Google Sheets أو معرّفها","Google Sheet link or id")+'</label><input data-gxfeed="sheet" value="'+gxEsc(fd.sheet)+'" placeholder="https://docs.google.com/spreadsheets/d/…" style="direction:ltr"></div><div class="f w2" style="align-self:end"><button class="btn" id="gxSheetLink">'+bi("ربط عبر الجسر","Link via the bridge")+'</button></div></div>';
+    html+='<div class="gx-ftools"><button class="btn" style="padding:3px 9px" data-gxfadd="row">＋ '+bi("صف","row")+'</button><button class="btn" style="padding:3px 9px" data-gxfadd="col">＋ '+bi("عمود","column")+'</button><label>'+bi("عمود التاريخ","Date column")+' <select data-gxfsel="dateCol">'+cols.map(function(c,i){return '<option value="'+i+'"'+(fd.dateCol===i?" selected":"")+'>'+gxEsc(c)+'</option>';}).join("")+'</select></label><label>'+bi("عمود القراءة","Value column")+' <select data-gxfsel="valCol">'+cols.map(function(c,i){return '<option value="'+i+'"'+(fd.valCol===i?" selected":"")+'>'+gxEsc(c)+'</option>';}).join("")+'</select></label><label><input type="checkbox" data-gxfpv="on"'+(fd.pivot.on?" checked":"")+'> '+bi("عرض محوري","Pivot")+'</label>'+(fd.pivot.on?'<label>'+bi("حسب","by")+' <select data-gxfpv="row">'+cols.map(function(c,i){return '<option value="'+i+'"'+(fd.pivot.row===i?" selected":"")+'>'+gxEsc(c)+'</option>';}).join("")+'</select></label><label>'+bi("قيمة","value")+' <select data-gxfpv="val">'+cols.map(function(c,i){return '<option value="'+i+'"'+(fd.pivot.val===i?" selected":"")+'>'+gxEsc(c)+'</option>';}).join("")+'</select></label><label><select data-gxfpv="agg">'+[["sum","مجموع"],["avg","متوسط"],["count","عدد"],["min","أدنى"],["max","أعلى"]].map(function(a){return '<option value="'+a[0]+'"'+(fd.pivot.agg===a[0]?" selected":"")+'>'+a[1]+'</option>';}).join("")+'</select></label>':'')+'<span style="color:var(--ink-3)">=A1+B1 · =SUM(B1:B6) · =AVG · =COUNT · =MIN · =MAX</span></div>';
+    if(fd.pivot.on){ var g={}; rows.forEach(function(row,r){ var key=String(row[fd.pivot.row]||"—"); var v=gxCell(fd,r,fd.pivot.val); (g[key]=g[key]||[]).push(typeof v==="number"?v:null); });
+      html+='<div class="gx-grid"><table><tr><th>'+gxEsc(cols[fd.pivot.row]||"")+'</th><th>'+gxEsc(cols[fd.pivot.val]||"")+'</th></tr>'+Object.keys(g).sort().map(function(key){ var v=g[key].filter(function(x){return x!==null;}); var out= fd.pivot.agg==="count"?g[key].length : !v.length?"—" : fd.pivot.agg==="sum"?v.reduce(function(a,b){return a+b;},0) : fd.pivot.agg==="avg"?Math.round(v.reduce(function(a,b){return a+b;},0)/v.length*100)/100 : fd.pivot.agg==="min"?Math.min.apply(null,v):Math.max.apply(null,v); return '<tr><td style="padding:4px 6px">'+gxEsc(key)+'</td><td style="padding:4px 6px;direction:ltr;text-align:right">'+out+'</td></tr>'; }).join("")+'</table></div>'; }
+    else html+='<div class="gx-grid"><table><tr><th class="rn">#</th>'+cols.map(function(c,i){return '<th><input data-gxfcol="'+i+'" value="'+gxEsc(c)+'" style="width:calc(100% - 18px);border:none;background:transparent;font:inherit;font-weight:700;color:var(--ink-2)"><span class="x" data-gxfdelc="'+i+'">✕</span><div style="font-size:9px;color:var(--ink-3);direction:ltr;text-align:left">'+gxColName(i)+'</div></th>';}).join("")+'</tr>'+rows.map(function(row,r){ return '<tr><th class="rn">'+(r+1)+' <span class="x" data-gxfdelr="'+r+'">✕</span></th>'+cols.map(function(c,ci){ var raw=row[ci]==null?"":String(row[ci]); var isF=raw.charAt(0)==="="; var v=isF?gxCell(fd,r,ci):""; return '<td'+(isF?' class="fx"':'')+'><input data-gxfr="'+r+'" data-gxfc="'+ci+'" value="'+gxEsc(raw)+'">'+(isF?'<span class="v">= '+gxEsc(v)+'</span>':'')+'</td>'; }).join("")+'</tr>'; }).join("")+(rows.length?'':'<tr><td colspan="'+(cols.length+1)+'" style="padding:10px;color:var(--ink-3);text-align:center">'+bi("لا صفوف بعد — «＋ صف» أو إسقاط ملف","No rows yet — add a row or drop a file")+'</td></tr>')+'</table></div>';
+    var rd=gxReadings(fd); if(rd.length){ var last=rd[rd.length-1], st=gxStatusOf(k,last.v); html+='<div class="gx-rd"><b>'+rd.length+' '+bi("قراءة","readings")+'</b> · '+last.date+': <b>'+last.v+gxEsc(k.unit)+'</b> '+(st?'<span class="st '+st+'">'+(st==="a"?bi("فوق المستهدف","above target"):st==="t"?bi("ضمن التفاوت","in tolerance"):bi("دون المستهدف","below target"))+'</span>':'')+'</div>'; }
+    host.innerHTML=html;
+    var fz=document.getElementById("gxFz"); if(fz){ fz.addEventListener("dragover",function(e){e.preventDefault();fz.classList.add("over");}); fz.addEventListener("dragleave",function(){fz.classList.remove("over");}); fz.addEventListener("drop",function(e){e.preventDefault();fz.classList.remove("over"); var f=e.dataTransfer.files[0]; if(f) gxLoadFile(f,k);}); var ff=document.getElementById("gxFf"); if(ff) ff.addEventListener("change",function(){ if(ff.files[0]) gxLoadFile(ff.files[0],k); }); }
+  }
+  function gxLoadFile(f,k){ var fd=k.feed; fd.file=f.name; if(/\.csv$|\.txt$/i.test(f.name)){ var rdr=new FileReader(); rdr.onload=function(){ var t=gxParseCSV(String(rdr.result)); if(t.length){ fd.cols=t[0]; fd.rows=t.slice(1); fd.dateCol=0; fd.valCol=Math.min(1,fd.cols.length-1); } gxSave(); gxDrawFeed(); gxDrawKSide(); gxToast("قُرئ الملف: "+fd.rows.length+" صفاً.","File read: "+fd.rows.length+" rows."); }; rdr.readAsText(f); } else { gxSave(); gxDrawFeed(); gxToast("ملف Excel — يُقرأ بأداة تحليل المؤشرات عبر الجسر؛ سُجّل اسمه.","Excel — read through the bridge tool; name recorded."); } }
+  function gxFeedK(){ var S=GX.cur; return GX.K!==null?S.kpis[GX.K]:GX.KD; }
+
+  // ── drawing durations on the grid ──
+  var gxDrag=null;
+  function gxDayAt(tr,clientX){ var r=tr.getBoundingClientRect(), w=gxWindow(); var x=(r.right-clientX); var i=Math.max(0,Math.min(w.n-1,Math.floor(x/w.px))); return gxIso(w.t0+i*GXD); }
+  function gxPaint(tr,a,b){ var w=gxWindow(); var bar=tr.querySelector(".gx-barx"); if(!bar){ bar=document.createElement("div"); bar.className="gx-barx"+(tr.classList.contains("obj")?" obj":tr.classList.contains("ph")?" ph":""); bar.innerHTML='<div class="lbl"></div>'; tr.appendChild(bar); var g=tr.querySelector(".gx-gh"); if(g) g.remove(); } bar.style.insetInlineStart=((gxP(a)-w.t0)/GXD*w.px)+"px"; bar.style.width=(gxDays(a,b)*w.px)+"px"; }
+  function gxShowTab(tab){ GX.tab=tab; document.querySelectorAll("#gxTabs button").forEach(function(b){b.classList.toggle("on",b.dataset.gxtab===tab);}); document.querySelectorAll("#gen .gx-pane").forEach(function(p){p.classList.toggle("on",p.id==="gxp-"+tab);}); if(tab==="kpi") gxDrawK(); else if(tab==="feed") gxDrawFeed(); else gxDraw(); }
+  function gxSelect(id){ var S=GX.list.filter(function(x){return x.id===id;})[0]; if(!S) return; GX.cur=S; GX.V=S.from||null; GX.formFor=null; GX.K=null; GX.KD=gxBlankK(); GX.drafts=[]; gxShowTab(GX.tab); }
+
+  document.addEventListener("click",function(e){
+    if(!e.target.closest("#gen")) return;
+    if(typeof RVON!=="undefined" && RVON) return;
+    var S=GX.cur;
+    var sel=e.target.closest("[data-gxsel]"); if(sel){ gxSelect(sel.dataset.gxsel); return; }
+    if(e.target.closest("#gxNewBtn")){ gxNew(); gxShowTab("tl"); gxToast("هدف جديد — الكتابة في الصف الأول.","New objective — write in the first row."); return; }
+    var tb=e.target.closest("[data-gxtab]"); if(tb){ gxShowTab(tb.dataset.gxtab); return; }
+    if(e.target.id==="gxPrev"){ gxShift(-1); return; } if(e.target.id==="gxNext"){ gxShift(1); return; } if(e.target.closest("#gxHome")){ GX.V=(S&&S.from)||null; gxDraw(); return; }
+    var gz=e.target.closest("[data-gz]"); if(gz){ GX.z=gz.dataset.gz; GX.V=(S&&S.from)||GX.V; gxDraw(); return; }
+    if(!S) return;
+    if(e.target.closest("[data-gxobjtoggle]")){ S.objOpen=S.objOpen===false?true:false; gxDraw(); return; }
+    var st=e.target.closest("[data-gxst]"); if(st){ e.stopPropagation(); var t=gxFind(st.dataset.gxst); t.st= t.st==="done"?"todo" : "done"; t.done= t.st==="done"?PLATFORM_TODAY:""; if(t.st==="todo"&&gxP(t.to)<gxP(PLATFORM_TODAY)) t.st="late"; gxSave(); gxDraw(); gxToast("حُدّثت حالة الخطوة — وتغذّي مؤشر الإنجاز.","Step updated — feeds the completion KPI."); return; }
+    if(e.target.closest("#gxSaveDraft")){ if(!S.title){ gxToast("الهدف مطلوب أولاً.","Objective first."); return; } gxSave(); gxToast("حُفظ كمسودة.","Saved as a draft."); return; }
+    if(e.target.closest("#gxSubmit")){ if(!S.title||!gxHasDates()){ gxToast("يلزم الهدف ومدته قبل الإرسال.","Objective and period required."); return; } if(!S.kpis.length){ gxToast("يلزم مؤشر واحد على الأقل من تبويب «المؤشرات».","At least one KPI is required."); return; }
+      var rt=gxRoute(S); if(S.scope==="centre"||ROLE==="dg"){ S.status="approved"; S.phases.forEach(function(ph){ ph.tasks.forEach(function(t){ if(!t.st) t.st="todo"; }); }); gxSave(); gxSelect(S.id); gxToast("اعتُمد وأُدرج — صار في قائمة المتابعة.","Approved — now in the tracking list."); }
+      else { S.status="submitted"; gxSave(); gxDraw(); gxToast("أُرسل إلى "+rt.chain[0]+" — يدخل دفتر الاعتمادات.","Sent to "+rt.chain[0]+"."); } return; }
+    var b=e.target.closest("[data-gxaddt],[data-gxaddph],[data-gxdelt],[data-gxdelph],[data-gxsavet],[data-gxcancelt]");
+    if(b){ if(gxRO()) return;
+      if(b.dataset.gxaddph){ S.phases.push({name:"",from:"",to:"",tasks:[]}); GX.formFor=null; gxDraw(); return; }
+      if(b.dataset.gxaddt!==undefined){ GX.formFor=+b.dataset.gxaddt; gxDraw(); var nn=document.getElementById("gx-nf-name"); if(nn) nn.focus(); return; }
+      if(b.dataset.gxcancelt){ GX.formFor=null; gxDraw(); return; }
+      if(b.dataset.gxsavet!==undefined){ var name=document.getElementById("gx-nf-name").value.trim(); if(!name){ gxToast("اسم الخطوة مطلوب أولاً.","Step name first."); return; } var ow=document.getElementById("gx-nf-owner"); var t2={name:name, owner:S.scope==="mine"?gxMe().name:(ow?ow.value.trim():""), from:document.getElementById("gx-nf-from").value, to:document.getElementById("gx-nf-to").value, budget:+document.getElementById("gx-nf-budget").value||0, note:"", st:"todo", done:"", open:false};
+        if(!t2.from||!t2.to){ gxToast("مدة الخطوة مطلوبة — بالتاريخين أو بالسحب.","Step period required."); return; } if(gxP(t2.from)>gxP(t2.to)) t2.to=t2.from; var phx=S.phases[+b.dataset.gxsavet]; var c=gxClamp(t2.from,t2.to,phx.from,phx.to); if(!c){ gxToast("الخطوة خارج مدة المرحلة كلياً.","Step entirely outside the phase."); return; } t2.from=c[0]; t2.to=c[1]; phx.tasks.push(t2); GX.formFor=null; gxSave(); gxDraw(); gxToast("أُضيفت الخطوة.","Step added."); return; }
+      if(b.dataset.gxdelt){ var a=b.dataset.gxdelt.split(":"); S.phases[+a[0]].tasks.splice(+a[1],1); gxSave(); gxDraw(); return; }
+      if(b.dataset.gxdelph){ S.phases.splice(+b.dataset.gxdelph,1); gxSave(); gxDraw(); return; } }
+    var row=e.target.closest(".gx-lr.tk"); if(row&&!e.target.closest(".gx-det")){ var t3=gxFind(row.dataset.gxtk); t3.open=!t3.open; gxDraw(); return; }
+    // kpi pane
+    var dirB=e.target.closest("[data-gxdir]"); if(dirB){ GX.KD.dir=dirB.dataset.gxdir; gxDrawKForm(); gxDrawKSide(); return; }
+    if(e.target.closest("#gxAuto")){ if(!S.title){ gxToast("الهدف مطلوب أولاً.","Objective first."); return; } GX.drafts=gxAutoDraft(S); gxDrawDrafts(); gxToast(GX.drafts.length+" مسودة مؤشر مقترحة — للمراجعة.",GX.drafts.length+" KPI drafts proposed."); return; }
+    var da=e.target.closest("[data-gxdacc],[data-gxdedit],[data-gxdskip]"); if(da){ var di=+(da.dataset.gxdacc||da.dataset.gxdedit||da.dataset.gxdskip); var dk=GX.drafts[di]; if(da.dataset.gxdskip!==undefined){ GX.drafts.splice(di,1); gxDrawDrafts(); return; } if(da.dataset.gxdedit!==undefined||dk.base===""||dk.target===""){ GX.K=null; GX.KD=JSON.parse(JSON.stringify(dk)); GX.drafts.splice(di,1); gxDrawK(); return; } S.kpis.push(JSON.parse(JSON.stringify(dk))); GX.drafts.splice(di,1); gxSave(); gxDrawK(); gxToast("اعتُمد المؤشر.","KPI adopted."); return; }
+    if(e.target.closest("#gxKSave")){ var KD=GX.KD; if(!KD.name.trim()){ gxToast("اسم المؤشر مطلوب.","KPI name required."); return; } if(KD.base===""||KD.target===""){ gxToast("الرقم الحالي والمستهدف مطلوبان.","Current and target figures required."); return; } var copy=JSON.parse(JSON.stringify(KD)); if(GX.K===null) S.kpis.push(copy); else S.kpis[GX.K]=copy; GX.K=null; GX.KD=gxBlankK(); gxSave(); gxDrawK(); gxToast("حُفظ المؤشر.","KPI saved."); return; }
+    if(e.target.closest("#gxKNew")){ GX.K=null; GX.KD=gxBlankK(); gxDrawK(); return; }
+    var dk2=e.target.closest("[data-gxdelk]"); if(dk2){ S.kpis.splice(+dk2.dataset.gxdelk,1); if(GX.K!==null){ GX.K=null; GX.KD=gxBlankK(); } gxSave(); gxDrawK(); return; }
+    var ki=e.target.closest("[data-gxki]"); if(ki){ GX.K=+ki.dataset.gxki; GX.KD=JSON.parse(JSON.stringify(S.kpis[GX.K])); gxDrawK(); return; }
+    // feeder
+    var fm=e.target.closest("[data-gfm]"); if(fm){ var fk=gxFeedK(); if(!fk.feed) fk.feed=gxBlankFeed(); fk.feed.mode=fm.dataset.gfm; gxDrawFeed(); return; }
+    var fa=e.target.closest("[data-gxfadd]"); if(fa){ var fd=gxFeedK().feed; if(fa.dataset.gxfadd==="row") fd.rows.push(fd.cols.map(function(){return "";})); else { fd.cols.push((isAr()?"عمود ":"Column ")+(fd.cols.length+1)); fd.rows.forEach(function(r){r.push("");}); } gxSave(); gxDrawFeed(); return; }
+    var fdr=e.target.closest("[data-gxfdelr]"); if(fdr){ gxFeedK().feed.rows.splice(+fdr.dataset.gxfdelr,1); gxSave(); gxDrawFeed(); return; }
+    var fdc=e.target.closest("[data-gxfdelc]"); if(fdc){ var fd2=gxFeedK().feed, ci=+fdc.dataset.gxfdelc; if(fd2.cols.length<=1) return; fd2.cols.splice(ci,1); fd2.rows.forEach(function(r){r.splice(ci,1);}); if(fd2.dateCol>=fd2.cols.length) fd2.dateCol=0; if(fd2.valCol>=fd2.cols.length) fd2.valCol=fd2.cols.length-1; gxSave(); gxDrawFeed(); return; }
+    if(e.target.closest("#gxSheetLink")){ gxToast(gxFeedK().feed.sheet?"في المنصة: تُربط الورقة عبر الجسر وتُسحب قراءاتها تلقائياً.":"رابط الورقة مطلوب.", gxFeedK().feed.sheet?"Linked through the bridge.":"Sheet link required."); return; }
+  });
+  document.addEventListener("input",function(e){ var el=e.target; if(!el.closest||!el.closest("#gen")) return; var S=GX.cur; if(!S) return;
+    if(el.id==="gx-title"){ var was=!!S.title; S.title=el.value.trim(); if(was!==!!S.title){ if(S.title) S.objOpen=true; gxDraw(); } else { var b=document.querySelector("#gen .gx-barx.obj .lbl"); if(b) b.textContent=S.title; } gxSave(); return; }
+    if(el.id==="gx-from"||el.id==="gx-to"){ S[el.id==="gx-from"?"from":"to"]=el.value; if(S.from&&S.to&&gxP(S.from)>gxP(S.to)){ if(el.id==="gx-from") S.to=S.from; else S.from=S.to; } if(el.id==="gx-from"&&el.value) GX.V=el.value; gxSave(); gxDraw(); return; }
+    if(el.dataset.gxph!==undefined){ var ph=S.phases[+el.dataset.gxph]; if(el.dataset.f==="name"){ ph.name=el.value.trim(); return; } if(!el.value) return; ph[el.dataset.f]=el.value; if(ph.from&&ph.to){ if(gxP(ph.from)>gxP(ph.to)){ if(el.dataset.f==="from") ph.to=ph.from; else ph.from=ph.to; } var cc=gxClamp(ph.from,ph.to,S.from,S.to); if(cc){ ph.from=cc[0]; ph.to=cc[1]; } } gxSave(); gxDraw(); return; }
+    if(el.dataset.gxtk){ var t=gxFind(el.dataset.gxtk), f=el.dataset.f; if(f==="from"||f==="to"){ if(!el.value) return; t[f]=el.value; if(gxP(t.from)>gxP(t.to)){ if(f==="from") t.to=t.from; else t.from=t.to; } var phs=S.phases[+el.dataset.gxtk.split(":")[0]]; var cs=gxClamp(t.from,t.to,phs.from,phs.to); if(cs){ t.from=cs[0]; t.to=cs[1]; } gxSave(); gxDraw(); } else if(f==="budget") t.budget=+el.value||0; else t[f]=el.value; gxSave(); return; }
+    if(el.id==="gx-nf-from"||el.id==="gx-nf-to"){ var a=document.getElementById("gx-nf-from").value,b2=document.getElementById("gx-nf-to").value; if(a&&b2){ if(gxP(a)>gxP(b2)){ b2=a; document.getElementById("gx-nf-to").value=b2; } var tr=document.querySelector("#gen .gx-tr[data-gxformrow]"); if(tr) gxPaint(tr,a,b2); } return; }
+    if(el.dataset.gxk){ var key=el.dataset.gxk; GX.KD[key]= el.type==="checkbox"?el.checked:el.value; if(key==="type"){ var u=GX_TYPES.filter(function(x){return x[0]===el.value;})[0]; GX.KD.unit=u?u[1]:""; var ui=document.querySelector('#gen [data-gxk="unit"]'); if(ui) ui.value=GX.KD.unit; } gxDrawKSide(); return; }
+    if(el.dataset.gxmil){ GX.KD.mil[el.dataset.gxmil]=+el.value; gxDrawKSide(); return; }
+    if(el.dataset.gxfr!==undefined){ gxFeedK().feed.rows[+el.dataset.gxfr][+el.dataset.gxfc]=el.value; return; }
+    if(el.dataset.gxfcol!==undefined){ gxFeedK().feed.cols[+el.dataset.gxfcol]=el.value; return; }
+    if(el.dataset.gxfeed==="sheet"){ gxFeedK().feed.sheet=el.value; gxSave(); return; }
+  });
+  document.addEventListener("change",function(e){ var el=e.target; if(!el.closest||!el.closest("#gen")) return; var S=GX.cur; if(!S) return;
+    if(el.id==="gx-scope"){ S.scope=el.value; S.unit=gxUnits(S.scope)[0]||""; gxSave(); gxDraw(); }
+    if(el.id==="gx-unit"){ S.unit=el.value; gxSave(); gxDraw(); }
+    if(el.dataset&&el.dataset.gxph!==undefined&&el.dataset.f==="name"){ gxSave(); gxDraw(); }
+    if(el.dataset&&el.dataset.gxtk&&["name","owner","budget"].indexOf(el.dataset.f)>-1){ gxSave(); gxDraw(); }
+    if(el.dataset&&el.dataset.gxk&&el.tagName==="SELECT"){ GX.KD[el.dataset.gxk]=el.value; if(el.dataset.gxk==="type"){ var u=GX_TYPES.filter(function(x){return x[0]===el.value;})[0]; GX.KD.unit=u?u[1]:""; var ui=document.querySelector('#gen [data-gxk="unit"]'); if(ui) ui.value=GX.KD.unit; } gxDrawKSide(); }
+    if(el.dataset&&(el.dataset.gxfr!==undefined||el.dataset.gxfcol!==undefined)){ gxSave(); gxDrawFeed(); gxDrawKSide(); }
+    if(el.dataset&&el.dataset.gxfsel){ gxFeedK().feed[el.dataset.gxfsel]=+el.value; gxSave(); gxDrawFeed(); gxDrawKSide(); }
+    if(el.dataset&&el.dataset.gxfpv){ var pv=gxFeedK().feed.pivot; if(el.dataset.gxfpv==="on") pv.on=el.checked; else if(el.dataset.gxfpv==="agg") pv.agg=el.value; else pv[el.dataset.gxfpv]=+el.value; gxSave(); gxDrawFeed(); }
+  });
+  document.addEventListener("keydown",function(e){ if(e.key!=="Enter") return; var el=e.target; if(!el.closest||!el.closest("#gen")) return; if(el.dataset&&el.dataset.gxph!==undefined) el.blur(); if(el.id==="gx-title") el.blur(); if(el.id&&el.id.indexOf("gx-nf-")===0){ var b=document.querySelector("#gen [data-gxsavet]"); if(b) b.click(); } });
+  document.addEventListener("pointerdown",function(e){ var tr=e.target.closest&&e.target.closest("#gen .gx-tr[data-gxrow],#gen .gx-tr[data-gxobjrow],#gen .gx-tr[data-gxformrow],#gen .gx-tr[data-gxphrow]"); if(!tr||!GX.cur||!GX.cur.title||gxRO()) return;
+    var kind= tr.dataset.gxrow?"step": tr.dataset.gxobjrow?"obj": tr.dataset.gxphrow!==undefined?"phase":"form"; var pi= kind==="step"?+tr.dataset.gxrow.split(":")[0] : kind==="phase"?+tr.dataset.gxphrow : kind==="form"?+document.querySelector("#gen [data-gxsavet]").dataset.gxsavet : null;
+    gxDrag={tr:tr,kind:kind,id:tr.dataset.gxrow,pi:pi,start:gxDayAt(tr,e.clientX)}; try{ tr.setPointerCapture(e.pointerId); }catch(_){} });
+  document.addEventListener("pointermove",function(e){ if(!gxDrag) return; var S=GX.cur; var d=gxDayAt(gxDrag.tr,e.clientX); var a=gxIso(Math.min(gxP(gxDrag.start),gxP(d))), b=gxIso(Math.max(gxP(gxDrag.start),gxP(d))); var lo=null,hi=null;
+    if(gxDrag.kind==="phase"){ lo=S.from; hi=S.to; } else if(gxDrag.kind==="step"||gxDrag.kind==="form"){ var phz=S.phases[gxDrag.pi]; lo=phz.from||S.from; hi=phz.to||S.to; }
+    if(lo&&hi){ var c=gxClamp(a,b,lo,hi); if(!c) return; a=c[0]; b=c[1]; }
+    if(gxDrag.kind==="step"){ var t=gxFind(gxDrag.id); t.from=a; t.to=b; } else if(gxDrag.kind==="obj"){ S.from=a; S.to=b; var f=document.getElementById("gx-from"),g=document.getElementById("gx-to"); if(f) f.value=a; if(g) g.value=b; } else if(gxDrag.kind==="phase"){ var pz=S.phases[gxDrag.pi]; pz.from=a; pz.to=b; } else { document.getElementById("gx-nf-from").value=a; document.getElementById("gx-nf-to").value=b; }
+    gxPaint(gxDrag.tr,a,b); });
+  document.addEventListener("pointerup",function(){ if(!gxDrag) return; var k=gxDrag.kind; gxDrag=null; gxSave(); if(k==="form"){ gxToast("رُسمت مدة الخطوة — تُكمَل التفاصيل ثم «إضافة الخطوة».","Step drawn — complete the details."); return; } gxDraw(); });
+  document.addEventListener("click",function(e){ if(e.target.closest&&e.target.closest('[data-go="gen"]')){ gxShowTab(GX.tab); setTimeout(function(){ gxShowTab(GX.tab); },30); } });
+  window.addEventListener("resize",function(){ if(document.getElementById("gen")&&document.getElementById("gen").classList.contains("on")&&GX.tab==="tl"){ clearTimeout(window._gxrz); window._gxrz=setTimeout(gxDraw,120); } });
+  try{ gxLoad(); var dl=document.createElement("datalist"); dl.id="gxPeople"; dl.innerHTML=STAFF.map(function(p){return '<option value="'+gxEsc(p.who[0])+'">';}).join(""); document.body.appendChild(dl); }catch(err){ console.error("gen init", err); }
+
 })();
 </script>
