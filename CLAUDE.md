@@ -62,7 +62,8 @@ before touching anything — it replaces a long build history you cannot see.
    (wording/order), `qagcPrivs`, `qagcAwards`, `qagcOwnerCfg` (rules,
    weights, criteria, hours), `qagcPlanSheet`, `qagcAiHidden`,
    `qagcNotes` (review-mode comments), `qagcGen` (the objective
-   generator's objectives — drafts and approved, versioned `v:2`). The
+   generator's objectives — drafts and approved, versioned; bump `v` in
+   gxSave/gxLoad whenever the seed shape changes so browsers re-seed). The
    settings screen exports/imports all of them as one JSON. Work data
    (submissions, plans, 360 cycles) is in-memory by design until the thin
    backend exists — never promise it persists.
@@ -185,10 +186,16 @@ the end of the IIFE: the objective as a row on a fitted calendar
 scope and assignment from `STAFF`/`ROLE` by line of management (DG and
 coordinator reach everyone), KPI cards on the MoH guideline's Appendix 6
 with plan-driven auto-drafting, and a readings feeder (on-site table with
-formulas/pivot, CSV drop, Sheet link). Three plan objectives are seeded
-as editable drafts and three as approved/tracked with ready readings;
-step status feeds the completion KPIs. Submitting a draft is in-memory
-until the backend exists.
+formulas/pivot, CSV drop, Sheet link). One department objective per
+directorate is seeded as an editable draft and one directorate objective
+per directorate as approved/tracked with ready readings and steps
+assigned to real heads and staff. Access: drafts only to their drafter
+(`S.by`); approved ones to the DG's office (track), the owning line
+(track + verify), and assigned staff (feed only). Completion dates,
+expenses and verification are entered in the feeder and feed the
+completion KPIs; drafts carry no readings. Every «هدف جديد» button
+opens the generator; tracked objectives get a «المتابعة» tab in the
+annual plan. Submitting a draft is in-memory until the backend exists.
 
 Open, in priority order:
 1. **Thin backend** — the one big remaining step: real persistence for work
