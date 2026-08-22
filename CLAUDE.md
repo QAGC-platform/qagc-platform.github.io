@@ -111,8 +111,9 @@ before touching anything — it replaces a long build history you cannot see.
   hand-write a unit list again — `DEP_ORDER` is derived from `ORG`, and
   `orgRank()` / `planRank()` / `byOrgDep()` order the roster, the register,
   the annual plan and the exported report. A unit not in `ORG` sorts last
-  and is flagged on /org rather than folded into a neighbour: قسم التدقيق
-  (plan code AUD) is currently in that state and needs her ruling.
+  and is flagged on /org rather than folded into a neighbour — a flag that
+  means "ask her", never "guess". قسم التدقيق was resolved that way: she
+  ruled it IS قسم الرقابة, so AUD is now that department's plan code.
   The roster's names in QARAR128 were transcribed loosely from Decision
   128/2026; she confirmed the correct forms — دائرة الرقابة والامتثال (not
   …المؤسسي) and قسم الاعتماد والتصنيف (not التصنيف والاعتماد).
