@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 18">
+<meta name="qagc-ver" content="beta 19">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -2464,7 +2464,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
               <input id="cpd-desc" placeholder="المستهدفون، المتحدث، أهداف النشاط"></span>
             <span class="fld" style="grid-column:1/-1"><label><span lang="ar">البروشور (PDF، اختياري)</span><span lang="en">Brochure (PDF, optional)</span></label>
               <input id="cpd-pdf" type="file" accept="application/pdf">
-              <span class="hint2" id="cpd-pdf-name"></span></span>
+              <span class="hint2" id="cpd-pdf-name"></span>
+              <button class="mini no" id="cpdPdfClear" hidden style="align-self:start;margin-top:4px"><span lang="ar">إزالة الملف</span><span lang="en">Remove the file</span></button></span>
           </div>
           <div style="margin-top:var(--sp-4)">
             <div style="font-size:var(--t-sm);font-weight:700"><span lang="ar">المتطلبات اللوجستية</span><span lang="en">Logistics</span></div>
@@ -5797,7 +5798,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     } else if(d.error){
       h+='<div class="drop bad" data-drop="'+ref+'"><div class="dh">'+bi("تعذّرت قراءة الملف","Could not read that file")+'</div>'+
          '<div class="ds">'+d.error+'</div>'+
-         '<input type="file" accept=".xlsx,.csv" hidden id="kf-file-'+ref+'"></div>';
+         '<input type="file" accept=".xlsx,.csv" hidden id="kf-file-'+ref+'"></div>'+
+         // without this the pane is stuck on the bad file: no way back to the drop zone
+         '<div style="margin-top:var(--sp-2)"><button class="btn" data-kpicancel="'+ref+'">'+
+         bi("إزالة الملف","Remove the file")+'</button></div>';
     } else {
       if(d.tpl){
         h+='<div class="drop loaded" data-drop="'+ref+'"><div class="dh">'+d.name+
@@ -7347,6 +7351,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         (isAr()?"سطر إضافي (اختياري)":"An extra line (optional)")+'">'+
       '<div style="display:flex;gap:var(--sp-2);margin-top:var(--sp-2);align-items:center;flex-wrap:wrap">'+
         '<input id="gc-img" type="file" accept="image/*" style="font-size:var(--t-xs)">'+
+        '<button class="btn" id="gcImgClear">'+bi("إزالة الصورة","Remove the image")+'</button>'+
         '<button class="btn" id="gcPrev">'+bi("معاينة","Preview")+'</button>'+
         '<button class="btn" id="gcSaveTpl">'+bi("حفظ كقالب","Save as template")+'</button>'+
         '<button class="btn btn-p" id="gcSend">'+bi("إرسال البطاقة","Send the card")+'</button>'+
@@ -8280,6 +8285,15 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
 
   var CPD_DRAFT_LOG=[];
   var CPD_DRAFT_PDF=null;
+  // a chosen file holds an object URL: dropping it must release the blob too
+  function cpdPdfDrop(){
+    if(CPD_DRAFT_PDF && CPD_DRAFT_PDF.url){ try{ URL.revokeObjectURL(CPD_DRAFT_PDF.url); }catch(_){} }
+    CPD_DRAFT_PDF=null;
+  }
+  function cpdPdfSync(){
+    var b=document.getElementById("cpdPdfClear");
+    if(b) b.hidden=!CPD_DRAFT_PDF;
+  }
   function fillLogWho(){
     var sel=document.getElementById("cpd-log-w");
     if(sel && !sel.options.length){
@@ -8311,8 +8325,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         '<span><span class="k">'+bi("المكان","Venue")+'</span><span class="v">'+bi(ev.venue[0],ev.venue[1])+'</span></span>'+
       '</div>'+
       (ev.desc[0]?'<p style="font-size:var(--t-sm);color:var(--ink-2);margin-top:var(--sp-3)">'+bi(ev.desc[0],ev.desc[1])+'</p>':"")+
-      (ev.pdf?'<div style="margin-top:var(--sp-3)"><button class="btn btn-p" data-pdf="'+i+'">'+
-        bi("عرض البروشور","View the brochure")+'</button></div>':"")+
+      (ev.pdf?'<div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-2);flex-wrap:wrap">'+
+        '<button class="btn btn-p" data-pdf="'+i+'">'+bi("عرض البروشور","View the brochure")+'</button>'+
+        (canEditCpd()?'<button class="btn" data-pdfdel="'+i+'">'+bi("إزالة البروشور","Remove the brochure")+'</button>':"")+
+        '</div>':"")+
       (canEditCpd()
         ? '<div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center">'+
             '<button class="btn'+(ev.confirmed?"":" btn-p")+'" data-ckconf="'+i+'">'+
@@ -8364,16 +8380,36 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(e.target && e.target.id==="cpd-pdf"){
       var f=e.target.files&&e.target.files[0];
       var nm=document.getElementById("cpd-pdf-name");
+      cpdPdfDrop();                       // a replacement releases the old blob
       if(f && f.type==="application/pdf"){
         CPD_DRAFT_PDF={name:f.name, url:URL.createObjectURL(f)};
         if(nm) nm.textContent=f.name+" · "+Math.round(f.size/1024)+" KB";
-      } else {
-        CPD_DRAFT_PDF=null;
-        if(nm) nm.textContent=f?(isAr()?"الملف ليس PDF.":"Not a PDF."):"";
-      }
+      } else if(nm) nm.textContent=f?(isAr()?"الملف ليس PDF.":"Not a PDF."):"";
+      cpdPdfSync();
     }
   });
   document.addEventListener("click",function(e){
+    if(e.target.closest("#cpdPdfClear")){
+      cpdPdfDrop();
+      var inp=document.getElementById("cpd-pdf"); if(inp) inp.value="";
+      var nm3=document.getElementById("cpd-pdf-name"); if(nm3) nm3.textContent="";
+      cpdPdfSync();
+      return;
+    }
+    var pd=e.target.closest("[data-pdfdel]");
+    if(pd){
+      var evd=CPD[+pd.dataset.pdfdel]; if(!evd||!evd.pdf) return;
+      if(pd.dataset.armed!=="1"){
+        pd.dataset.armed="1";
+        pd.innerHTML=bi("تأكيد الإزالة؟","Confirm removal?");
+        setTimeout(function(){ if(pd.isConnected){ pd.dataset.armed="";
+          pd.innerHTML=bi("إزالة البروشور","Remove the brochure"); } },4000);
+        return;
+      }
+      if(evd.pdf.url){ try{ URL.revokeObjectURL(evd.pdf.url); }catch(_){} }
+      evd.pdf=null; drawCpd();
+      return;
+    }
     if(e.target.closest("#cpdLogAdd")){
       var t=document.getElementById("cpd-log-t");
       if(!t.value.trim()){ t.focus(); return; }
@@ -8429,9 +8465,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
                          due:from, st:"not_started", budget:null});
         }
       });
-      CPD_DRAFT_LOG=[]; CPD_DRAFT_PDF=null;
+      CPD_DRAFT_LOG=[]; CPD_DRAFT_PDF=null;   // handed to the activity, not revoked
       var nm2=document.getElementById("cpd-pdf-name"); if(nm2) nm2.textContent="";
       var pf=document.getElementById("cpd-pdf"); if(pf) pf.value="";
+      cpdPdfSync();
       t.value=""; document.getElementById("cpd-venue").value=""; document.getElementById("cpd-desc").value="";
       drawLogRows(); drawCpd();
       if(typeof drawMine==="function") drawMine();
@@ -8765,6 +8802,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         var mi=document.getElementById("gc-msg"); if(mi) mi.value=t.msg;
         if(document.getElementById("gcPreviewHost").innerHTML) renderGcPreview();
       }
+      return;
+    }
+    if(e.target.closest("#gcImgClear")){
+      var gi=document.getElementById("gc-img");
+      if(gi) gi.value="";                       // the blob is made fresh on each render
+      if(document.getElementById("gcPreviewHost").innerHTML) renderGcPreview();
       return;
     }
     if(e.target.closest("#gcPrev")){ renderGcPreview(); return; }
