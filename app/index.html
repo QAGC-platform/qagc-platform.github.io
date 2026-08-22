@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 20">
+<meta name="qagc-ver" content="beta 21">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -1892,6 +1892,28 @@ html[dir="rtl"] .card[data-shut] > .card-h::after{content:"\25C2"}
 body[data-review="on"] .card > .card-h,
 body.editmode .card > .card-h{cursor:inherit}
 body.editmode .card[data-shut] > *{display:revert !important}
+/* ══ الهيكل التنظيمي ══ */
+.orgu{border:1px solid var(--rule);border-radius:var(--r-sm);background:var(--surface);
+  margin-bottom:var(--sp-2);overflow:hidden}
+.orgu > .oh{display:flex;align-items:center;gap:var(--sp-2);padding:10px var(--sp-3);
+  cursor:pointer;width:100%;background:none;border:0;font:inherit;color:inherit;text-align:start}
+.orgu > .oh:hover{background:var(--surface-2)}
+.orgu > .oh .ot{font-weight:600;flex:1;min-width:0}
+.orgu > .oh .oe{font-size:var(--t-xs);color:var(--ink-3);display:block;font-weight:400}
+.orgu > .oh .on{font-family:var(--latin);font-size:var(--t-xs);color:var(--ink-3)}
+.orgu > .oh .ocaret{color:var(--ink-4);font-size:.8em}
+.orgu[data-open] > .oh .ocaret::after{content:"\25BE"}
+.orgu:not([data-open]) > .oh .ocaret::after{content:"\25C2"}
+html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
+.orgu:not([data-open]) > .ob{display:none}
+.orgu > .ob{padding:0 var(--sp-3) var(--sp-3);border-top:1px solid var(--rule)}
+.orgu .orgu{margin-top:var(--sp-2);margin-bottom:0;background:var(--surface-2)}
+.orgp{display:flex;gap:var(--sp-2);align-items:center;padding:5px 0;font-size:var(--t-sm)}
+.orgp .pv{width:24px;height:24px;border-radius:50%;background:var(--brand-deep);color:#fff;
+  display:grid;place-items:center;font-size:10px;flex:none}
+.orgp .pd{color:var(--ink-3);font-size:var(--t-xs)}
+.orgnone{font-size:var(--t-xs);color:var(--ink-4);padding:5px 0}
+.orgflag{font-size:var(--t-xs);color:var(--gold-ink);padding:4px 0}
 </style>
 
 <div class="gate" id="gate">
@@ -2029,6 +2051,7 @@ body.editmode .card[data-shut] > *{display:revert !important}
     <div class="nav-group"><span lang="ar">مساحة العمل</span><span lang="en">Workspace</span></div>
     <div class="nav">
       <button data-go="dir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><path d="M7 14v7M17 14v7M3 14h18"/></svg><span lang="ar">لوحة الدائرة</span><span lang="en">Directorate</span></button>
+      <button data-go="org"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="5" rx="1"/><rect x="2" y="17" width="6" height="5" rx="1"/><rect x="16" y="17" width="6" height="5" rx="1"/><path d="M12 7v5M5 17v-2h14v2"/></svg><span lang="ar">الهيكل التنظيمي</span><span lang="en">Structure</span></button>
       <button data-go="head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V9l7-5 7 5v12"/><path d="M9 21v-6h6v6"/></svg><span lang="ar">لوحة القسم</span><span lang="en">Department</span></button>
       <button data-go="coord"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/><circle cx="12" cy="12" r="4"/></svg><span lang="ar">التنسيق والمتابعة</span><span lang="en">Coordination</span></button>
       <button data-go="staffhome"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg><span lang="ar">صفحتي</span><span lang="en">My page</span></button>
@@ -2994,6 +3017,17 @@ body.editmode .card[data-shut] > *{display:revert !important}
           <div id="dirDeps"></div>
         </div>
       </div>
+    </section>
+
+    <!-- ══════════ STRUCTURE ══════════ -->
+    <section class="screen" id="org">
+      <div class="head">
+        <p class="eyebrow"><span lang="ar">مركز ضمان الجودة والحوكمة</span><span lang="en">Quality Assurance &amp; Governance</span></p>
+        <h1><span lang="ar">الهيكل التنظيمي</span><span lang="en">Structure</span></h1>
+        <p><span lang="ar">التبعية كما اعتمدتها المديرة العامة. كل قائمة في المنصة تُرتَّب على هذا الهيكل.</span>
+           <span lang="en">The reporting line as the Director General set it. Every list in the platform is ordered by it.</span></p>
+      </div>
+      <div id="orgTree"></div>
     </section>
 
     <!-- ══════════ DEPARTMENT HEAD ══════════ -->
@@ -4085,9 +4119,9 @@ body.editmode .card[data-shut] > *{display:revert !important}
   // كشف رقم (1) الملحق بالقرار الوزاري 128/2026 — كوادر مركز ضمان الجودة والحوكمة،
   // ومعه انتدابات الكشف رقم (2) لرئاسة الأقسام. كل اسم قابل للحذف من بطاقة الكوادر.
   var QARAR128=[
-    ["نبيلة بنت علي بن سالم الصبحي","مكتب المدير العام","قسم التنسيق والمتابعة","مشرف إداري"],
-    ["سعيد بن ناصر بن سعيد الحسني","مكتب المدير العام","قسم التنسيق والمتابعة","كاتب شؤون إدارية"],
-    ["سيف بن حمود بن خلفان الرواحي","مكتب المدير العام","قسم التنسيق والمتابعة","سائق"],
+    ["نبيلة بنت علي بن سالم الصبحي","قسم التنسيق والمتابعة","قسم التنسيق والمتابعة","مشرف إداري"],
+    ["سعيد بن ناصر بن سعيد الحسني","قسم التنسيق والمتابعة","قسم التنسيق والمتابعة","كاتب شؤون إدارية"],
+    ["سيف بن حمود بن خلفان الرواحي","قسم التنسيق والمتابعة","قسم التنسيق والمتابعة","سائق"],
     ["حمود بن حمد بن عبدالله العامري","دائرة الحوكمة ومعايير الجودة وتطوير الخدمات","دائرة الحوكمة ومعايير الجودة وتطوير الخدمات","مدير مساعد"],
     ["ريم بنت خميس بن محمد الصواعي","دائرة الحوكمة ومعايير الجودة وتطوير الخدمات","قسم الحوكمة ومعايير الجودة","رئيس قسم الحوكمة ومعايير الجودة (منتدبة)"],
     ["هويده نسرين بنت الحسين الناعس","دائرة الحوكمة ومعايير الجودة وتطوير الخدمات","قسم الحوكمة ومعايير الجودة","أخصائي علاج طبيعي"],
@@ -4097,14 +4131,14 @@ body.editmode .card[data-shut] > *{display:revert !important}
     ["محمد بن حمد بن مبارك الحبسي","دائرة الاعتماد والتراخيص","قسم التراخيص","رئيس قسم"],
     ["أنيس بن علي طرخاني","دائرة الاعتماد والتراخيص","قسم التراخيص","أخصائي علاج نطق"],
     ["محمد رضا السيد محمد","دائرة الاعتماد والتراخيص","قسم التراخيص","أخصائي تأهيل توحد"],
-    ["يونس بن مسلم بن حبيب الرواحي","دائرة الاعتماد والتراخيص","قسم التصنيف والاعتماد","رئيس قسم"],
-    ["محمد محمود أحمد مانع إبراهيم","دائرة الاعتماد والتراخيص","قسم التصنيف والاعتماد","أخصائي تربية خاصة"],
-    ["سالم بن سعيد بن صالح السعيدي","دائرة الرقابة والامتثال المؤسسي","دائرة الرقابة والامتثال المؤسسي","مدير"],
-    ["عزيزة بنت أحمد بن عبدالله الراشدي","دائرة الرقابة والامتثال المؤسسي","قسم الرقابة","رئيس قسم الرقابة (منتدبة)"],
-    ["محمد بن سعيد بن راشد المعمري","دائرة الرقابة والامتثال المؤسسي","قسم الرقابة","أخصائي اجتماعي"],
-    ["فاطمة بنت سعيد بن حمود الحجي","دائرة الرقابة والامتثال المؤسسي","قسم الامتثال المؤسسي","مشرف إداري"],
-    ["إمام محمد محمود قزاز","دائرة الرقابة والامتثال المؤسسي","قسم الامتثال المؤسسي","أخصائي تأهيل توحد"],
-    ["رحمة بنت محمد بن سعيد الجديدي","دائرة الرقابة والامتثال المؤسسي","قسم الامتثال المؤسسي","رئيس قسم الامتثال المؤسسي (منتدبة)"]
+    ["يونس بن مسلم بن حبيب الرواحي","دائرة الاعتماد والتراخيص","قسم الاعتماد والتصنيف","رئيس قسم"],
+    ["محمد محمود أحمد مانع إبراهيم","دائرة الاعتماد والتراخيص","قسم الاعتماد والتصنيف","أخصائي تربية خاصة"],
+    ["سالم بن سعيد بن صالح السعيدي","دائرة الرقابة والامتثال","دائرة الرقابة والامتثال","مدير"],
+    ["عزيزة بنت أحمد بن عبدالله الراشدي","دائرة الرقابة والامتثال","قسم الرقابة","رئيس قسم الرقابة (منتدبة)"],
+    ["محمد بن سعيد بن راشد المعمري","دائرة الرقابة والامتثال","قسم الرقابة","أخصائي اجتماعي"],
+    ["فاطمة بنت سعيد بن حمود الحجي","دائرة الرقابة والامتثال","قسم الامتثال المؤسسي","مشرف إداري"],
+    ["إمام محمد محمود قزاز","دائرة الرقابة والامتثال","قسم الامتثال المؤسسي","أخصائي تأهيل توحد"],
+    ["رحمة بنت محمد بن سعيد الجديدي","دائرة الرقابة والامتثال","قسم الامتثال المؤسسي","رئيس قسم الامتثال المؤسسي (منتدبة)"]
   ];
   QARAR128.forEach(function(r,i){
     var words=r[0].split(/\s+/);
@@ -4141,7 +4175,47 @@ body.editmode .card[data-shut] > *{display:revert !important}
       status: pct>=100?["مكتملة","Complete","p-good"] : pct>0?["قيد التنفيذ","In progress","p-warn"]
                                                               :["لم تبدأ","Not started","p-neutral"]};
   }
-  var DEP_ORDER = ["قسم التنسيق والمتابعة","قسم الحوكمة ومعايير الجودة","قسم تطوير الخدمات","قسم التراخيص","قسم التصنيف والاعتماد","قسم الرقابة","قسم الامتثال المؤسسي"];
+  // ══ الهيكل التنظيمي — كما قرّرته المديرة العامة ══
+  // مصدر واحد لترتيب كل قائمة في المنصة: الكشوف، والأقسام، والخطة، والأهداف.
+  // مكتب المدير العام وقسم التنسيق يتبعان المديرة مباشرة، ثم الدوائر الثلاث.
+  var ORG=[
+    {code:"DGO",   ar:"مكتب المدير العام", en:"Director General's Office", deps:[]},
+    {code:"COORD", ar:"قسم التنسيق والمتابعة", en:"Coordination & Follow-up", deps:[]},
+    {code:"DAC",   ar:"دائرة الرقابة والامتثال", en:"Oversight & Compliance", deps:[
+      {code:"OVS", ar:"قسم الرقابة", en:"Oversight"},
+      {code:"IC",  ar:"قسم الامتثال المؤسسي", en:"Institutional Compliance"}]},
+    {code:"GQSIS", ar:"دائرة الحوكمة ومعايير الجودة وتطوير الخدمات",
+     en:"Governance, Quality Standards & Service Development", deps:[
+      {code:"GQS", ar:"قسم الحوكمة ومعايير الجودة", en:"Governance & Quality Standards"},
+      {code:"SI",  ar:"قسم تطوير الخدمات", en:"Service Development"}]},
+    {code:"DAL",   ar:"دائرة الاعتماد والتراخيص", en:"Accreditation & Licensing", deps:[
+      {code:"AC",  ar:"قسم الاعتماد والتصنيف", en:"Accreditation & Classification"},
+      {code:"LIC", ar:"قسم التراخيص", en:"Licensing"}]}
+  ];
+  var ORG_RANK={}, ORG_EN={}, DIR_BY_CODE={}, DEP_BY_CODE={};
+  ORG.forEach(function(d,i){
+    ORG_RANK[d.ar]=(i+1)*100; ORG_EN[d.ar]=d.en; DIR_BY_CODE[d.code]=d.ar;
+    d.deps.forEach(function(p,j){
+      ORG_RANK[p.ar]=(i+1)*100+j+1; ORG_EN[p.ar]=p.en; DEP_BY_CODE[p.code]=p.ar;
+    });
+  });
+  // a unit the structure does not name sorts last rather than silently first
+  function orgRank(name){ var r=ORG_RANK[name]; return r==null?99999:r; }
+  function orgEn(name){ return ORG_EN[name]||name; }
+  // an objective is placed by its department, else by its directorate
+  function planRank(o){
+    var dep=o.dep&&DEP_BY_CODE[o.dep], dir=o.dir&&DIR_BY_CODE[o.dir];
+    if(dep) return orgRank(dep);
+    if(dir) return orgRank(dir)+90;   // known directorate, department not in the structure
+    return 99999;
+  }
+  function byOrgDep(a,b){ return orgRank(a.dep&&a.dep[0])-orgRank(b.dep&&b.dep[0]); }
+
+  // the department list is no longer written by hand — it IS the structure
+  var DEP_ORDER = ORG.reduce(function(a,d){
+    return d.deps.length ? a.concat(d.deps.map(function(p){return p.ar;}))
+         : (d.code==="COORD" ? a.concat([d.ar]) : a);
+  },[]);
 
   function isAr(){ return document.documentElement.lang === "ar"; }
   function bi(ar,en){ return '<span lang="ar">'+ar+'</span><span lang="en">'+en+'</span>'; }
@@ -5555,7 +5629,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
                              :(PLAN2027.length+" objectives · "+done+" complete"));
       var order={center:0,directorate:1,department:2};
       var sorted=PLAN2027.slice().sort(function(x,y){
-        return (order[x.l]-order[y.l])||x.r.localeCompare(y.r); });
+        return (order[x.l]-order[y.l])||(planRank(x)-planRank(y))||x.r.localeCompare(y.r); });
       body+=dTable([[isAr()?"الرمز":"Ref", isAr()?"الهدف":"Objective", isAr()?"المسؤول":"Owner",
                      isAr()?"التصنيف":"Category", isAr()?"الإنجاز":"Progress"]]
         .concat(sorted.map(function(o){
@@ -6463,7 +6537,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
 
     var order={center:0,directorate:1,department:2};
     var sorted=PLAN2027.slice().sort(function(x,y){
-      return (order[x.l]-order[y.l]) || x.r.localeCompare(y.r); })
+      return (order[x.l]-order[y.l]) || (planRank(x)-planRank(y)) || x.r.localeCompare(y.r); })
       .filter(function(o){ return planMatches(o, progOf(o), tagOf(o)); });
     var cnt=document.getElementById("planCount");
     if(cnt) cnt.innerHTML=bi(sorted.length+" من "+PLAN2027.length, sorted.length+" of "+PLAN2027.length);
@@ -6656,7 +6730,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
 
   function drawRoster(){
     var host=document.getElementById("rosterList"); if(!host) return;
-    var scoped=peopleInScope();
+    var scoped=peopleInScope().slice().sort(byOrgDep);
     if(!scoped.length){ host.innerHTML=""; return; }
     if(scoped.filter(function(p){return p.id===SEL;}).length===0) SEL=scoped[0].id;
     host.innerHTML=scoped.map(function(p){
@@ -7853,7 +7927,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(l && typeof ROLE_NAV!=="undefined" && ROLE_NAV){
       var NAMES={cc:["مركز القيادة","Command centre"],dir:["لوحة الدائرة","Directorate"],
                  coord:["التنسيق والمتابعة","Coordination"],staffhome:["صفحتي","My page"],
-                 head:["لوحة القسم","Department"],
+                 head:["لوحة القسم","Department"],org:["الهيكل التنظيمي","Structure"],
                  annual:["الخطة السنوية","Annual plan"],people:["الموظفون","People"],
                  leave:["الإجازات","Leave"],dept:["سجل الأقسام","Department register"],
                  master:["الخطة المرجعية","Master plan"],ai:["المساعد","Assistant"]};
@@ -11820,7 +11894,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     {u:"dg",    p:"qagc2027", role:"dg",    sid:"dg0", must:false, active:true, twofa:true,
      who:["المديرة العامة","Director General"], dep:["مركز ضمان الجودة والحوكمة","Quality Assurance & Governance"]},
     {u:"coord", p:"qagc2027", role:"coord", sid:"m1", must:false, active:true, twofa:true,
-     who:["نبيلة بنت علي الصبحي — التنسيق والمتابعة","Nabila Al Subhi — Coordination"], dep:["مكتب المدير العام","Director General Office"]},
+     who:["نبيلة بنت علي الصبحي — التنسيق والمتابعة","Nabila Al Subhi — Coordination"], dep:["قسم التنسيق والمتابعة","Coordination & Follow-up"]},
     {u:"dir.gov",p:"qagc2027",role:"dir",   sid:"m4", must:false, active:true, twofa:true,
      who:["حمود بن حمد العامري — مدير مساعد","Hamood Al Amri — Assistant Director"], dep:["دائرة الحوكمة ومعايير الجودة وتطوير الخدمات","Governance, Quality Standards & Service Development"]},
     {u:"sd.head",p:"qagc2027",role:"head",  sid:"m7", must:false, active:true, twofa:false,
@@ -12195,17 +12269,17 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
 
   // ══ role views: each persona sees only what its scope allows ══
   var ROLE_NAV={
-    dg:    ["cc","master","annual","dept","people","mine","approvals","leave","cpd","ccal","coord","ai","prefs","own"],
-    dir:   ["dir","master","annual","dept","people","mine","approvals","leave","cpd","ccal","prefs"],
-    head:  ["head","master","annual","people","mine","approvals","leave","cpd","ccal","prefs"],
-    coord: ["coord","master","annual","people","mine","approvals","leave","cpd","ccal","prefs"],
-    staff: ["staffhome","master","annual","mine","approvals","leave","cpd","ccal","prefs"]
+    dg:    ["cc","master","annual","dept","people","mine","approvals","leave","cpd","ccal","coord","ai","prefs","own","org"],
+    dir:   ["dir","master","annual","dept","people","mine","approvals","leave","cpd","ccal","prefs","org"],
+    head:  ["head","master","annual","people","mine","approvals","leave","cpd","ccal","prefs","org"],
+    coord: ["coord","master","annual","people","mine","approvals","leave","cpd","ccal","prefs","org"],
+    staff: ["staffhome","master","annual","mine","approvals","leave","cpd","ccal","prefs","org"]
   };
   var ROLE_HOME={dg:"cc",dir:"dir",head:"head",coord:"coord",staff:"staffhome"};
   var ROLE_WHO={
     dg:   [["المدير العام","Director General"],["مركز ضمان الجودة والحوكمة","Quality Assurance & Governance"],"DG"],
     dir:  [["مدير الدائرة","Directorate head"],["الحوكمة ومعايير الجودة وتطوير الخدمات","Governance & Service Development"],"DH"],
-    coord:[["قسم التنسيق والمتابعة","Coordination & Follow-up"],["مكتب المدير العام","Director General Office"],"CF"],
+    coord:[["قسم التنسيق والمتابعة","Coordination & Follow-up"],["مركز ضمان الجودة والحوكمة","Quality Assurance & Governance"],"CF"],
     head: [["رحمة الراشدي — رئيسة قسم تطوير الخدمات","Rahma Al Rashdi — Head of Service Development"],["قسم تطوير الخدمات","Service Development"],"SD"],
     staff:[["عبدالناصر الهادي — أخصائي تربية خاصة","Abdulnasser Al Hadi — Special Education Specialist"],["قسم تطوير الخدمات","Service Development"],"AH"]
   };
@@ -12244,7 +12318,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     // the plan itself reads differently per role — watch box, and my own steps
     drawPlan(); drawDash();
     applyLeaveTabs(); drawMine(); afterSubmit(); drawPrioEverywhere(); lvAfter(); drawCpd(); drawStrips();
-    drawCoord(); drawDir(); drawHead(); drawStaffHome(); drawPrefs(); drawAccounts();
+    drawCoord(); drawDir(); drawHead(); drawStaffHome(); drawPrefs(); drawAccounts(); drawOrg();
   }
   var rs=document.getElementById("roleSel");
   if(rs) rs.addEventListener("change",function(){ ROLE=this.value; applyRole(); });
@@ -12441,6 +12515,63 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         '<div class="cov-n tnum">'+avg+'%</div></div>';
     }).join("");
   }
+
+  // ── الهيكل التنظيمي: شجرة تبدأ مطوية ──
+  var ORG_OPEN={};
+  try{ ORG_OPEN=JSON.parse(localStorage.getItem("qagcOrgOpen")||"{}"); }catch(_){}
+  function orgPeople(unitAr){
+    return STAFF.filter(function(p){
+      return p.id!=="dg0" && p.dep && p.dep[0]===unitAr; });
+  }
+  function orgUnitHtml(u, isDir){
+    var here=orgPeople(u.ar);
+    var kids=(u.deps||[]);
+    var count=here.length+kids.reduce(function(a,k){return a+orgPeople(k.ar).length;},0);
+    var open=!!ORG_OPEN[u.code];
+    return '<div class="orgu"'+(open?' data-open':'')+'>'+
+      '<button class="oh" data-orgu="'+u.code+'">'+
+        '<span class="ocaret"></span>'+
+        '<span class="ot">'+(isAr()?u.ar:u.en)+
+          '<span class="oe">'+(isAr()?u.en:u.ar)+'</span></span>'+
+        '<span class="on">'+count+'</span>'+
+      '</button>'+
+      '<div class="ob">'+
+        kids.map(function(k){ return orgUnitHtml(k,false); }).join("")+
+        (here.length
+          ? here.map(function(p){
+              return '<div class="orgp"><span class="pv">'+p.ini+'</span>'+
+                '<span>'+bi(p.who[0],p.who[1])+
+                  '<span class="pd">'+bi(p.desig[0],p.desig[1])+'</span></span></div>';
+            }).join("")
+          : (kids.length?"":'<div class="orgnone">'+bi("لا أحد مسجّل هنا.","Nobody on this unit's roster.")+'</div>'))+
+      '</div></div>';
+  }
+  function drawOrg(){
+    var host=document.getElementById("orgTree"); if(!host) return;
+    // a department that carries work but is not in the structure must be visible,
+    // not quietly folded into a neighbour
+    var known={}; ORG.forEach(function(d){ known[d.ar]=1; (d.deps||[]).forEach(function(k){ known[k.ar]=1; }); });
+    var stray={};
+    STAFF.forEach(function(p){ if(p.id!=="dg0" && p.dep && !known[p.dep[0]]) stray[p.dep[0]]=1; });
+    if(typeof PLAN2027!=="undefined") PLAN2027.forEach(function(o){
+      var d=o.dep&&DEP_BY_CODE[o.dep];
+      if(o.dep && !d) stray["("+o.dep+") "+(o.o||"")]=1;
+    });
+    var names=Object.keys(stray);
+    host.innerHTML=ORG.map(function(d){ return orgUnitHtml(d,true); }).join("")+
+      (names.length
+        ? '<div class="orgflag">'+bi("خارج الهيكل المعتمد: ","Outside the approved structure: ")+
+          names.join(" · ")+'</div>'
+        : "");
+  }
+  document.addEventListener("click",function(e){
+    if(typeof RVON!=="undefined" && RVON) return;
+    var b=e.target.closest?e.target.closest("[data-orgu]"):null; if(!b) return;
+    var c=b.dataset.orgu;
+    ORG_OPEN[c]=!ORG_OPEN[c];
+    try{ localStorage.setItem("qagcOrgOpen", JSON.stringify(ORG_OPEN)); }catch(_){}
+    drawOrg();
+  });
 
   // ── department head: the first line manager the platform has ──
   function drawHead(){
@@ -13100,7 +13231,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       ownerPersist(); drawPerfBoard(); flashSaved("pwSaved"); return;
     }
     if(e.target.closest("#cfgExport")){
-      var keys=["qagcCustom","qagcPrivs","qagcAwards","qagcOwnerCfg","qagcPlanSheet","qagcAiHidden","qagcAiCfg","qagcNotes","qagcOpen"];
+      var keys=["qagcCustom","qagcPrivs","qagcAwards","qagcOwnerCfg","qagcPlanSheet","qagcAiHidden","qagcAiCfg","qagcNotes","qagcOpen","qagcOrgOpen"];
       var bag={_qagc:"owner-settings", when:PLATFORM_TODAY};
       keys.forEach(function(k){ var v=localStorage.getItem(k); if(v!==null) bag[k]=v; });
       dlBlob("qagc-settings.json", new Blob([JSON.stringify(bag,null,1)],{type:"application/json"}));

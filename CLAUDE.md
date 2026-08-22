@@ -103,6 +103,19 @@ before touching anything — it replaces a long build history you cannot see.
   development, endorses upward, never approves a budget — budgets are the
   DG's alone. Her scope is computed from her own `dep`, not a hard-coded
   list, so a second head needs no new code.
+- **The organisational structure is data, and it orders everything.** `ORG`
+  in app/index.html is the centre's hierarchy as the DG stated it: her
+  office and قسم التنسيق والمتابعة report to her directly, then دائرة
+  الرقابة والامتثال, دائرة الحوكمة ومعايير الجودة وتطوير الخدمات, دائرة
+  الاعتماد والتراخيص, each with its two departments in her order. Never
+  hand-write a unit list again — `DEP_ORDER` is derived from `ORG`, and
+  `orgRank()` / `planRank()` / `byOrgDep()` order the roster, the register,
+  the annual plan and the exported report. A unit not in `ORG` sorts last
+  and is flagged on /org rather than folded into a neighbour: قسم التدقيق
+  (plan code AUD) is currently in that state and needs her ruling.
+  The roster's names in QARAR128 were transcribed loosely from Decision
+  128/2026; she confirmed the correct forms — دائرة الرقابة والامتثال (not
+  …المؤسسي) and قسم الاعتماد والتصنيف (not التصنيف والاعتماد).
 - Review mode (rail toggle, `qagcNotes`): she clicks any element on the live
   platform and pins a comment to it. A note stores the screen, the nearest
   card heading and the element's own visible text, so it stays meaningful
