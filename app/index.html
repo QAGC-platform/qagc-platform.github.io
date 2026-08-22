@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 23">
+<meta name="qagc-ver" content="beta 24">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -1839,6 +1839,10 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
 #verBar .btn{white-space:nowrap}
 #verBar .btn:not(.btn-p){background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
 #rvPop.fx{position:fixed}
+.plansec{font-size:var(--t-md);font-weight:800;margin:var(--sp-4) 0 var(--sp-2);padding-top:var(--sp-3);border-top:1px solid var(--rule);display:flex;align-items:center;gap:8px}
+.plansec .badge{font-size:10px}
+#mineObjList .prow2 .pm{font-size:var(--t-xs);color:var(--ink-3);font-weight:400}
+#mineObjList .prow2 .pr{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .rv-pin.fx{position:fixed}
 #rvPop{position:absolute;z-index:70;width:min(330px,92vw);background:var(--surface);
   border:1px solid var(--rule-strong);border-radius:12px;padding:12px;
@@ -2068,7 +2072,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       <button data-go="annual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="17" rx="2"/><path d="M8 2v4M16 2v4M8 12l2 2 4-4"/></svg><span lang="ar">الخطة السنوية</span><span lang="en">Annual plan</span><span class="count tnum">3</span></button>
       <button data-go="dept"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-5h6v5"/><path d="M9 11h.01M15 11h.01"/></svg><span lang="ar">سجل الأقسام</span><span lang="en">Department register</span></button>
       <button data-go="people"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 20a6.2 6.2 0 0 1 12.4 0"/><path d="M17 5.3a3.2 3.2 0 0 1 0 5.4M18.4 20a6.2 6.2 0 0 0-2.6-4.4"/></svg><span lang="ar">الموظفون</span><span lang="en">People</span><span class="count tnum">3</span></button>
-      <button data-go="mine"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="3.5"/><path d="M3.5 20a6.5 6.5 0 0 1 11.4-4.3"/><path d="m15.5 18.5 2 2 4-4"/></svg><span lang="ar">المهام</span><span lang="en">Assignments</span></button>
+      <button data-go="mine"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="3.5"/><path d="M3.5 20a6.5 6.5 0 0 1 11.4-4.3"/><path d="m15.5 18.5 2 2 4-4"/></svg><span lang="ar">المهام والأهداف</span><span lang="en">Assignments &amp; objectives</span></button>
       <button data-go="approvals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6a2 2 0 0 1 2 2v0h1.5A1.5 1.5 0 0 1 20 7.5v12A1.5 1.5 0 0 1 18.5 21h-13A1.5 1.5 0 0 1 4 19.5v-12A1.5 1.5 0 0 1 5.5 6H7v0a2 2 0 0 1 2-2z"/><path d="m8.5 13.5 2 2 4.5-4.5"/></svg><span lang="ar">الاعتمادات</span><span lang="en">Approvals</span><span class="count tnum" id="apprCount">0</span></button>
       <button data-go="leave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg><span lang="ar">الإجازات</span><span lang="en">Leave</span><span class="count tnum">2</span></button>
       <button data-go="cpd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5z"/><path d="M6 10.5V15c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5"/></svg><span lang="ar">التدريب والتطوير</span><span lang="en">Training &amp; development</span></button>
@@ -2376,9 +2380,23 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
     <section class="screen" id="mine">
       <div class="head">
         <p class="eyebrow"><span lang="ar">نطاق شخصي</span><span lang="en">Personal scope</span></p>
-        <h1><span lang="ar">المهام</span><span lang="en">Assignments</span></h1>
+        <h1><span lang="ar">المهام والأهداف</span><span lang="en">Assignments &amp; objectives</span></h1>
         <p><span lang="ar">ما هو مسند إليّ، وما أضيفه بنفسي. كل ما يُضاف يحمل فئة، ولا يسري قبل اعتماد المدير العام — الهدف نفسه، ومؤشره، وتقدير ميزانيته.</span>
            <span lang="en">What is assigned to me, and what I add myself. Everything added carries a category, and none of it takes effect before the Director General approves it — the objective itself, its KPI, and its budget estimate.</span></p>
+      </div>
+      <div class="subtabs" id="mineMode" style="margin-bottom:6px">
+        <button class="on" data-minemode="tasks"><span lang="ar">المهام</span><span lang="en">Assignments</span></button>
+        <button data-minemode="objs"><span lang="ar">الأهداف</span><span lang="en">Objectives</span><span class="badge" id="mineObjCount">0</span></button>
+      </div>
+      <div id="mine-objs" hidden>
+        <div class="tiles" id="mineObjTiles"></div>
+        <div class="card">
+          <div class="card-h"><div class="chrow"><span class="ib gold"></span><div>
+            <span class="ceye" id="mineObjScope"></span>
+            <h2><span lang="ar">أهداف نطاقي في الخطة السنوية</span><span lang="en">Objectives in my scope</span></h2></div></div>
+            <div style="display:flex;gap:8px"><button class="btn" id="mineObjPlan"><span lang="ar">الخطة السنوية الكاملة</span><span lang="en">Full annual plan</span></button><button class="btn btn-p" id="mineObjNew"><span lang="ar">هدف جديد</span><span lang="en">New objective</span></button></div></div>
+          <div id="mineObjList"></div>
+        </div>
       </div>
       <div class="subtabs" id="mineTabs">
         <button class="on" data-minetab="own"><span lang="ar">مهامي</span><span lang="en">My assignments</span></button>
@@ -3180,7 +3198,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       <div class="head">
         <p class="eyebrow"><span lang="ar">تحكّم المالك</span><span lang="en">Owner control</span></p>
         <h1><span lang="ar">الإعدادات</span><span lang="en">Settings</span></h1>
-        <p><span lang="ar">يسري على المنصة كاملة. لكِ وحدك.</span>
+        <p><span lang="ar">يسري على المنصة كاملة. خاص بمالك المنصة وحده.</span>
            <span lang="en">Platform-wide. Yours alone.</span></p>
       </div>
 
@@ -3216,7 +3234,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
           </div>
           <p class="subh" style="margin-top:var(--sp-4)"><span lang="ar">تحرير العناوين — مباشرة على المنصة</span><span lang="en">Headlines — edited on the platform itself</span></p>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">شغّلي التحرير، وانقري أي عنوان، واكتبي مكانه.</span>
+            <span lang="ar">تشغيل التحرير، ثم النقر على أي عنوان والكتابة مكانه.</span>
             <span lang="en">Turn on editing, tap any heading, type over it.</span></p>
           <button class="btn btn-p" id="czEditMode"><span lang="ar">✏️ تفعيل وضع التحرير المباشر</span><span lang="en">✏️ Start direct editing</span></button>
           <p class="subh" style="margin-top:var(--sp-4)"><span lang="ar">ترتيب اللوحة الجانبية</span><span lang="en">Rail order</span></p>
@@ -3264,7 +3282,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
             </div>
             <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
               <button class="btn btn-p" id="thAdd"><span lang="ar">إضافة اللوحة</span><span lang="en">Add the palette</span></button>
-              <span class="saved" id="thSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span lang="ar">أُضيفت — جرّبيها من تفضيلاتي.</span><span lang="en">Added — try it in My preferences.</span></span>
+              <span class="saved" id="thSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span lang="ar">أُضيفت — متاحة للتجربة من تفضيلاتي.</span><span lang="en">Added — try it in My preferences.</span></span>
             </div>
           </div>
           <div class="toggle" style="margin-top:var(--sp-4)">
@@ -3293,7 +3311,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
           </div>
           <div class="toggle" style="margin-top:var(--sp-4)">
             <span><span class="tl2"><span lang="ar">عرضها في الصفحة الرئيسية لكل المستخدمين</span><span lang="en">Show them on every user's home page</span></span>
-              <span class="ts2"><span lang="ar">يراها الجميع للاطلاع. الإيقاف يجعلها لكِ وحدك.</span>
+              <span class="ts2"><span lang="ar">يراها الجميع للاطلاع. الإيقاف يجعلها خاصة بمالك المنصة وحده.</span>
                 <span lang="en">Everyone may look. Off makes it yours alone.</span></span></span>
             <button class="sw-btn" id="swPrioAll"><i></i></button></div>
         </div>
@@ -3786,7 +3804,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
           <div class="frow" style="align-items:end">
             <div class="fld" style="flex:2;min-width:240px"><label><span lang="ar">بريد تقويمها الشخصي</span><span lang="en">Her calendar's email</span></label>
               <input id="dgcal-email" spellcheck="false" style="direction:ltr;text-align:start" placeholder="name@gmail.com">
-              <div class="hint2"><span lang="ar">شاركيه مع حساب المنصة أولاً. فارغ = فك الربط.</span>
+              <div class="hint2"><span lang="ar">يُشارَك مع حساب المنصة أولاً. فارغ = فك الربط.</span>
                 <span lang="en">Share it with the platform account first. Empty unlinks.</span></div></div>
             <div class="fld" style="align-self:end"><button class="btn btn-p" id="dgcalSet"><span lang="ar">ربط التقويم</span><span lang="en">Link it</span></button></div>
           </div>
@@ -3806,7 +3824,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
             <span class="ceye"><span lang="ar">من يفعل ماذا</span><span lang="en">Who may do what</span></span>
             <h2><span lang="ar">الأشخاص والصلاحيات</span><span lang="en">People and permissions</span></h2></div></div></div>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">اضغطي أي مربع لمنحها أو سحبها.</span>
+            <span lang="ar">النقر على أي مربع يمنحها أو يسحبها.</span>
             <span lang="en">Tap a box to grant or withdraw.</span></p>
           <div class="pmwrap"><table class="pm" id="permTable"></table></div>
 
@@ -4049,7 +4067,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
   <div class="row">
     <button class="btn btn-p" id="rvPopSave"><span lang="ar">حفظ الملاحظة</span><span lang="en">Save note</span></button>
     <button class="btn" id="rvPopCancel"><span lang="ar">إلغاء</span><span lang="en">Cancel</span></button>
-    <button class="btn" id="rvPopGo" hidden><span lang="ar">افتحي الشاشة</span><span lang="en">Open the screen</span></button>
+    <button class="btn" id="rvPopGo" hidden><span lang="ar">فتح الشاشة</span><span lang="en">Open the screen</span></button>
   </div>
 </div>
 <div id="rvPanel" hidden>
@@ -5763,7 +5781,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var ev=JSON.parse(decodeURIComponent(dv.dataset.dgcalev));
     var msg=dv.parentElement.querySelector("[data-dgcalevmsg]");
     var cfg=dgCalCfg();
-    if(!cfg){ if(msg) msg.innerHTML=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
+    if(!cfg){ if(msg) msg.innerHTML=bi("يلزم إدخال المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
     if(msg) msg.innerHTML=bi("جارٍ الإدراج…","Placing…");
     var acct=(typeof SESSION!=="undefined"&&SESSION&&typeof acctOf==="function")?acctOf(SESSION.u):null;
     fetch(cfg.url+"?key="+encodeURIComponent(cfg.key), {method:"POST",
@@ -5774,10 +5792,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       .then(function(r){return r.json();})
       .then(function(j){
         if(msg) msg.innerHTML=j.ok
-          ? bi("أُدرج في تقويمها (٩ص–٢م — عدّلي الوقت من التقويم نفسه).","Placed in her calendar (9–14 — adjust the time there).")
+          ? bi("أُدرج في تقويمها (٩ص–٢م — يُعدَّل الوقت من التقويم نفسه).","Placed in her calendar (9–14 — adjust the time there).")
           : bi("رفض: ","Refused: ")+(j.error||"");
       })
-      .catch(function(){ if(msg) msg.innerHTML=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
+      .catch(function(){ if(msg) msg.innerHTML=bi("تعذّر الاتصال — تُستخدم النسخة المنشورة على github.io.","Could not connect — use the github.io copy."); });
   });
   async function saveIcs(events, name, btn){
     var text=icsDoc(events);
@@ -5872,7 +5890,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       '</div>';
     var pg=PENDING_GS[ref];
     h+='<div class="tplrow" style="border-color:var(--good-ink)"><span>'+
-        (pg? bi("الورقة جاهزة — أضيفي القراءات في Sheets ثم اسحبيها إلى هنا.",
+        (pg? bi("الورقة جاهزة — تُضاف القراءات في Sheets ثم تُسحب إلى هنا.",
                 "The sheet is ready — add readings in Sheets, then pull them here.")
            : bi("أو أنشئ المؤشر في Google Sheets نفسها: تُفتح ورقة باسمه يضيف فيها القسم قراءاته، والمنصة تسحبها.",
                 "Or create the KPI in Google Sheets itself: a tab opens under its name, the team adds readings there, and the platform pulls them."))+
@@ -6037,7 +6055,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var url=(cfg&&cfg.url)||(document.getElementById("aiCfgUrl")||{}).value||"";
     var key=(cfg&&cfg.key)||(document.getElementById("aiCfgKey")||{}).value||"";
     if(!url||!key){
-      if(err) err.innerHTML=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first.");
+      if(err) err.innerHTML=bi("يلزم إدخال المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first.");
       return;
     }
     if(err) err.innerHTML=bi("جارٍ الإرسال…","Sending…");
@@ -6054,12 +6072,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       .then(function(r){return r.json();})
       .then(function(j){
         if(err) err.innerHTML = j.ok
-          ? bi("أُرسل الطلب — اطلبي التحليل من المساعد في ChatGPT، ثم افتحي شاشة الجسر الذكي.",
+          ? bi("أُرسل الطلب — يُطلب التحليل من المساعد في ChatGPT، ثم تُفتح شاشة الجسر الذكي.",
                "Sent — ask the assistant in ChatGPT to analyse, then open the bridge screen.")
           : bi("رفض الطلب: ","Refused: ")+(j.error||"");
       })
       .catch(function(){
-        if(err) err.innerHTML=bi("تعذّر الاتصال — جرّبي من النسخة المنشورة على github.io.",
+        if(err) err.innerHTML=bi("تعذّر الاتصال — المحاولة من النسخة المنشورة على github.io.",
                                    "Could not connect — try the github.io copy.");
       });
   });
@@ -6109,7 +6127,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+
         '<b style="font-size:var(--t-sm)">'+bi("المحرر المضمّن","The embedded editor")+'</b>'+chips+
         '<span class="kerr" id="kgsync-'+ref+'-'+i+'" style="margin-inline-start:auto">'+
-          (k.gs?bi("يُدفع إلى Sheets تلقائياً بعد كل تعديل.","Auto-pushed to Sheets after every edit."):bi("محلي — أنشئي ورقة Sheets ليُدفع إليها.","Local — create the sheet to mirror it."))+'</span></div>'+
+          (k.gs?bi("يُدفع إلى Sheets تلقائياً بعد كل تعديل.","Auto-pushed to Sheets after every edit."):bi("محلي — تُنشأ ورقة Sheets ليُدفع إليها.","Local — create the sheet to mirror it."))+'</span></div>'+
       '<div style="display:flex;gap:6px;font-size:var(--t-xs);color:var(--ink-4);margin-top:8px">'+
         '<span style="width:22px"></span><span style="flex:2;min-width:90px">'+bi("الفترة","Period")+'</span>'+
         '<span style="flex:1;min-width:80px">'+bi("القيمة","Value")+'</span>'+
@@ -6236,7 +6254,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       if(ROLE!=="dg"&&ROLE!=="coord"){
         if(err) err.innerHTML=bi("نشر الخطة للمدير العام والتنسيق.","Publishing is for the DG and Coordination."); return; }
       var cfg=dgCalCfg();
-      if(!cfg){ if(err) err.innerHTML=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
+      if(!cfg){ if(err) err.innerHTML=bi("يلزم إدخال المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
       if(err) err.innerHTML=bi("جارٍ النشر…","Publishing…");
       var rows=PLAN2027.map(function(o){
         return {ref:o.r, level:o.l, title:o.t, smart:o.d||"", kpi:o.k||"", target:o.g||"",
@@ -6255,7 +6273,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             try{ localStorage.setItem("qagcPlanSheet", j.url); }catch(_){}
           } else if(err) err.innerHTML=bi("رفض: ","Refused: ")+(j.error||"");
         })
-        .catch(function(){ if(err) err.innerHTML=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
+        .catch(function(){ if(err) err.innerHTML=bi("تعذّر الاتصال — تُستخدم النسخة المنشورة على github.io.","Could not connect — use the github.io copy."); });
       return;
     }
     var kn2=e.target.closest("[data-kgsnew]");
@@ -6266,10 +6284,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       if(!titleN.trim()){
         var tiN=document.getElementById("kf-title-"+refN);
         if(tiN) tiN.focus();
-        if(errN) errN.innerHTML=bi("اكتبي عنوان المؤشر أولاً.","Give the KPI a title first."); return;
+        if(errN) errN.innerHTML=bi("عنوان المؤشر مطلوب أولاً.","Give the KPI a title first."); return;
       }
       var cfgN=dgCalCfg();
-      if(!cfgN){ if(errN) errN.innerHTML=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
+      if(!cfgN){ if(errN) errN.innerHTML=bi("يلزم إدخال المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
       if(errN) errN.innerHTML=bi("جارٍ إنشاء الورقة…","Creating…");
       var tgtN=parseFloat((document.getElementById("kf-tgt-"+refN)||{}).value);
       fetch(cfgN.url+"?key="+encodeURIComponent(cfgN.key), {method:"POST",
@@ -6289,7 +6307,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             window.open(j.url,"_blank");
           } else if(errN) errN.innerHTML=bi("رفض: ","Refused: ")+(j.error||"");
         })
-        .catch(function(){ if(errN) errN.innerHTML=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
+        .catch(function(){ if(errN) errN.innerHTML=bi("تعذّر الاتصال — تُستخدم النسخة المنشورة على github.io.","Could not connect — use the github.io copy."); });
       return;
     }
     var kp2=e.target.closest("[data-kgspull]");
@@ -6297,7 +6315,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var refP=kp2.dataset.kgspull, pgP=PENDING_GS[refP]; if(!pgP) return;
       var errP=document.getElementById("kgserr-"+refP);
       var cfgP=dgCalCfg();
-      if(!cfgP){ if(errP) errP.innerHTML=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
+      if(!cfgP){ if(errP) errP.innerHTML=bi("يلزم إدخال المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
       if(errP) errP.innerHTML=bi("جارٍ السحب…","Pulling…");
       fetch(cfgP.url+"?key="+encodeURIComponent(cfgP.key)+"&fn=readKpi&tab="+encodeURIComponent(pgP.tab))
         .then(function(r){return r.json();})
@@ -6313,10 +6331,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             delete PENDING_GS[refP];
             refreshKpiPane(refP); afterSubmit();
           } else if(errP) errP.innerHTML=j.ok
-            ? bi("الورقة فارغة — أضيفي قراءات في Sheets أولاً.","The sheet is empty — add readings in Sheets first.")
+            ? bi("الورقة فارغة — تُضاف قراءات في Sheets أولاً.","The sheet is empty — add readings in Sheets first.")
             : bi("رفض: ","Refused: ")+(j.error||"");
         })
-        .catch(function(){ if(errP) errP.innerHTML=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
+        .catch(function(){ if(errP) errP.innerHTML=bi("تعذّر الاتصال — تُستخدم النسخة المنشورة على github.io.","Could not connect — use the github.io copy."); });
       return;
     }
     var kg=e.target.closest("[data-kgs]");
@@ -6326,7 +6344,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       if(k1.gs){ window.open(k1.gs.url,"_blank"); return; }
       var err1=document.getElementById("kerr-"+ref1+"-"+i1);
       var cfg1=dgCalCfg();
-      if(!cfg1){ if(err1) err1.innerHTML=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
+      if(!cfg1){ if(err1) err1.innerHTML=bi("يلزم إدخال المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
       if(err1) err1.innerHTML=bi("جارٍ إنشاء الورقة…","Creating the sheet…");
       var st1=(typeof kpiStats==="function")?kpiStats(k1):null;
       fetch(cfg1.url+"?key="+encodeURIComponent(cfg1.key), {method:"POST",
@@ -6343,7 +6361,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             window.open(j.url,"_blank");
           } else if(err1) err1.innerHTML=bi("رفض: ","Refused: ")+(j.error||"");
         })
-        .catch(function(){ if(err1) err1.innerHTML=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
+        .catch(function(){ if(err1) err1.innerHTML=bi("تعذّر الاتصال — تُستخدم النسخة المنشورة على github.io.","Could not connect — use the github.io copy."); });
       return;
     }
     var ks=e.target.closest("[data-kgsync]");
@@ -6352,7 +6370,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var k2=(EXTRA[ref2]||[])[i2]; if(!k2||!k2.gs) return;
       var err2=document.getElementById("kerr-"+ref2+"-"+i2);
       var cfg2=dgCalCfg();
-      if(!cfg2){ if(err2) err2.innerHTML=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
+      if(!cfg2){ if(err2) err2.innerHTML=bi("يلزم إدخال المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
       if(err2) err2.innerHTML=bi("جارٍ السحب من Sheets…","Pulling from Sheets…");
       fetch(cfg2.url+"?key="+encodeURIComponent(cfg2.key)+"&fn=readKpi&tab="+encodeURIComponent(k2.gs.tab))
         .then(function(r){return r.json();})
@@ -6364,10 +6382,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             var e3=document.getElementById("kerr-"+ref2+"-"+i2);
             if(e3) e3.innerHTML=bi(j.labels.length+" قراءة مُزامنة من Sheets.", j.labels.length+" readings synced from Sheets.");
           } else if(err2) err2.innerHTML=j.ok
-            ? bi("الورقة فارغة — أضيفي قراءات أولاً.","The sheet is empty — add readings first.")
+            ? bi("الورقة فارغة — تُضاف قراءات أولاً.","The sheet is empty — add readings first.")
             : bi("رفض: ","Refused: ")+(j.error||"");
         })
-        .catch(function(){ if(err2) err2.innerHTML=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
+        .catch(function(){ if(err2) err2.innerHTML=bi("تعذّر الاتصال — تُستخدم النسخة المنشورة على github.io.","Could not connect — use the github.io copy."); });
       return;
     }
   });
@@ -6533,7 +6551,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   // المركز first — every directorate objective hangs off one of its six —
   // then the three directorates in the order she set.
   function planTabs(){
-    return [{code:"CENTER", ar:"المركز", en:"Centre"}].concat(
+    return [{code:"ALL", ar:"الخطة كاملة", en:"Full plan"},{code:"CENTER", ar:"المركز", en:"Centre"}].concat(
       ORG.filter(function(d){ return d.deps.length; })
          .map(function(d){ return {code:d.code, ar:d.ar, en:d.en, deps:d.deps}; }));
   }
@@ -6560,7 +6578,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function drawPlanTabs(matched){
     var host=document.getElementById("planTabs"); if(!host) return;
     host.innerHTML=planTabs().map(function(t){
-      var k=matched.filter(function(o){ return planTabOf(o)===t.code; }).length;
+      var k= t.code==="ALL" ? matched.length : matched.filter(function(o){ return planTabOf(o)===t.code; }).length;
       return '<button class="'+(PLANTAB===t.code?"on":"")+'" data-ptab="'+t.code+'">'+
         bi(t.ar,t.en)+'<span class="badge">'+k+'</span></button>';
     }).join("");
@@ -6596,7 +6614,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(cnt) cnt.innerHTML=bi(sorted.length+" من "+PLAN2027.length, sorted.length+" of "+PLAN2027.length);
     drawPlanTabs(sorted);
     // an empty tab is not an empty plan: keep the strip so she can move
-    var inTab=sorted.filter(function(o){ return planTabOf(o)===PLANTAB; });
+    var inTab= PLANTAB==="ALL" ? sorted : sorted.filter(function(o){ return planTabOf(o)===PLANTAB; });
     if(!inTab.length){
       host.innerHTML='<div class="noresult">'+(sorted.length
         ? bi("لا شيء في هذا التبويب بهذه المرشّحات.","Nothing in this tab matches these filters.")
@@ -6650,7 +6668,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           '</div>'+
         '</div></div>';
     };
-    host.innerHTML=planGroups(inTab, PLANTAB).map(function(g){
+    var renderGroups=function(list,tab){ return planGroups(list, tab).map(function(g){
       return (g.t
         ? '<div class="pgrp'+(g.dirlvl?" dirlvl":"")+'">'+
             '<span class="pg-t">'+bi(g.t.ar,g.t.en)+'</span>'+
@@ -6658,7 +6676,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             '<span class="pg-n">'+g.items.length+'</span></div>'
         : "")+
         g.items.map(obHtml).join("");
-    }).join("");
+    }).join(""); };
+    if(PLANTAB==="ALL"){
+      host.innerHTML=planTabs().slice(1).map(function(t){ var items=inTab.filter(function(o){ return planTabOf(o)===t.code; }); if(!items.length) return "";
+        return '<h3 class="plansec">'+bi(t.ar,t.en)+'<span class="badge">'+items.length+'</span></h3>'+renderGroups(items, t.code); }).join("");
+    } else host.innerHTML=renderGroups(inTab, PLANTAB);
   }
   document.addEventListener("click",function(e){
     var f=e.target.closest("[data-f]");
@@ -7645,7 +7667,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       '<p class="prionote">'+bi("النقر على أي هدف يفتحه في الخطة السنوية.",
                                 "Clicking any objective opens it in the annual plan.")+
       (ROLE==="dg"&&shown.length>1
-        ? ' '+bi("والترتيب لكِ: اسحب الصف، أو استخدم الأسهم من لوحة المفاتيح.",
+        ? ' '+bi("والترتيب بسحب الصف، أو بالأسهم من لوحة المفاتيح.",
                  "The order is yours: drag a row, or use the arrow keys.") : "")+
       (hidden>0? ' '+bi("و"+hidden+" مثبّتة أخرى لا تظهر — الحد "+PRIO_CFG.n+" في الإعدادات.",
                         "And "+hidden+" more pinned but not shown — the limit is "+PRIO_CFG.n+", set in Settings.") : "")+
@@ -7671,7 +7693,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var go=e.target.closest("[data-goobj]");
     if(go){
       var ref2=go.dataset.goobj;
-      document.querySelector('[data-go="annual"]').click();
+      var oo=PLAN2027.filter(function(x){return x.r===ref2;})[0]; if(oo && PLANTAB!=="ALL" && planTabOf(oo)!==PLANTAB){ PLANTAB=planTabOf(oo); try{ localStorage.setItem("qagcPlanTab", PLANTAB); }catch(_){} }
+      document.querySelector('[data-go="annual"]').click(); if(typeof drawPlan==="function") drawPlan();
       setTimeout(function(){
         var blk=document.querySelector('.oblock[data-ref="'+ref2+'"]');
         if(!blk) return;
@@ -9073,7 +9096,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var u=document.getElementById("aiCfgUrl"), k=document.getElementById("aiCfgKey"),
           r=document.getElementById("aiRemember");
       if(u&&c.url) u.value=c.url;
-      if(k){ k.value=c.key; aiStatus(bi("المفتاح محفوظ على هذا الجهاز — اضغطي اتصال.","Key remembered on this device — press connect."),true); }
+      if(k){ k.value=c.key; aiStatus(bi("المفتاح محفوظ على هذا الجهاز — الضغط على «اتصال».","Key remembered on this device — press connect."),true); }
       if(r) r.checked=true;
     }catch(_){}
   }
@@ -10117,7 +10140,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var d=(document.getElementById("ccm-d")||{}).value||"";
       var f=(document.getElementById("ccm-f")||{}).value||"10:00";
       var to=(document.getElementById("ccm-to")||{}).value||"11:00";
-      if(!d||to<=f){ if(err) err.innerHTML=bi("أكملي التاريخ والوقت — النهاية بعد البداية.","Complete date and times."); return; }
+      if(!d||to<=f){ if(err) err.innerHTML=bi("يلزم التاريخ والوقت — النهاية بعد البداية.","Complete date and times."); return; }
       var selA=document.getElementById("ccm-asg");
       var pA=selA&&selA.value?STAFF.filter(function(x){return x.id===selA.value;})[0]:null;
       var acct=(typeof SESSION!=="undefined"&&SESSION&&typeof acctOf==="function")?acctOf(SESSION.u):null;
@@ -10212,7 +10235,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var subj=(document.getElementById("ev-subj")||{}).value||"";
       var err=document.getElementById("evErr");
       raters=raters.filter(function(r){return r!==subj;});
-      if(raters.length<2){ if(err) err.innerHTML=bi("اختاري مقيِّمَين على الأقل غير المُقيَّم نفسه.","Pick at least two raters besides the subject."); return; }
+      if(raters.length<2){ if(err) err.innerHTML=bi("يلزم مقيِّمان على الأقل غير المُقيَّم نفسه.","Pick at least two raters besides the subject."); return; }
       EV360.push({id:"EV"+(++EVSEQ), subject:subj, criteria:EV_CRITERIA.slice(), raters:raters, resp:{}, open:true});
       drawEv360();
       // the redraw rebuilt the card — write the confirmation into the fresh element
@@ -10483,7 +10506,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       renderDirCal(j);
       syncCalForms();
     }catch(_){
-      dirCalStatusMsg(bi("تعذّر الاتصال من هذه النسخة — استخدمي نسخة github.io.","Use the github.io copy to connect."),false);
+      dirCalStatusMsg(bi("تعذّر الاتصال من هذه النسخة — تُستخدم نسخة github.io.","Use the github.io copy to connect."),false);
     }
   }
   document.addEventListener("click",function(e){
@@ -10499,7 +10522,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var from=(document.getElementById("dirc-from")||{}).value||"";
       var to=(document.getElementById("dirc-to")||{}).value||"";
       if(!t.value.trim()){ t.focus(); return; }
-      if(!date||!from||!to||to<=from){ if(err) err.innerHTML=bi("أكملي التاريخ والوقت.","Complete the date and times."); return; }
+      if(!date||!from||!to||to<=from){ if(err) err.innerHTML=bi("يلزم التاريخ والوقت.","Complete the date and times."); return; }
       if(!canEditDirCal()){ if(err) err.innerHTML=bi("الإضافة لمن حدّدتهم المالكة.","Adding is for those the owner chose."); return; }
       var cfg=dgCalCfg();
       if(!cfg){ if(err) err.innerHTML=bi("المفتاح أولاً من شاشة الجسر.","Key first, on the bridge screen."); return; }
@@ -10625,7 +10648,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   async function dgCalFetch(){
     var cfg=dgCalCfg();
-    if(!cfg){ dgCalStatus(bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."),false); return; }
+    if(!cfg){ dgCalStatus(bi("يلزم إدخال المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."),false); return; }
     dgCalStatus(bi("جارٍ القراءة…","Reading…"),true);
     try{
       var r=await fetch(cfg.url+"?key="+encodeURIComponent(cfg.key)+"&fn=calendar&days=14"+(ROLE==="dg"?"&full=1":""));
@@ -10636,7 +10659,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       renderDgCal(j);
       syncCalForms();
     }catch(_){
-      dgCalStatus(bi("تعذّر الاتصال من هذه النسخة — استخدمي النسخة المنشورة على github.io.",
+      dgCalStatus(bi("تعذّر الاتصال من هذه النسخة — تُستخدم النسخة المنشورة على github.io.",
                      "Could not connect from this copy — use the github.io version."),false);
     }
   }
@@ -10650,9 +10673,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var from=(document.getElementById("dgc-from")||{}).value||"";
       var to=(document.getElementById("dgc-to")||{}).value||"";
       if(!t.value.trim()){ t.focus(); return; }
-      if(!date||!from||!to||to<=from){ if(err) err.innerHTML=bi("أكملي التاريخ والوقت — النهاية بعد البداية.","Complete the date and times — the end after the start."); return; }
+      if(!date||!from||!to||to<=from){ if(err) err.innerHTML=bi("يلزم التاريخ والوقت — النهاية بعد البداية.","Complete the date and times — the end after the start."); return; }
       var cfg=dgCalCfg();
-      if(!cfg){ if(err) err.innerHTML=bi("أدخلي المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
+      if(!cfg){ if(err) err.innerHTML=bi("يلزم إدخال المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
       // the signature is the signed-in account, not the roster stand-in
       var acct=(typeof SESSION!=="undefined"&&SESSION&&typeof acctOf==="function")?acctOf(SESSION.u):null;
       var who=acct?(isAr()?acct.who[0]:acct.who[1]):"";
@@ -10674,7 +10697,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
               });
             } else if(err) err.innerHTML=bi("رفض: ","Refused: ")+(j.error||"");
           })
-          .catch(function(){ if(err) err.innerHTML=bi("تعذّر الاتصال — استخدمي نسخة github.io.","Could not connect — use the github.io copy."); });
+          .catch(function(){ if(err) err.innerHTML=bi("تعذّر الاتصال — تُستخدم النسخة المنشورة على github.io.","Could not connect — use the github.io copy."); });
       });
       return;
     }
@@ -10718,7 +10741,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         ? '<button class="mini" data-aieditbtn="'+encodeURIComponent(it.when)+'">'+bi("تعديل","Edit")+'</button>' : "";
       var editForm=AI_EDITING[it.when]
         ? '<div class="amendbox" style="grid-column:1/-1">'+
-          '<span class="al">'+bi("عدّلي ثم أدرجي — التعديل هنا لا يغيّر ما في ورقة الوارد الأصلية.",
+          '<span class="al">'+bi("التعديل ثم الإدراج — التعديل هنا لا يغيّر ما في ورقة الوارد الأصلية.",
                                  "Edit, then take it in — this does not alter the original inbox sheet.")+'</span>'+
           '<div class="kform" style="margin-top:6px">'+
             '<span class="fld" style="grid-column:1/-1"><label>'+bi("العنوان","Title")+'</label>'+
@@ -11202,7 +11225,44 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       ROLE==="staff"?"m8" : ROLE==="head"?"m7" : ROLE==="dir"?"m4" : ROLE==="coord"?"m1" : "dg0");})[0]||STAFF[0];
   }
   var MYADDED=[];
+  // ── the objectives half of «المهام والأهداف»: the plan objectives in the signed-in person's scope ──
+  function unitCode(name, list){ name=String(name||""); var hit=list.filter(function(u){ return u.ar===name || name.indexOf(u.ar)===0 || u.ar.indexOf(name)===0; })[0]; return hit?hit.code:null; }
+  function myObjectives(){
+    var me=myPerson(); var dirC=unitCode(me.dir&&me.dir[0], ORG); var deps=[]; ORG.forEach(function(d){ deps=deps.concat(d.deps); }); var depC=unitCode(me.dep&&me.dep[0], deps);
+    if(ROLE==="dg"||ROLE==="coord") return {scope:["كل أهداف الخطة","All plan objectives"], list:PLAN2027.slice()};
+    if(ROLE==="dir") return {scope:[me.dir[0],me.dir[1]], list:PLAN2027.filter(function(o){ return o.l!=="center" && o.dir===dirC; })};
+    return {scope:[me.dep[0],me.dep[1]], list:PLAN2027.filter(function(o){ return o.dep===depC; })};
+  }
+  function drawMineObjs(){
+    var host=document.getElementById("mineObjList"); if(!host) return;
+    var mo=myObjectives(), list=mo.list;
+    var cnt=document.getElementById("mineObjCount"); if(cnt) cnt.textContent=list.length;
+    var sc=document.getElementById("mineObjScope"); if(sc) sc.innerHTML=bi(mo.scope[0],mo.scope[1]);
+    var risk=list.filter(function(o){ return stOf(progOf(o))[2]!=="ok"; }).length;
+    var avg=list.length?Math.round(list.reduce(function(a,o){return a+progOf(o);},0)/list.length):0;
+    var t=document.getElementById("mineObjTiles");
+    if(t) t.innerHTML='<div class="tile"><div class="th"><span class="tl">'+bi("أهداف في نطاقي","In my scope")+'</span></div><div class="tv">'+list.length+'</div><div class="ts">'+bi("من الخطة السنوية","from the annual plan")+'</div></div>'+
+      '<div class="tile"><div class="th"><span class="tl">'+bi("متوسط التقدم","Average progress")+'</span></div><div class="tv">'+avg+'%</div><div class="ts">'+bi("عبر أهداف النطاق","across the scope")+'</div></div>'+
+      '<div class="tile'+(risk?' warn':'')+'"><div class="th"><span class="tl">'+bi("تحتاج انتباهاً","Need attention")+'</span></div><div class="tv">'+risk+'</div><div class="ts">'+bi("خلف الجدول","behind schedule")+'</div></div>';
+    host.innerHTML = list.length ? list.map(function(o){ var pr=progOf(o), st=stOf(pr), tg=tagOf(o);
+      return '<div class="prow2" data-goobj="'+o.r+'" role="listitem" tabindex="0" style="cursor:pointer">'+
+        '<span class="ref">'+o.r+'</span><span class="pt"><b>'+o.t+'</b><span class="pm"> · '+bi(LVL[o.l][0],LVL[o.l][1])+' · '+o.o+'</span></span>'+
+        '<span class="pr"><span class="pbar-s"><i style="width:'+pr+'%"></i></span><span class="pnum">'+pr+'%</span><span class="pill '+st[2]+'">'+bi(st[0],st[1])+'</span><span class="tag '+tg+'"><span class="dot"></span>'+bi(TAGLBL[tg][0],TAGLBL[tg][1])+'</span></span></div>'; }).join("")
+      : '<div class="noresult">'+bi("لا أهداف في نطاقك بعد — «هدف جديد» يفتح الخطة السنوية لإضافته.","No objectives in your scope yet — “New objective” opens the annual plan.")+'</div>';
+  }
+  document.addEventListener("click",function(e){
+    var m=e.target.closest("[data-minemode]"); if(m){
+      var objs=m.dataset.minemode==="objs";
+      document.querySelectorAll("[data-minemode]").forEach(function(x){x.classList.toggle("on",x===m);});
+      document.getElementById("mine-objs").hidden=!objs; document.getElementById("mineTabs").hidden=objs;
+      var ownOn=document.querySelector('[data-minetab="own"]').classList.contains("on");
+      document.getElementById("mine-own").hidden=objs||!ownOn; document.getElementById("mine-assign").hidden=objs||ownOn;
+      if(objs) drawMineObjs(); return; }
+    if(e.target.closest("#mineObjPlan")){ PLANTAB="ALL"; try{ localStorage.setItem("qagcPlanTab","ALL"); }catch(_){} var b=document.querySelector('[data-go="annual"]'); if(b) b.click(); if(typeof drawPlan==="function") drawPlan(); return; }
+    if(e.target.closest("#mineObjNew")){ var b2=document.querySelector('[data-go="annual"]'); if(b2) b2.click(); setTimeout(function(){ var n=document.getElementById("newObjBtn"); if(n) n.click(); },80); return; }
+  });
   function drawMine(){
+    drawMineObjs();
     var host=document.getElementById("mineList"); if(!host) return;
     var me=myPerson();
     var w=document.getElementById("mineWho");
@@ -12872,7 +12932,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           '<button class="mini no" data-rvdel="'+nt.id+'">'+bi("حذف","Delete")+'</button>'+
         '</span></span></div>';
     }).join("") : '<div class="rvempty">'+
-      bi("لا ملاحظات بعد. شغّلي وضع المراجعة، ثم انقري أي عنصر على الشاشة.",
+      bi("لا ملاحظات بعد. تشغيل وضع المراجعة، ثم النقر على أي عنصر على الشاشة.",
          "No notes yet. Turn on review mode, then click anything on screen.")+'</div>';
     if(RVREMOTE.length){
       host.innerHTML += '<div class="rvsec">'+bi("لوحة الجسر المشتركة","The shared board")+'</div>'+
@@ -12932,7 +12992,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(b){ b.setAttribute("aria-pressed", RVON?"true":"false"); b.classList.toggle("on",RVON); }
     var lbl=document.getElementById("rvToggleLbl");
     if(lbl) lbl.innerHTML = RVON
-      ? bi("وضع المراجعة مُفعّل — انقري أي عنصر","Review mode on — click anything")
+      ? bi("وضع المراجعة مُفعّل — النقر على أي عنصر","Review mode on — click anything")
       : bi("وضع المراجعة — للتعليق على أي عنصر","Review mode — comment on anything");
     var p=document.getElementById("rvPanel");
     if(p) p.hidden=!RVON;
@@ -12986,7 +13046,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function verBarShow(nv){
     var bar=document.getElementById("verBar"); if(!bar) return;
     document.getElementById("verBarTxt").innerHTML=
-      bi("نسخة أحدث من المنصة متوفرة («"+nv+"» — وأنتِ على «"+APP_VER+"»). اضغطي «تحديث الآن»؛ وإن بقيت النسخة القديمة فحدّثي تحديثاً قوياً (⌘⇧R).",
+      bi("نسخة أحدث من المنصة متوفرة («"+nv+"» — والنسخة الحالية «"+APP_VER+"»). الضغط على «تحديث الآن»؛ وإن بقيت النسخة القديمة فيلزم تحديث قوي (⌘⇧R).",
          "A newer platform version is available (“"+nv+"” — you are on “"+APP_VER+"”). Press “Update now”; if the old one persists, hard-reload (Cmd-Shift-R).");
     bar.hidden=false; bar._nv=nv;
   }
@@ -13129,15 +13189,15 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       }
       // no key on this device: fall back to the review-board hand-off
       var url=rvSendUrl();
-      if(!url){ rvToast(bi("أدخلي مفتاح الجسر أولاً، أو انسخي الملاحظات.","Enter the bridge key first, or use Copy all.")); return; }
+      if(!url){ rvToast(bi("يلزم مفتاح الجسر أولاً، أو نسخ الملاحظات.","Enter the bridge key first, or use Copy all.")); return; }
       window.open(url, "_blank", "noopener");
-      rvToast(bi("فُتحت اللوحة — اضغطي «أضيفيها إلى اللوحة» هناك.",
+      rvToast(bi("فُتحت اللوحة — الضغط على زر الإضافة إلى اللوحة هناك.",
                  "The board is open — press “Add to the board” there."));
       return;
     }
     if(e.target.closest("#rvPull")){
       var cfg2=(typeof dgCalCfg==="function")?dgCalCfg():null;
-      if(!cfg2){ rvToast(bi("أدخلي مفتاح الجسر أولاً.","Enter the bridge key first.")); return; }
+      if(!cfg2){ rvToast(bi("يلزم مفتاح الجسر أولاً.","Enter the bridge key first.")); return; }
       rvToast(bi("جارٍ القراءة من الجسر…","Reading the board…"));
       fetch(cfg2.url+"?key="+encodeURIComponent(cfg2.key)+"&fn=feedback")
         .then(function(r){return r.json();})
@@ -13166,7 +13226,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(e.target.closest("#rvCopy")){
       var rep=rvReport();
       if(!rep){ rvToast(bi("لا ملاحظات لنسخها.","Nothing to copy.")); return; }
-      var done=function(){ rvToast(bi("نُسخت — الصقيها في محادثة Claude.","Copied — paste it into your Claude chat.")); };
+      var done=function(){ rvToast(bi("نُسخت — تُلصق في محادثة Claude.","Copied — paste it into your Claude chat.")); };
       if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(rep).then(done,function(){
         var ta2=document.getElementById("rvPopTa"); ta2.value=rep; done();
       });
