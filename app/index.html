@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 22">
+<meta name="qagc-ver" content="beta 23">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -739,6 +739,14 @@ html[dir="rtl"] .modal h3{font-weight:600}
 .fld select:focus,.fld input:focus{outline:2px solid var(--brand-gold);outline-offset:-1px;border-color:var(--brand-gold)}
 .fld .hint2{font-size:var(--t-xs);color:var(--ink-4);margin-top:4px}
 .subh{font-size:var(--t-sm);font-weight:700;margin-top:var(--sp-5);color:var(--ink-1)}
+/* a department's slice of the plan, inside its directorate's tab */
+.pgrp{display:flex;align-items:baseline;gap:var(--sp-2);margin:var(--sp-5) 0 var(--sp-3);
+  padding-bottom:6px;border-bottom:1px solid var(--rule)}
+.pgrp:first-child{margin-top:var(--sp-2)}
+.pgrp .pg-t{font-size:var(--t-sm);font-weight:700;color:var(--ink-1)}
+.pgrp .pg-e{font-size:var(--t-xs);color:var(--ink-3)}
+.pgrp .pg-n{margin-inline-start:auto;font-family:var(--latin);font-size:var(--t-xs);color:var(--ink-3)}
+.pgrp.dirlvl .pg-t{color:var(--gold-ink)}
 .saved{display:none;align-items:center;gap:6px;font-size:var(--t-sm);font-weight:600;color:var(--good-ink)}
 .saved.on{display:inline-flex}
 
@@ -2298,6 +2306,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
         <span class="fcount" id="planCount"></span>
       </div>
 
+      <div class="subtabs" id="planTabs"></div>
       <div id="planCascade"></div>
     </section>
 
@@ -6520,6 +6529,50 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     }).join("");
   }
 
+  // ══ the annual plan, one tab per unit of the structure ══
+  // المركز first — every directorate objective hangs off one of its six —
+  // then the three directorates in the order she set.
+  function planTabs(){
+    return [{code:"CENTER", ar:"المركز", en:"Centre"}].concat(
+      ORG.filter(function(d){ return d.deps.length; })
+         .map(function(d){ return {code:d.code, ar:d.ar, en:d.en, deps:d.deps}; }));
+  }
+  var PLANTAB="CENTER";
+  try{ PLANTAB=localStorage.getItem("qagcPlanTab")||"CENTER"; }catch(_){}
+  function planTabOf(o){ return o.l==="center" ? "CENTER" : (o.dir||"CENTER"); }
+  // the objectives of one tab, already grouped the way the structure reads
+  function planGroups(list, tab){
+    if(tab==="CENTER") return [{t:null, items:list}];
+    var d=ORG.filter(function(x){return x.code===tab;})[0]; if(!d) return [{t:null, items:list}];
+    var out=[];
+    var atDir=list.filter(function(o){ return !o.dep; });
+    if(atDir.length) out.push({t:{ar:"على مستوى الدائرة", en:"At directorate level"}, dirlvl:true, items:atDir});
+    d.deps.forEach(function(p){
+      var items=list.filter(function(o){ return o.dep===p.code; });
+      if(items.length) out.push({t:{ar:p.ar, en:p.en}, items:items});
+    });
+    // anything whose department is not in the structure still gets shown
+    var placed={}; d.deps.forEach(function(p){ placed[p.code]=1; });
+    var rest=list.filter(function(o){ return o.dep && !placed[o.dep]; });
+    if(rest.length) out.push({t:{ar:"غير مصنّف على قسم", en:"No department"}, items:rest});
+    return out;
+  }
+  function drawPlanTabs(matched){
+    var host=document.getElementById("planTabs"); if(!host) return;
+    host.innerHTML=planTabs().map(function(t){
+      var k=matched.filter(function(o){ return planTabOf(o)===t.code; }).length;
+      return '<button class="'+(PLANTAB===t.code?"on":"")+'" data-ptab="'+t.code+'">'+
+        bi(t.ar,t.en)+'<span class="badge">'+k+'</span></button>';
+    }).join("");
+  }
+  document.addEventListener("click",function(e){
+    if(typeof RVON!=="undefined" && RVON) return;
+    var b=e.target.closest?e.target.closest("[data-ptab]"):null; if(!b) return;
+    PLANTAB=b.dataset.ptab;
+    try{ localStorage.setItem("qagcPlanTab", PLANTAB); }catch(_){}
+    drawPlan();
+  });
+
   function drawPlan(){
     var host=document.getElementById("planCascade"); if(!host) return;
     var tot=PLAN2027.length, budget=PLAN2027.reduce(function(a,x){return a+x.b;},0);
@@ -6541,11 +6594,16 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       .filter(function(o){ return planMatches(o, progOf(o), tagOf(o)); });
     var cnt=document.getElementById("planCount");
     if(cnt) cnt.innerHTML=bi(sorted.length+" من "+PLAN2027.length, sorted.length+" of "+PLAN2027.length);
-    if(!sorted.length){
-      host.innerHTML='<div class="noresult">'+bi("لا نتائج بهذه المرشّحات.","Nothing matches these filters.")+'</div>';
+    drawPlanTabs(sorted);
+    // an empty tab is not an empty plan: keep the strip so she can move
+    var inTab=sorted.filter(function(o){ return planTabOf(o)===PLANTAB; });
+    if(!inTab.length){
+      host.innerHTML='<div class="noresult">'+(sorted.length
+        ? bi("لا شيء في هذا التبويب بهذه المرشّحات.","Nothing in this tab matches these filters.")
+        : bi("لا نتائج بهذه المرشّحات.","Nothing matches these filters."))+'</div>';
       return;
     }
-    host.innerHTML=sorted.map(function(o){
+    var obHtml=function(o){
       var pr=progOf(o), st=stOf(pr), tg=tagOf(o), acts=actsOf(o);
       var minD=Math.min.apply(null,acts.map(function(a){return +new Date(a.s);}));
       var maxD=Math.max.apply(null,acts.map(function(a){return +new Date(a.e);}));
@@ -6591,6 +6649,15 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
               (SIGNED[o.r]?bi("أُرسل للاعتماد","Sign-off sent"):bi("إرسال للاعتماد","Send for sign-off"))+'</button>'+
           '</div>'+
         '</div></div>';
+    };
+    host.innerHTML=planGroups(inTab, PLANTAB).map(function(g){
+      return (g.t
+        ? '<div class="pgrp'+(g.dirlvl?" dirlvl":"")+'">'+
+            '<span class="pg-t">'+bi(g.t.ar,g.t.en)+'</span>'+
+            '<span class="pg-e">'+(isAr()?g.t.en:g.t.ar)+'</span>'+
+            '<span class="pg-n">'+g.items.length+'</span></div>'
+        : "")+
+        g.items.map(obHtml).join("");
     }).join("");
   }
   document.addEventListener("click",function(e){
@@ -13231,7 +13298,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       ownerPersist(); drawPerfBoard(); flashSaved("pwSaved"); return;
     }
     if(e.target.closest("#cfgExport")){
-      var keys=["qagcCustom","qagcPrivs","qagcAwards","qagcOwnerCfg","qagcPlanSheet","qagcAiHidden","qagcAiCfg","qagcNotes","qagcOpen","qagcOrgOpen"];
+      var keys=["qagcCustom","qagcPrivs","qagcAwards","qagcOwnerCfg","qagcPlanSheet","qagcAiHidden","qagcAiCfg","qagcNotes","qagcOpen","qagcOrgOpen","qagcPlanTab"];
       var bag={_qagc:"owner-settings", when:PLATFORM_TODAY};
       keys.forEach(function(k){ var v=localStorage.getItem(k); if(v!==null) bag[k]=v; });
       dlBlob("qagc-settings.json", new Blob([JSON.stringify(bag,null,1)],{type:"application/json"}));
