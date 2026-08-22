@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 19">
+<meta name="qagc-ver" content="beta 20">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -1878,6 +1878,20 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
   transition:opacity .18s,transform .18s}
 #rvToast.on{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){#rvToast{transition:none}}
+/* ══ quiet by default: the numbers show, the cards wait to be asked ══ */
+.card > .card-h{cursor:pointer;position:relative;padding-inline-end:22px}
+.card > .card-h::after{content:"\25BE";position:absolute;inset-inline-end:0;top:0;
+  font-size:.8em;color:var(--ink-4);line-height:1.4}
+.card > .card-h:hover::after{color:var(--ink-2)}
+.card[data-shut] > .card-h{margin-bottom:0}
+.card[data-shut] > .card-h::after{content:"\25B8"}
+html[dir="rtl"] .card[data-shut] > .card-h::after{content:"\25C2"}
+.card[data-shut] > *:not(.card-h){display:none !important}
+.card[data-shut]{padding-block:var(--sp-3)}
+/* while she is renaming things, or commenting on them, a click is not a toggle */
+body[data-review="on"] .card > .card-h,
+body.editmode .card > .card-h{cursor:inherit}
+body.editmode .card[data-shut] > *{display:revert !important}
 </style>
 
 <div class="gate" id="gate">
@@ -2735,8 +2749,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
       <div class="head">
         <p class="eyebrow"><span lang="ar">قسم التنسيق والمتابعة</span><span lang="en">Coordination &amp; Follow-up</span></p>
         <h1><span lang="ar">التنسيق والمتابعة</span><span lang="en">Coordination</span></h1>
-        <p><span lang="ar">ثلاث مسؤوليات: إضافة الموظفين، ومتابعة تهيئتهم، وضبط التقويم المؤسسي. لا يملك القسم أهدافاً في الخطة.</span>
-           <span lang="en">Three responsibilities: adding staff, following their induction, and maintaining the institutional calendar. The section owns no objectives in the plan.</span></p>
+        <p><span lang="ar">الكوادر والتهيئة والتقويم. لا أهداف لهذا القسم.</span>
+           <span lang="en">People, induction, the calendar. No objectives here.</span></p>
       </div>
       <div class="rolebar">
         <span lang="ar">هذا القسم لا يملك أهدافاً — دوره تشغيلي: <b>الكوادر والتقويم</b>.</span>
@@ -2752,8 +2766,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
           <span class="ceye"><span lang="ar">من يجهّز ماذا قبل كل اجتماع</span><span lang="en">Who prepares what before each meeting</span></span>
           <h2><span lang="ar">جداول أعمال الاجتماعات</span><span lang="en">Meeting agendas</span></h2></div></div></div>
         <p style="font-size:var(--t-sm);color:var(--ink-3)">
-          <span lang="ar">جدول الأعمال يُكتب هنا أو يصل من المساعد، ثم يُسند تحضيره إلى موظف بعينه فيظهر في مهامه بموعد الاجتماع.</span>
-          <span lang="en">An agenda is written here or arrives from the assistant, then its preparation is assigned to a named person and lands in their tasks, due the meeting day.</span></p>
+          <span lang="ar">يُكتب هنا ويُسند، فيظهر في مهام صاحبه.</span>
+          <span lang="en">Written here and assigned; it lands in that person's tasks.</span></p>
         <div class="asnform" id="agForm">
           <div class="kform">
             <span class="fld" style="grid-column:1/-1"><label><span lang="ar">عنوان الاجتماع</span><span lang="en">Meeting</span></label>
@@ -2808,8 +2822,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
           <span class="ceye"><span lang="ar">جسر مباشر إلى Google Calendar</span><span lang="en">A live bridge to Google Calendar</span></span>
           <h2><span lang="ar">تقويم المديرة العامة</span><span lang="en">The Director General's calendar</span></h2></div></div></div>
         <p style="font-size:var(--t-sm);color:var(--ink-3)">
-          <span lang="ar">جدولها الحقيقي كما هو في Google، يُقرأ مباشرة عبر جسر المنصة. الموعد المُنشأ هنا يظهر في تقويمها فوراً وعلى هاتفها، موقَّعاً باسم من جدوله. يلزم أن تشارك تقويمها مع حساب المنصة مرة واحدة.</span>
-          <span lang="en">Her real schedule as it stands in Google, read live through the platform bridge. A meeting created here lands in her calendar at once, signed by whoever scheduled it. She shares her calendar with the platform account once.</span></p>
+          <span lang="ar">تقويمها من Google عبر الجسر. ما يُنشأ هنا يصل هاتفها فوراً.</span>
+          <span lang="en">Her Google calendar through the bridge. What is created here reaches her phone at once.</span></p>
         <div style="display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center">
           <button class="btn btn-p" id="dgCalRefresh"><span lang="ar">تحديث الجدول</span><span lang="en">Refresh</span></button>
           <span id="dgCalStatus" style="font-size:var(--t-sm)"></span>
@@ -2848,23 +2862,23 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
           <span class="ceye"><span lang="ar">التقويم حيث يستخدمه الفريق</span><span lang="en">The calendar where the team already is</span></span>
           <h2><span lang="ar">التقويم ومواعيد الخطة</span><span lang="en">Calendar and plan dates</span></h2></div></div></div>
         <p style="font-size:var(--t-sm);color:var(--ink-3)">
-          <span lang="ar">المنصة لا تنافس Google Calendar. تُصدِّر إليه: كل موعد استحقاق في الخطة وكل مهمة مسندة، بصيغة يقرأها أي تقويم. الاستيراد يضعها في تقويم منفصل يمكن إخفاؤه أو تحديثه لاحقاً.</span>
-          <span lang="en">The platform does not compete with Google Calendar — it exports to it. Every plan deadline and assigned task, in a format any calendar reads. Importing puts them in a separate calendar you can hide or refresh later.</span></p>
+          <span lang="ar">تُصدَّر المواعيد إلى أي تقويم، في تقويم منفصل.</span>
+          <span lang="en">Dates export to any calendar, into a separate one.</span></p>
         <div style="display:flex;gap:var(--sp-2);margin-top:var(--sp-3);flex-wrap:wrap;align-items:center">
           <button class="btn btn-p" id="calAll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 19h16"/></svg><span lang="ar">تنزيل تقويم الخطة</span><span lang="en">Download the plan calendar</span></button>
           <span class="kerr" id="calErr"></span>
         </div>
         <p class="hint2" style="margin-top:var(--sp-3)">
-          <span lang="ar">الاشتراك المباشر — رابط يُحدِّث نفسه في Google دون إعادة استيراد — يحتاج أن تكون المنصة منشورة على عنوان ثابت، فيُضاف بعد النشر.</span>
-          <span lang="en">A live subscription — a link Google refreshes on its own, with no re-importing — needs the platform published at a stable address, so it comes after deployment.</span></p>
+          <span lang="ar">الاشتراك المباشر يحتاج عنواناً ثابتاً — بعد النشر.</span>
+          <span lang="en">A live subscription needs a fixed address — after publishing.</span></p>
       </div>
         <div class="card">
           <div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><div>
             <span class="ceye"><span lang="ar">الكوادر والدخول</span><span lang="en">People and access</span></span>
             <h2><span lang="ar">حسابات الدخول</span><span lang="en">Sign-in accounts</span></h2></div></div></div>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">الحساب يصدره المدير العام أو قسم التنسيق والمتابعة بكلمة مرور مؤقتة تُسلَّم مرة واحدة، ويُطلب تغييرها عند أول دخول. الإيقاف يمنع الدخول ولا يحذف ما أنجزه الموظف.</span>
-            <span lang="en">An account is issued by the Director General or Coordination &amp; Follow-up with a temporary password handed over once; the person is made to change it on first sign-in. Suspending blocks access without deleting their work.</span></p>
+            <span lang="ar">كلمة مرور مؤقتة تُسلَّم مرة واحدة. الإيقاف لا يحذف.</span>
+            <span lang="en">A one-time temporary password. Suspending does not delete.</span></p>
           <div id="coordAccList"></div>
           <div id="coordAccInvList" style="margin-top:var(--sp-2)"></div>
           <div class="asnform" style="margin-top:var(--sp-4)">
@@ -2913,8 +2927,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
           <h2><span lang="ar">مواعيد تقترب أو تجاوزت</span><span lang="en">Deadlines near or passed</span></h2></div>
           <span class="sub" id="dueCount"></span></div></div>
         <p style="font-size:var(--t-sm);color:var(--ink-3)">
-          <span lang="ar">قسم التنسيق لا يملك الأهداف، لكنه يلاحق مواعيدها. التذكير يصل إلى المسؤول ورئيس دائرته.</span>
-          <span lang="en">Coordination owns none of these objectives, but chases their dates. A reminder reaches the owner and their directorate head.</span></p>
+          <span lang="ar">التذكير يصل المسؤول ورئيس دائرته.</span>
+          <span lang="en">The reminder reaches the owner and their director.</span></p>
         <div id="dueList"></div>
         <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-2);flex-wrap:wrap">
           <button class="btn" id="remindAll"><span lang="ar">تذكير الجميع</span><span lang="en">Remind everyone</span></button>
@@ -3123,8 +3137,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
       <div class="head">
         <p class="eyebrow"><span lang="ar">تحكّم المالك</span><span lang="en">Owner control</span></p>
         <h1><span lang="ar">الإعدادات</span><span lang="en">Settings</span></h1>
-        <p><span lang="ar">ما يُضبط هنا يسري على المنصة كاملة، ولا يملك أحد غير المدير العام تغييره.</span>
-           <span lang="en">What you set here applies across the whole platform. Nobody else can change it.</span></p>
+        <p><span lang="ar">يسري على المنصة كاملة. لكِ وحدك.</span>
+           <span lang="en">Platform-wide. Yours alone.</span></p>
       </div>
 
       <div class="subtabs" id="owntabs">
@@ -3149,8 +3163,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
             <span class="ceye"><span lang="ar">المنصة بلغة صاحبتها</span><span lang="en">The platform in its owner's words</span></span>
             <h2><span lang="ar">التخصيص — الاسم والعناوين والترتيب</span><span lang="en">Customise — name, headlines, order</span></h2></div></div></div>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">ما يُغيَّر هنا يسري على هذا الجهاز فوراً ويبقى بعد إعادة التحميل. «استعادة الافتراضي» تعيد كل شيء.</span>
-            <span lang="en">Changes apply on this device at once and survive reloads. Reset restores everything.</span></p>
+            <span lang="ar">يسري على هذا الجهاز فوراً.</span>
+            <span lang="en">Applies to this device at once.</span></p>
           <div class="frow">
             <div class="fld"><label><span lang="ar">اسم المنصة (عربي)</span><span lang="en">Platform name (Arabic)</span></label>
               <input id="cz-name-ar"></div>
@@ -3159,15 +3173,15 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
           </div>
           <p class="subh" style="margin-top:var(--sp-4)"><span lang="ar">تحرير العناوين — مباشرة على المنصة</span><span lang="en">Headlines — edited on the platform itself</span></p>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">فعّلي وضع التحرير، ثم انقري أي عنوان شاشة أو سطر تمهيدي أو اسم في اللوحة الجانبية واكتبي مكانه. تنقّلي بين الشاشات بحرّية؛ كل تعديل يُحفظ عند مغادرة النص، وزر الإنهاء يظهر أسفل الشاشة.</span>
-            <span lang="en">Turn the mode on, then click any screen title, eyebrow, or rail label and type over it. Move between screens freely; every edit saves when you leave the text.</span></p>
+            <span lang="ar">شغّلي التحرير، وانقري أي عنوان، واكتبي مكانه.</span>
+            <span lang="en">Turn on editing, tap any heading, type over it.</span></p>
           <button class="btn btn-p" id="czEditMode"><span lang="ar">✏️ تفعيل وضع التحرير المباشر</span><span lang="en">✏️ Start direct editing</span></button>
           <p class="subh" style="margin-top:var(--sp-4)"><span lang="ar">ترتيب اللوحة الجانبية</span><span lang="en">Rail order</span></p>
           <div id="czOrder" style="display:flex;flex-direction:column;gap:4px"></div>
           <p class="subh" style="margin-top:var(--sp-4)"><span lang="ar">نقل إعداداتك بين الأجهزة</span><span lang="en">Move your settings between devices</span></p>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">ملف واحد يحمل تخصيصك وصلاحياتك وقواعدك وأوزانك — نزّليه هنا، واستوردِيه على أي جهاز آخر فتصير المنصة هناك كما ضبطتِها هنا. (يشمل مفتاح الجسر إن كان محفوظاً — احفظي الملف كما تحفظين مفتاحاً.)</span>
-            <span lang="en">One file carries your customisation, privileges, rules and weights — download here, import on any other device. (Includes the bridge key if remembered — treat the file like a key.)</span></p>
+            <span lang="ar">ملف واحد بكل إعداداتك — نزّليه، واستوردِيه على أي جهاز.</span>
+            <span lang="en">One file with every setting — download it, import it anywhere.</span></p>
           <div style="display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center">
             <button class="btn" id="cfgExport"><span lang="ar">تصدير إعداداتي</span><span lang="en">Export my settings</span></button>
             <label class="btn" style="cursor:pointer"><span lang="ar">استيراد ملف إعدادات</span><span lang="en">Import a settings file</span>
@@ -3189,14 +3203,14 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
             <span class="ceye"><span lang="ar">حوكمة المظهر لا اختياره</span><span lang="en">Governing appearance, not choosing it</span></span>
             <h2><span lang="ar">اللوحات المسموح بها</span><span lang="en">Permitted palettes</span></h2></div></div></div>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">يُحدَّد هنا ما يجوز للموظفين الاختيار منه. أما اختيار لوحة بعينها فهو تفضيل شخصي في «تفضيلاتي».</span>
-            <span lang="en">This sets what staff may choose from. Picking a particular palette is a personal preference, in My preferences.</span></p>
+            <span lang="ar">ما يجوز للموظفين الاختيار منه.</span>
+            <span lang="en">What staff may choose from.</span></p>
           <div id="allowThemes"></div>
           <div class="asnform" style="margin-top:var(--sp-4)">
             <div style="font-size:var(--t-sm);font-weight:700"><span lang="ar">تصميم لوحة جديدة</span><span lang="en">Design a new palette</span></div>
             <div style="font-size:var(--t-xs);color:var(--ink-3);margin-top:3px">
-              <span lang="ar">اختاري اللون الأساسي والذهبي، وسمّيها — تُضاف إلى اللوحات المتاحة للجميع فوراً.</span>
-              <span lang="en">Pick the primary and the gold, name it, and it joins the permitted palettes at once.</span></div>
+              <span lang="ar">لونان واسم.</span>
+              <span lang="en">Two colours and a name.</span></div>
             <div class="frow" style="margin-top:var(--sp-3);align-items:end">
               <div class="fld"><label><span lang="ar">الاسم</span><span lang="en">Name</span></label>
                 <input id="th-name" placeholder="أخضر زيتوني"></div>
@@ -3224,8 +3238,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
             <span class="ceye"><span lang="ar">ما يبقى تحت النظر</span><span lang="en">What stays in sight</span></span>
             <h2><span lang="ar">الأهداف ذات الأولوية</span><span lang="en">Priority objectives</span></h2></div></div></div>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">تُثبَّت الأهداف من مربع المتابعة في الخطة السنوية. هنا يُحدَّد كم منها يظهر على اللوحة، ومن يراه.</span>
-            <span lang="en">Objectives are pinned from the watch box in the annual plan. This decides how many of them the dashboard shows, and who sees them.</span></p>
+            <span lang="ar">كم هدفاً يظهر، ومن يراه.</span>
+            <span lang="en">How many show, and who sees them.</span></p>
           <div class="frow">
             <div class="fld"><label><span lang="ar">عدد الأهداف المعروضة</span><span lang="en">How many to show</span></label>
               <input id="setPrioN" type="number" min="1" max="12" value="5">
@@ -3236,8 +3250,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
           </div>
           <div class="toggle" style="margin-top:var(--sp-4)">
             <span><span class="tl2"><span lang="ar">عرضها في الصفحة الرئيسية لكل المستخدمين</span><span lang="en">Show them on every user's home page</span></span>
-              <span class="ts2"><span lang="ar">تظهر القائمة نفسها لرئيس الدائرة والتنسيق والموظفين، للاطلاع لا للتعديل. إيقافها يجعلها للمدير العام وحده.</span>
-                <span lang="en">The same list appears for the directorate head, coordination and staff — to read, not to change. Off, and it stays the Director General's alone.</span></span></span>
+              <span class="ts2"><span lang="ar">يراها الجميع للاطلاع. الإيقاف يجعلها لكِ وحدك.</span>
+                <span lang="en">Everyone may look. Off makes it yours alone.</span></span></span>
             <button class="sw-btn" id="swPrioAll"><i></i></button></div>
         </div>
       </div>
@@ -3249,8 +3263,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
             <span class="ceye"><span lang="ar">مسار الاعتماد</span><span lang="en">The route to approval</span></span>
             <h2><span lang="ar">أهداف الموظفين — إلى من تذهب أولاً</span><span lang="en">Staff objectives — where they go first</span></h2></div></div></div>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">ما يضيفه الموظف من هدف أو مهمة لا يسري قبل الاعتماد. هذا الخيار يحدّد أين يقف الطلب أولاً.</span>
-            <span lang="en">An objective or task added by a member of staff does not take effect before approval. This decides where the request stops first.</span></p>
+            <span lang="ar">أين يقف الطلب أولاً.</span>
+            <span lang="en">Where a request stops first.</span></p>
           <div class="frow">
             <div class="fld"><label><span lang="ar">المسار</span><span lang="en">Route</span></label>
               <select class="fld-sel" id="setRoute">
@@ -3260,16 +3274,16 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
               <div class="hint2" id="routeHint"></div></div>
             <div class="fld"><label><span lang="ar">الميزانية</span><span lang="en">Budget</span></label>
               <input value="اعتماد المدير العام دائماً — always the Director General" readonly>
-              <div class="hint2"><span lang="ar">تقدير الميزانية قرار مالي، فيبقى عند المدير العام مهما كان مسار الهدف.</span>
-                <span lang="en">A budget estimate is a financial decision, so it stays with the Director General whatever route the objective takes.</span></div></div>
+              <div class="hint2"><span lang="ar">قرار مالي — يبقى عندكِ دائماً.</span>
+                <span lang="en">A financial decision — always yours.</span></div></div>
             <div class="fld"><label><span lang="ar">إسناد خطة العمل</span><span lang="en">Assigning the action plan</span></label>
               <select class="fld-sel" id="setAsgPriv">
                 <option value="dg">المدير العام والتنسيق فقط — DG and Coordination only</option>
                 <option value="dir" selected>ومديرو الدوائر أيضاً — Directorate heads too</option>
                 <option value="all">الجميع — Everyone</option>
               </select>
-              <div class="hint2"><span lang="ar">من يستطيع، عند إنشاء هدف، إسناد مراحل خطة العمل وخطواتها إلى موظفين بعينهم. من دون الصلاحية تُنشأ الخطة بلا أسماء وتُسند لاحقاً.</span>
-                <span lang="en">Who may, when creating an objective, assign the action-plan phases and steps to named staff. Without the privilege the plan is created unassigned.</span></div></div>
+              <div class="hint2"><span lang="ar">من يُسند خطوات خطة العمل.</span>
+                <span lang="en">Who may assign action-plan steps.</span></div></div>
           </div>
         </div>
         <div class="card">
@@ -3299,8 +3313,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
             <span class="ceye"><span lang="ar">إضافة موظف تبدأ تهيئته</span><span lang="en">Adding someone starts their induction</span></span>
             <h2><span lang="ar">إضافة موظف</span><span lang="en">Add a member of staff</span></h2></div></div></div>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">بمجرد الحفظ تُنشأ خطة التهيئة من النموذج أدناه، وتُحسب مواعيدها من تاريخ المباشرة، ويتولّى متابعتها رئيس القسم.</span>
-            <span lang="en">On save the induction plan is created from the template below, its dates counted from the start date, and the department head follows it up.</span></p>
+            <span lang="ar">خطة التهيئة تُبنى من تاريخ المباشرة.</span>
+            <span lang="en">The induction plan is built from the start date.</span></p>
           <div class="frow">
             <div class="fld"><label><span lang="ar">الاسم أو المسمى الوظيفي</span><span lang="en">Name or job title</span></label>
               <input id="ns-name" placeholder="أخصائي جودة"></div>
@@ -3332,8 +3346,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
             <span class="ceye"><span lang="ar">يُطبَّق على كل موظف جديد</span><span lang="en">Applied to every new joiner</span></span>
             <h2><span lang="ar">نموذج التهيئة</span><span lang="en">Induction template</span></h2></div></div></div>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">البند ومهلته بالأيام من تاريخ المباشرة. تعديل النموذج لا يغيّر خطط قائمة.</span>
-            <span lang="en">Each item and its deadline in days from the start date. Editing the template does not alter plans already running.</span></p>
+            <span lang="ar">البند ومهلته بالأيام.</span>
+            <span lang="en">The item and its days.</span></p>
           <div id="indTemplate"></div>
           <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-2);flex-wrap:wrap">
             <button class="btn" id="addInd"><span lang="ar">إضافة بند</span><span lang="en">Add an item</span></button>
@@ -3344,8 +3358,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
             <span class="ceye"><span lang="ar">قائمة المركز الرسمية</span><span lang="en">The centre's official list</span></span>
             <h2><span lang="ar">الكوادر — الأسماء والمسميات</span><span lang="en">The roster — names and designations</span></h2></div></div></div>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">من هنا تُدار قائمة الأسماء التي تظهر في كل قوائم الإسناد والتقييم. الحذف يزيل الاسم من القوائم فوراً.</span>
-            <span lang="en">This list feeds every assignment and evaluation dropdown. Deleting removes the name everywhere at once.</span></p>
+            <span lang="ar">الأسماء التي تظهر في كل القوائم.</span>
+            <span lang="en">The names that appear in every list.</span></p>
           <div id="staffMgList" style="display:flex;flex-direction:column;gap:4px"></div>
           <div class="asnform" style="margin-top:var(--sp-3)">
             <div style="font-size:var(--t-sm);font-weight:700"><span lang="ar">إضافة أسماء — سطر لكل اسم: الاسم — المسمى الوظيفي</span><span lang="en">Add names — one line each: name — designation</span></div>
@@ -3361,8 +3375,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
             <span class="ceye"><span lang="ar">أسئلة التقييم مِلكها</span><span lang="en">The evaluation's questions are hers</span></span>
             <h2><span lang="ar">معايير التقييم 360°</span><span lang="en">360° criteria</span></h2></div></div></div>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">معيار في كل سطر — الدورات الجديدة تُفتح بهذه المعايير؛ الدورات القائمة تكمل بمعاييرها.</span>
-            <span lang="en">One criterion per line — new cycles open with these; running cycles keep theirs.</span></p>
+            <span lang="ar">معيار في كل سطر.</span>
+            <span lang="en">One criterion per line.</span></p>
           <textarea id="evCritTa" rows="6" style="width:100%"></textarea>
           <div style="margin-top:var(--sp-2)"><button class="btn btn-p" id="evCritSave"><span lang="ar">حفظ المعايير</span><span lang="en">Save</span></button>
             <span class="saved" id="evCritSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span lang="ar">حُفظت.</span><span lang="en">Saved.</span></span></div>
@@ -3379,8 +3393,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
             <div class="fld"><label><span lang="ar">التطوير المعتمد</span><span lang="en">Development</span></label>
               <input id="pw-dev" type="number" min="0" max="100" value="20"></div>
           </div>
-          <p class="hint2"><span lang="ar">تُعاير الأوزان تلقائياً إلى 100، وتظهر المعادلة الجديدة فوراً في لوحة الأداء.</span>
-            <span lang="en">Weights normalise to 100; the board shows the new formula at once.</span></p>
+          <p class="hint2"><span lang="ar">تُعاير إلى 100 تلقائياً.</span>
+            <span lang="en">Normalised to 100 automatically.</span></p>
           <div style="margin-top:var(--sp-2)"><button class="btn btn-p" id="pwSave"><span lang="ar">حفظ الأوزان</span><span lang="en">Save</span></button>
             <span class="saved" id="pwSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span lang="ar">حُفظت.</span><span lang="en">Saved.</span></span></div>
         </div>
@@ -3412,8 +3426,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
             <span class="ceye"><span lang="ar">من يدخل، وبأي صلاحية</span><span lang="en">Who signs in, and as what</span></span>
             <h2><span lang="ar">حسابات الدخول</span><span lang="en">Sign-in accounts</span></h2></div></div></div>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">الحساب يصدره المدير العام أو قسم التنسيق والمتابعة بكلمة مرور مؤقتة تُسلَّم مرة واحدة، ويُطلب تغييرها عند أول دخول. الإيقاف يمنع الدخول ولا يحذف ما أنجزه الموظف.</span>
-            <span lang="en">An account is issued by the Director General or Coordination &amp; Follow-up with a temporary password handed over once; the person is made to change it on first sign-in. Suspending blocks access without deleting their work.</span></p>
+            <span lang="ar">كلمة مرور مؤقتة تُسلَّم مرة واحدة. الإيقاف لا يحذف.</span>
+            <span lang="en">A one-time temporary password. Suspending does not delete.</span></p>
           <div id="accList"></div>
           <div id="accInvList" style="margin-top:var(--sp-2)"></div>
           <div class="asnform" style="margin-top:var(--sp-4)">
@@ -3430,8 +3444,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
               <button class="btn btn-p" id="accAdd"><span lang="ar">إصدار الحساب</span><span lang="en">Issue it</span></button>
               <button class="btn" id="accInvite"><span lang="ar">دعوة عبر البريد</span><span lang="en">Invite by email</span></button>
             </div>
-            <div class="hint2" style="margin-top:var(--sp-2)"><span lang="ar">الدعوة تصل بريد الموظف برابط؛ عند فتحه يُدخل بياناته مرة واحدة ويختار كلمة مروره بنفسه. في هذا النموذج يُعاين الرابط من الزر أدناه.</span>
-              <span lang="en">The invitation reaches the person's email with a link; opening it, they enter their details once and choose their own password. In this model the link is previewed from the button below.</span></div>
+            <div class="hint2" style="margin-top:var(--sp-2)"><span lang="ar">رابط بالبريد، ويختار كلمة مروره بنفسه.</span>
+              <span lang="en">A link by email; they choose their own password.</span></div>
             <div id="ac-msg" style="margin-top:var(--sp-3)"></div>
           </div>
         </div>
@@ -3441,8 +3455,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
             <span class="ceye"><span lang="ar">قرار لا يُتخذ بنقرة واحدة</span><span lang="en">Not a one-click decision</span></span>
             <h2><span lang="ar">التحقق بخطوتين</span><span lang="en">Two-step verification</span></h2></div></div></div>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">الخطوات الحرجة تطلب رمزاً ثانياً قبل تنفيذها. اختر أيّها يخضع لذلك — الإفراط يعطّل العمل، والتساهل يُفقد القرار وزنه.</span>
-            <span lang="en">Critical steps ask for a second code before they take effect. Choose which ones — too many and work stalls, too few and a decision carries no weight.</span></p>
+            <span lang="ar">أي الخطوات تطلب رمزاً ثانياً.</span>
+            <span lang="en">Which steps ask for a second code.</span></p>
           <div class="toggle" style="margin-top:var(--sp-4)">
             <span><span class="tl2"><span lang="ar">تفعيل التحقق بخطوتين</span><span lang="en">Two-step verification on</span></span>
               <span class="ts2"><span lang="ar">إيقافه يلغي كل ما تحته.</span><span lang="en">Off, and nothing below applies.</span></span></span>
@@ -3463,8 +3477,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
             <span><span class="tl2"><span lang="ar">إصدار الحسابات وإعادة تعيينها</span><span lang="en">Issuing and resetting accounts</span></span></span>
             <button class="sw-btn on" data-2fa="accounts"><i></i></button></div>
           <p class="hint2" style="margin-top:var(--sp-4)">
-            <span lang="ar">في المنصة المبنية يصل الرمز عبر تطبيق مصادقة أو بريد الوزارة. وفي هذا النموذج يُعرض الرمز على الشاشة ليُجرَّب المسار.</span>
-            <span lang="en">In the built platform the code arrives through an authenticator app or ministry mail. In this model it is shown on screen so the path can be walked.</span></p>
+            <span lang="ar">في هذا النموذج يُعرض الرمز على الشاشة.</span>
+            <span lang="en">In this demo the code is shown on screen.</span></p>
         </div>
       </div>
 
@@ -3474,8 +3488,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
             <span class="ceye"><span lang="ar">قواعد القياس لا قيمه</span><span lang="en">Measurement rules, not values</span></span>
             <h2><span lang="ar">إعدادات المؤشرات</span><span lang="en">KPI settings</span></h2></div></div></div>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">تُضبط هنا وتيرة القراءة وعتبة التنبيه ووحدات القياس. أما قيم القراءات فتُدخَل على المؤشر نفسه، لا من هذه الشاشة.</span>
-            <span lang="en">Cadence, alert threshold and units are set here. Readings themselves are entered on the KPI, never from this screen.</span></p>
+            <span lang="ar">الوتيرة والعتبة والوحدات.</span>
+            <span lang="en">Frequency, threshold, units.</span></p>
 
           <p class="subh"><span lang="ar">وتيرة القراءة حسب المستوى</span><span lang="en">Reading cadence by level</span></p>
           <div class="frow">
@@ -3489,8 +3503,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
               <select class="fld-sel" id="cadDep"><option value="monthly">شهري</option><option value="quarterly">ربع سنوي</option><option value="annual">سنوي</option></select></div>
             <div class="fld"><label><span lang="ar">مدى التسامح مع المستهدف (%)</span><span lang="en">Tolerance around the target (%)</span></label>
               <input id="kpiThresh" type="number" min="1" max="50" value="10">
-              <div class="hint2"><span lang="ar">بلوغ المستهدف أخضر، وضمن هذا المدى دونه برتقالي، وما تجاوزه أحمر. يسري على كل المؤشرات ورسومها.</span>
-                <span lang="en">At or past the target is green, within this much below it is amber, beyond that is red. It applies to every KPI and its chart.</span></div></div>
+              <div class="hint2"><span lang="ar">أخضر عند المستهدف، برتقالي دونه، أحمر بعده.</span>
+                <span lang="en">Green at target, orange below, red beyond.</span></div></div>
           </div>
 
           <p class="subh"><span lang="ar">وحدات القياس</span><span lang="en">Units library</span></p>
@@ -3570,8 +3584,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
           </div>
 
           <p style="font-size:var(--t-sm);color:var(--ink-3);margin-top:var(--sp-4)">
-            <span lang="ar">قواعد التزامن تُطبَّق على مستوى المركز يومياً. التقسيم الإداري وإدارة الموظفين من تبويب «الموظفون».</span>
-            <span lang="en">Concurrency rules are applied centre-wide, daily. Organisational structure and staff administration live in the Staff tab.</span></p>
+            <span lang="ar">قواعد التزامن على مستوى المركز.</span>
+            <span lang="en">Centre-wide concurrency rules.</span></p>
         </div>
       </div>
 
@@ -3582,8 +3596,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
             <span class="ceye"><span lang="ar">مسودة · 33 هدفاً</span><span lang="en">Draft · 33 objectives</span></span>
             <h2><span lang="ar">خطة عام 2027</span><span lang="en">Plan year 2027</span></h2></div></div></div>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">لا تُعتمد الخطة قبل استيفاء ما يلي. والاعتماد يُجمّد التعديل على الأهداف.</span>
-            <span lang="en">The plan cannot be approved until these hold. Approving freezes objectives against editing.</span></p>
+            <span lang="ar">الاعتماد يُجمّد الأهداف.</span>
+            <span lang="en">Approval freezes the objectives.</span></p>
           <div style="margin-top:var(--sp-3)">
             <div class="pre"><span class="pk no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 7v6M12 17h.01"/></svg></span><div class="pb">
               <span lang="ar">هدفان بلا تصنيف</span><span lang="en">2 objectives carry no category</span>
@@ -3613,8 +3627,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
             <button class="sw-btn on"><i></i></button></div>
           <div class="toggle"><span><span class="tl2"><span lang="ar">ترحيل أرصدة الإجازات</span><span lang="en">Carry leave balances over</span></span></span>
             <button class="sw-btn"><i></i></button></div>
-          <p class="hint2" style="margin-top:var(--sp-4)"><span lang="ar">فتح سنة خطة جديدة يُبنى في المنصة النهائية، بترحيل الأهداف المستمرة تلقائياً.</span>
-            <span lang="en">Opening a new plan year belongs to the built platform, carrying continuing objectives forward automatically.</span></p>
+          <p class="hint2" style="margin-top:var(--sp-4)"><span lang="ar">يُبنى في المنصة النهائية.</span>
+            <span lang="en">Built in the final platform.</span></p>
         </div>
       </div>
 
@@ -3729,8 +3743,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
           <div class="frow" style="align-items:end">
             <div class="fld" style="flex:2;min-width:240px"><label><span lang="ar">بريد تقويمها الشخصي</span><span lang="en">Her calendar's email</span></label>
               <input id="dgcal-email" spellcheck="false" style="direction:ltr;text-align:start" placeholder="name@gmail.com">
-              <div class="hint2"><span lang="ar">بعد أن تشاركه مع حساب المنصة بصلاحية التعديل. اتركيه فارغاً واحفظي لفك الربط.</span>
-                <span lang="en">After she shares it with the platform account with edit rights. Save empty to unlink.</span></div></div>
+              <div class="hint2"><span lang="ar">شاركيه مع حساب المنصة أولاً. فارغ = فك الربط.</span>
+                <span lang="en">Share it with the platform account first. Empty unlinks.</span></div></div>
             <div class="fld" style="align-self:end"><button class="btn btn-p" id="dgcalSet"><span lang="ar">ربط التقويم</span><span lang="en">Link it</span></button></div>
           </div>
           <span class="kerr" id="dgcalSetErr"></span>
@@ -3749,8 +3763,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
             <span class="ceye"><span lang="ar">من يفعل ماذا</span><span lang="en">Who may do what</span></span>
             <h2><span lang="ar">الأشخاص والصلاحيات</span><span lang="en">People and permissions</span></h2></div></div></div>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">الضغط على أي مربع يمنح الصلاحية أو يسحبها. الصفوف المقفلة قواعد حوكمة لا تُفتح من هنا.</span>
-            <span lang="en">Click any box to grant or withdraw. Locked rows are governance rules and cannot be opened from this screen.</span></p>
+            <span lang="ar">اضغطي أي مربع لمنحها أو سحبها.</span>
+            <span lang="en">Tap a box to grant or withdraw.</span></p>
           <div class="pmwrap"><table class="pm" id="permTable"></table></div>
 
           <div class="lockrow">
@@ -3766,8 +3780,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
             <span class="ceye"><span lang="ar">أثناء غيابك</span><span lang="en">While you are away</span></span>
             <h2><span lang="ar">تفويض الصلاحية</span><span lang="en">Delegation</span></h2></div></div></div>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">غياب المدير العام يوقف اعتماد الميزانيات والإجازات ما لم يُفوَّض أحد. تحديد من ينوب عن المدير العام وفي أي صلاحية.</span>
-            <span lang="en">Your own leave stops budget and leave approvals unless you delegate. Choose who acts for you, and in what.</span></p>
+            <span lang="ar">من ينوب عنكِ، وفي أي صلاحية.</span>
+            <span lang="en">Who deputises for you, and for what.</span></p>
           <div class="frow">
             <div class="fld"><label><span lang="ar">النائب</span><span lang="en">Deputy</span></label>
               <input value="مدير دائرة الحوكمة وتطوير الخدمات"></div>
@@ -3808,14 +3822,14 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
             <span class="ceye"><span lang="ar">لم تُبنَ بعد</span><span lang="en">Not built yet</span></span>
             <h2><span lang="ar">تحكّم إضافي مقترح</span><span lang="en">Further owner control, proposed</span></h2></div></div></div>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">ما يلي أقترحه لتكتمل سيطرتك على المنصة. تحديد ما يلزم منها ثم بناؤه.</span>
-            <span lang="en">These are what I would add to complete your control of the platform. Pick the ones that matter and I will build them.</span></p>
+            <span lang="ar">ما أقترحه لتكتمل سيطرتك.</span>
+            <span lang="en">What I suggest to complete your control.</span></p>
           <div class="sugg declined"><div class="st2"><span lang="ar">الهيكل التنظيمي</span><span lang="en">Organisational structure</span></div>
             <div class="sd2"><span lang="ar">الدوائر والأقسام والمحافظات وأسماؤها بالعربية والإنجليزية.</span>
               <span lang="en">Directorates, departments, governorates, and their names in both languages.</span></div></div>
           <div class="sugg"><div class="st2"><span lang="ar">الإشعارات</span><span lang="en">Notifications</span></div>
-            <div class="sd2"><span lang="ar">ما الذي يصل ومتى: تجاوز موعد، ميزانية بانتظار الاعتماد، طلب إجازة، ملخص أسبوعي.</span>
-              <span lang="en">What reaches you and when: overdue steps, budgets awaiting you, leave requests, a weekly digest.</span></div></div>
+            <div class="sd2"><span lang="ar">ما الذي يصل ومتى.</span>
+              <span lang="en">What arrives, and when.</span></div></div>
         </div>
       </div>
     </section>
@@ -3873,8 +3887,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
       <div class="head">
         <p class="eyebrow"><span lang="ar">جسران، في اتجاهين متعاكسين</span><span lang="en">Two bridges, opposite directions</span></p>
         <h1><span lang="ar">الربط مع ChatGPT</span><span lang="en">The ChatGPT bridge</span></h1>
-        <p><span lang="ar">الاتجاه الأول: العمل داخل ChatGPT والدفع منه إلى المنصة. الاتجاه الثاني: المنصة نفسها تستدعي نموذجاً في الخادم. الأول هو المقصود، والثاني قائم فعلاً.</span>
-           <span lang="en">One direction: you work inside ChatGPT and push from there into the platform. The other: the platform calls a model on the server. The first is what you asked for; the second already exists.</span></p>
+        <p><span lang="ar">اتجاهان: الدفع من ChatGPT، والاستدعاء من الخادم.</span>
+           <span lang="en">Two directions: pushed from ChatGPT, or called on the server.</span></p>
       </div>
 
       <div class="card">
@@ -3883,8 +3897,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
           <h2><span lang="ar">الوارد من ChatGPT</span><span lang="en">The ChatGPT inbox</span></h2></div></div>
           <span class="sub" id="aiInbCount"></span></div>
         <p style="font-size:var(--t-sm);color:var(--ink-3)">
-          <span lang="ar">ما دفعته المساعِدة في ChatGPT يظهر هنا مباشرة من واجهة المنصة الحقيقية. أدخل المفتاح مرة واحدة ثم «اتصال». كل وارد يبقى بانتظار القرار حتى يُدرج في الاعتمادات.</span>
-          <span lang="en">What the assistant pushed in ChatGPT appears here live from the platform's real API. Enter the key once, then connect. Everything arrives pending until taken into Approvals.</span></p>
+          <span lang="ar">ما دفعته المساعِدة يظهر هنا. المفتاح مرة واحدة.</span>
+          <span lang="en">What the assistant pushed appears here. The key, once.</span></p>
         <div class="frow" style="align-items:end">
           <div class="fld"><label><span lang="ar">عنوان الواجهة</span><span lang="en">Endpoint</span></label>
             <input id="aiCfgUrl" spellcheck="false" style="direction:ltr;text-align:start"
@@ -3900,13 +3914,13 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
           <span id="aiConnStatus" style="font-size:var(--t-sm)"></span>
         </div>
         <p style="font-size:var(--t-xs);color:var(--ink-3);margin:4px 0 0">
-          <span lang="ar">يُحفَظ المفتاح في متصفح هذا الجهاز فقط — لا يدخل الصفحة المنشورة ولا يغادر جهازك. أزيلي العلامة لمسحه.</span>
-          <span lang="en">Stored only in this device's browser — never in the published page, never leaves your machine. Untick to erase it.</span></p>
+          <span lang="ar">يُحفَظ على هذا الجهاز وحده.</span>
+          <span lang="en">Kept on this device alone.</span></p>
         <div id="aiInbox" style="margin-top:var(--sp-3)"></div>
         <p class="subh" style="margin-top:var(--sp-4)"><span lang="ar">تحليلات المؤشرات</span><span lang="en">KPI analyses</span></p>
         <p style="font-size:var(--t-xs);color:var(--ink-3);margin:2px 0 0">
-          <span lang="ar">تُرسَل من زر «تحليل عبر المساعد» على بطاقة المؤشر، ويكتب المساعد جوابه هنا حين تطلبينه منه في ChatGPT.</span>
-          <span lang="en">Sent from the KPI card's analyse button; the assistant writes its answer here when you ask it in ChatGPT.</span></p>
+          <span lang="ar">من زر «تحليل عبر المساعد» على بطاقة المؤشر.</span>
+          <span lang="en">From “Analyse with the assistant” on the KPI card.</span></p>
         <div id="aiAnalyses" style="margin-top:var(--sp-2)"></div>
       </div>
 
@@ -3916,8 +3930,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
           <span class="sub"><span class="pill p-warn"><span lang="ar">يحتاج بناء</span><span lang="en">To build</span></span></span>
         </div>
         <p style="font-size:var(--t-sm);color:var(--ink-2)">
-          <span lang="ar">تفتح المنصة واجهة برمجية صغيرة، ويُعرَّف في ChatGPT إجراء مخصّص يستدعيها. تُصاغ المراسلة كالمعتاد، ثم يُطلب دفع المهام إلى المنصة، فيستدعي ChatGPT الواجهة مباشرة. الدفع هنا فعل من المدير العام، لأنه من يشغّل ChatGPT.</span>
-          <span lang="en">The platform exposes a small API, and a custom action in ChatGPT calls it. You draft as usual, then say "push these tasks to the platform", and ChatGPT calls the API directly. The push is still yours, because you are the one operating ChatGPT.</span>
+          <span lang="ar">المنصة تفتح واجهة صغيرة، وChatGPT يستدعيها.</span>
+          <span lang="en">The platform opens a small API; ChatGPT calls it.</span>
         </p>
         <div class="flow">
           <div class="fbox"><b>1</b><span lang="ar">الصياغة في ChatGPT</span><span lang="en">You draft in ChatGPT</span></div>
@@ -3945,14 +3959,14 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
         <div class="card">
           <div class="card-h"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg></span><h2><span lang="ar">المفتاح — هنا يكون في صفحة الإدارة</span><span lang="en">The key — this one does belong in admin</span></h2></div>
           <p style="font-size:var(--t-sm);color:var(--ink-2)">
-            <span lang="ar">مفتاح باسم المدير العام يُصدر من صفحة الإدارة ويمكن إبطاله في أي وقت، يحمل صلاحية المدير العام ولا يتجاوزها. كل استدعاء يُسجَّل: ماذا أُنشئ، ومن أي محادثة. وهذا عكس المفتاح المرفوض سابقاً: ذاك كان مفتاح مزوّد خارجي داخل قاعدة البيانات، وهذا مفتاح المنصة نفسها تصدره وتبطله.</span>
-            <span lang="en">A token issued in your admin page and revocable at any time, carrying your permissions and never exceeding them. Every call is logged: what was created, and from which conversation. This is the opposite of the key I argued against earlier — that was a third-party provider's key sitting in the database; this one the platform issues and can revoke.</span>
+            <span lang="ar">مفتاح باسمك، يُبطل متى شئتِ. كل استدعاء يُسجَّل.</span>
+            <span lang="en">A key in your name, revocable at any time. Every call is logged.</span>
           </p>
         </div>
         <div class="never">
           <h3><span lang="ar">ما تفرضه الواجهة مهما طلب ChatGPT</span><span lang="en">What the API enforces regardless of what ChatGPT sends</span></h3>
           <ul>
-            <li><span lang="ar">كل هدف أو مهمة يصل عبر الواجهة يجب أن يحمل فئة، وإلا رُفض.</span><span lang="en">Anything arriving through the API must carry a category, or it is rejected.</span></li>
+            <li><span lang="ar">كل وارد يحمل فئة، وإلا رُفض.</span><span lang="en">Everything arriving carries a category, or it is refused.</span></li>
             <li><span lang="ar">مكتب المدير العام وقسم التنسيق لا يملكان أهدافاً.</span><span lang="en">DGO and the Coordination Section can never own objectives.</span></li>
             <li><span lang="ar">لا يُسنَد عمل إلا لموظف قائم في النظام.</span><span lang="en">Work is only assigned to a person who exists in the system.</span></li>
             <li><span lang="ar">تقدير الميزانية يبقى بحاجة إلى اعتمادك داخل المنصة.</span><span lang="en">A budget estimate still needs your validation inside the platform.</span></li>
@@ -3967,8 +3981,8 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
           <span class="sub"><span class="pill p-good"><span lang="ar">قائم فعلاً</span><span lang="en">Already exists</span></span></span>
         </div>
         <p style="font-size:var(--t-sm);color:var(--ink-2)">
-          <span lang="ar">داخل الخادم، لا علاقة له بحساب ChatGPT الخاص بك. يُستخدم في موضعين: استخراج الخطة المرجعية من وثيقة الوزارة، وإصدار حكم المطابقة لكل هدف. يعمل حتى لو لم يفتح أحد ChatGPT.</span>
-          <span lang="en">Server-side, unrelated to your ChatGPT account. It is used in two places: extracting the master plan from the Ministry document, and issuing the alignment verdict for every objective. It runs whether or not anyone opens ChatGPT.</span>
+          <span lang="ar">داخل الخادم — لا علاقة له بحسابك في ChatGPT.</span>
+          <span lang="en">On the server — nothing to do with your ChatGPT account.</span>
         </p>
       </div>
     </section>
@@ -13001,6 +13015,44 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   window.addEventListener("scroll", function(){ if(RVON) rvPaint(); }, {passive:true});
   rvRows();
 
+  // ══ quiet by default ══
+  // Every card with a heading starts shut; the heading is the control, so no
+  // card markup changes and a screen that repaints itself keeps working.
+  // What she opens is remembered, per screen, on this device.
+  var OPEN={};
+  try{ OPEN=JSON.parse(localStorage.getItem("qagcOpen")||"{}"); }catch(_){}
+  function cardKey(c){
+    var sec=c.closest?c.closest(".screen"):null; if(!sec) return "";
+    return sec.id+":"+[].slice.call(sec.querySelectorAll(".card")).indexOf(c);
+  }
+  function initCards(){
+    document.querySelectorAll(".screen .card").forEach(function(c){
+      if(c.hasAttribute("data-cinit")) return;
+      var h=c.firstElementChild;
+      if(!h||!h.classList||!h.classList.contains("card-h")) return;  // nothing to tap
+      c.setAttribute("data-cinit","");
+      if(!OPEN[cardKey(c)]) c.setAttribute("data-shut","");
+    });
+  }
+  document.addEventListener("click",function(e){
+    if(typeof EDITMODE!=="undefined" && EDITMODE) return;   // renaming, not toggling
+    if(typeof RVON!=="undefined" && RVON) return;           // review mode owns the click
+    if(!e.target.closest) return;
+    if(e.target.closest("button,select,input,textarea,a,[contenteditable]")) return;
+    var h=e.target.closest(".card > .card-h"); if(!h) return;
+    var c=h.parentElement, wasShut=c.hasAttribute("data-shut");
+    if(wasShut) c.removeAttribute("data-shut"); else c.setAttribute("data-shut","");
+    OPEN[cardKey(c)]=wasShut;
+    try{ localStorage.setItem("qagcOpen", JSON.stringify(OPEN)); }catch(_){}
+  });
+  // cards the dynamic screens create later must start shut too; attributes are
+  // not observed, so setting them here cannot re-trigger this observer
+  var _ciT=null;
+  new MutationObserver(function(){
+    clearTimeout(_ciT); _ciT=setTimeout(initCards,120);
+  }).observe(document.querySelector("main")||document.body,{childList:true,subtree:true});
+  initCards();
+
   applyRole();
   gateFoot(); drawAccounts(); drawInvites();
 
@@ -13048,7 +13100,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       ownerPersist(); drawPerfBoard(); flashSaved("pwSaved"); return;
     }
     if(e.target.closest("#cfgExport")){
-      var keys=["qagcCustom","qagcPrivs","qagcAwards","qagcOwnerCfg","qagcPlanSheet","qagcAiHidden","qagcAiCfg","qagcNotes"];
+      var keys=["qagcCustom","qagcPrivs","qagcAwards","qagcOwnerCfg","qagcPlanSheet","qagcAiHidden","qagcAiCfg","qagcNotes","qagcOpen"];
       var bag={_qagc:"owner-settings", when:PLATFORM_TODAY};
       keys.forEach(function(k){ var v=localStorage.getItem(k); if(v!==null) bag[k]=v; });
       dlBlob("qagc-settings.json", new Blob([JSON.stringify(bag,null,1)],{type:"application/json"}));
