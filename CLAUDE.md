@@ -196,6 +196,14 @@ expenses and verification are entered in the feeder and feed the
 completion KPIs; drafts carry no readings. Every «هدف جديد» button
 opens the generator; tracked objectives get a «المتابعة» tab in the
 annual plan. Submitting a draft is in-memory until the backend exists.
+Beta 30 additions: every roster member has a demo account (username =
+roster id m1…m20, same password) and the rail's "view as" can pick a
+person; the annual plan's «المتابعة» tab embeds the generator's own
+timeline (`gxEmbedDraw`, `.gx-scope` styles) and its KPI tab the same
+KPI panel (`gxKPlanHTML`); the readings tool sits on the KPI card and is
+build-only until approval; chart types line/bars/dots/area; each KPI
+exports a one-slide PPTX written by `gxPptxBuild` (store-only zip +
+minimal OOXML, validated with python-pptx — keep the part set intact).
 
 Open, in priority order:
 1. **Thin backend** — the one big remaining step: real persistence for work

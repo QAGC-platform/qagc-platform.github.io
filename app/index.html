@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 29">
+<meta name="qagc-ver" content="beta 30">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -1928,178 +1928,179 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 .orgflag{font-size:var(--t-xs);color:var(--gold-ink);padding:4px 0}
 
 /* ── مولّد الأهداف — the objective generator, on the platform's own tokens ── */
-#gen .gx-strip{display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center;margin-bottom:var(--sp-3)}
-#gen .gx-strip .lab{font-size:var(--t-xs);color:var(--ink-3);font-weight:700;letter-spacing:.06em;margin-inline-end:4px}
-#gen .gx-chip{font:inherit;font-size:var(--t-sm);padding:6px 12px;border-radius:var(--r-pill);border:1px solid var(--rule-strong);background:var(--surface);color:var(--ink-2);cursor:pointer;display:inline-flex;gap:6px;align-items:center;max-width:360px}
-#gen .gx-chip b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#gen .gx-chip .ref{font-size:var(--t-xs);color:var(--ink-3)}
-#gen .gx-chip.on{border-color:var(--brand-ink);background:var(--surface-ink);color:#fff}
-#gen .gx-chip.on .ref{color:var(--rail-ink-2)}
-#gen .gx-chip.appr{border-style:dashed}
-#gen .gx-chip.new{border-color:var(--gold-ink);color:var(--gold-ink)}
-#gen .gx-bar{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;margin-bottom:var(--sp-3)}
-#gen .gx-mode{font-size:var(--t-xs);font-weight:700;padding:3px 10px;border-radius:var(--r-pill);background:var(--warn-bg);color:var(--warn-ink);border:1px solid var(--warn-rule)}
-#gen .gx-mode.appr{background:var(--good-bg);color:var(--good-ink);border-color:var(--good-rule)}
-#gen .gx-tabs{display:flex;gap:2px;border:1px solid var(--rule-strong);border-radius:var(--r);padding:2px;background:var(--surface-2)}
-#gen .gx-tabs button{font:inherit;font-size:var(--t-sm);font-weight:600;border:none;background:transparent;color:var(--ink-3);padding:6px 14px;border-radius:calc(var(--r) - 2px);cursor:pointer}
-#gen .gx-tabs button.on{background:var(--surface);color:var(--brand-ink);box-shadow:var(--shadow)}
-#gen .gx-me{margin-inline-start:auto;font-size:var(--t-xs);color:var(--ink-3)}
-#gen .gx-pane{display:none}#gen .gx-pane.on{display:block}
+.gx-scope .gx-strip{display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center;margin-bottom:var(--sp-3)}
+.gx-scope .gx-strip .lab{font-size:var(--t-xs);color:var(--ink-3);font-weight:700;letter-spacing:.06em;margin-inline-end:4px}
+.gx-scope .gx-chip{font:inherit;font-size:var(--t-sm);padding:6px 12px;border-radius:var(--r-pill);border:1px solid var(--rule-strong);background:var(--surface);color:var(--ink-2);cursor:pointer;display:inline-flex;gap:6px;align-items:center;max-width:360px}
+.gx-scope .gx-chip b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gx-scope .gx-chip .ref{font-size:var(--t-xs);color:var(--ink-3)}
+.gx-scope .gx-chip.on{border-color:var(--brand-ink);background:var(--surface-ink);color:#fff}
+.gx-scope .gx-chip.on .ref{color:var(--rail-ink-2)}
+.gx-scope .gx-chip.appr{border-style:dashed}
+.gx-scope .gx-chip.new{border-color:var(--gold-ink);color:var(--gold-ink)}
+.gx-scope .gx-bar{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;margin-bottom:var(--sp-3)}
+.gx-scope .gx-mode{font-size:var(--t-xs);font-weight:700;padding:3px 10px;border-radius:var(--r-pill);background:var(--warn-bg);color:var(--warn-ink);border:1px solid var(--warn-rule)}
+.gx-scope .gx-mode.appr{background:var(--good-bg);color:var(--good-ink);border-color:var(--good-rule)}
+.gx-scope .gx-tabs{display:flex;gap:2px;border:1px solid var(--rule-strong);border-radius:var(--r);padding:2px;background:var(--surface-2)}
+.gx-scope .gx-tabs button{font:inherit;font-size:var(--t-sm);font-weight:600;border:none;background:transparent;color:var(--ink-3);padding:6px 14px;border-radius:calc(var(--r) - 2px);cursor:pointer}
+.gx-scope .gx-tabs button.on{background:var(--surface);color:var(--brand-ink);box-shadow:var(--shadow)}
+.gx-scope .gx-me{margin-inline-start:auto;font-size:var(--t-xs);color:var(--ink-3)}
+.gx-scope .gx-pane{display:none}.gx-scope .gx-pane.on{display:block}
 
 /* timeline */
-#gen .gx-gwrap{border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;background:var(--surface)}
-#gen .gx-g{display:grid;grid-template-columns:380px minmax(0,1fr)}
-#gen .gx-labels{border-inline-end:2px solid var(--rule-strong);background:var(--surface)}
-#gen .gx-lh,#gen .gx-lr{display:grid;grid-template-columns:minmax(0,1fr) 82px 34px 82px;align-items:center}
-#gen .gx-lh{height:44px;font-size:var(--t-xs);letter-spacing:.06em;color:var(--ink-3);font-weight:700;border-bottom:1px solid var(--rule);background:var(--surface-2)}
-#gen .gx-lh span,#gen .gx-lr>span{padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#gen .gx-lr{height:32px;border-bottom:1px solid var(--rule)}
-#gen .gx-lr.obj{background:color-mix(in srgb,var(--brand-ink) 10%,var(--surface));font-weight:700;height:36px}
-#gen .gx-lr.obj .name{display:flex;align-items:center;gap:6px;min-width:0}
-#gen .gx-car{display:inline-block;width:14px;font-size:10px;flex:none;cursor:pointer;color:var(--ink-3);transition:transform .15s}
-#gen .open>.name .gx-car{transform:rotate(90deg)}
-#gen .gx-lr.obj input.gx-title{font-size:var(--t-body);font-weight:700;flex:1;min-width:0}
-#gen .gx-lr.obj input.gx-title::placeholder{color:var(--gold-ink);font-weight:600}
-#gen .gx-lr.obj.open,#gen .gx-tr.obj.open{height:118px}
-#gen .gx-lr.ph{background:color-mix(in srgb,var(--brand-gold) 28%,var(--surface));font-weight:600}
-#gen .gx-lr.ph input::placeholder{color:var(--gold-ink)}
-#gen .gx-lr.tk{cursor:pointer}
-#gen .gx-lr.tk .name{display:flex;align-items:center;gap:6px;min-width:0;padding-inline-start:12px}
-#gen .gx-lr.tk .name .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
-#gen .gx-lr.tk .name .meta{font-size:var(--t-xs);color:var(--ink-3);white-space:nowrap;flex:none}
-#gen .gx-lr.tk.open,#gen .gx-tr.tk.open{height:130px}
-#gen .gx-lr.open{align-items:start;padding-top:4px}
-#gen .gx-det{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px 8px;padding:4px 8px 6px 16px;align-self:start}
-#gen .gx-det .f.w{grid-column:1/-1}
-#gen .gx-lr.form,#gen .gx-tr.form{height:auto;min-height:130px}
-#gen .gx-lr.form{align-items:start;padding:4px 0}
-#gen .gx-acts{grid-column:1/-1;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-#gen .gx-lr input,#gen .gx-lr select{width:100%;font:inherit;font-size:var(--t-sm);border:none;background:transparent;color:var(--ink-1);padding:2px 5px;border-radius:var(--r-sm)}
-#gen .gx-lr input:focus,#gen .gx-lr select:focus{outline:none;background:var(--surface-2);box-shadow:inset 0 0 0 1.5px var(--brand-ink)}
-#gen .gx-lr input[type=date]{font-size:var(--t-xs)}
-#gen .gx-lr .n{font-variant-numeric:tabular-nums;color:var(--ink-2);font-size:var(--t-xs);text-align:center}
-#gen .gx-add{font-size:var(--t-xs);color:var(--brand-ink);background:none;border:none;cursor:pointer;font:inherit;font-weight:700;padding:0 6px}
-#gen .gx-del{opacity:0;font-size:var(--t-xs);color:var(--ink-3);background:none;border:none;cursor:pointer;padding:0 4px}
-#gen .gx-lr:hover .gx-del{opacity:1}
-#gen .gx-lr.new{height:30px}
-#gen .gx-lr.new button{grid-column:1/-1;justify-self:start;margin-inline-start:8px}
-#gen .f label{display:block;font-size:var(--t-xs);color:var(--ink-3);font-weight:700;margin-bottom:3px}
-#gen .f input,#gen .f select{width:100%;font:inherit;font-size:var(--t-sm);padding:6px 9px;border:1px solid var(--rule-strong);border-radius:var(--r-sm);background:var(--surface);color:var(--ink-1)}
-#gen .f input:focus,#gen .f select:focus{outline:none;border-color:var(--brand-ink)}
-#gen .gx-scope{font-size:var(--t-xs);color:var(--gold-ink);font-weight:700;margin-inline-start:6px}
-#gen .gx-sum{font-size:var(--t-xs);color:var(--ink-3);font-weight:400;margin-inline-start:6px;font-variant-numeric:tabular-nums}
-#gen .gx-time{position:relative;min-width:0;overflow:hidden}
-#gen .gx-th{height:44px;border-bottom:1px solid var(--rule);position:relative;background:var(--surface-2)}
-#gen .gx-th .mo{position:absolute;top:0;height:22px;line-height:22px;font-size:var(--t-xs);font-weight:700;color:var(--ink-2);border-inline-start:1.5px solid var(--rule-strong);padding:0 6px;white-space:nowrap;overflow:hidden}
-#gen .gx-th .mo.alt{background:color-mix(in srgb,var(--brand-gold) 18%,var(--surface-2))}
-#gen .gx-th .un{position:absolute;top:22px;height:22px;line-height:22px;font-size:10px;color:var(--ink-3);text-align:center;border-inline-start:1px solid var(--rule);font-variant-numeric:tabular-nums;overflow:hidden;white-space:nowrap}
-#gen .gx-th.z-year .un{font-size:8.5px;padding:0}
-#gen .gx-th.q3{height:66px}#gen .gx-th.q3 .mo{top:22px}#gen .gx-th.q3 .un{top:44px}
-#gen .gx-th .qrow{position:absolute;top:0;height:22px;inset-inline:0}
-#gen .gx-th .qb{position:absolute;top:0;height:22px;line-height:22px;font-size:var(--t-xs);font-weight:800;text-align:center;color:var(--brand-ink);background:color-mix(in srgb,var(--brand-gold) 40%,var(--surface-2));border-inline-start:1.5px solid var(--gold-ink);cursor:pointer;pointer-events:auto}
-#gen .gx-th .qb:hover{background:var(--brand-gold)}
-#gen .gx-th .qb.on{background:var(--brand-ink);color:#fff}
-#gen .gx-bg.q3{top:66px}
-#gen .gx-lh.q3{height:66px}
-#gen .gx-th .un.we{background:color-mix(in srgb,var(--ink-4) 18%,transparent)}
-#gen .gx-th .un b{display:block;font-size:8.5px;line-height:8px;font-weight:600;color:var(--ink-3)}
-#gen .gx-bg{position:absolute;top:44px;bottom:0;inset-inline-start:0;pointer-events:none;z-index:0}
-#gen .gx-bg .mband{position:absolute;top:0;bottom:0;border-inline-start:1.5px solid var(--rule-strong)}
-#gen .gx-bg .mband.alt{background:color-mix(in srgb,var(--brand-gold) 9%,transparent)}
-#gen .gx-bg .wk{position:absolute;top:0;bottom:0;border-inline-start:1px solid var(--rule)}
-#gen .gx-bg .dy{position:absolute;top:0;bottom:0;border-inline-start:1px dotted var(--rule)}
-#gen .gx-bg .we{position:absolute;top:0;bottom:0;background:repeating-linear-gradient(135deg,transparent 0 5px,color-mix(in srgb,var(--ink-4) 22%,transparent) 5px 6px)}
-#gen .gx-bg .period{position:absolute;top:0;bottom:0;background:color-mix(in srgb,var(--brand-ink) 7%,transparent);border-inline:1.5px dashed color-mix(in srgb,var(--brand-ink) 45%,transparent)}
-#gen .gx-bg .today{position:absolute;top:0;bottom:0;width:0;border-inline-start:2px solid var(--critical)}
-#gen .gx-bg .today i{position:absolute;top:6px;inset-inline-start:-1px;transform:translateX(-50%);font-style:normal;font-size:10px;font-weight:700;color:#fff;background:var(--critical);padding:1px 7px;border-radius:var(--r-pill);white-space:nowrap}
-#gen .gx-tr{height:32px;border-bottom:1px solid var(--rule);position:relative;user-select:none;cursor:crosshair;z-index:1}
-#gen .gx-tr:hover{background:color-mix(in srgb,var(--brand-ink) 5%,transparent)}
-#gen .gx-tr.obj{height:36px}#gen .gx-tr.new{height:30px;cursor:default}#gen .gx-tr.ro{cursor:default}
-#gen .gx-gh{position:absolute;inset:0;display:flex;align-items:center;padding:0 14px;font-size:var(--t-xs);color:var(--ink-3);pointer-events:none;white-space:nowrap;overflow:hidden}
-#gen .gx-barx{position:absolute;top:6px;height:20px;border-radius:6px;background:color-mix(in srgb,var(--brand-ink) 16%,var(--surface));border:1px solid var(--brand-ink);overflow:hidden;min-width:4px;box-shadow:var(--shadow)}
-#gen .gx-barx .lbl{position:absolute;inset:0;font-size:var(--t-xs);line-height:18px;padding:0 8px;white-space:nowrap;color:var(--ink-1);font-weight:600}
-#gen .gx-barx .fill{position:absolute;inset:0;inset-inline-end:var(--rest,100%);background:color-mix(in srgb,var(--brand-ink) 55%,var(--surface))}
-#gen .gx-barx.obj{top:5px;height:26px;background:linear-gradient(180deg,color-mix(in srgb,var(--brand-ink) 85%,#fff),var(--brand-ink));border-color:var(--brand-ink)}
-#gen .gx-barx.obj .lbl{color:#fff;line-height:24px;font-size:var(--t-sm)}
-#gen .gx-barx.ph{background:transparent;border:none;height:10px;top:11px;box-shadow:none;overflow:visible}
-#gen .gx-barx.ph::before{content:"";position:absolute;inset:3px 0;background:var(--brand-gold);border-radius:99px}
-#gen .gx-barx.ph::after{content:"";position:absolute;top:0;bottom:0;inset-inline:0;border-inline:3px solid var(--gold-ink);border-radius:2px}
-#gen .gx-barx.out{border-color:var(--critical);border-style:dashed}
-#gen .gx-barx.done{border-color:var(--good);background:var(--good-bg)}#gen .gx-barx.late{border-color:var(--critical);background:var(--critical-bg)}
-#gen .gx-barx.cut-s{border-inline-start-style:dotted}#gen .gx-barx.cut-e{border-inline-end-style:dotted}
-#gen .gx-kmark{position:absolute;top:9px;width:12px;height:12px;transform:rotate(45deg) translateX(-50%);background:var(--brand-gold);border:1.5px solid var(--gold-ink);z-index:2;cursor:help}
-#gen .gx-foot{font-size:var(--t-xs);color:var(--ink-3);padding:8px 12px;border-top:1px solid var(--rule);display:flex;gap:14px;flex-wrap:wrap;align-items:center;background:var(--surface)}
-#gen .gx-foot b{color:var(--ink-2)}
-#gen .gx-foot.save{border-top:none;border-bottom:1px solid var(--rule);background:var(--surface-2)}
-#gen .gx-warn{color:var(--critical-ink);font-weight:700}
-#gen .gx-nav{display:flex;align-items:center;gap:6px;margin-inline-start:auto}
-#gen .gx-nav .win{font-weight:700;color:var(--ink-2);min-width:150px;text-align:center;font-variant-numeric:tabular-nums}
-#gen .gx-nav button{font:inherit;border:1px solid var(--rule-strong);background:var(--surface);color:var(--ink-2);border-radius:var(--r-sm);padding:3px 9px;cursor:pointer;font-size:var(--t-xs)}
-#gen .gx-zoom{display:flex;gap:3px;background:var(--surface-2);border:1px solid var(--rule-strong);border-radius:var(--r-sm);padding:2px}
-#gen .gx-zoom button{border:none;background:transparent;padding:4px 10px;border-radius:4px}
-#gen .gx-zoom button.on{background:var(--brand-ink);color:#fff;font-weight:700}
-#gen .gx-st{font:inherit;font-size:10px;border:1px solid var(--rule-strong);border-radius:var(--r-pill);padding:1px 8px;background:var(--surface);cursor:pointer;color:var(--ink-2)}
-#gen .gx-st.done{background:var(--good-bg);color:var(--good-ink);border-color:var(--good-rule)}
-#gen .gx-st.late{background:var(--critical-bg);color:var(--critical-ink);border-color:var(--critical-rule)}
-#gen .gx-prog{display:inline-flex;align-items:center;gap:6px;font-size:var(--t-xs);color:var(--ink-2);font-variant-numeric:tabular-nums}
-#gen .gx-prog i{width:90px;height:6px;border-radius:99px;background:var(--rule);position:relative;overflow:hidden;display:inline-block}
-#gen .gx-prog i::after{content:"";position:absolute;inset:0;inset-inline-end:var(--rest,100%);background:var(--good)}
+.gx-scope .gx-gwrap{border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;background:var(--surface)}
+.gx-scope .gx-g{display:grid;grid-template-columns:430px minmax(0,1fr)}
+.gx-scope .gx-labels{border-inline-end:2px solid var(--rule-strong);background:var(--surface)}
+.gx-scope .gx-lh,.gx-scope .gx-lr{display:grid;grid-template-columns:minmax(0,1fr) 94px 42px 94px;align-items:center}
+.gx-scope .gx-lh{height:44px;font-size:var(--t-xs);letter-spacing:.06em;color:var(--ink-3);font-weight:700;border-bottom:1px solid var(--rule);background:var(--surface-2)}
+.gx-scope .gx-lh span,.gx-scope .gx-lr>span{padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gx-scope .gx-lr{height:32px;border-bottom:1px solid var(--rule)}
+.gx-scope .gx-lr.obj{background:color-mix(in srgb,var(--brand-ink) 10%,var(--surface));font-weight:700;height:36px}
+.gx-scope .gx-lr.obj .name{display:flex;align-items:center;gap:6px;min-width:0}
+.gx-scope .gx-car{display:inline-block;width:14px;font-size:10px;flex:none;cursor:pointer;color:var(--ink-3);transition:transform .15s}
+.gx-scope .open>.name .gx-car{transform:rotate(90deg)}
+.gx-scope .gx-lr.obj input.gx-title{font-size:var(--t-body);font-weight:700;flex:1;min-width:0}
+.gx-scope .gx-lr.obj input.gx-title::placeholder{color:var(--gold-ink);font-weight:600}
+.gx-scope .gx-lr.obj.open{height:auto;min-height:118px;padding-bottom:6px}
+.gx-scope .gx-lr.ph{background:color-mix(in srgb,var(--brand-gold) 28%,var(--surface));font-weight:600}
+.gx-scope .gx-lr.ph input::placeholder{color:var(--gold-ink)}
+.gx-scope .gx-lr.tk{cursor:pointer}
+.gx-scope .gx-lr.tk .name{display:flex;align-items:center;gap:6px;min-width:0;padding-inline-start:12px}
+.gx-scope .gx-lr.tk .name .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.gx-scope .gx-lr.tk .name .meta{font-size:var(--t-xs);color:var(--ink-3);white-space:nowrap;flex:none}
+.gx-scope .gx-lr.tk.open{height:auto;min-height:130px;padding-bottom:6px}
+.gx-scope .gx-lr.open{align-items:start;padding-top:4px}
+.gx-scope .gx-det{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px 8px;padding:4px 8px 6px 16px;align-self:start}
+.gx-scope .gx-det .f.w{grid-column:1/-1}
+.gx-scope .gx-lr.form{height:auto;min-height:130px}
+.gx-scope .gx-lr.form{align-items:start;padding:4px 0}
+.gx-scope .gx-acts{grid-column:1/-1;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.gx-scope .gx-lr input,.gx-scope .gx-lr select{width:100%;font:inherit;font-size:var(--t-sm);border:none;background:transparent;color:var(--ink-1);padding:2px 5px;border-radius:var(--r-sm)}
+.gx-scope .gx-lr input:focus,.gx-scope .gx-lr select:focus{outline:none;background:var(--surface-2);box-shadow:inset 0 0 0 1.5px var(--brand-ink)}
+.gx-scope .gx-lr input[type=date]{font-size:11px;padding:2px 2px;letter-spacing:-.01em}
+.gx-scope .gx-lr.obj .name{flex-wrap:nowrap}
+.gx-scope .gx-lr .n{font-variant-numeric:tabular-nums;color:var(--ink-2);font-size:var(--t-xs);text-align:center}
+.gx-scope .gx-add{font-size:var(--t-xs);color:var(--brand-ink);background:none;border:none;cursor:pointer;font:inherit;font-weight:700;padding:0 6px}
+.gx-scope .gx-del{opacity:0;font-size:var(--t-xs);color:var(--ink-3);background:none;border:none;cursor:pointer;padding:0 4px}
+.gx-scope .gx-lr:hover .gx-del{opacity:1}
+.gx-scope .gx-lr.new{height:30px}
+.gx-scope .gx-lr.new button{grid-column:1/-1;justify-self:start;margin-inline-start:8px}
+.gx-scope .f label{display:block;font-size:var(--t-xs);color:var(--ink-3);font-weight:700;margin-bottom:3px}
+.gx-scope .f input,.gx-scope .f select{width:100%;font:inherit;font-size:var(--t-sm);padding:6px 9px;border:1px solid var(--rule-strong);border-radius:var(--r-sm);background:var(--surface);color:var(--ink-1)}
+.gx-scope .f input:focus,.gx-scope .f select:focus{outline:none;border-color:var(--brand-ink)}
+.gx-scope .gx-scope{font-size:var(--t-xs);color:var(--gold-ink);font-weight:700;margin-inline-start:6px}
+.gx-scope .gx-sum{font-size:var(--t-xs);color:var(--ink-3);font-weight:400;margin-inline-start:6px;font-variant-numeric:tabular-nums}
+.gx-scope .gx-time{position:relative;min-width:0;overflow:hidden}
+.gx-scope .gx-th{height:44px;border-bottom:1px solid var(--rule);position:relative;background:var(--surface-2)}
+.gx-scope .gx-th .mo{position:absolute;top:0;height:22px;line-height:22px;font-size:var(--t-xs);font-weight:700;color:var(--ink-2);border-inline-start:1.5px solid var(--rule-strong);padding:0 6px;white-space:nowrap;overflow:hidden}
+.gx-scope .gx-th .mo.alt{background:color-mix(in srgb,var(--brand-gold) 18%,var(--surface-2))}
+.gx-scope .gx-th .un{position:absolute;top:22px;height:22px;line-height:22px;font-size:10px;color:var(--ink-3);text-align:center;border-inline-start:1px solid var(--rule);font-variant-numeric:tabular-nums;overflow:hidden;white-space:nowrap}
+.gx-scope .gx-th.z-year .un{font-size:8.5px;padding:0}
+.gx-scope .gx-th.q3{height:66px}.gx-scope .gx-th.q3 .mo{top:22px}.gx-scope .gx-th.q3 .un{top:44px}
+.gx-scope .gx-th .qrow{position:absolute;top:0;height:22px;inset-inline:0}
+.gx-scope .gx-th .qb{position:absolute;top:0;height:22px;line-height:22px;font-size:var(--t-xs);font-weight:800;text-align:center;color:var(--brand-ink);background:color-mix(in srgb,var(--brand-gold) 40%,var(--surface-2));border-inline-start:1.5px solid var(--gold-ink);cursor:pointer;pointer-events:auto}
+.gx-scope .gx-th .qb:hover{background:var(--brand-gold)}
+.gx-scope .gx-th .qb.on{background:var(--brand-ink);color:#fff}
+.gx-scope .gx-bg.q3{top:66px}
+.gx-scope .gx-lh.q3{height:66px}
+.gx-scope .gx-th .un.we{background:color-mix(in srgb,var(--ink-4) 18%,transparent)}
+.gx-scope .gx-th .un b{display:block;font-size:8.5px;line-height:8px;font-weight:600;color:var(--ink-3)}
+.gx-scope .gx-bg{position:absolute;top:44px;bottom:0;inset-inline-start:0;pointer-events:none;z-index:0}
+.gx-scope .gx-bg .mband{position:absolute;top:0;bottom:0;border-inline-start:1.5px solid var(--rule-strong)}
+.gx-scope .gx-bg .mband.alt{background:color-mix(in srgb,var(--brand-gold) 9%,transparent)}
+.gx-scope .gx-bg .wk{position:absolute;top:0;bottom:0;border-inline-start:1px solid var(--rule)}
+.gx-scope .gx-bg .dy{position:absolute;top:0;bottom:0;border-inline-start:1px dotted var(--rule)}
+.gx-scope .gx-bg .we{position:absolute;top:0;bottom:0;background:repeating-linear-gradient(135deg,transparent 0 5px,color-mix(in srgb,var(--ink-4) 22%,transparent) 5px 6px)}
+.gx-scope .gx-bg .period{position:absolute;top:0;bottom:0;background:color-mix(in srgb,var(--brand-ink) 7%,transparent);border-inline:1.5px dashed color-mix(in srgb,var(--brand-ink) 45%,transparent)}
+.gx-scope .gx-bg .today{position:absolute;top:0;bottom:0;width:0;border-inline-start:2px solid var(--critical)}
+.gx-scope .gx-bg .today i{position:absolute;top:6px;inset-inline-start:-1px;transform:translateX(-50%);font-style:normal;font-size:10px;font-weight:700;color:#fff;background:var(--critical);padding:1px 7px;border-radius:var(--r-pill);white-space:nowrap}
+.gx-scope .gx-tr{height:32px;border-bottom:1px solid var(--rule);position:relative;user-select:none;cursor:crosshair;z-index:1}
+.gx-scope .gx-tr:hover{background:color-mix(in srgb,var(--brand-ink) 5%,transparent)}
+.gx-scope .gx-tr.obj{height:36px}.gx-scope .gx-tr.new{height:30px;cursor:default}.gx-scope .gx-tr.ro{cursor:default}
+.gx-scope .gx-gh{position:absolute;inset:0;display:flex;align-items:center;padding:0 14px;font-size:var(--t-xs);color:var(--ink-3);pointer-events:none;white-space:nowrap;overflow:hidden}
+.gx-scope .gx-barx{position:absolute;top:6px;height:20px;border-radius:6px;background:color-mix(in srgb,var(--brand-ink) 16%,var(--surface));border:1px solid var(--brand-ink);overflow:hidden;min-width:4px;box-shadow:var(--shadow)}
+.gx-scope .gx-barx .lbl{position:absolute;inset:0;font-size:var(--t-xs);line-height:18px;padding:0 8px;white-space:nowrap;color:var(--ink-1);font-weight:600}
+.gx-scope .gx-barx .fill{position:absolute;inset:0;inset-inline-end:var(--rest,100%);background:color-mix(in srgb,var(--brand-ink) 55%,var(--surface))}
+.gx-scope .gx-barx.obj{top:5px;height:26px;background:linear-gradient(180deg,color-mix(in srgb,var(--brand-ink) 85%,#fff),var(--brand-ink));border-color:var(--brand-ink)}
+.gx-scope .gx-barx.obj .lbl{color:#fff;line-height:24px;font-size:var(--t-sm)}
+.gx-scope .gx-barx.ph{background:transparent;border:none;height:10px;top:11px;box-shadow:none;overflow:visible}
+.gx-scope .gx-barx.ph::before{content:"";position:absolute;inset:3px 0;background:var(--brand-gold);border-radius:99px}
+.gx-scope .gx-barx.ph::after{content:"";position:absolute;top:0;bottom:0;inset-inline:0;border-inline:3px solid var(--gold-ink);border-radius:2px}
+.gx-scope .gx-barx.out{border-color:var(--critical);border-style:dashed}
+.gx-scope .gx-barx.done{border-color:var(--good);background:var(--good-bg)}.gx-scope .gx-barx.late{border-color:var(--critical);background:var(--critical-bg)}
+.gx-scope .gx-barx.cut-s{border-inline-start-style:dotted}.gx-scope .gx-barx.cut-e{border-inline-end-style:dotted}
+.gx-scope .gx-kmark{position:absolute;top:9px;width:12px;height:12px;transform:rotate(45deg) translateX(-50%);background:var(--brand-gold);border:1.5px solid var(--gold-ink);z-index:2;cursor:help}
+.gx-scope .gx-foot{font-size:var(--t-xs);color:var(--ink-3);padding:8px 12px;border-top:1px solid var(--rule);display:flex;gap:14px;flex-wrap:wrap;align-items:center;background:var(--surface)}
+.gx-scope .gx-foot b{color:var(--ink-2)}
+.gx-scope .gx-foot.save{border-top:none;border-bottom:1px solid var(--rule);background:var(--surface-2)}
+.gx-scope .gx-warn{color:var(--critical-ink);font-weight:700}
+.gx-scope .gx-nav{display:flex;align-items:center;gap:6px;margin-inline-start:auto}
+.gx-scope .gx-nav .win{font-weight:700;color:var(--ink-2);min-width:150px;text-align:center;font-variant-numeric:tabular-nums}
+.gx-scope .gx-nav button{font:inherit;border:1px solid var(--rule-strong);background:var(--surface);color:var(--ink-2);border-radius:var(--r-sm);padding:3px 9px;cursor:pointer;font-size:var(--t-xs)}
+.gx-scope .gx-zoom{display:flex;gap:3px;background:var(--surface-2);border:1px solid var(--rule-strong);border-radius:var(--r-sm);padding:2px}
+.gx-scope .gx-zoom button{border:none;background:transparent;padding:4px 10px;border-radius:4px}
+.gx-scope .gx-zoom button.on{background:var(--brand-ink);color:#fff;font-weight:700}
+.gx-scope .gx-st{font:inherit;font-size:10px;border:1px solid var(--rule-strong);border-radius:var(--r-pill);padding:1px 8px;background:var(--surface);cursor:pointer;color:var(--ink-2)}
+.gx-scope .gx-st.done{background:var(--good-bg);color:var(--good-ink);border-color:var(--good-rule)}
+.gx-scope .gx-st.late{background:var(--critical-bg);color:var(--critical-ink);border-color:var(--critical-rule)}
+.gx-scope .gx-prog{display:inline-flex;align-items:center;gap:6px;font-size:var(--t-xs);color:var(--ink-2);font-variant-numeric:tabular-nums}
+.gx-scope .gx-prog i{width:90px;height:6px;border-radius:99px;background:var(--rule);position:relative;overflow:hidden;display:inline-block}
+.gx-scope .gx-prog i::after{content:"";position:absolute;inset:0;inset-inline-end:var(--rest,100%);background:var(--good)}
 
 /* KPIs + feeder */
-#gen .gx-kwrap{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:var(--sp-3);align-items:start}
-@media (max-width:980px){#gen .gx-kwrap{grid-template-columns:1fr}}
-#gen .gx-kcol{display:flex;flex-direction:column;gap:var(--sp-3);min-width:0}
-#gen .gx-card{border:1px solid var(--rule);border-radius:var(--r);background:var(--surface);padding:var(--sp-3) var(--sp-4)}
-#gen .gx-card h3{font-size:var(--t-h2);font-weight:600;margin:0 0 var(--sp-2)}
-#gen .gx-card .lede{font-size:var(--t-xs);color:var(--ink-3);margin:0 0 var(--sp-2)}
-#gen .gx-card.auto{border-color:var(--warn-rule);background:var(--warn-bg)}
-#gen .gx-sec{font-size:var(--t-xs);letter-spacing:.06em;color:var(--gold-ink);font-weight:800;margin:var(--sp-3) 0 6px}
-#gen .gx-kgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px 10px}
-#gen .gx-kgrid .f.w2{grid-column:span 2}#gen .gx-kgrid .f.w3{grid-column:span 3}#gen .gx-kgrid .f.w6{grid-column:1/-1}
-@media (max-width:760px){#gen .gx-kgrid{grid-template-columns:repeat(2,1fr)}#gen .gx-kgrid .f.w3{grid-column:span 2}}
-#gen .gx-seg{display:flex;border:1px solid var(--rule-strong);border-radius:var(--r-sm);overflow:hidden}
-#gen .gx-seg button{flex:1;font:inherit;font-size:var(--t-xs);padding:6px 8px;border:none;background:transparent;color:var(--ink-2);cursor:pointer}
-#gen .gx-seg button.on{background:var(--brand-ink);color:#fff;font-weight:700}
-#gen .gx-draft{border:1px dashed var(--warn-rule);border-radius:var(--r-sm);padding:8px 10px;background:var(--surface);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;margin-top:6px}
-#gen .gx-draft .dn{font-weight:600;font-size:var(--t-sm)}
-#gen .gx-draft .dm{font-size:var(--t-xs);color:var(--ink-3);grid-column:1/-1}
-#gen .gx-draft .da{display:flex;gap:6px}
-#gen .gx-tag{font-size:10px;padding:1px 7px;border-radius:var(--r-pill);background:var(--warn-bg);color:var(--warn-ink);font-weight:700;margin-inline-start:6px}
-#gen .gx-kitem{border:1px solid var(--rule);border-radius:var(--r-sm);padding:8px 10px;background:var(--surface-2);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;cursor:pointer;margin-top:6px}
-#gen .gx-kitem:hover{border-color:var(--brand-ink)}
-#gen .gx-kitem .kn{font-weight:600;font-size:var(--t-sm)}
-#gen .gx-kitem .km{font-size:var(--t-xs);color:var(--ink-3);grid-column:1/-1}
-#gen .gx-spark{width:100%;height:92px;display:block}
-#gen .gx-thr{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0;font-size:var(--t-xs);text-align:center}
-#gen .gx-thr div{border-radius:var(--r-sm);padding:6px 4px;border:1px solid var(--rule)}
-#gen .gx-thr .a{background:var(--good-bg)}#gen .gx-thr .t{background:var(--warn-bg)}#gen .gx-thr .b{background:var(--critical-bg)}
-#gen .gx-thr b{display:block;font-variant-numeric:tabular-nums}
-#gen .gx-sm{display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:var(--t-xs)}
-#gen .gx-sm div{border:1px solid var(--rule);border-radius:var(--r-sm);padding:5px 8px;display:flex;justify-content:space-between;gap:6px}
-#gen .gx-sm .ok{color:var(--good-ink);font-weight:700}#gen .gx-sm .no{color:var(--critical-ink);font-weight:700}
-#gen .gx-mil{width:100%;border-collapse:collapse;font-size:var(--t-xs);font-variant-numeric:tabular-nums}
-#gen .gx-mil th,#gen .gx-mil td{text-align:start;padding:4px 6px;border-bottom:1px solid var(--rule)}
-#gen .gx-mil input{width:72px;font:inherit;font-size:var(--t-xs);padding:2px 6px;border:1px solid var(--rule-strong);border-radius:4px;background:var(--surface);color:var(--ink-1)}
-#gen .gx-fz{border:2px dashed var(--rule-strong);border-radius:var(--r);padding:16px;text-align:center;color:var(--ink-2);font-size:var(--t-sm);background:var(--surface-2)}
-#gen .gx-fz.over{border-color:var(--brand-ink)}
-#gen .gx-grid{overflow:auto;margin-top:8px}
-#gen .gx-grid table{border-collapse:collapse;font-size:var(--t-xs);font-variant-numeric:tabular-nums;min-width:100%}
-#gen .gx-grid th,#gen .gx-grid td{border:1px solid var(--rule);padding:0;min-width:92px;position:relative}
-#gen .gx-grid th{background:var(--surface-2);font-weight:700;color:var(--ink-2);padding:4px 6px}
-#gen .gx-grid th.rn{min-width:34px;text-align:center;color:var(--ink-3)}
-#gen .gx-grid td input{width:100%;border:none;background:transparent;font:inherit;padding:5px 6px;color:var(--ink-1);direction:ltr;text-align:right}
-#gen .gx-grid td.fx{background:var(--warn-bg)}
-#gen .gx-grid td .v{position:absolute;inset-inline-end:4px;bottom:0;font-size:9px;color:var(--gold-ink)}
-#gen .gx-grid th .x{float:left;color:var(--ink-3);cursor:pointer;font-size:10px;margin-inline-start:4px}
-#gen .gx-ftools{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:8px;font-size:var(--t-xs)}
-#gen .gx-ftools select,#gen .gx-ftools input{font:inherit;font-size:var(--t-xs);padding:3px 6px;border:1px solid var(--rule-strong);border-radius:var(--r-sm);background:var(--surface);color:var(--ink-1)}
-#gen .gx-rd{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:8px;font-size:var(--t-xs)}
-#gen .gx-rd .st{padding:2px 9px;border-radius:var(--r-pill);font-weight:700}
-#gen .gx-rd .st.a{background:var(--good-bg);color:var(--good-ink)}#gen .gx-rd .st.t{background:var(--warn-bg);color:var(--warn-ink)}#gen .gx-rd .st.b{background:var(--critical-bg);color:var(--critical-ink)}
-#gen .gx-ex{background:none;border:none;color:var(--brand-ink);font:inherit;font-size:var(--t-xs);font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
-#gen .gx-toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--brand-ink);color:#fff;padding:9px 16px;border-radius:var(--r);font-weight:600;box-shadow:var(--shadow);opacity:0;transition:opacity .25s;pointer-events:none;z-index:90;font-size:var(--t-sm)}
-#gen .gx-toast.on{opacity:1}
-#gen .gx-ro input[readonly],#gen .gx-ro select[disabled]{opacity:.75;pointer-events:none}
+.gx-scope .gx-kwrap{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:var(--sp-3);align-items:start}
+@media (max-width:980px){.gx-scope .gx-kwrap{grid-template-columns:1fr}}
+.gx-scope .gx-kcol{display:flex;flex-direction:column;gap:var(--sp-3);min-width:0}
+.gx-scope .gx-card{border:1px solid var(--rule);border-radius:var(--r);background:var(--surface);padding:var(--sp-3) var(--sp-4)}
+.gx-scope .gx-card h3{font-size:var(--t-h2);font-weight:600;margin:0 0 var(--sp-2)}
+.gx-scope .gx-card .lede{font-size:var(--t-xs);color:var(--ink-3);margin:0 0 var(--sp-2)}
+.gx-scope .gx-card.auto{border-color:var(--warn-rule);background:var(--warn-bg)}
+.gx-scope .gx-sec{font-size:var(--t-xs);letter-spacing:.06em;color:var(--gold-ink);font-weight:800;margin:var(--sp-3) 0 6px}
+.gx-scope .gx-kgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px 10px}
+.gx-scope .gx-kgrid .f.w2{grid-column:span 2}.gx-scope .gx-kgrid .f.w3{grid-column:span 3}.gx-scope .gx-kgrid .f.w6{grid-column:1/-1}
+@media (max-width:760px){.gx-scope .gx-kgrid{grid-template-columns:repeat(2,1fr)}.gx-scope .gx-kgrid .f.w3{grid-column:span 2}}
+.gx-scope .gx-seg{display:flex;border:1px solid var(--rule-strong);border-radius:var(--r-sm);overflow:hidden}
+.gx-scope .gx-seg button{flex:1;font:inherit;font-size:var(--t-xs);padding:6px 8px;border:none;background:transparent;color:var(--ink-2);cursor:pointer}
+.gx-scope .gx-seg button.on{background:var(--brand-ink);color:#fff;font-weight:700}
+.gx-scope .gx-draft{border:1px dashed var(--warn-rule);border-radius:var(--r-sm);padding:8px 10px;background:var(--surface);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;margin-top:6px}
+.gx-scope .gx-draft .dn{font-weight:600;font-size:var(--t-sm)}
+.gx-scope .gx-draft .dm{font-size:var(--t-xs);color:var(--ink-3);grid-column:1/-1}
+.gx-scope .gx-draft .da{display:flex;gap:6px}
+.gx-scope .gx-tag{font-size:10px;padding:1px 7px;border-radius:var(--r-pill);background:var(--warn-bg);color:var(--warn-ink);font-weight:700;margin-inline-start:6px}
+.gx-scope .gx-kitem{border:1px solid var(--rule);border-radius:var(--r-sm);padding:8px 10px;background:var(--surface-2);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;cursor:pointer;margin-top:6px}
+.gx-scope .gx-kitem:hover{border-color:var(--brand-ink)}
+.gx-scope .gx-kitem .kn{font-weight:600;font-size:var(--t-sm)}
+.gx-scope .gx-kitem .km{font-size:var(--t-xs);color:var(--ink-3);grid-column:1/-1}
+.gx-scope .gx-spark{width:100%;height:92px;display:block}
+.gx-scope .gx-thr{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0;font-size:var(--t-xs);text-align:center}
+.gx-scope .gx-thr div{border-radius:var(--r-sm);padding:6px 4px;border:1px solid var(--rule)}
+.gx-scope .gx-thr .a{background:var(--good-bg)}.gx-scope .gx-thr .t{background:var(--warn-bg)}.gx-scope .gx-thr .b{background:var(--critical-bg)}
+.gx-scope .gx-thr b{display:block;font-variant-numeric:tabular-nums}
+.gx-scope .gx-sm{display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:var(--t-xs)}
+.gx-scope .gx-sm div{border:1px solid var(--rule);border-radius:var(--r-sm);padding:5px 8px;display:flex;justify-content:space-between;gap:6px}
+.gx-scope .gx-sm .ok{color:var(--good-ink);font-weight:700}.gx-scope .gx-sm .no{color:var(--critical-ink);font-weight:700}
+.gx-scope .gx-mil{width:100%;border-collapse:collapse;font-size:var(--t-xs);font-variant-numeric:tabular-nums}
+.gx-scope .gx-mil th,.gx-scope .gx-mil td{text-align:start;padding:4px 6px;border-bottom:1px solid var(--rule)}
+.gx-scope .gx-mil input{width:72px;font:inherit;font-size:var(--t-xs);padding:2px 6px;border:1px solid var(--rule-strong);border-radius:4px;background:var(--surface);color:var(--ink-1)}
+.gx-scope .gx-fz{border:2px dashed var(--rule-strong);border-radius:var(--r);padding:16px;text-align:center;color:var(--ink-2);font-size:var(--t-sm);background:var(--surface-2)}
+.gx-scope .gx-fz.over{border-color:var(--brand-ink)}
+.gx-scope .gx-grid{overflow:auto;margin-top:8px}
+.gx-scope .gx-grid table{border-collapse:collapse;font-size:var(--t-xs);font-variant-numeric:tabular-nums;min-width:100%}
+.gx-scope .gx-grid th,.gx-scope .gx-grid td{border:1px solid var(--rule);padding:0;min-width:92px;position:relative}
+.gx-scope .gx-grid th{background:var(--surface-2);font-weight:700;color:var(--ink-2);padding:4px 6px}
+.gx-scope .gx-grid th.rn{min-width:34px;text-align:center;color:var(--ink-3)}
+.gx-scope .gx-grid td input{width:100%;border:none;background:transparent;font:inherit;padding:5px 6px;color:var(--ink-1);direction:ltr;text-align:right}
+.gx-scope .gx-grid td.fx{background:var(--warn-bg)}
+.gx-scope .gx-grid td .v{position:absolute;inset-inline-end:4px;bottom:0;font-size:9px;color:var(--gold-ink)}
+.gx-scope .gx-grid th .x{float:left;color:var(--ink-3);cursor:pointer;font-size:10px;margin-inline-start:4px}
+.gx-scope .gx-ftools{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:8px;font-size:var(--t-xs)}
+.gx-scope .gx-ftools select,.gx-scope .gx-ftools input{font:inherit;font-size:var(--t-xs);padding:3px 6px;border:1px solid var(--rule-strong);border-radius:var(--r-sm);background:var(--surface);color:var(--ink-1)}
+.gx-scope .gx-rd{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:8px;font-size:var(--t-xs)}
+.gx-scope .gx-rd .st{padding:2px 9px;border-radius:var(--r-pill);font-weight:700}
+.gx-scope .gx-rd .st.a{background:var(--good-bg);color:var(--good-ink)}.gx-scope .gx-rd .st.t{background:var(--warn-bg);color:var(--warn-ink)}.gx-scope .gx-rd .st.b{background:var(--critical-bg);color:var(--critical-ink)}
+.gx-scope .gx-ex{background:none;border:none;color:var(--brand-ink);font:inherit;font-size:var(--t-xs);font-weight:700;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.gx-scope .gx-toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--brand-ink);color:#fff;padding:9px 16px;border-radius:var(--r);font-weight:600;box-shadow:var(--shadow);opacity:0;transition:opacity .25s;pointer-events:none;z-index:90;font-size:var(--t-sm)}
+.gx-scope .gx-toast.on{opacity:1}
+.gx-scope .gx-ro input[readonly],.gx-scope .gx-ro select[disabled]{opacity:.75;pointer-events:none}
 .gx-mini{font-size:var(--t-xs)}
 .gx-mhead{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
 .gx-mleg i{display:inline-block;width:12px;height:8px;border-radius:3px;vertical-align:middle;margin-inline-start:6px}
@@ -2119,7 +2120,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 .gx-prog{display:inline-flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums}
 .gx-prog i{width:90px;height:6px;border-radius:99px;background:var(--rule);position:relative;overflow:hidden;display:inline-block}
 .gx-prog i::after{content:"";position:absolute;inset:0;inset-inline-end:var(--rest,100%);background:var(--good)}
-@media (prefers-reduced-motion:reduce){#gen .gx-toast,#gen .gx-car{transition:none}}
+@media (prefers-reduced-motion:reduce){.gx-scope .gx-toast,.gx-scope .gx-car{transition:none}}
 
 </style>
 
@@ -2288,6 +2289,8 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
           <option value="coord">قسم التنسيق والمتابعة · Coordination</option>
           <option value="staff">موظف · Staff</option>
         </select>
+        <div class="rl" style="margin-top:6px"><span lang="ar">أو بصفة موظف بعينه</span><span lang="en">Or as a specific person</span></div>
+        <select id="personSel"><option value="">— <span lang="ar">الدور فقط</span></option></select>
       </div>
       <button class="langbtn" id="lang">
         <span lang="ar">English</span><span lang="en">العربية</span>
@@ -4249,7 +4252,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       <span lang="en">Design prototype. All data shown is illustrative, not real, and owners are named by role only. Its purpose is to show the proposed plan structure: a master plan derived from the Ministry document, every objective assessed against it, assignment to a person, and an optional budget at step level.</span>
     </p>
 
-    <section class="screen" id="gen">
+    <section class="screen gx-scope" id="gen">
       <div class="head">
         <p class="eyebrow"><span lang="ar">الخطة السنوية · إنشاء ومتابعة</span><span lang="en">Annual plan · create and track</span></p>
         <h1><span lang="ar">مولّد الأهداف</span><span lang="en">Objective generator</span></h1>
@@ -4300,10 +4303,16 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
                 <div class="gx-sec">٤ · <span lang="ar">البيانات والرصد والتقارير</span><span lang="en">Data, monitoring, reporting</span></div><div class="gx-kgrid" id="gxf4"></div>
                 <div class="gx-acts" style="margin-top:10px"><button class="btn btn-p" id="gxKSave"></button><button class="btn" id="gxKNew" hidden><span lang="ar">مؤشر جديد</span><span lang="en">New KPI</span></button></div>
               </div>
+              <div class="gx-card" id="gxToolCard">
+                <h3><span lang="ar">أداة القراءات</span><span lang="en">Readings tool</span> <span class="sub" id="gxToolNote"></span></h3>
+                <p class="lede"><span lang="ar">تُبنى الأداة مع المؤشر: جدول داخل المنصة (أعمدة وصيغ وعرض محوري)، أو ملف CSV/Excel كقالب، أو ورقة Google Sheets عبر الجسر. تُملأ القراءات بعد الاعتماد من تبويب «المغذّي».</span><span lang="en">Built with the KPI — an on-site table (columns, formulas, pivot), a CSV/Excel template, or a Google Sheet through the bridge. Readings are filled after approval, in the feeder.</span></p>
+                <div class="gx-seg" id="gxToolMode" style="max-width:520px"><button type="button" data-gfm="table"><span lang="ar">جدول داخل المنصة</span><span lang="en">On-site table</span></button><button type="button" data-gfm="file"><span lang="ar">ملف CSV / Excel</span><span lang="en">CSV / Excel file</span></button><button type="button" data-gfm="sheet"><span lang="ar">Google Sheets</span><span lang="en">Google Sheets</span></button></div>
+                <div id="gxTool" style="margin-top:8px"></div>
+              </div>
               <div class="gx-card"><h3><span lang="ar">المعالم المرحلية</span><span lang="en">Milestones</span></h3><div id="gxMil"></div></div>
             </div>
             <div class="gx-kcol">
-              <div class="gx-card"><h3><span lang="ar">مسار المؤشر وعتباته</span><span lang="en">Path and thresholds</span></h3><svg class="gx-spark" id="gxSpark" viewBox="0 0 320 92" preserveAspectRatio="none"></svg><div class="gx-thr" id="gxThr"></div><div class="gx-sm" id="gxSmart"></div></div>
+              <div class="gx-card"><h3><span lang="ar">مسار المؤشر وعتباته</span><span lang="en">Path and thresholds</span></h3><div class="gx-seg" id="gxChartType" style="max-width:300px;margin-bottom:6px"><button type="button" data-gxct="line" class="on"><span lang="ar">خط</span><span lang="en">Line</span></button><button type="button" data-gxct="bars"><span lang="ar">أعمدة</span><span lang="en">Bars</span></button><button type="button" data-gxct="dots"><span lang="ar">نقاط</span><span lang="en">Dots</span></button><button type="button" data-gxct="area"><span lang="ar">مساحة</span><span lang="en">Area</span></button></div><div class="gx-acts" style="margin:0 0 6px"><button class="btn" id="gxPptx" style="padding:4px 10px;font-size:var(--t-xs)"><span lang="ar">تصدير شريحة PPTX</span><span lang="en">Export PPTX slide</span></button></div><svg class="gx-spark" id="gxSpark" viewBox="0 0 320 92" preserveAspectRatio="none" direction="ltr" style="direction:ltr"></svg><div class="gx-thr" id="gxThr"></div><div class="gx-sm" id="gxSmart"></div></div>
               <div class="gx-card"><h3><span lang="ar">مؤشرات هذا الهدف</span><span lang="en">This objective's KPIs</span></h3><div id="gxKList"></div></div>
             </div>
           </div>
@@ -6917,7 +6926,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             '<button data-dtab="'+o.r+':kpi">'+bi("المؤشر","KPI")+'</button>'+
             (gxTracked(o.r)?'<button data-dtab="'+o.r+':track">'+bi("المتابعة","Tracking")+' <span class="badge">'+gxProgress(gxTracked(o.r))+'%</span></button>':'')+
           '</div>'+
-          (gxTracked(o.r)?'<div class="dpane" id="dp-'+o.r+'-track">'+gxMini(gxTracked(o.r))+'</div>':'')+
+          (gxTracked(o.r)?'<div class="dpane" id="dp-'+o.r+'-track">'+gxEmbedHTML(gxTracked(o.r))+'</div>':'')+
           '<div class="dpane on" id="dp-'+o.r+'-plan">'+
           '<div class="gantt">'+acts.map(function(a){
             var l=((+new Date(a.s))-minD)/span*100, w=((+new Date(a.e))-(+new Date(a.s)))/span*100;
@@ -6926,7 +6935,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
               '<span class="gtrack"><i style="inset-inline-start:'+l+'%;width:'+w+'%"></i>'+
               (a.ms?'<span class="ms" style="inset-inline-start:calc('+(l+w)+'% - 6px)"></span>':'')+'</span></div>';
           }).join("")+'</div></div>'+
-          '<div class="dpane" id="dp-'+o.r+'-kpi">'+kpiPanel(o)+extraCards(o.r)+kpiAddForm(o.r)+'</div>'+
+          '<div class="dpane" id="dp-'+o.r+'-kpi">'+(gxTracked(o.r)?gxKPlanHTML(o.r):'')+kpiPanel(o)+extraCards(o.r)+kpiAddForm(o.r)+'</div>'+
           mySlice(o)+
           '<div class="oacts">'+
 
@@ -6971,6 +6980,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         var pane=document.getElementById("dp-"+ref+"-"+k);
         if(pane) pane.classList.toggle("on", k===which);
       });
+      if(which==="track" && typeof gxEmbedDraw==="function") setTimeout(function(){ gxEmbedDraw(ref); },20);
       return;
     }
     var sg=e.target.closest("[data-sign]");
@@ -11498,7 +11508,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   });
 
   // ── my assignments ──
+  var VIEW_AS=null;   // a specific person chosen in the rail's "view as" — every page then renders as them
   function myPerson(){
+    if(VIEW_AS){ var v=STAFF.filter(function(p){return p.id===VIEW_AS;})[0]; if(v) return v; }
+    var a=(typeof SESSION!=="undefined"&&SESSION&&typeof acctOf==="function")?acctOf(SESSION.u):null;
+    if(a&&a.sid&&a.role===ROLE){ var q=STAFF.filter(function(p){return p.id===a.sid;})[0]; if(q) return q; }
     return STAFF.filter(function(p){return p.id===(
       ROLE==="staff"?"m8" : ROLE==="head"?"m7" : ROLE==="dir"?"m4" : ROLE==="coord"?"m1" : "dg0");})[0]||STAFF[0];
   }
@@ -12307,6 +12321,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     {u:"sd.staff",p:"qagc2027",role:"staff", sid:"m8", must:false, active:true, twofa:false,
      who:["عبدالناصر إبراهيم الهادي — أخصائي تربية خاصة","Abdulnasser Al Hadi — Special Education Specialist"], dep:["قسم تطوير الخدمات","Service Development"]}
   ];
+  // one demo account per roster member: username = the roster id (m1 … m20), the same demo password; role read from the designation
+  STAFF.forEach(function(p){ if(ACCOUNTS.some(function(a){return a.u===p.id;})) return;   /* the named demo accounts stay; everyone also gets their id as a username */ var d=(p.desig&&p.desig[0])||""; var role= p.id==="m1"?"coord" : (/^مدير/.test(d)&&p.dep[0]===p.dir[0])?"dir" : /رئيس قسم/.test(d)?"head":"staff";
+    ACCOUNTS.push({u:p.id, p:"qagc2027", role:role, sid:p.id, must:false, active:true, twofa:false, who:[p.who[0]+" — "+d, p.who[1]+" — "+((p.desig&&p.desig[1])||"")], dep:[p.dep[0],p.dep[1]]}); });
   var SESSION=null;
   var PENDING_NEW=null;              // the account being forced to set a password
   function acctOf(u){ return ACCOUNTS.filter(function(a){return a.u===u;})[0]||null; }
@@ -12325,7 +12342,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     el.innerHTML=bi("الحسابات يصدرها المدير العام أو قسم التنسيق والمتابعة. إن نُسيت كلمة المرور فالإعادة منهما، لا من هذه الصفحة.",
                     "Accounts are issued by the Director General or Coordination & Follow-up. A forgotten password is reset by them, not from this page.")+
       '<br><span style="color:var(--warn-ink)">'+
-      bi("نموذج للعرض: dg / qagc2027 — الأدوار والصلاحيات تُفرض في المتصفح في هذه النسخة، فلا تصلح لبيانات حقيقية قبل الواجهة الخلفية.",
+      bi("نموذج للعرض: dg / qagc2027 — ولكل موظف في الكشف حساب تجريبي: اسم المستخدم رمزه (m1 … m20) وكلمة المرور نفسها. الأدوار والصلاحيات تُفرض في المتصفح في هذه النسخة، فلا تصلح لبيانات حقيقية قبل الواجهة الخلفية.",
          "Demonstration build: dg / qagc2027 — roles are enforced in the browser here; not for real data before the backend.")+'</span>';
   }
   function openApp(a){
@@ -12726,7 +12743,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     drawCoord(); drawDir(); drawHead(); drawStaffHome(); drawPrefs(); drawAccounts(); drawOrg();
   }
   var rs=document.getElementById("roleSel");
-  if(rs) rs.addEventListener("change",function(){ ROLE=this.value; applyRole(); });
+  if(rs) rs.addEventListener("change",function(){ VIEW_AS=null; var ps=document.getElementById("personSel"); if(ps) ps.value=""; ROLE=this.value; applyRole(); });
+  var psel=document.getElementById("personSel");
+  if(psel){ psel.innerHTML='<option value="">'+(isAr()?"— الدور فقط":"— role only")+'</option>'+STAFF.map(function(p){ return '<option value="'+p.id+'">'+p.who[0]+' — '+((p.desig&&p.desig[0])||"")+'</option>'; }).join("");
+    psel.addEventListener("change",function(){ VIEW_AS=this.value||null; if(VIEW_AS){ var acc=ACCOUNTS.filter(function(a){return a.sid===VIEW_AS;})[0]; ROLE=acc?acc.role:"staff"; if(rs) rs.value=ROLE; } applyRole(); }); }
   var atb=document.getElementById("allTabs");
   if(atb) atb.addEventListener("click",function(){
     ALL_TABS=!ALL_TABS;
@@ -13739,9 +13759,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     return {chain:chain, dest:dest.filter(Boolean)}; }
 
   // ── state ──
-  var GX={list:[], cur:null, z:"year", V:null, tab:"tl", formFor:null, K:null, KD:null, drafts:[]};
+  var GX={list:[], cur:null, z:"year", V:null, tab:"tl", formFor:null, K:null, KD:null, drafts:[], embed:{}, pk:{}};
   function gxBlankFeed(){ return {mode:"table", cols:["التاريخ","القراءة"], rows:[], dateCol:0, valCol:1, pivot:{on:false,row:0,val:1,agg:"avg"}, file:"", sheet:""}; }
-  function gxBlankK(){ return {name:"",dim:GX_DIMS[2],kind:"outcome",desc:"",rationale:"",num:"",den:"",excl:"",elements:"",limits:"",type:"نسبة مئوية",unit:"%",base:"",baseDate:"",target:"",targetDate:"",dir:"up",tol:10,source:"",cfreq:"m",mfreq:"m",reader:"",rfreq:"q",report:GX_REPORTS[0],related:"",phase:"",sheet:true,mil:{},auto:false,plan:null,feed:gxBlankFeed()}; }
+  function gxBlankK(){ return {name:"",dim:GX_DIMS[2],kind:"outcome",desc:"",rationale:"",num:"",den:"",excl:"",elements:"",limits:"",type:"نسبة مئوية",unit:"%",base:"",baseDate:"",target:"",targetDate:"",dir:"up",tol:10,source:"",cfreq:"m",mfreq:"m",reader:"",rfreq:"q",report:GX_REPORTS[0],related:"",phase:"",sheet:true,mil:{},auto:false,plan:null,feed:gxBlankFeed(),chart:"line"}; }
   function gxNormK(k){ var b=gxBlankK(); Object.keys(b).forEach(function(key){ if(k[key]===undefined) k[key]=b[key]; }); if(!k.feed) k.feed=gxBlankFeed(); return k; }
   function gxSave(){ try{ localStorage.setItem("qagcGen", JSON.stringify({v:7, list:GX.list})); }catch(_){} }
   // three approved objectives come with ready data; three drafts stay editable — all from the plan itself
@@ -13802,12 +13822,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
 
   // ── the window: the chosen scale fitted to the page ──
   function gxAnchor(){ var S=GX.cur; if(!GX.V) GX.V=(S&&S.from)||(gxYear()+"-01-01"); return gxP(GX.V); }
-  function gxWindow(){ var a=gxAnchor(), d=new Date(a), t0,t1, z=GX.z;
+  function gxWindow(hostEl){ var a=gxAnchor(), d=new Date(a), t0,t1, z=GX.z;
     if(z==="year"||z==="quarters"){ t0=Date.UTC(d.getUTCFullYear(),0,1); t1=Date.UTC(d.getUTCFullYear(),11,31); }
     else if(z==="quarter"){ var q=Math.floor(d.getUTCMonth()/3)*3; t0=Date.UTC(d.getUTCFullYear(),q,1); t1=Date.UTC(d.getUTCFullYear(),q+3,0); }
     else if(z==="month"){ t0=Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),1); t1=Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,0); }
     else { t0=a-d.getUTCDay()*GXD; t1=t0+6*GXD; }
-    var g=document.getElementById("gxG"); var cw=(g&&g.clientWidth)||900; var avail=cw-380-2; if(avail<300) avail=700;
+    var g=hostEl||document.getElementById("gxG"); var cw=(g&&g.clientWidth)||900; var avail=cw-430-2; if(avail<300) avail=700;
     var n=Math.round((t1-t0)/GXD)+1; return {t0:t0,t1:t1,n:n,px:avail/n,W:avail}; }
   function gxWinLabel(w){ var d=new Date(w.t0), e=new Date(w.t1), MO=isAr()?GX_MO:GX_MOE;
     if(GX.z==="year"||GX.z==="quarters") return (isAr()?"سنة ":"Year ")+d.getUTCFullYear()+(GX.z==="quarters"?(isAr()?" — بالأرباع":" — by quarters"):"");
@@ -13832,14 +13852,14 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
 
   // ── the timeline ──
-  function gxDraw(){
-    var S=GX.cur; var host=document.getElementById("gxG"); if(!host) return;
-    gxDrawStrip();
+  function gxDraw(hostArg, opts){
+    var S=GX.cur; var embed=!!(opts&&opts.embed); var host=hostArg||document.getElementById("gxG"); if(!host) return;
+    if(!embed) gxDrawStrip();
     if(!S){ host.innerHTML='<div class="noresult">'+bi("لا هدف محدداً — «هدف جديد» يبدأ واحداً.","No objective selected — “New objective” starts one.")+'</div>'; return; }
     var ro=gxRO();
     if(S.title && !S.phases.length && !ro) S.phases.push({name:"",from:"",to:"",tasks:[]});
     var act=document.activeElement, actId=act&&act.id, caret=(act&&act.selectionEnd!==undefined)?act.selectionEnd:null;
-    var w=gxWindow(), px=w.px, t0=w.t0, t1=w.t1, W=w.W, MO=isAr()?GX_MO:GX_MOE;
+    var w=gxWindow(host), px=w.px, t0=w.t0, t1=w.t1, W=w.W, MO=isAr()?GX_MO:GX_MOE;
     var X=function(d){ return (gxP(d)-t0)/GXD*px; };
     var tone=(GX.z==="week"||GX.z==="month")?"day":"week";
     var QN=isAr()?["الربع الأول","الربع الثاني","الربع الثالث","الربع الرابع"]:["Q1","Q2","Q3","Q4"];
@@ -13847,7 +13867,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     else if(GX.z==="quarter"){ qrow='<div class="qb on" data-gxq="back" style="inset-inline-start:0;width:'+W+'px" title="'+(isAr()?"النقر للعودة إلى السنة بالأرباع":"Click to return to the year by quarters")+'">'+QN[Math.floor(new Date(t0).getUTCMonth()/3)]+' '+new Date(t0).getUTCFullYear()+' — ↩ '+(isAr()?"السنة":"year")+'</div>'; }
     var q3=(GX.z==="quarters"||GX.z==="quarter");
     var h='<div class="gx-th z-'+GX.z+(q3?' q3':'')+'" style="width:'+W+'px">'+(q3?'<div class="qrow">'+qrow+'</div>':'');
-    for(var t=t0;t<=t1;t+=GXD){ var d=new Date(t); if(d.getUTCDate()===1||t===t0){ var end=Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,1); var mw=(Math.min(end,t1+GXD)-t)/GXD*px; h+='<div class="mo'+(d.getUTCMonth()%2?' alt':'')+'" style="inset-inline-start:'+((t-t0)/GXD*px)+'px;width:'+mw+'px">'+MO[d.getUTCMonth()]+(GX.z==="year"?'':' '+d.getUTCFullYear())+'</div>'; } }
+    for(var t=t0;t<=t1;t+=GXD){ var d=new Date(t); if(d.getUTCDate()===1||t===t0){ var end=Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,1); var mw=(Math.min(end,t1+GXD)-t)/GXD*px; h+='<div class="mo'+(d.getUTCMonth()%2?' alt':'')+'" style="inset-inline-start:'+((t-t0)/GXD*px)+'px;width:'+mw+'px">'+MO[d.getUTCMonth()]+((GX.z==="year"||GX.z==="quarters"||GX.z==="quarter")?'':' '+d.getUTCFullYear())+'</div>'; } }
     if(tone==="day"){ for(var t=t0;t<=t1;t+=GXD){ var d=new Date(t), wd=d.getUTCDay(); h+='<div class="un'+((wd===5||wd===6)?' we':'')+'" style="inset-inline-start:'+((t-t0)/GXD*px)+'px;width:'+px+'px">'+(GX.z==="week"?'<b>'+GX_WD[wd]+'</b>':'')+d.getUTCDate()+'</div>'; } }
     else if(GX.z!=="quarters"){ for(var t=t0;t<=t1;t+=GXD){ var d=new Date(t); if(d.getUTCDay()===0||t===t0){ var ww=Math.min(7-(t===t0?d.getUTCDay():0),(t1-t)/GXD+1); h+='<div class="un" style="inset-inline-start:'+((t-t0)/GXD*px)+'px;width:'+(ww*px)+'px">'+d.getUTCDate()+'</div>'; } } }
     h+='</div>';
@@ -13905,6 +13925,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       if(ro) stage=bi("<b>المتابعة:</b> النقر على حالة أي خطوة يحدّثها؛ التحديث يغذّي مؤشر الإنجاز.","<b>Tracking:</b> click a step's status to update it; it feeds the completion KPI.");
     }
     host.innerHTML='<div class="gx-labels">'+L+'</div><div class="gx-time">'+BG+T+'</div>';
+    if(embed){ gxSyncRows(host); var ew=host.parentElement&&host.parentElement.querySelector(".win"); if(ew) ew.textContent=gxWinLabel(w); return; }
     document.getElementById("gxStage").innerHTML=stage;
     document.getElementById("gxOob").innerHTML= !S.title?"" : !gxHasDates()?'<span class="gx-warn">'+bi("مدة الهدف غير محددة.","Objective period not set.")+'</span>' : oob?'<span class="gx-warn">'+oob+' '+bi("عنصر خارج مدة مستواه الأعلى.","item(s) outside the level above.")+'</span>':'<span>'+bi("المراحل داخل الهدف والخطوات داخل مراحلها ✓","Phases inside the objective, steps inside their phases ✓")+'</span>';
     document.getElementById("gxWin").textContent=gxWinLabel(w);
@@ -13912,10 +13933,13 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var rt=gxRoute(S); var sb=document.getElementById("gxSaveBar");
     sb.innerHTML= ro ? '<span>'+bi("<b>معتمد</b> — في الخطة السنوية: ","<b>Approved</b> — in the annual plan: ")+gxEsc(rt.dest.join(" ← "))+' · <span class="gx-prog"><i style="--rest:'+(100-gxProgress(S))+'%"></i>'+gxProgress(S)+'%</span></span>'+(S.ref?'<button class="gx-ex" data-goobj="'+gxEsc(S.ref)+'">↗ '+bi("فتحه في الخطة السنوية الكاملة","Open in the full annual plan")+'</button>':'')+'<button class="gx-ex" data-gxtab="feed">↗ '+bi("تغذية الإنجاز والقراءات","Feed completion and readings")+'</button>'
       : '<button class="btn" id="gxSaveDraft">'+bi("حفظ كمسودة","Save draft")+'</button><button class="btn btn-p" id="gxSubmit">'+(S.scope==="mine"?bi("إرسال إلى المدير المباشر","Send to line manager"):S.scope==="centre"?bi("اعتماد وإدراج في الخطة","Approve and add to the plan"):bi("إرسال للاعتماد","Send for approval"))+'</button><span style="font-size:var(--t-xs);color:var(--ink-2)"><b>'+bi("المسار:","Route:")+'</b> '+rt.chain.map(gxEsc).join(" ← ")+' · <b>'+bi("بعد الاعتماد:","After approval:")+'</b> '+bi("الخطة السنوية ← ","Annual plan ← ")+gxEsc(rt.dest.join(" ← "))+'</span>';
+    gxSyncRows(host);
     if(actId){ var again=document.getElementById(actId); if(again){ again.focus(); if(caret!==null&&again.setSelectionRange){ try{ again.setSelectionRange(caret,caret); }catch(_){} } } }
     else { var fo=host.querySelector("[data-gxfocus]"); if(fo) fo.focus(); }
   }
   function gxFind(id){ var a=id.split(":"); return GX.cur.phases[+a[0]].tasks[+a[1]]; }
+  // every timeline row takes the height of its label row, whatever the label row needed (expanded details, forms)
+  function gxSyncRows(host){ host=host||document.getElementById("gxG"); if(!host) return; var L=host.querySelectorAll(".gx-lr"), T=host.querySelectorAll(".gx-tr"); for(var i=0;i<L.length&&i<T.length;i++){ T[i].style.height=Math.round(L[i].getBoundingClientRect().height)+"px"; } }
 
   // ── KPIs ──
   function gxThresholds(k){ if(k.target==="") return null; var t=+k.target, span=Math.abs(t-(+k.base||0))||Math.abs(t)||1, tol=span*(+k.tol||0)/100; return k.dir==="up"?{above:t,tolLo:t-tol}:{above:t,tolLo:t+tol}; }
@@ -13955,7 +13979,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(o.sel) inner='<select data-gxk="'+key+'">'+o.sel.map(function(x){ var val=Array.isArray(x)?x[0]:x, lab=Array.isArray(x)?x[1]:x; return '<option value="'+gxEsc(val)+'"'+(String(v)===String(val)?" selected":"")+'>'+gxEsc(lab)+'</option>'; }).join("")+'</select>';
     else inner='<input'+(o.type?' type="'+o.type+'"':'')+(o.list?' list="'+o.list+'"':'')+(o.min?' min="'+o.min+'"':'')+(o.max?' max="'+o.max+'"':'')+(o.step?' step="'+o.step+'"':'')+' data-gxk="'+key+'" value="'+gxEsc(v)+'" placeholder="'+gxEsc(o.ph||"")+'">';
     return '<div class="f'+w+'"><label>'+label+'</label>'+inner+'</div>'; }
-  function gxDrawK(){ gxDrawKForm(); gxDrawKSide(); gxDrawDrafts(); }
+  function gxDrawK(){ gxDrawKForm(); gxDrawKSide(); gxDrawDrafts(); gxDrawTool(); }
   function gxDrawKForm(){ var S=GX.cur; if(!S) return; if(!GX.KD) GX.KD=gxBlankK(); var k=GX.KD, C=gxCtx();
     if(!k.targetDate&&S.to) k.targetDate=S.to; if(!k.baseDate&&S.from) k.baseDate=gxIso(gxP(S.from)-GXD);
     document.getElementById("gxKObj").textContent=S.title||"—";
@@ -13978,7 +14002,13 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var RD=S.status==="approved"?gxReadings(k.feed||gxBlankFeed()):[]; var pr=gxPlanReading(k); if(pr!==null) RD=RD.concat([{date:PLATFORM_TODAY,v:pr,plan:true}]);
     if(pts.length>=2){ var x0=pts[0].d,x1=pts[pts.length-1].d, vs=pts.map(function(q){return q.v;}); if(th) vs.push(th.tolLo); RD=RD.filter(function(q){return gxP(q.date)>=x0&&gxP(q.date)<=x1;}); RD.forEach(function(q){vs.push(q.v);}); var lo=Math.min.apply(null,vs), hi=Math.max.apply(null,vs); if(hi===lo) hi=lo+1; var Y=function(v){return 80-((v-lo)/(hi-lo))*64;}; var P=pts.map(function(q){return [(q.d-x0)/(x1-x0)*300+10,Y(q.v)];});
       var band= th?'<rect x="10" y="'+Math.min(Y(th.above),Y(th.tolLo))+'" width="300" height="'+Math.abs(Y(th.above)-Y(th.tolLo))+'" fill="var(--brand-gold)" opacity=".35"/>':'';
-      var RP=RD.map(function(q){ var st=gxStatusOf(k,q.v); return '<circle cx="'+((gxP(q.date)-x0)/(x1-x0)*300+10)+'" cy="'+Y(q.v)+'" r="3.5" fill="'+(st==="a"?"var(--good)":st==="t"?"var(--warn)":"var(--critical)")+'" stroke="var(--surface)" stroke-width="1.2"><title>'+q.date+': '+q.v+'</title></circle>'; }).join("");
+      var ctype=k.chart||"line"; var colOf=function(st){ return st==="a"?"var(--good)":st==="t"?"var(--warn)":"var(--critical)"; };
+      var RX=RD.map(function(q){ return [(gxP(q.date)-x0)/(x1-x0)*300+10, Y(q.v), gxStatusOf(k,q.v), q]; });
+      var RP = ctype==="bars" ? RX.map(function(a){ return '<rect x="'+(a[0]-4)+'" y="'+a[1]+'" width="8" height="'+Math.max(1,84-a[1])+'" rx="1.5" fill="'+colOf(a[2])+'" opacity=".85"><title>'+a[3].date+': '+a[3].v+'</title></rect>'; }).join("")
+        : ctype==="area" ? (RX.length?'<path d="M'+RX.map(function(a){return a[0]+','+a[1];}).join(' L')+' L'+RX[RX.length-1][0]+',84 L'+RX[0][0]+',84 Z" fill="var(--s1)" opacity=".25"/><path d="M'+RX.map(function(a){return a[0]+','+a[1];}).join(' L')+'" fill="none" stroke="var(--s1)" stroke-width="2"/>':'')+RX.map(function(a){ return '<circle cx="'+a[0]+'" cy="'+a[1]+'" r="3" fill="'+colOf(a[2])+'"><title>'+a[3].date+': '+a[3].v+'</title></circle>'; }).join("")
+        : ctype==="line" ? (RX.length>1?'<path d="M'+RX.map(function(a){return a[0]+','+a[1];}).join(' L')+'" fill="none" stroke="var(--s1)" stroke-width="2"/>':'')+RX.map(function(a){ return '<circle cx="'+a[0]+'" cy="'+a[1]+'" r="3.5" fill="'+colOf(a[2])+'" stroke="var(--surface)" stroke-width="1.2"><title>'+a[3].date+': '+a[3].v+'</title></circle>'; }).join("")
+        : RX.map(function(a){ return '<circle cx="'+a[0]+'" cy="'+a[1]+'" r="4" fill="'+colOf(a[2])+'" stroke="var(--surface)" stroke-width="1.2"><title>'+a[3].date+': '+a[3].v+'</title></circle>'; }).join("");
+      document.querySelectorAll("#gxChartType button").forEach(function(b){b.classList.toggle("on",b.dataset.gxct===ctype);});
       svg.innerHTML=band+'<path d="M'+P.map(function(a){return a[0]+','+a[1];}).join(' L')+' L'+P[P.length-1][0]+',84 L'+P[0][0]+',84 Z" fill="var(--brand-ink)" opacity=".08"/><path d="M'+P.map(function(a){return a[0]+','+a[1];}).join(' L')+'" fill="none" stroke="var(--brand-ink)" stroke-width="2" stroke-dasharray="'+(RD.length?'4 3':'0')+'"/>'+P.map(function(a,i){return '<circle cx="'+a[0]+'" cy="'+a[1]+'" r="'+(i===0||i===P.length-1?4:2.5)+'" fill="'+(i===P.length-1?'var(--gold-ink)':'var(--brand-ink)')+'"/>';}).join("")+RP+'<text x="10" y="90" font-size="9" fill="var(--ink-3)">'+gxEsc(k.base)+u+'</text><text x="310" y="90" font-size="9" text-anchor="end" fill="var(--ink-3)">'+gxEsc(k.target)+u+'</text>';
     } else svg.innerHTML='<text x="160" y="50" font-size="11" text-anchor="middle" fill="var(--ink-3)">'+(isAr()?"يُرسم المسار بعد إدخال الرقمين وتاريخيهما":"The path draws once both figures and dates exist")+'</text>';
     document.getElementById("gxThr").innerHTML= th?'<div class="a">'+bi("فوق المستهدف","Above")+'<b>'+(k.dir==="up"?"≥ ":"≤ ")+th.above+u+'</b></div><div class="t">'+bi("ضمن التفاوت","In tolerance")+'<b>'+(k.dir==="up"?th.tolLo.toFixed(1)+" – "+th.above:th.above+" – "+th.tolLo.toFixed(1))+u+'</b></div><div class="b">'+bi("دون المستهدف","Below")+'<b>'+(k.dir==="up"?"< ":"> ")+th.tolLo.toFixed(1)+u+'</b></div>':'';
@@ -14009,6 +14039,20 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         '<td style="text-align:center"><input type="checkbox" data-gxverify="'+id+'"'+(t.verified?' checked':'')+(canVerify&&t.done?'':' disabled')+'></td></tr>'); }); });
     return '<div class="gx-sec">'+bi("إنجاز الخطوات","Step completion")+' <span style="font-weight:400;letter-spacing:0;color:var(--ink-3)">— '+bi("المسؤول يسجّل تاريخ الإنجاز والمصروف إن خُصّصت ميزانية؛ المدير المباشر يوثّق","the owner records the completion date and the expense where a budget exists; the line manager verifies")+'</span></div>'+
       '<div class="gx-grid"><table><tr><th>'+bi("الخطوة","Step")+'</th><th>'+bi("المسؤول","Owner")+'</th><th>'+bi("الموعد","Due")+'</th><th>'+bi("تاريخ الإنجاز","Completed on")+'</th><th>'+bi("المصروف (ر.ع.)","Spent (OMR)")+'</th><th>'+bi("موثّق","Verified")+'</th></tr>'+(rows.join("")||'<tr><td colspan="6" style="padding:8px;color:var(--ink-3)">'+bi("لا خطوات بعد.","No steps yet.")+'</td></tr>')+'</table></div>'; }
+  function gxTableHTML(fd,k,o){ o=o||{}; var lock=!!o.lock; var html="", cols=fd.cols, rows=fd.rows;
+    if(fd.mode==="file") html+='<div class="gx-fz" id="gxFz">'+bi("إسقاط ملف CSV أو Excel هنا، أو ","Drop a CSV/Excel file here, or ")+'<label style="color:var(--brand-ink);cursor:pointer;text-decoration:underline">'+bi("اختياره من الجهاز","choose one")+'<input type="file" id="gxFf" accept=".csv,.xlsx,.xls,.txt" style="display:none"></label><div style="font-size:var(--t-xs);margin-top:6px;color:var(--ink-3)">'+bi("CSV يُقرأ هنا مباشرة؛ ملفات Excel تُقرأ بأداة تحليل المؤشرات عبر الجسر.","CSV is read here; Excel goes through the bridge's KPI analysis tool.")+'</div>'+(fd.file?'<div style="margin-top:6px;font-weight:700">'+gxEsc(fd.file)+'</div>':'')+'</div>';
+    else if(fd.mode==="sheet") html+='<div class="gx-kgrid"><div class="f w4"><label>'+bi("رابط ورقة Google Sheets أو معرّفها","Google Sheet link or id")+'</label><input data-gxfeed="sheet" value="'+gxEsc(fd.sheet)+'" placeholder="https://docs.google.com/spreadsheets/d/…" style="direction:ltr"></div><div class="f w2" style="align-self:end"><button class="btn" id="gxSheetLink">'+bi("ربط عبر الجسر","Link via the bridge")+'</button></div></div>';
+    html+='<div class="gx-ftools">'+(lock?'<span style="color:var(--ink-3)">'+bi("الصفوف تُملأ بعد الاعتماد","rows are filled after approval")+'</span>':'<button class="btn" style="padding:3px 9px" data-gxfadd="row">＋ '+bi("صف","row")+'</button>')+'<button class="btn" style="padding:3px 9px" data-gxfadd="col">＋ '+bi("عمود","column")+'</button><label>'+bi("عمود التاريخ","Date column")+' <select data-gxfsel="dateCol">'+cols.map(function(c,i){return '<option value="'+i+'"'+(fd.dateCol===i?" selected":"")+'>'+gxEsc(c)+'</option>';}).join("")+'</select></label><label>'+bi("عمود القراءة","Value column")+' <select data-gxfsel="valCol">'+cols.map(function(c,i){return '<option value="'+i+'"'+(fd.valCol===i?" selected":"")+'>'+gxEsc(c)+'</option>';}).join("")+'</select></label><label><input type="checkbox" data-gxfpv="on"'+(fd.pivot.on?" checked":"")+'> '+bi("عرض محوري","Pivot")+'</label>'+(fd.pivot.on?'<label>'+bi("حسب","by")+' <select data-gxfpv="row">'+cols.map(function(c,i){return '<option value="'+i+'"'+(fd.pivot.row===i?" selected":"")+'>'+gxEsc(c)+'</option>';}).join("")+'</select></label><label>'+bi("قيمة","value")+' <select data-gxfpv="val">'+cols.map(function(c,i){return '<option value="'+i+'"'+(fd.pivot.val===i?" selected":"")+'>'+gxEsc(c)+'</option>';}).join("")+'</select></label><label><select data-gxfpv="agg">'+[["sum","مجموع"],["avg","متوسط"],["count","عدد"],["min","أدنى"],["max","أعلى"]].map(function(a){return '<option value="'+a[0]+'"'+(fd.pivot.agg===a[0]?" selected":"")+'>'+a[1]+'</option>';}).join("")+'</select></label>':'')+'<span style="color:var(--ink-3)">=A1+B1 · =SUM(B1:B6) · =AVG · =COUNT · =MIN · =MAX</span></div>';
+    if(fd.pivot.on){ var g={}; rows.forEach(function(row,r){ var key=String(row[fd.pivot.row]||"—"); var v=gxCell(fd,r,fd.pivot.val); (g[key]=g[key]||[]).push(typeof v==="number"?v:null); });
+      html+='<div class="gx-grid"><table><tr><th>'+gxEsc(cols[fd.pivot.row]||"")+'</th><th>'+gxEsc(cols[fd.pivot.val]||"")+'</th></tr>'+Object.keys(g).sort().map(function(key){ var v=g[key].filter(function(x){return x!==null;}); var out= fd.pivot.agg==="count"?g[key].length : !v.length?"—" : fd.pivot.agg==="sum"?v.reduce(function(a,b){return a+b;},0) : fd.pivot.agg==="avg"?Math.round(v.reduce(function(a,b){return a+b;},0)/v.length*100)/100 : fd.pivot.agg==="min"?Math.min.apply(null,v):Math.max.apply(null,v); return '<tr><td style="padding:4px 6px">'+gxEsc(key)+'</td><td style="padding:4px 6px;direction:ltr;text-align:right">'+out+'</td></tr>'; }).join("")+'</table></div>'; }
+    else html+='<div class="gx-grid"><table><tr><th class="rn">#</th>'+cols.map(function(c,i){return '<th><input data-gxfcol="'+i+'" value="'+gxEsc(c)+'" style="width:calc(100% - 18px);border:none;background:transparent;font:inherit;font-weight:700;color:var(--ink-2)"><span class="x" data-gxfdelc="'+i+'">✕</span><div style="font-size:9px;color:var(--ink-3);direction:ltr;text-align:left">'+gxColName(i)+'</div></th>';}).join("")+'</tr>'+rows.map(function(row,r){ return '<tr><th class="rn">'+(r+1)+' <span class="x" data-gxfdelr="'+r+'">✕</span></th>'+cols.map(function(c,ci){ var raw=row[ci]==null?"":String(row[ci]); var isF=raw.charAt(0)==="="; var v=isF?gxCell(fd,r,ci):""; return '<td'+(isF?' class="fx"':'')+'><input data-gxfr="'+r+'" data-gxfc="'+ci+'" value="'+gxEsc(raw)+'">'+(isF?'<span class="v">= '+gxEsc(v)+'</span>':'')+'</td>'; }).join("")+'</tr>'; }).join("")+(rows.length?'':'<tr><td colspan="'+(cols.length+1)+'" style="padding:10px;color:var(--ink-3);text-align:center">'+(lock?bi("بنية الجدول جاهزة — القراءات تُدخل بعد الاعتماد","Structure ready — readings are entered after approval"):bi("لا صفوف بعد — «＋ صف» أو إسقاط ملف","No rows yet — add a row or drop a file"))+'</td></tr>')+'</table></div>';
+    var rd=gxReadings(fd); if(rd.length&&!lock){ var last=rd[rd.length-1], st=gxStatusOf(k,last.v); html+='<div class="gx-rd"><b>'+rd.length+' '+bi("قراءة","readings")+'</b> · '+last.date+': <b>'+last.v+gxEsc(k.unit)+'</b> '+(st?'<span class="st '+st+'">'+(st==="a"?bi("فوق المستهدف","above target"):st==="t"?bi("ضمن التفاوت","in tolerance"):bi("دون المستهدف","below target"))+'</span>':'')+'</div>'; }
+    return html; }
+  function gxDrawTool(){ var host=document.getElementById("gxTool"); if(!host) return; var S=GX.cur; var k=GX.KD; if(!S||!k){ host.innerHTML=""; return; } if(!k.feed) k.feed=gxBlankFeed(); var fd=k.feed; var lock=S.status!=="approved";
+    document.querySelectorAll("#gxToolMode button").forEach(function(b){b.classList.toggle("on",b.dataset.gfm===fd.mode);});
+    var note=document.getElementById("gxToolNote"); if(note) note.innerHTML= lock ? bi("بناء فقط — لا قراءات قبل الاعتماد","build only — no readings before approval") : bi("القراءات تُدخل من تبويب «المغذّي»","readings are entered in the feeder");
+    host.innerHTML = k.plan ? '<div style="font-size:var(--t-xs);color:var(--ink-3)">'+bi("مؤشر إنجاز — يُقرأ من خطوات الخطة ولا يحتاج أداة.","A completion KPI — read from the steps; no tool needed.")+'</div>' : gxTableHTML(fd,k,{lock:lock});
+    var fz=document.getElementById("gxFz"); if(fz){ fz.addEventListener("dragover",function(e){e.preventDefault();fz.classList.add("over");}); fz.addEventListener("dragleave",function(){fz.classList.remove("over");}); fz.addEventListener("drop",function(e){e.preventDefault();fz.classList.remove("over"); var f=e.dataTransfer.files[0]; if(f) gxLoadFile(f,k,lock);}); var ff=document.getElementById("gxFf"); if(ff) ff.addEventListener("change",function(){ if(ff.files[0]) gxLoadFile(ff.files[0],k,lock); }); } }
   function gxDrawFeed(){ var host=document.getElementById("gxFeed"); if(!host) return; var S=GX.cur; if(!S){ host.innerHTML=""; return; }
     if(S.status!=="approved"){ host.innerHTML='<div class="noresult">'+bi("المسودات لا تحمل قراءات — تُغذّى بعد الاعتماد.","Drafts carry no readings — feeding starts after approval.")+'</div>'; return; }
     if(GX.K===null && S.kpis.length){ GX.K=Math.max(0, S.kpis.map(function(k){return k.plan?1:0;}).indexOf(0)); GX.KD=JSON.parse(JSON.stringify(S.kpis[GX.K])); }
@@ -14018,21 +14062,26 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var pick='<div class="gx-sec">'+bi("قراءات المؤشر","KPI readings")+'</div><div class="gx-kgrid" style="align-items:end"><div class="f w3"><label>'+bi("المؤشر الذي تُغذَّى قراءاته","KPI being fed")+'</label><select id="gxFeedPick">'+S.kpis.map(function(x,i){return '<option value="'+i+'"'+(i===GX.K?" selected":"")+'>'+gxEsc(x.name)+(x.plan?' — '+(isAr()?"يُحسب من الخطوات تلقائياً":"computed from the steps"):'')+'</option>';}).join("")+'</select></div>'+
       (k.plan?'<div class="f w3" style="font-size:var(--t-xs);color:var(--ink-3)">'+bi("هذا المؤشر يُقرأ من إنجاز الخطوات أعلاه ولا يحتاج إدخالاً.","This KPI reads itself from the step completion above.")+'</div>':'<div class="f"><label>'+bi("التاريخ","Date")+'</label><input type="date" id="gxQd" value="'+PLATFORM_TODAY+'"></div><div class="f"><label>'+bi("القراءة","Value")+'</label><input type="number" step="any" id="gxQv" placeholder="'+gxEsc(k.unit)+'"></div><div class="f" style="align-self:end"><button class="btn btn-p" id="gxQadd">'+bi("إضافة قراءة","Add reading")+'</button></div>')+'</div>';
     if(k.plan){ host.innerHTML=steps+pick; return; }
+    var html=gxTableHTML(fd,k,{lock:false});
     document.querySelectorAll("#gxFeedMode button").forEach(function(b){b.classList.toggle("on",b.dataset.gfm===fd.mode);});
-    var html="", cols=fd.cols, rows=fd.rows;
-    if(fd.mode==="file") html+='<div class="gx-fz" id="gxFz">'+bi("إسقاط ملف CSV أو Excel هنا، أو ","Drop a CSV/Excel file here, or ")+'<label style="color:var(--brand-ink);cursor:pointer;text-decoration:underline">'+bi("اختياره من الجهاز","choose one")+'<input type="file" id="gxFf" accept=".csv,.xlsx,.xls,.txt" style="display:none"></label><div style="font-size:var(--t-xs);margin-top:6px;color:var(--ink-3)">'+bi("CSV يُقرأ هنا مباشرة؛ ملفات Excel تُقرأ بأداة تحليل المؤشرات عبر الجسر.","CSV is read here; Excel goes through the bridge's KPI analysis tool.")+'</div>'+(fd.file?'<div style="margin-top:6px;font-weight:700">'+gxEsc(fd.file)+'</div>':'')+'</div>';
-    else if(fd.mode==="sheet") html+='<div class="gx-kgrid"><div class="f w4"><label>'+bi("رابط ورقة Google Sheets أو معرّفها","Google Sheet link or id")+'</label><input data-gxfeed="sheet" value="'+gxEsc(fd.sheet)+'" placeholder="https://docs.google.com/spreadsheets/d/…" style="direction:ltr"></div><div class="f w2" style="align-self:end"><button class="btn" id="gxSheetLink">'+bi("ربط عبر الجسر","Link via the bridge")+'</button></div></div>';
-    html+='<div class="gx-ftools"><button class="btn" style="padding:3px 9px" data-gxfadd="row">＋ '+bi("صف","row")+'</button><button class="btn" style="padding:3px 9px" data-gxfadd="col">＋ '+bi("عمود","column")+'</button><label>'+bi("عمود التاريخ","Date column")+' <select data-gxfsel="dateCol">'+cols.map(function(c,i){return '<option value="'+i+'"'+(fd.dateCol===i?" selected":"")+'>'+gxEsc(c)+'</option>';}).join("")+'</select></label><label>'+bi("عمود القراءة","Value column")+' <select data-gxfsel="valCol">'+cols.map(function(c,i){return '<option value="'+i+'"'+(fd.valCol===i?" selected":"")+'>'+gxEsc(c)+'</option>';}).join("")+'</select></label><label><input type="checkbox" data-gxfpv="on"'+(fd.pivot.on?" checked":"")+'> '+bi("عرض محوري","Pivot")+'</label>'+(fd.pivot.on?'<label>'+bi("حسب","by")+' <select data-gxfpv="row">'+cols.map(function(c,i){return '<option value="'+i+'"'+(fd.pivot.row===i?" selected":"")+'>'+gxEsc(c)+'</option>';}).join("")+'</select></label><label>'+bi("قيمة","value")+' <select data-gxfpv="val">'+cols.map(function(c,i){return '<option value="'+i+'"'+(fd.pivot.val===i?" selected":"")+'>'+gxEsc(c)+'</option>';}).join("")+'</select></label><label><select data-gxfpv="agg">'+[["sum","مجموع"],["avg","متوسط"],["count","عدد"],["min","أدنى"],["max","أعلى"]].map(function(a){return '<option value="'+a[0]+'"'+(fd.pivot.agg===a[0]?" selected":"")+'>'+a[1]+'</option>';}).join("")+'</select></label>':'')+'<span style="color:var(--ink-3)">=A1+B1 · =SUM(B1:B6) · =AVG · =COUNT · =MIN · =MAX</span></div>';
-    if(fd.pivot.on){ var g={}; rows.forEach(function(row,r){ var key=String(row[fd.pivot.row]||"—"); var v=gxCell(fd,r,fd.pivot.val); (g[key]=g[key]||[]).push(typeof v==="number"?v:null); });
-      html+='<div class="gx-grid"><table><tr><th>'+gxEsc(cols[fd.pivot.row]||"")+'</th><th>'+gxEsc(cols[fd.pivot.val]||"")+'</th></tr>'+Object.keys(g).sort().map(function(key){ var v=g[key].filter(function(x){return x!==null;}); var out= fd.pivot.agg==="count"?g[key].length : !v.length?"—" : fd.pivot.agg==="sum"?v.reduce(function(a,b){return a+b;},0) : fd.pivot.agg==="avg"?Math.round(v.reduce(function(a,b){return a+b;},0)/v.length*100)/100 : fd.pivot.agg==="min"?Math.min.apply(null,v):Math.max.apply(null,v); return '<tr><td style="padding:4px 6px">'+gxEsc(key)+'</td><td style="padding:4px 6px;direction:ltr;text-align:right">'+out+'</td></tr>'; }).join("")+'</table></div>'; }
-    else html+='<div class="gx-grid"><table><tr><th class="rn">#</th>'+cols.map(function(c,i){return '<th><input data-gxfcol="'+i+'" value="'+gxEsc(c)+'" style="width:calc(100% - 18px);border:none;background:transparent;font:inherit;font-weight:700;color:var(--ink-2)"><span class="x" data-gxfdelc="'+i+'">✕</span><div style="font-size:9px;color:var(--ink-3);direction:ltr;text-align:left">'+gxColName(i)+'</div></th>';}).join("")+'</tr>'+rows.map(function(row,r){ return '<tr><th class="rn">'+(r+1)+' <span class="x" data-gxfdelr="'+r+'">✕</span></th>'+cols.map(function(c,ci){ var raw=row[ci]==null?"":String(row[ci]); var isF=raw.charAt(0)==="="; var v=isF?gxCell(fd,r,ci):""; return '<td'+(isF?' class="fx"':'')+'><input data-gxfr="'+r+'" data-gxfc="'+ci+'" value="'+gxEsc(raw)+'">'+(isF?'<span class="v">= '+gxEsc(v)+'</span>':'')+'</td>'; }).join("")+'</tr>'; }).join("")+(rows.length?'':'<tr><td colspan="'+(cols.length+1)+'" style="padding:10px;color:var(--ink-3);text-align:center">'+bi("لا صفوف بعد — «＋ صف» أو إسقاط ملف","No rows yet — add a row or drop a file")+'</td></tr>')+'</table></div>';
-    var rd=gxReadings(fd); if(rd.length){ var last=rd[rd.length-1], st=gxStatusOf(k,last.v); html+='<div class="gx-rd"><b>'+rd.length+' '+bi("قراءة","readings")+'</b> · '+last.date+': <b>'+last.v+gxEsc(k.unit)+'</b> '+(st?'<span class="st '+st+'">'+(st==="a"?bi("فوق المستهدف","above target"):st==="t"?bi("ضمن التفاوت","in tolerance"):bi("دون المستهدف","below target"))+'</span>':'')+'</div>'; }
     host.innerHTML=steps+pick+'<div class="gx-sec">'+bi("مصدر القراءات","Source of readings")+'</div><div id="gxFeedSrc"></div>'+html;
     var seg=document.getElementById("gxFeedMode"); var slot=document.getElementById("gxFeedSrc"); if(seg&&slot){ slot.appendChild(seg); seg.style.margin="6px 0"; }
     var fz=document.getElementById("gxFz"); if(fz){ fz.addEventListener("dragover",function(e){e.preventDefault();fz.classList.add("over");}); fz.addEventListener("dragleave",function(){fz.classList.remove("over");}); fz.addEventListener("drop",function(e){e.preventDefault();fz.classList.remove("over"); var f=e.dataTransfer.files[0]; if(f) gxLoadFile(f,k);}); var ff=document.getElementById("gxFf"); if(ff) ff.addEventListener("change",function(){ if(ff.files[0]) gxLoadFile(ff.files[0],k); }); }
   }
-  function gxLoadFile(f,k){ var fd=k.feed; fd.file=f.name; if(/\.csv$|\.txt$/i.test(f.name)){ var rdr=new FileReader(); rdr.onload=function(){ var t=gxParseCSV(String(rdr.result)); if(t.length){ fd.cols=t[0]; fd.rows=t.slice(1); fd.dateCol=0; fd.valCol=Math.min(1,fd.cols.length-1); } gxSave(); gxDrawFeed(); gxDrawKSide(); gxToast("قُرئ الملف: "+fd.rows.length+" صفاً.","File read: "+fd.rows.length+" rows."); }; rdr.readAsText(f); } else { gxSave(); gxDrawFeed(); gxToast("ملف Excel — يُقرأ بأداة تحليل المؤشرات عبر الجسر؛ سُجّل اسمه.","Excel — read through the bridge tool; name recorded."); } }
+  function gxLoadFile(f,k,lock){ var fd=k.feed; fd.file=f.name; if(/\.csv$|\.txt$/i.test(f.name)){ var rdr=new FileReader(); rdr.onload=function(){ var t=gxParseCSV(String(rdr.result)); if(t.length){ fd.cols=t[0]; fd.rows=lock?[]:t.slice(1); fd.dateCol=0; fd.valCol=Math.min(1,fd.cols.length-1); } gxSave(); gxDrawFeed(); gxDrawTool(); gxDrawKSide(); gxToast(lock?"أُخذت أعمدة الملف كقالب — القراءات بعد الاعتماد.":"قُرئ الملف: "+fd.rows.length+" صفاً.", lock?"Columns taken as a template — readings after approval.":"File read: "+fd.rows.length+" rows."); }; rdr.readAsText(f); } else { gxSave(); gxDrawFeed(); gxDrawTool(); gxToast("ملف Excel — يُقرأ بأداة تحليل المؤشرات عبر الجسر؛ سُجّل اسمه.","Excel — read through the bridge tool; name recorded."); } }
   function gxFeedK(){ var S=GX.cur; return GX.K!==null?S.kpis[GX.K]:GX.KD; }
+  function gxEmbedDraw(ref){ var S=gxTracked(ref); var host=document.getElementById("gxE-"+ref); if(!S||!host) return; var st=GX.embed[ref]||(GX.embed[ref]={z:"year",V:S.from});
+    var keep={cur:GX.cur,z:GX.z,V:GX.V}; GX.cur=S; GX.z=st.z; GX.V=st.V; try{ gxDraw(host,{embed:true}); }finally{ st.V=GX.V; GX.cur=keep.cur; GX.z=keep.z; GX.V=keep.V; }
+    var wrap=host.closest("[data-gxembed]"); if(wrap){ wrap.querySelectorAll("[data-gxez]").forEach(function(b){ b.classList.toggle("on", b.dataset.gxez===st.z||(b.dataset.gxez==="quarter"&&(st.z==="quarters"||st.z==="quarter"))); }); var pg=wrap.querySelector(".gx-eprog"); if(pg) pg.innerHTML='<span class="gx-prog"><i style="--rest:'+(100-gxProgress(S))+'%"></i>'+gxProgress(S)+'%</span>'; } }
+  function gxEmbedHTML(S){ var Z=[["year","سنة","Year"],["quarter","ربع","Quarter"],["month","شهر","Month"],["week","أسبوع","Week"]];
+    return '<div class="gx-scope gx-embed" data-gxembed="'+gxEsc(S.ref)+'"><div class="gx-mhead"><span class="gx-eprog"></span><span class="gx-mleg"><i class="done"></i>'+bi("منجزة","done")+' <i class="late"></i>'+bi("متأخرة","late")+' <i style="background:var(--brand-gold)"></i>'+bi("مرحلة","phase")+'</span><button class="gx-ex" data-gxopen="'+gxEsc(S.ref)+'">↗ '+bi("فتح في مولّد الأهداف","Open in the generator")+'</button></div>'+
+      '<div class="gx-gwrap"><div class="gx-g" id="gxE-'+gxEsc(S.ref)+'"></div><div class="gx-foot"><span>'+bi("الجدول الزمني المعتمد نفسه — القراءة فقط هنا؛ التغذية في المولّد","The approved timeline itself — read here, fed in the generator")+'</span><div class="gx-nav"><button data-gxen="-1">›</button><span class="win"></span><button data-gxen="1">‹</button><span class="gx-zoom">'+Z.map(function(z){return '<button data-gxez="'+z[0]+'">'+bi(z[1],z[2])+'</button>';}).join("")+'</span></div></div></div></div>'; }
+  // the KPI panel of a tracked objective, as shown in the generator, rendered for the annual plan
+  function gxKParts(S,k){ var keep={cur:GX.cur,KD:GX.KD,K:GX.K}; GX.cur=S; GX.KD=k; GX.K=null; var parts; try{ gxDrawKSide(); parts={spark:document.getElementById("gxSpark").innerHTML, thr:document.getElementById("gxThr").innerHTML, smart:document.getElementById("gxSmart").innerHTML, list:document.getElementById("gxKList").innerHTML}; } finally { GX.cur=keep.cur; GX.KD=keep.KD; GX.K=keep.K; } if(GX.cur&&GX.KD) gxDrawKSide(); return parts; }
+  function gxKPlanHTML(ref){ var S=gxTracked(ref); if(!S||!S.kpis.length) return ""; var idx=GX.pk[ref]; if(idx===undefined||!S.kpis[idx]){ idx=Math.max(0,S.kpis.map(function(k){return k.plan?1:0;}).indexOf(0)); GX.pk[ref]=idx; } var k=S.kpis[idx]; var parts=gxKParts(S,k);
+    var list=parts.list.replace(/data-gxki="(\d+)"/g, function(_,i){ return 'data-gxpk="'+ref+':'+i+'"'+(+i===idx?' style="border-color:var(--brand-ink)"':''); });
+    var CT=[["line","خط","Line"],["bars","أعمدة","Bars"],["dots","نقاط","Dots"],["area","مساحة","Area"]];
+    return '<div class="gx-scope gx-kplan" data-gxkplan="'+gxEsc(ref)+'"><div class="gx-kwrap"><div class="gx-kcol"><div class="gx-card"><h3>'+bi("مسار المؤشر وعتباته","Path and thresholds")+' <span class="sub">'+gxEsc(k.name)+'</span></h3><div class="gx-seg" style="max-width:300px;margin-bottom:6px">'+CT.map(function(c){return '<button type="button" data-gxpct="'+ref+':'+c[0]+'" class="'+((k.chart||"line")===c[0]?"on":"")+'">'+bi(c[1],c[2])+'</button>';}).join("")+'</div><svg class="gx-spark" viewBox="0 0 320 92" preserveAspectRatio="none" direction="ltr" style="direction:ltr">'+parts.spark+'</svg><div class="gx-thr">'+parts.thr+'</div><div class="gx-sm">'+parts.smart+'</div><div class="gx-acts" style="margin-top:8px"><button class="btn" data-gxpptx="'+ref+':'+idx+'">'+bi("تصدير شريحة PPTX","Export as PPTX slide")+'</button></div></div></div><div class="gx-kcol"><div class="gx-card"><h3>'+bi("مؤشرات هذا الهدف","This objective's KPIs")+'</h3>'+list+'</div></div></div></div>'; }
   function gxMini(S){ var a=gxP(S.from), b=gxP(S.to), span=(b-a)||1, today=gxP(PLATFORM_TODAY); var pr=gxProgress(S);
     var rows=S.phases.map(function(ph){ return '<div class="gx-mrow ph"><span class="gx-mn">'+gxEsc(ph.name)+'</span><span class="gx-mt"><i class="ph" style="inset-inline-start:'+((gxP(ph.from)-a)/span*100)+'%;width:'+((gxP(ph.to)-gxP(ph.from))/span*100)+'%"></i></span></div>'+
       ph.tasks.map(function(t){ var l=(gxP(t.from)-a)/span*100, w=Math.max(1,(gxP(t.to)-gxP(t.from))/span*100); var el= t.st==="done"?100 : Math.max(0,Math.min(100,(today-gxP(t.from))/((gxP(t.to)-gxP(t.from))||1)*100)); var cls= t.st==="done"?"done" : (t.st==="late"||today>gxP(t.to))?"late" : "run";
@@ -14084,10 +14133,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var dk2=e.target.closest("[data-gxdelk]"); if(dk2){ S.kpis.splice(+dk2.dataset.gxdelk,1); if(GX.K!==null){ GX.K=null; GX.KD=gxBlankK(); } gxSave(); gxDrawK(); return; }
     var ki=e.target.closest("[data-gxki]"); if(ki){ GX.K=+ki.dataset.gxki; GX.KD=JSON.parse(JSON.stringify(S.kpis[GX.K])); gxDrawK(); return; }
     // feeder
-    var fm=e.target.closest("[data-gfm]"); if(fm){ var fk=gxFeedK(); if(!fk.feed) fk.feed=gxBlankFeed(); fk.feed.mode=fm.dataset.gfm; gxDrawFeed(); return; }
-    var fa=e.target.closest("[data-gxfadd]"); if(fa){ var fd=gxFeedK().feed; if(fa.dataset.gxfadd==="row") fd.rows.push(fd.cols.map(function(){return "";})); else { fd.cols.push((isAr()?"عمود ":"Column ")+(fd.cols.length+1)); fd.rows.forEach(function(r){r.push("");}); } gxSave(); gxDrawFeed(); return; }
-    var fdr=e.target.closest("[data-gxfdelr]"); if(fdr){ gxFeedK().feed.rows.splice(+fdr.dataset.gxfdelr,1); gxSave(); gxDrawFeed(); return; }
-    var fdc=e.target.closest("[data-gxfdelc]"); if(fdc){ var fd2=gxFeedK().feed, ci=+fdc.dataset.gxfdelc; if(fd2.cols.length<=1) return; fd2.cols.splice(ci,1); fd2.rows.forEach(function(r){r.splice(ci,1);}); if(fd2.dateCol>=fd2.cols.length) fd2.dateCol=0; if(fd2.valCol>=fd2.cols.length) fd2.valCol=fd2.cols.length-1; gxSave(); gxDrawFeed(); return; }
+    var fm=e.target.closest("[data-gfm]"); if(fm){ var fk=gxFeedK(); if(!fk.feed) fk.feed=gxBlankFeed(); fk.feed.mode=fm.dataset.gfm; gxSave(); gxDrawFeed(); gxDrawTool(); return; }
+    var ct=e.target.closest("[data-gxct]"); if(ct){ GX.KD.chart=ct.dataset.gxct; if(GX.K!==null) S.kpis[GX.K].chart=ct.dataset.gxct; gxSave(); gxDrawKSide(); return; }
+    var fa=e.target.closest("[data-gxfadd]"); if(fa){ var fd=gxFeedK().feed; if(fa.dataset.gxfadd==="row") fd.rows.push(fd.cols.map(function(){return "";})); else { fd.cols.push((isAr()?"عمود ":"Column ")+(fd.cols.length+1)); fd.rows.forEach(function(r){r.push("");}); } gxSave(); gxDrawFeed(); gxDrawTool(); return; }
+    var fdr=e.target.closest("[data-gxfdelr]"); if(fdr){ gxFeedK().feed.rows.splice(+fdr.dataset.gxfdelr,1); gxSave(); gxDrawFeed(); gxDrawTool(); gxDrawKSide(); return; }
+    var fdc=e.target.closest("[data-gxfdelc]"); if(fdc){ var fd2=gxFeedK().feed, ci=+fdc.dataset.gxfdelc; if(fd2.cols.length<=1) return; fd2.cols.splice(ci,1); fd2.rows.forEach(function(r){r.splice(ci,1);}); if(fd2.dateCol>=fd2.cols.length) fd2.dateCol=0; if(fd2.valCol>=fd2.cols.length) fd2.valCol=fd2.cols.length-1; gxSave(); gxDrawFeed(); gxDrawTool(); return; }
     if(e.target.closest("#gxQadd")){ var qd=document.getElementById("gxQd").value, qv=document.getElementById("gxQv").value; if(!qd||qv===""){ gxToast("التاريخ والقراءة مطلوبان.","Date and value required."); return; } var fk=gxFeedK(); if(!fk.feed) fk.feed=gxBlankFeed(); var fd3=fk.feed; if(fd3.cols.length<2){ fd3.cols=["التاريخ","القراءة"]; fd3.dateCol=0; fd3.valCol=1; } var row=fd3.cols.map(function(){return "";}); row[fd3.dateCol]=qd; row[fd3.valCol]=qv; fd3.rows.push(row); gxSave(); gxDrawFeed(); gxDrawKSide(); gxToast("أُضيفت القراءة.","Reading added."); return; }
     if(e.target.closest("#gxSheetLink")){ gxToast(gxFeedK().feed.sheet?"في المنصة: تُربط الورقة عبر الجسر وتُسحب قراءاتها تلقائياً.":"رابط الورقة مطلوب.", gxFeedK().feed.sheet?"Linked through the bridge.":"Sheet link required."); return; }
   });
@@ -14113,9 +14163,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(el.dataset&&el.dataset.gxph!==undefined&&el.dataset.f==="name"){ gxSave(); gxDraw(); }
     if(el.dataset&&el.dataset.gxtk&&["name","owner","budget"].indexOf(el.dataset.f)>-1){ gxSave(); gxDraw(); }
     if(el.dataset&&el.dataset.gxk&&el.tagName==="SELECT"){ GX.KD[el.dataset.gxk]=el.value; if(el.dataset.gxk==="type"){ var u=GX_TYPES.filter(function(x){return x[0]===el.value;})[0]; GX.KD.unit=u?u[1]:""; var ui=document.querySelector('#gen [data-gxk="unit"]'); if(ui) ui.value=GX.KD.unit; } gxDrawKSide(); }
-    if(el.dataset&&(el.dataset.gxfr!==undefined||el.dataset.gxfcol!==undefined)){ gxSave(); gxDrawFeed(); gxDrawKSide(); }
-    if(el.dataset&&el.dataset.gxfsel){ gxFeedK().feed[el.dataset.gxfsel]=+el.value; gxSave(); gxDrawFeed(); gxDrawKSide(); }
-    if(el.dataset&&el.dataset.gxfpv){ var pv=gxFeedK().feed.pivot; if(el.dataset.gxfpv==="on") pv.on=el.checked; else if(el.dataset.gxfpv==="agg") pv.agg=el.value; else pv[el.dataset.gxfpv]=+el.value; gxSave(); gxDrawFeed(); }
+    if(el.dataset&&(el.dataset.gxfr!==undefined||el.dataset.gxfcol!==undefined)){ gxSave(); gxDrawFeed(); gxDrawTool(); gxDrawKSide(); }
+    if(el.dataset&&el.dataset.gxfsel){ gxFeedK().feed[el.dataset.gxfsel]=+el.value; gxSave(); gxDrawFeed(); gxDrawTool(); gxDrawKSide(); }
+    if(el.dataset&&el.dataset.gxfpv){ var pv=gxFeedK().feed.pivot; if(el.dataset.gxfpv==="on") pv.on=el.checked; else if(el.dataset.gxfpv==="agg") pv.agg=el.value; else pv[el.dataset.gxfpv]=+el.value; gxSave(); gxDrawFeed(); gxDrawTool(); }
   });
   document.addEventListener("keydown",function(e){ if(e.key!=="Enter") return; var el=e.target; if(!el.closest||!el.closest("#gen")) return; if(el.dataset&&el.dataset.gxph!==undefined) el.blur(); if(el.id==="gx-title") el.blur(); if(el.id&&el.id.indexOf("gx-nf-")===0){ var b=document.querySelector("#gen [data-gxsavet]"); if(b) b.click(); } });
   document.addEventListener("pointerdown",function(e){ var tr=e.target.closest&&e.target.closest("#gen .gx-tr[data-gxrow],#gen .gx-tr[data-gxobjrow],#gen .gx-tr[data-gxformrow],#gen .gx-tr[data-gxphrow]"); if(!tr||!GX.cur||!GX.cur.title||gxRO()) return;
@@ -14129,9 +14179,88 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   document.addEventListener("pointerup",function(){ if(!gxDrag) return; var k=gxDrag.kind; gxDrag=null; gxSave(); if(k==="form"){ gxToast("رُسمت مدة الخطوة — تُكمَل التفاصيل ثم «إضافة الخطوة».","Step drawn — complete the details."); return; } gxDraw(); });
   document.addEventListener("click",function(e){ if(e.target.closest&&e.target.closest('[data-go="gen"]')){ gxShowTab(GX.tab); setTimeout(function(){ gxShowTab(GX.tab); },30); } });
   document.addEventListener("click",function(e){ var nb=e.target.closest&&e.target.closest("#newObjBtn"); if(!nb) return; e.preventDefault(); e.stopPropagation(); var b=document.querySelector('[data-go="gen"]'); if(b) b.click(); setTimeout(function(){ gxNew(); gxShowTab("tl"); gxToast("الأهداف الجديدة تُنشأ هنا — الكتابة في الصف الأول.","New objectives start here — write in the first row."); },40); }, true);
-  document.addEventListener("click",function(e){ var go=e.target.closest&&e.target.closest("[data-gxopen]"); if(!go) return; var S=GX.list.filter(function(x){return x.ref===go.dataset.gxopen;})[0]; if(!S) return; var b=document.querySelector('[data-go="gen"]'); if(b) b.click(); setTimeout(function(){ gxSelect(S.id); },40); });
+  document.addEventListener("click",function(e){
+    var wrap=e.target.closest&&e.target.closest("[data-gxembed]"); if(wrap){ var ref=wrap.dataset.gxembed, st=GX.embed[ref]||(GX.embed[ref]={z:"year",V:(gxTracked(ref)||{}).from});
+      var ez=e.target.closest("[data-gxez]"); if(ez){ st.z= ez.dataset.gxez==="quarter" ? "quarters" : ez.dataset.gxez; gxEmbedDraw(ref); return; }
+      var qb=e.target.closest("[data-gxq]"); if(qb){ if(qb.dataset.gxq==="back") st.z="quarters"; else { st.z="quarter"; st.V=qb.dataset.gxq; } gxEmbedDraw(ref); return; }
+      var en=e.target.closest("[data-gxen]"); if(en){ var keep={cur:GX.cur,z:GX.z,V:GX.V}; GX.cur=gxTracked(ref); GX.z=st.z; GX.V=st.V; var w=gxWindow(document.getElementById("gxE-"+ref)), d=new Date(w.t0), dir=+en.dataset.gxen;
+        if(st.z==="year"||st.z==="quarters") st.V=gxIso(Date.UTC(d.getUTCFullYear()+dir,0,1)); else if(st.z==="quarter") st.V=gxIso(Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+3*dir,1)); else if(st.z==="month") st.V=gxIso(Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+dir,1)); else st.V=gxIso(w.t0+7*dir*GXD);
+        GX.cur=keep.cur; GX.z=keep.z; GX.V=keep.V; gxEmbedDraw(ref); return; } }
+    var pk=e.target.closest&&e.target.closest("[data-gxpk]"); if(pk){ var a=pk.dataset.gxpk.split(":"); GX.pk[a[0]]=+a[1]; var box=pk.closest("[data-gxkplan]"); if(box) box.outerHTML=gxKPlanHTML(a[0]); return; }
+    var pct=e.target.closest&&e.target.closest("[data-gxpct]"); if(pct){ var b2=pct.dataset.gxpct.split(":"); var S2=gxTracked(b2[0]); var kk=S2&&S2.kpis[GX.pk[b2[0]]||0]; if(kk){ kk.chart=b2[1]; gxSave(); var box2=pct.closest("[data-gxkplan]"); if(box2) box2.outerHTML=gxKPlanHTML(b2[0]); } return; }
+    var go=e.target.closest&&e.target.closest("[data-gxopen]"); if(!go) return; var S=GX.list.filter(function(x){return x.ref===go.dataset.gxopen;})[0]; if(!S) return; var b=document.querySelector('[data-go="gen"]'); if(b) b.click(); setTimeout(function(){ gxSelect(S.id); },40); });
   window.addEventListener("resize",function(){ if(document.getElementById("gen")&&document.getElementById("gen").classList.contains("on")&&GX.tab==="tl"){ clearTimeout(window._gxrz); window._gxrz=setTimeout(gxDraw,120); } });
-  window.gxState=function(){ return {role:ROLE, me:gxMe().p.id, list:GX.list.map(function(S){ return {ref:S.ref||S.id, by:S.by, status:S.status, access:gxAccess(S), kpis:S.kpis.map(function(k){return [k.name.slice(0,20), (k.feed&&k.feed.rows||[]).length];}), unit:S.unit, owners:gxOwners(S)}; })}; };
+
+  // ── one KPI → one PowerPoint slide. A store-only zip and the minimal OOXML set (presentation, master, layout, theme, slide, image). ──
+  var GX_CRC=(function(){ var t=[]; for(var n=0;n<256;n++){ var c=n; for(var k=0;k<8;k++) c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1); t[n]=c>>>0; } return t; })();
+  function gxCrc32(u8){ var c=0xFFFFFFFF; for(var i=0;i<u8.length;i++) c=GX_CRC[(c^u8[i])&0xFF]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
+  function gxUtf8(str){ return new TextEncoder().encode(str); }
+  function gxZip(files){ // files: [{name, data:Uint8Array}] — stored, no compression
+    var parts=[], central=[], offset=0; var enc=new TextEncoder();
+    function u16(v){ return [v&255,(v>>8)&255]; } function u32(v){ return [v&255,(v>>8)&255,(v>>16)&255,(v>>>24)&255]; }
+    files.forEach(function(f){ var name=enc.encode(f.name), data=f.data, crc=gxCrc32(data);
+      var local=[].concat(u32(0x04034b50),u16(20),u16(0x0800),u16(0),u16(0),u16(0),u32(crc),u32(data.length),u32(data.length),u16(name.length),u16(0));
+      parts.push(new Uint8Array(local)); parts.push(name); parts.push(data);
+      central.push(new Uint8Array([].concat(u32(0x02014b50),u16(20),u16(20),u16(0x0800),u16(0),u16(0),u16(0),u32(crc),u32(data.length),u32(data.length),u16(name.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(offset)))); central.push(name);
+      offset+=local.length+name.length+data.length; });
+    var cdSize=central.reduce(function(a,x){return a+x.length;},0);
+    var end=new Uint8Array([].concat(u32(0x06054b50),u16(0),u16(0),u16(files.length),u16(files.length),u32(cdSize),u32(offset),u16(0)));
+    var total=parts.concat(central,[end]); var len=total.reduce(function(a,x){return a+x.length;},0); var out=new Uint8Array(len), p=0; total.forEach(function(x){ out.set(x,p); p+=x.length; }); return out; }
+  function gxX(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  // the chart as a PNG: the live svg, colours resolved from the theme, drawn on a canvas
+  function gxChartPng(svgEl, w, h){ return new Promise(function(res){ var clone=svgEl.cloneNode(true); var cs=getComputedStyle(document.documentElement);
+    var resolve=function(v){ var m=String(v||"").match(/var\((--[a-z0-9-]+)\)/i); return m ? (cs.getPropertyValue(m[1]).trim()||"#888") : v; };
+    [].slice.call(clone.querySelectorAll("*")).forEach(function(el){ ["fill","stroke"].forEach(function(a){ var v=el.getAttribute(a); if(v&&v.indexOf("var(")>-1) el.setAttribute(a, resolve(v)); }); });
+    clone.setAttribute("xmlns","http://www.w3.org/2000/svg"); clone.setAttribute("width",w); clone.setAttribute("height",h); clone.style.background="#ffffff";
+    var bg=document.createElementNS("http://www.w3.org/2000/svg","rect"); bg.setAttribute("x",0); bg.setAttribute("y",0); bg.setAttribute("width",320); bg.setAttribute("height",92); bg.setAttribute("fill","#ffffff"); clone.insertBefore(bg, clone.firstChild);
+    var xml=new XMLSerializer().serializeToString(clone); var img=new Image(); img.onload=function(){ var c=document.createElement("canvas"); c.width=w; c.height=h; var ctx=c.getContext("2d"); ctx.fillStyle="#fff"; ctx.fillRect(0,0,w,h); ctx.drawImage(img,0,0,w,h); var b64=c.toDataURL("image/png").split(",")[1]; var bin=atob(b64), u8=new Uint8Array(bin.length); for(var i=0;i<bin.length;i++) u8[i]=bin.charCodeAt(i); res(u8); };
+    img.onerror=function(){ res(null); }; img.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(xml); }); }
+  function gxPptxBuild(S,k,png){
+    var ink="173F45", gold="97804D", paper="F7F5F0";
+    var th=gxThresholds(k), rd=(S.status==="approved"?gxReadings(k.feed||gxBlankFeed()):[]), last=rd[rd.length-1], pr=gxPlanReading(k);
+    var cur= pr!==null?pr : last?last.v:null; var st=cur!==null?gxStatusOf(k,cur):null;
+    var facts=[ [isAr()?"البُعد":"Dimension", k.dim], [isAr()?"النوع":"Type", isAr()?GX_KIND[k.kind][0]:GX_KIND[k.kind][1]], [isAr()?"الرقم الحالي":"Current", k.base+" "+k.unit+(k.baseDate?" ("+k.baseDate+")":"")], [isAr()?"المستهدف":"Target", k.target+" "+k.unit+(k.targetDate?" — "+k.targetDate:"")],
+      [isAr()?"العتبات":"Thresholds", th?((k.dir==="up"?"≥ ":"≤ ")+th.above+" / "+th.tolLo.toFixed(1)+" / "+(k.dir==="up"?"< ":"> ")+th.tolLo.toFixed(1)+" "+k.unit):"—"], [isAr()?"آخر قراءة":"Latest", cur!==null?(cur+" "+k.unit+(st?" — "+(st==="a"?(isAr()?"فوق المستهدف":"above target"):st==="t"?(isAr()?"ضمن التفاوت":"in tolerance"):(isAr()?"دون المستهدف":"below target")):"")):"—"],
+      [isAr()?"المصدر":"Source", k.source||"—"], [isAr()?"جهة الرصد":"Monitored by", k.reader||"—"], [isAr()?"الوتيرة":"Frequency", (isAr()?GX_FREQ[k.cfreq][0]:GX_FREQ[k.cfreq][1])+" · "+(isAr()?GX_FREQ[k.rfreq][0]:GX_FREQ[k.rfreq][1])] ];
+    var rtl=isAr()?' rtl="1" algn="r"':'';
+    var para=function(t,sz,b,col){ return '<a:p><a:pPr'+rtl+'/><a:r><a:rPr lang="ar-OM" sz="'+sz+'"'+(b?' b="1"':'')+' dirty="0"><a:solidFill><a:srgbClr val="'+(col||ink)+'"/></a:solidFill><a:latin typeface="Calibri"/><a:cs typeface="Noto Kufi Arabic"/></a:rPr><a:t>'+gxX(t)+'</a:t></a:r></a:p>'; };
+    var sp=function(id,name,x,y,cx,cy,body){ return '<p:sp><p:nvSpPr><p:cNvPr id="'+id+'" name="'+name+'"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="'+x+'" y="'+y+'"/><a:ext cx="'+cx+'" cy="'+cy+'"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr><p:txBody><a:bodyPr wrap="square" rtlCol="'+(isAr()?1:0)+'"><a:normAutofit/></a:bodyPr><a:lstStyle/>'+body+'</p:txBody></p:sp>'; };
+    var factsXml=facts.map(function(f){ return '<a:p><a:pPr'+rtl+'/><a:r><a:rPr lang="ar-OM" sz="1200" b="1"><a:solidFill><a:srgbClr val="'+gold+'"/></a:solidFill><a:cs typeface="Noto Kufi Arabic"/></a:rPr><a:t>'+gxX(f[0])+': </a:t></a:r><a:r><a:rPr lang="ar-OM" sz="1200"><a:solidFill><a:srgbClr val="'+ink+'"/></a:solidFill><a:cs typeface="Noto Kufi Arabic"/></a:rPr><a:t>'+gxX(f[1])+'</a:t></a:r></a:p>'; }).join("");
+    var pic= png ? '<p:pic><p:nvPicPr><p:cNvPr id="5" name="Chart"/><p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/></p:nvPicPr><p:blipFill><a:blip r:embed="rId2"/><a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm><a:off x="457200" y="2286000"/><a:ext cx="6400800" cy="1840000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic>' : '';
+    var slide='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"><p:cSld><p:bg><p:bgPr><a:solidFill><a:srgbClr val="'+paper+'"/></a:solidFill><a:effectLst/></p:bgPr></p:bg><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>'+
+      sp(2,"Title",457200,457200,11277600,914400, para(k.name,2800,true,ink))+
+      sp(3,"Subtitle",457200,1371600,11277600,685800, para((isAr()?"الهدف: ":"Objective: ")+S.title+(S.ref?" · "+S.ref:""),1400,false,gold))+
+      pic+
+      sp(4,"Facts",7086600,2286000,4648200,3657600, factsXml)+
+      sp(6,"Foot",457200,6172200,11277600,457200, para((isAr()?"بطاقة مؤشر الأداء — الملحق 6 من دليل مؤشرات الأداء الرئيسية · منصة ضمان الجودة":"KPI card — Appendix 6, KPIs Guideline · QAGC platform")+" · "+PLATFORM_TODAY,900,false,"6B8082"))+
+      '</p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sld>';
+    var slideRels='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>'+(png?'<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image1.png"/>':'')+'</Relationships>';
+    var ct='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/><Override PartName="/ppt/slides/slide1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/><Override PartName="/ppt/slideLayouts/slideLayout1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/><Override PartName="/ppt/slideMasters/slideMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/><Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/></Types>';
+    var rels='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="ppt/presentation.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/></Relationships>';
+    var pres='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" saveSubsetFonts="1"><p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1"/></p:sldMasterIdLst><p:sldIdLst><p:sldId id="256" r:id="rId2"/></p:sldIdLst><p:sldSz cx="12192000" cy="6858000"/><p:notesSz cx="6858000" cy="9144000"/><p:defaultTextStyle><a:defPPr><a:defRPr lang="en-US"/></a:defPPr><a:lvl1pPr marL="0" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1800" kern="1200"><a:solidFill><a:schemeClr val="tx1"/></a:solidFill><a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/></a:defRPr></a:lvl1pPr></p:defaultTextStyle></p:presentation>';
+    var presRels='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster" Target="slideMasters/slideMaster1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="slides/slide1.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme1.xml"/></Relationships>';
+    var master='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><p:sldMaster xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"><p:cSld><p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1"/></p:bgRef></p:bg><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr></p:spTree></p:cSld><p:clrMap bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink"/><p:sldLayoutIdLst><p:sldLayoutId id="2147483649" r:id="rId1"/></p:sldLayoutIdLst><p:txStyles><p:titleStyle><a:lvl1pPr><a:defRPr sz="4400"/></a:lvl1pPr></p:titleStyle><p:bodyStyle><a:lvl1pPr><a:defRPr sz="2800"/></a:lvl1pPr></p:bodyStyle><p:otherStyle><a:lvl1pPr><a:defRPr sz="1800"/></a:lvl1pPr></p:otherStyle></p:txStyles></p:sldMaster>';
+    var masterRels='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="../theme/theme1.xml"/></Relationships>';
+    var layout='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><p:sldLayout xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" type="blank" preserve="1"><p:cSld name="Blank"><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr></p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sldLayout>';
+    var layoutRels='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster" Target="../slideMasters/slideMaster1.xml"/></Relationships>';
+    var fill3='<a:fillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:fillStyleLst>';
+    var theme='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="QAGC"><a:themeElements><a:clrScheme name="QAGC"><a:dk1><a:srgbClr val="10292C"/></a:dk1><a:lt1><a:srgbClr val="FFFFFF"/></a:lt1><a:dk2><a:srgbClr val="173F45"/></a:dk2><a:lt2><a:srgbClr val="F7F5F0"/></a:lt2><a:accent1><a:srgbClr val="173F45"/></a:accent1><a:accent2><a:srgbClr val="E4C882"/></a:accent2><a:accent3><a:srgbClr val="00907F"/></a:accent3><a:accent4><a:srgbClr val="B58411"/></a:accent4><a:accent5><a:srgbClr val="4F5AC4"/></a:accent5><a:accent6><a:srgbClr val="BD4529"/></a:accent6><a:hlink><a:srgbClr val="0563C1"/></a:hlink><a:folHlink><a:srgbClr val="954F72"/></a:folHlink></a:clrScheme><a:fontScheme name="QAGC"><a:majorFont><a:latin typeface="Calibri"/><a:ea typeface=""/><a:cs typeface="Noto Kufi Arabic"/></a:majorFont><a:minorFont><a:latin typeface="Calibri"/><a:ea typeface=""/><a:cs typeface="Noto Kufi Arabic"/></a:minorFont></a:fontScheme><a:fmtScheme name="QAGC">'+fill3+'<a:lnStyleLst><a:ln w="6350"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:ln><a:ln w="12700"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:ln><a:ln w="19050"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:ln></a:lnStyleLst><a:effectStyleLst><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:bgFillStyleLst></a:fmtScheme></a:themeElements><a:objectDefaults/><a:extraClrSchemeLst/></a:theme>';
+    var core='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>'+gxX(k.name)+'</dc:title><dc:creator>QAGC</dc:creator></cp:coreProperties>';
+    var app='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"><Application>QAGC</Application><Slides>1</Slides></Properties>';
+    var files=[["[Content_Types].xml",ct],["_rels/.rels",rels],["docProps/core.xml",core],["docProps/app.xml",app],["ppt/presentation.xml",pres],["ppt/_rels/presentation.xml.rels",presRels],["ppt/slideMasters/slideMaster1.xml",master],["ppt/slideMasters/_rels/slideMaster1.xml.rels",masterRels],["ppt/slideLayouts/slideLayout1.xml",layout],["ppt/slideLayouts/_rels/slideLayout1.xml.rels",layoutRels],["ppt/theme/theme1.xml",theme],["ppt/slides/slide1.xml",slide],["ppt/slides/_rels/slide1.xml.rels",slideRels]].map(function(f){ return {name:f[0], data:gxUtf8(f[1])}; });
+    if(png) files.push({name:"ppt/media/image1.png", data:png});
+    return gxZip(files);
+  }
+  function gxPptxFor(S,k,svgEl){ return (svgEl?gxChartPng(svgEl,1280,368):Promise.resolve(null)).then(function(png){ return gxPptxBuild(S,k,png); }); }
+  function gxDownload(u8,name){ var blob=new Blob([u8],{type:"application/vnd.openxmlformats-officedocument.presentationml.presentation"}); var a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500); }
+  function gxPptxExport(S,k,svgEl){ var keep={cur:GX.cur}; GX.cur=S; gxPptxFor(S,k,svgEl).then(function(u8){ GX.cur=keep.cur; gxDownload(u8, "KPI-"+(S.ref||"objective")+"-"+(k.name||"kpi").slice(0,30).replace(/[\\/:*?"<>|]/g,"")+".pptx"); gxToast("صُدّرت شريحة PowerPoint للمؤشر.","KPI slide exported."); }).catch(function(err){ GX.cur=keep.cur; console.error(err); gxToast("تعذّر التصدير.","Export failed."); }); }
+  window.gxPptxB64=function(ref,i,withSvg){ var S=GX.list.filter(function(x){return x.ref===ref||x.id===ref;})[0]; var k=S.kpis[i||0]; var keep={cur:GX.cur}; GX.cur=S; return gxPptxFor(S,k,withSvg?document.getElementById("gxSpark"):null).then(function(u8){ GX.cur=keep.cur; var s2=""; for(var j=0;j<u8.length;j++) s2+=String.fromCharCode(u8[j]); return btoa(s2); }); };
+  document.addEventListener("click",function(e){
+    var b=e.target.closest&&e.target.closest("[data-gxpptx]"); if(b){ var a=b.dataset.gxpptx.split(":"); var S=gxTracked(a[0])||GX.list.filter(function(x){return x.ref===a[0];})[0]; if(!S) return; var k=S.kpis[+a[1]]||S.kpis[0]; var box=b.closest("[data-gxkplan]"); gxPptxExport(S,k, box?box.querySelector("svg"):document.getElementById("gxSpark")); return; }
+    if(e.target.closest&&e.target.closest("#gxPptx")){ var S2=GX.cur; if(!S2||!GX.KD||!GX.KD.name){ gxToast("اختيار مؤشر أولاً.","Pick a KPI first."); return; } gxPptxExport(S2, GX.K!==null?S2.kpis[GX.K]:GX.KD, document.getElementById("gxSpark")); }
+  });
+
+  window.gxState=function(){ return {accts:ACCOUNTS.map(function(a){return a.u;}), role:ROLE, me:gxMe().p.id, list:GX.list.map(function(S){ return {ref:S.ref||S.id, by:S.by, status:S.status, access:gxAccess(S), kpis:S.kpis.map(function(k){return [k.name.slice(0,20), (k.feed&&k.feed.rows||[]).length];}), unit:S.unit, owners:gxOwners(S)}; })}; };
   try{ gxLoad(); var dl=document.createElement("datalist"); dl.id="gxPeople"; dl.innerHTML=STAFF.map(function(p){return '<option value="'+gxEsc(p.who[0])+'">';}).join(""); document.body.appendChild(dl); }catch(err){ console.error("gen init", err); }
 
 })();
