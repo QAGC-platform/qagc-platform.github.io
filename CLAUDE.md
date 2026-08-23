@@ -249,3 +249,6 @@ the browser, publish (push), and summarise honestly — including what was
 NOT done and any caveats. When she reports a bug, reproduce it before
 fixing. Log significant decisions briefly in commit messages; they are the
 project's memory.
+
+## Attestation chain (beta 32)
+Feeding is restricted to the step's assignee or the plan owner (`gxCanFeedStep`). An entry goes «إرسال للتوثيق» to the feeder's own line manager (`gxVerifierOf`: staff → department head → director → DG; the DG has none), who verifies or returns with a note. No manager override except the DG, with a recorded reason (`t.override`). Plans scoped «هدفي», and anything fed by the DG, are self-attested (`verifiedBy:"self"`). Progress and charts count verified entries only; pending shows as a hatched bar / `+n%` / `⏳` on the «المهام والأهداف» badge. KPI readings: manual rows carry `fd.meta[r]={pending,verified,by}`; Google-Sheet rows are system-sourced and skip verification. The manager's queue (`gxQueue`, `#mineVerifyQ`) is rendered outside `#gen`, so its `[data-gxvq]` handler is a page-wide listener. Seed is `qagcGen v:9`: approved directorate objectives belong to their director (`S.by`), seeded readings are pre-verified.
