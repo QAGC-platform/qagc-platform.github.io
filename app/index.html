@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 35">
+<meta name="qagc-ver" content="beta 36">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -2007,6 +2007,26 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 .gx-scope .gx-bg.q3{top:66px}
 .gx-scope .gx-lh.q3{height:66px}
 .gx-scope .gx-klock .gx-card.auto,.gx-scope .gx-klock #gxKSave,.gx-scope .gx-klock #gxKNew,.gx-scope .gx-klock #gxKList .gx-del,.gx-scope .gx-klock #gxMil .gx-del{display:none!important}
+/* ── work mail: highlight → right-click → routed to the responsible person ── */
+#qcm{position:fixed;z-index:99;background:var(--surface);border:1px solid var(--brand-ink);border-radius:12px;box-shadow:0 12px 34px rgba(23,63,69,.25);min-width:250px;max-width:340px;display:none;overflow:hidden}
+#qcm .qx{padding:8px 12px;font-size:11.5px;color:var(--ink-3);border-bottom:1px solid var(--rule);background:var(--surface-2);line-height:1.6}
+#qcm .qx b{color:var(--ink-2)}
+#qcm button{display:block;width:100%;text-align:start;padding:9px 14px;background:none;border:none;font:inherit;font-size:13px;color:var(--ink-1);cursor:pointer}
+#qcm button:hover{background:var(--surface-2)}
+#qcm button .to{display:block;font-size:11px;color:var(--ink-3)}
+#qcmBox{position:fixed;z-index:100;inset-inline:auto;background:var(--surface);border:1px solid var(--brand-ink);border-radius:12px;padding:12px;width:min(360px,92vw);box-shadow:0 12px 34px rgba(23,63,69,.3);display:none}
+#qcmBox textarea{width:100%;min-height:64px;border:1px solid var(--rule);border-radius:8px;padding:8px;font:inherit;font-size:13px;resize:vertical}
+#qcmBox .qh{font-size:12px;color:var(--ink-2);margin-bottom:6px}
+#ibStrip{position:fixed;bottom:14px;inset-inline-start:14px;z-index:80;background:var(--brand-gold);color:#173f45;border-radius:99px;padding:8px 18px;font-size:13px;font-weight:700;box-shadow:0 8px 22px rgba(23,63,69,.3);cursor:pointer;display:none;border:none;font-family:inherit}
+#ibSpot{position:fixed;inset:0;z-index:120;background:rgba(23,63,69,.45);display:none;align-items:center;justify-content:center}
+#ibSpot .in{background:var(--surface);border-radius:16px;padding:22px 24px;width:min(460px,92vw);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+#ibSpot .in h3{margin:0 0 8px}
+#ibSpot .row{display:flex;gap:8px;margin-top:14px}
+#mineInbox .ibitem{border:1px solid var(--rule);border-radius:10px;padding:8px 12px;margin:6px 0;background:var(--surface);font-size:13px}
+#mineInbox .ibitem.unread{border-inline-start:4px solid var(--brand-gold)}
+#mineInbox .ibq{color:var(--ink-2);background:var(--surface-2);border-radius:6px;padding:4px 8px;margin:4px 0;font-size:12.5px}
+#mineInbox .ibm{font-size:11.5px;color:var(--ink-3)}
+#mineInbox .ibr{margin-top:6px;display:flex;gap:6px;flex-wrap:wrap}
 .gx-scope .gx-th .un.we{background:color-mix(in srgb,var(--ink-4) 18%,transparent)}
 .gx-scope .gx-th .un b{display:block;font-size:8.5px;line-height:8px;font-weight:600;color:var(--ink-3)}
 .gx-scope .gx-bg{position:absolute;top:44px;bottom:0;inset-inline-start:0;pointer-events:none;z-index:0}
@@ -11571,6 +11591,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   });
   function drawMine(){
     drawMineObjs();
+    if(typeof ibDraw==="function") try{ ibDraw(); }catch(_){}
     var host=document.getElementById("mineList"); if(!host) return;
     var me=myPerson();
     var w=document.getElementById("mineWho");
@@ -12367,6 +12388,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var sel=document.getElementById("roleSel"); if(sel) sel.value=a.role;
     document.getElementById("gate").classList.add("done");
     applyRole();
+    if(typeof ibSpotlight==="function") try{ ibSpotlight(); }catch(_){}
   }
   function signIn(){
     var uRaw=document.getElementById("gi-user").value||"";
@@ -14365,6 +14387,125 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   });
 
   window.gxState=function(){ return {accts:ACCOUNTS.map(function(a){return a.u;}), role:ROLE, me:gxMe().p.id, list:GX.list.map(function(S){ return {ref:S.ref||S.id, by:S.by, status:S.status, access:gxAccess(S), kpis:S.kpis.map(function(k){return [k.name.slice(0,20), (k.feed&&k.feed.rows||[]).length];}), unit:S.unit, owners:gxOwners(S)}; })}; };
+  // ══ work mail: a daily-activity lane — highlight content, right-click, and the item
+  // reaches the person responsible for that content (owner / assignee / coordination)
+  var INBOX=[]; try{ var _ib=JSON.parse(localStorage.getItem("qagcInbox")||"null"); if(_ib&&_ib.v===1) INBOX=_ib.items||[]; }catch(_){}
+  function ibSave(){ try{ localStorage.setItem("qagcInbox", JSON.stringify({v:1, items:INBOX})); }catch(_){} }
+  function gxPersonById(id){ return STAFF.filter(function(p){return p.id===id;})[0]||null; }
+  function ibCoord(){ return STAFF.filter(function(p){return /التنسيق/.test(p.dep[0]||"");})[0] || gxPersonById("dg0"); }
+  function ibResolve(el){ // walk up from the click to the business object underneath
+    var out={S:null,t:null};
+    try{
+      var tk=el.closest&&el.closest("[data-gxtk],[data-gxrow]");
+      if(el.closest&&el.closest("#gen")&&GX&&GX.cur){ out.S=GX.cur; if(tk){ var id=tk.dataset.gxtk||tk.dataset.gxrow; if(/^\d+:\d+$/.test(id)){ var a=id.split(":"); var t=GX.cur.phases[+a[0]]&&GX.cur.phases[+a[0]].tasks[+a[1]]; if(t) out.t=t; } } return out; }
+      var em=el.closest&&el.closest("[data-gxembed]"); if(em){ out.S=gxTracked(em.dataset.gxembed)||null; return out; }
+      var pane=el.closest&&el.closest('.dpane[id^="dp-"]');
+      if(pane){ var ref=pane.id.slice(3).replace(/-(plan|kpi|track)$/,""); out.S=gxTracked(ref)||null; }
+    }catch(_){}
+    return out; }
+  function ibRecipient(ctx){ // note → the step's assignee, else the objective's owner
+    if(ctx.t&&ctx.t.owner){ var p=gxPersonByName(ctx.t.owner); if(p) return p; }
+    if(ctx.S) return gxPersonById(ctx.S.by);
+    return null; }
+  var QCM={quote:"",ctx:null,kind:"",to:null};
+  function ibMenuClose(){ var m=document.getElementById("qcm"); if(m) m.style.display="none"; }
+  document.addEventListener("contextmenu",function(e){
+    if(e.target.closest&&(e.target.closest("input,textarea,select,[contenteditable]")||e.target.closest("#gate"))) return;
+    var sel=String(window.getSelection?window.getSelection():"").replace(/\s+/g," ").trim();
+    if(!sel) return;                                        // no highlight → the browser's own menu
+    e.preventDefault();
+    var ctx=ibResolve(e.target); QCM.quote=sel.slice(0,240); QCM.ctx=ctx;
+    var to=ibRecipient(ctx), me=gxMe(), co=ibCoord();
+    var m=document.getElementById("qcm");
+    if(!m){ m=document.createElement("div"); m.id="qcm"; document.body.appendChild(m);
+      document.addEventListener("click",function(ev){ if(!ev.target.closest||!ev.target.closest("#qcm")) ibMenuClose(); });
+      document.addEventListener("keydown",function(ev){ if(ev.key==="Escape") ibMenuClose(); }); }
+    var src= ctx.t? (isAr()?"خطوة: ":"step: ")+ctx.t.name : ctx.S? (isAr()?"هدف: ":"objective: ")+(ctx.S.title||ctx.S.ref) : (isAr()?"نص من الصفحة":"page text");
+    m.innerHTML='<div class="qx">«'+gxEsc(QCM.quote.slice(0,70))+(QCM.quote.length>70?"…":"")+'»<br><b>'+gxEsc(src)+'</b></div>'+
+      (to&&to.id!==me.p.id?'<button data-qcm="note">💬 '+bi("ملاحظة إلى المسؤول","Note to the responsible person")+'<span class="to">'+gxEsc(to.who[0])+'</span></button>':'')+
+      '<button data-qcm="agenda">📋 '+bi("اقتراح لجدول أعمال","Suggest for a meeting agenda")+'<span class="to">'+gxEsc(co.who[0])+' · '+bi("قسم التنسيق والمتابعة","Coordination & follow-up")+'</span></button>'+
+      '<button data-qcm="copy">⧉ '+bi("نسخ مع المرجع","Copy with reference")+'</button>';
+    m.style.display="block";
+    var x=Math.min(e.clientX, innerWidth-360), y=Math.min(e.clientY, innerHeight-180);
+    m.style.left=Math.max(8,x)+"px"; m.style.top=Math.max(8,y)+"px";
+  });
+  document.addEventListener("click",function(e){
+    var b=e.target.closest&&e.target.closest("[data-qcm]"); if(!b) return;
+    var kind=b.dataset.qcm; ibMenuClose();
+    if(kind==="copy"){ var srcTxt=QCM.ctx&&QCM.ctx.S?(QCM.ctx.S.ref||QCM.ctx.S.title):""; var txt="«"+QCM.quote+"»"+(srcTxt?" — "+srcTxt:"")+(isAr()?" · منصة ضمان الجودة":" · QAGC platform");
+      try{ navigator.clipboard.writeText(txt); gxToast("نُسخ مع المرجع.","Copied with the reference."); }catch(_){ } return; }
+    QCM.kind=kind; QCM.to= kind==="agenda"? ibCoord() : ibRecipient(QCM.ctx);
+    if(!QCM.to){ gxToast("تعذّر تحديد المستلم.","No recipient resolved."); return; }
+    var bx=document.getElementById("qcmBox");
+    if(!bx){ bx=document.createElement("div"); bx.id="qcmBox"; document.body.appendChild(bx); }
+    bx.innerHTML='<div class="qh">'+(kind==="agenda"?bi("اقتراح لجدول أعمال — إلى ","Agenda suggestion — to "):bi("ملاحظة — إلى ","Note — to "))+'<b>'+gxEsc(QCM.to.who[0])+'</b><br>«'+gxEsc(QCM.quote.slice(0,80))+'»</div>'+
+      '<textarea id="qcmTxt" placeholder="'+(isAr()?"نص الرسالة…":"Message…")+'"></textarea>'+
+      '<div style="display:flex;gap:8px;margin-top:8px"><button class="btn btn-p" id="qcmSend">'+bi("إرسال","Send")+'</button><button class="btn" id="qcmCancel">'+bi("إلغاء","Cancel")+'</button></div>';
+    bx.style.display="block"; bx.style.top="120px"; bx.style.insetInlineStart="50%"; bx.style.transform="translateX(50%)"; if(!isAr()) bx.style.transform="translateX(-50%)";
+    document.getElementById("qcmTxt").focus();
+  });
+  document.addEventListener("click",function(e){
+    if(e.target.closest&&e.target.closest("#qcmCancel")){ document.getElementById("qcmBox").style.display="none"; return; }
+    if(!e.target.closest||!e.target.closest("#qcmSend")) return;
+    var me=gxMe(), ctx=QCM.ctx;
+    INBOX.unshift({ id:"IB"+Date.now(), kind:QCM.kind, to:QCM.to.id, toName:QCM.to.who[0], from:me.name, fromId:me.p.id,
+      quote:QCM.quote, note:(document.getElementById("qcmTxt").value||"").trim(),
+      src:{ sid:ctx&&ctx.S?ctx.S.id:"", ref:ctx&&ctx.S?(ctx.S.ref||""):"", tk:ctx&&ctx.t?ctx.t.name:"" },
+      when:PLATFORM_TODAY, opened:false, openedAt:"", reply:null, state:"new" });
+    ibSave(); document.getElementById("qcmBox").style.display="none"; ibAttention(); ibDraw();
+    gxToast("أُرسل إلى "+QCM.to.who[0]+".","Sent to "+QCM.to.who[1]+"."); });
+  function ibMine(){ var me=gxMe(); return INBOX.filter(function(x){return x.to===me.p.id;}); }
+  function ibUnread(){ return ibMine().filter(function(x){return !x.opened;}); }
+  function ibSent(){ var me=gxMe(); return INBOX.filter(function(x){return x.fromId===me.p.id;}); }
+  function ibOpen(it){ if(!it.opened){ it.opened=true; it.openedAt=PLATFORM_TODAY; ibSave(); ibAttention(); } }
+  function ibDraw(){
+    var scr=document.getElementById("mine"); if(!scr) return; var host=document.getElementById("mineInbox");
+    if(!host){ host=document.createElement("div"); host.id="mineInbox"; }
+    var mm=document.getElementById("mineMode");   // directly under the mode toggle, visible in both modes
+    if(host.parentElement!==scr) scr.insertBefore(host, mm&&mm.parentElement===scr?mm.nextSibling:scr.firstChild);
+    var mine=ibMine(), sent=ibSent(), un=ibUnread().length;
+    if(!mine.length&&!sent.length){ host.innerHTML=""; return; }
+    var KIND={note:["ملاحظة","note"],agenda:["اقتراح جدول أعمال","agenda suggestion"]};
+    host.innerHTML='<div class="card" style="border-color:var(--brand-gold);margin-bottom:var(--sp-3)"><div class="card-h"><div class="chrow"><span class="ib gold">✉</span><div><h2>'+bi("بريد العمل","Work mail")+(un?' <span class="badge">'+un+'</span>':'')+'</h2><p>'+bi("ملاحظات واقتراحات على المحتوى — تصل من التظليل والنقر الأيمن","Highlight-and-right-click notes and suggestions on the content")+'</p></div></div></div><div class="card-b">'+
+      (mine.length? mine.map(function(it,i){ return '<div class="ibitem'+(it.opened?'':' unread')+'"><b>'+bi(KIND[it.kind][0],KIND[it.kind][1])+'</b> · '+gxEsc(it.from)+' · <span class="ibm tnum">'+gxEsc(it.when)+'</span>'+(it.src.ref?' · <span class="ibm">'+gxEsc(it.src.ref)+(it.src.tk?' — '+gxEsc(it.src.tk):'')+'</span>':'')+
+        '<div class="ibq">«'+gxEsc(it.quote)+'»</div>'+(it.note?'<div>'+gxEsc(it.note)+'</div>':'')+
+        (it.reply?'<div class="ibm">↩ '+bi("ردّك: ","your reply: ")+gxEsc(it.reply.text)+'</div>':'')+
+        '<div class="ibr">'+(it.src.sid?'<button class="btn" style="padding:3px 10px" data-ibsrc="'+it.id+'">↗ '+bi("فتح المصدر","Open source")+'</button>':'')+
+        (!it.reply?'<button class="btn" style="padding:3px 10px" data-ibreply="'+it.id+'">'+bi("رد","Reply")+'</button>':'')+
+        (!it.opened?'<button class="btn btn-p" style="padding:3px 10px" data-ibok="'+it.id+'">'+bi("عُلم","Noted")+'</button>':'')+'</div></div>'; }).join("") : '<p class="ibm">'+bi("لا وارد.","Nothing received.")+'</p>')+
+      (sent.length?'<details style="margin-top:8px"><summary style="cursor:pointer;font-size:13px;color:var(--ink-2)">'+bi("ما أرسلتُه ","Sent ")+'('+sent.length+')</summary>'+
+        sent.map(function(it){ return '<div class="ibitem"><b>'+bi(KIND[it.kind][0],KIND[it.kind][1])+'</b> · '+bi("إلى ","to ")+gxEsc(it.toName)+' · <span class="ibm">'+(it.opened?bi("فُتح ","opened ")+gxEsc(it.openedAt):bi("لم يُفتح بعد","not opened yet"))+'</span><div class="ibq">«'+gxEsc(it.quote)+'»</div>'+(it.reply?'<div class="ibm">↩ '+gxEsc(it.reply.text)+'</div>':'')+'</div>'; }).join("")+'</details>':'')+'</div></div>';
+  }
+  document.addEventListener("click",function(e){
+    if(!e.target.closest) return; var t;
+    if((t=e.target.closest("[data-ibok]"))){ var it=INBOX.filter(function(x){return x.id===t.dataset.ibok;})[0]; if(it){ ibOpen(it); ibDraw(); } return; }
+    if((t=e.target.closest("[data-ibreply]"))){ var it2=INBOX.filter(function(x){return x.id===t.dataset.ibreply;})[0]; if(it2){ var txt=prompt(isAr()?"نص الرد:":"Reply:"); if(txt){ it2.reply={text:txt,when:PLATFORM_TODAY}; it2.state="replied"; ibOpen(it2); ibSave(); ibDraw(); } } return; }
+    if((t=e.target.closest("[data-ibsrc]"))){ var it3=INBOX.filter(function(x){return x.id===t.dataset.ibsrc;})[0]; if(it3){ ibOpen(it3); var gb=document.querySelector('[data-go="gen"]'); if(gb) gb.click(); if(it3.src.sid) setTimeout(function(){ gxSelect(it3.src.sid); },40); ibDraw(); } return; }
+    if(e.target.closest("#ibStrip")){ var mb=document.querySelector('[data-go="mine"]'); if(mb) mb.click(); var om=document.querySelector('[data-minemode="objs"]'); ibDraw(); return; }
+  });
+  function ibAttention(){
+    var un=ibUnread().length;
+    var st=document.getElementById("ibStrip");
+    if(!st){ st=document.createElement("button"); st.id="ibStrip"; document.body.appendChild(st); }
+    st.style.display= un? "block":"none";
+    st.innerHTML='✉ '+bi("بريد العمل: ","Work mail: ")+un+' '+bi("غير مقروءة","unread");
+    var mb=document.querySelector('.nav button[data-go="mine"]');
+    if(mb){ var bd=mb.querySelector(".badge.ib"); if(un){ if(!bd){ bd=document.createElement("span"); bd.className="badge ib"; mb.appendChild(bd); } bd.textContent=un; } else if(bd) bd.remove(); }
+  }
+  function ibSpotlight(){
+    var un=ibUnread(); if(!un.length) return;
+    var sp=document.getElementById("ibSpot");
+    if(!sp){ sp=document.createElement("div"); sp.id="ibSpot"; document.body.appendChild(sp); }
+    sp.innerHTML='<div class="in"><h3>✉ '+bi("بريد العمل","Work mail")+'</h3><p style="margin:0 0 4px">'+bi("لديك "+un.length+" غير مقروءة:","You have "+un.length+" unread:")+'</p>'+
+      un.slice(0,3).map(function(it){ return '<div class="ibq" style="background:var(--surface-2);border-radius:6px;padding:4px 8px;margin:4px 0;font-size:12.5px">'+gxEsc(it.from)+': «'+gxEsc(it.quote.slice(0,60))+'»</div>'; }).join("")+
+      '<div class="row"><button class="btn btn-p" id="ibSpotGo">'+bi("فتح البريد","Open the mail")+'</button><button class="btn" id="ibSpotLater">'+bi("لاحقاً","Later")+'</button></div></div>';
+    sp.style.display="flex";
+    sp.onclick=function(ev){ if(ev.target.id==="ibSpotLater"||ev.target===sp){ sp.style.display="none"; }
+      if(ev.target.id==="ibSpotGo"){ sp.style.display="none"; var mb=document.querySelector('[data-go="mine"]'); if(mb) mb.click(); ibDraw(); } };
+  }
+  var _ibApply=applyRole; applyRole=function(){ _ibApply(); try{ ibAttention(); ibDraw(); }catch(err){ console.error("ib",err); } };
+  window.__ib={ list:function(){ return INBOX; }, draw:function(){ ibDraw(); }, att:function(){ ibAttention(); }, spot:function(){ ibSpotlight(); } };
+  try{ ibAttention(); ibDraw(); if(document.querySelector("#gate.done")) ibSpotlight(); }catch(err){ console.error("ib init",err); }   // a restored session signs in before this module loads
   try{ gxLoad(); var dl=document.createElement("datalist"); dl.id="gxPeople"; dl.innerHTML=STAFF.map(function(p){return '<option value="'+gxEsc(p.who[0])+'">';}).join(""); document.body.appendChild(dl); if(typeof drawPlan==="function") drawPlan(); }catch(err){ console.error("gen init", err); }   // the plan was drawn before the generator loaded — redraw so tracking tabs appear
 
 })();
