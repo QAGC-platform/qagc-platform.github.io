@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 41">
+<meta name="qagc-ver" content="beta 42">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -2009,6 +2009,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 .gx-scope .gx-bg.q3{top:66px}
 .gx-scope .gx-lh.q3{height:66px}
 #rvPop .cx{cursor:move;user-select:none}
+#rvPanel .ph{cursor:move;user-select:none}
 .gx-info{width:20px;height:20px;border-radius:99px;border:1.5px solid var(--gold-ink);color:var(--gold-ink);background:transparent;font:italic 700 12px Georgia,serif;cursor:pointer;vertical-align:middle;margin-inline-start:6px;line-height:1}
 .gx-info:hover{background:var(--brand-gold);color:var(--brand-ink);border-color:var(--brand-gold)}
 #gxHelpPanel{background:var(--surface);border:1px solid var(--brand-gold);border-radius:var(--r-lg,14px);padding:16px 20px;margin:10px 0 4px;box-shadow:var(--shadow)}
@@ -13357,7 +13358,14 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var p=document.getElementById("rvPanel");
     if(p) p.hidden=!RVON;
     if(!RVON){ rvClearPins(); rvPopClose(); }
-    else { rvRows(); rvPaint(); }
+    else { rvRows(); rvPaint(); rvPullSilent(); }
+  }
+  function rvPullSilent(){
+    var cfg=(typeof dgCalCfg==="function")?dgCalCfg():null; if(!cfg) return;
+    try{ fetch(cfg.url+"?key="+encodeURIComponent(cfg.key)+"&fn=feedback")
+      .then(function(r){return r.json();})
+      .then(function(j){ if(j&&j.ok){ RVREMOTE=j.notes||[]; rvRows(); } })
+      .catch(function(){}); }catch(_){}
   }
   function rvPopClose(){
     var p=document.getElementById("rvPop"); if(p) p.hidden=true;
@@ -13387,16 +13395,20 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   (function(){ var drag=null;
     document.addEventListener("pointerdown",function(e){
-      var h=e.target.closest&&e.target.closest("#rvPopCx"); if(!h) return;
-      var pop=document.getElementById("rvPop"); var r=pop.getBoundingClientRect();
-      drag={dx:e.clientX-r.left, dy:e.clientY-r.top}; e.preventDefault();
-      pop.style.position="fixed"; pop.style.left=r.left+"px"; pop.style.top=r.top+"px"; pop.style.insetInlineStart="auto";
+      var el=null;
+      if(e.target.closest&&e.target.closest("#rvPopCx")) el=document.getElementById("rvPop");
+      else if(e.target.closest&&e.target.closest("#rvPanel .ph")&&!e.target.closest("button")) el=document.getElementById("rvPanel");
+      if(!el) return;
+      var r=el.getBoundingClientRect();
+      drag={el:el, dx:e.clientX-r.left, dy:e.clientY-r.top}; e.preventDefault();
+      el.style.position="fixed"; el.style.left=r.left+"px"; el.style.top=r.top+"px";
+      el.style.insetInlineStart="auto"; el.style.insetInlineEnd="auto"; el.style.insetBlockEnd="auto";
     });
     document.addEventListener("pointermove",function(e){
-      if(!drag) return; var pop=document.getElementById("rvPop"); RVDRAGGED=true;
+      if(!drag) return; if(drag.el.id==="rvPop") RVDRAGGED=true;
       var vw=innerWidth||document.documentElement.clientWidth||1280, vh=innerHeight||document.documentElement.clientHeight||720;
-      pop.style.left=Math.max(4,Math.min(e.clientX-drag.dx, vw-120))+"px";
-      pop.style.top=Math.max(4,Math.min(e.clientY-drag.dy, vh-80))+"px";
+      drag.el.style.left=Math.max(4,Math.min(e.clientX-drag.dx, vw-120))+"px";
+      drag.el.style.top=Math.max(4,Math.min(e.clientY-drag.dy, vh-80))+"px";
     });
     document.addEventListener("pointerup",function(){ drag=null; });
   })();
