@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 43">
+<meta name="qagc-ver" content="beta 44">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -13939,7 +13939,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(z==="year"||z==="quarters"){ t0=Date.UTC(d.getUTCFullYear(),0,1); t1=Date.UTC(d.getUTCFullYear(),11,31); }
     else if(z==="quarter"){ var q=Math.floor(d.getUTCMonth()/3)*3; t0=Date.UTC(d.getUTCFullYear(),q,1); t1=Date.UTC(d.getUTCFullYear(),q+3,0); }
     else if(z==="month"){ t0=Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),1); t1=Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,0); }
-    else { t0=a-d.getUTCDay()*GXD; t1=t0+6*GXD; }
+    else { t0=a; t1=a+6*GXD; }   // a 7-day window from the anchor — the objective's first week is full, not a sliver
     var g=hostEl||document.getElementById("gxG"); var cw=(g&&g.clientWidth)||900; var avail=cw-430-2; if(avail<300) avail=700;
     var n=Math.round((t1-t0)/GXD)+1; return {t0:t0,t1:t1,n:n,px:avail/n,W:avail}; }
   function gxWinLabel(w){ var d=new Date(w.t0), e=new Date(w.t1), MO=isAr()?GX_MO:GX_MOE;
@@ -13990,7 +13990,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var h='<div class="gx-th z-'+GX.z+(q3?' q3':'')+'" style="width:'+W+'px">'+(q3?'<div class="qrow">'+qrow+'</div>':'');
     for(var t=t0;t<=t1;t+=GXD){ var d=new Date(t); if(d.getUTCDate()===1||t===t0){ var end=Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,1); var mw=(Math.min(end,t1+GXD)-t)/GXD*px; h+='<div class="mo'+(d.getUTCMonth()%2?' alt':'')+'" data-gxmo="'+gxIso(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),1))+'" title="'+(GX.z==="month"?(isAr()?"العودة إلى الأرباع":"Back to quarters"):GX.z==="week"?(isAr()?"العودة إلى الشهر":"Back to the month"):(isAr()?"عرض الشهر":"Open this month"))+'" style="inset-inline-start:'+((t-t0)/GXD*px)+'px;width:'+mw+'px">'+MO[d.getUTCMonth()]+((GX.z==="year"||GX.z==="quarters"||GX.z==="quarter")?'':' '+d.getUTCFullYear())+'</div>'; } }
     if(tone==="day"){ for(var t=t0;t<=t1;t+=GXD){ var d=new Date(t), wd=d.getUTCDay(); h+='<div class="un'+((wd===5||wd===6)?' we':'')+(GX.z==="month"?'" data-gxun="'+gxIso(t)+'" title="'+(isAr()?"عرض الأسبوع":"Open this week")+'"':'"')+' style="inset-inline-start:'+((t-t0)/GXD*px)+'px;width:'+px+'px">'+(GX.z==="week"?'<b>'+GX_WD[wd]+'</b>':'')+d.getUTCDate()+'</div>'; } }
-    else if(GX.z!=="quarters"){ for(var t=t0;t<=t1;t+=GXD){ var d=new Date(t); if(d.getUTCDay()===0||t===t0){ var ww=Math.min(7-(t===t0?d.getUTCDay():0),(t1-t)/GXD+1); h+='<div class="un" data-gxun="'+gxIso(t)+'" title="'+(isAr()?"عرض الأسبوع":"Open this week")+'" style="inset-inline-start:'+((t-t0)/GXD*px)+'px;width:'+(ww*px)+'px">'+d.getUTCDate()+'</div>'; } } }
+    else { for(var t=t0;t<=t1;t+=GXD){ var d=new Date(t); if(d.getUTCDay()===0||t===t0){ var ww=Math.min(7-(t===t0?d.getUTCDay():0),(t1-t)/GXD+1); h+='<div class="un" data-gxun="'+gxIso(t)+'" title="'+(isAr()?"عرض الأسبوع":"Open this week")+'" style="inset-inline-start:'+((t-t0)/GXD*px)+'px;width:'+(ww*px)+'px">'+d.getUTCDate()+'</div>'; } } }
     h+='</div>';
     var BG='<div class="gx-bg'+(q3?' q3':'')+'" style="width:'+W+'px">';
     for(var t=t0;t<=t1;t+=GXD){ var d=new Date(t); if(d.getUTCDate()===1||t===t0){ var end=Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,1); var mw=(Math.min(end,t1+GXD)-t)/GXD*px; BG+='<div class="mband'+(d.getUTCMonth()%2?' alt':'')+'" style="inset-inline-start:'+((t-t0)/GXD*px)+'px;width:'+mw+'px"></div>'; } }
@@ -14116,7 +14116,14 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function gxDrawKForm(){ var S=GX.cur; if(!S) return; if(!GX.KD) GX.KD=gxBlankK(); var k=GX.KD, C=gxCtx();
     if(!k.targetDate&&S.to) k.targetDate=S.to; if(!k.baseDate&&S.from) k.baseDate=gxIso(gxP(S.from)-GXD);
     document.getElementById("gxKObj").textContent=S.title||"—";
-    document.getElementById("gxKTitle").innerHTML= (S.status==="approved"&&!gxEditable(S)) ? bi("بطاقة معتمدة — تعديلها بطلبٍ يوافق عليه الرئيس المباشر","Approved card — editing needs the line manager's approval") : GX.K===null ? (k.auto?bi("بطاقة مسودة مقترحة — للمراجعة","Proposed draft card — review"):bi("بطاقة مؤشر جديد","New KPI card")) : bi("تعديل بطاقة المؤشر","Edit KPI card");
+    var klock=S.status==="approved"&&!gxEditable(S), kctl="";
+    if(klock){
+      if(gxOwnsPlan(S)&&S.scope!=="mine"){
+        kctl= S.editReq ? ' <span class="gx-warn" style="font-weight:400">— '+bi("بانتظار موافقة ","awaiting ")+gxEsc((gxVerifierOf(gxMe().name)||{who:["—","—"]}).who[0])+'</span>'
+                        : ' <button class="gx-ex" data-gxeditreq="1" style="margin-inline-start:8px">✎ '+bi("طلب تعديل","Request edit")+'</button>';
+      } else { var ow=gxPersonById(S.by); if(ow) kctl=' <span style="font-weight:400;color:var(--ink-3)">('+bi("صاحبها: ","owner: ")+gxEsc(ow.who[0])+')</span>'; }
+    }
+    document.getElementById("gxKTitle").innerHTML= klock ? bi("بطاقة معتمدة — تعديلها بطلبٍ من صاحبها يوافق عليه رئيسه المباشر","Approved card — its owner requests an edit, the line manager approves")+kctl : GX.K===null ? (k.auto?bi("بطاقة مسودة مقترحة — للمراجعة","Proposed draft card — review"):bi("بطاقة مؤشر جديد","New KPI card")) : bi("تعديل بطاقة المؤشر","Edit KPI card");
     var ph=[["",isAr()?"— الهدف كله":"— whole objective"]].concat(S.phases.filter(function(x){return x.name;}).map(function(x){return [x.name,x.name];}));
     document.getElementById("gxf1").innerHTML= gxF(bi("عنوان المؤشر","Title"),"name",k,{w:6,ph:C.name})+gxF(bi("البُعد","Dimension"),"dim",k,{w:2,sel:GX_DIMS})+gxF(bi("النوع","Type"),"kind",k,{w:2,sel:Object.keys(GX_KIND).map(function(x){return [x,isAr()?GX_KIND[x][0]:GX_KIND[x][1]];})})+gxF(bi("مرتبط بـ","Linked to"),"phase",k,{w:2,sel:ph})+gxF(bi("الوصف","Description"),"desc",k,{w:6,ph:C.desc})+gxF(bi("المسوّغ","Rationale"),"rationale",k,{w:6,ph:C.rationale});
     document.getElementById("gxf2").innerHTML= gxF(bi("البسط","Numerator"),"num",k,{w:3,ph:C.num})+gxF(bi("المقام","Denominator"),"den",k,{w:3,ph:C.den})+gxF(bi("الاستثناءات","Exclusions"),"excl",k,{w:3,ph:C.excl})+gxF(bi("عناصر البيانات","Data elements"),"elements",k,{w:3,ph:C.elements})+gxF(bi("نوع القياس","Measure type"),"type",k,{w:2,sel:GX_TYPES.map(function(t){return t[0];})})+gxF(bi("الوحدة","Unit"),"unit",k,{w:1,ph:"%"})+gxF(bi("الرقم الحالي","Current"),"base",k,{w:1,type:"number",step:"any",ph:"45"})+gxF(bi("بتاريخ","As of"),"baseDate",k,{w:2,type:"date"});
@@ -14266,8 +14273,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(e.target.closest("[data-gxobjtoggle]")){ var isOpen=!!document.querySelector("#gxG .gx-lr.obj.open"); S.objOpen=!isOpen; gxDraw(); return; }
     var pt=e.target.closest("[data-gxphtoggle]"); if(pt){ var phx=S.phases[+pt.dataset.gxphtoggle]; if(phx){ phx.open=!phx.open; gxDraw(); } return; }
     if(e.target.closest("[data-gxeditreq]")){ var vr=gxVerifierOf(gxMe().name);
-      if(!vr){ S.editGrant=true; S.editGrantBy=isAr()?"ذاتي":"self"; gxSave(); gxDraw(); gxToast("لا رئيس أعلى في السلسلة — فُتح التعديل.","Top of the chain — unlocked."); }
-      else { S.editReq={by:gxMe().name, at:PLATFORM_TODAY}; gxSave(); gxDraw(); gxToast("أُرسل طلب التعديل إلى "+vr.who[0]+".","Edit request sent to "+vr.who[1]+"."); } return; }
+      if(!vr){ S.editGrant=true; S.editGrantBy=isAr()?"ذاتي":"self"; gxSave(); gxDraw(); if(GX.tab==="kpi") gxDrawK(); gxToast("لا رئيس أعلى في السلسلة — فُتح التعديل.","Top of the chain — unlocked."); }
+      else { S.editReq={by:gxMe().name, at:PLATFORM_TODAY}; gxSave(); gxDraw(); if(GX.tab==="kpi") gxDrawK(); gxToast("أُرسل طلب التعديل إلى "+vr.who[0]+".","Edit request sent to "+vr.who[1]+"."); } return; }
     if(e.target.closest("[data-gxeditcancel]")){ S.editReq=null; gxSave(); gxDraw(); return; }
     if(e.target.closest("#gxHelp")){ var hp=document.getElementById("gxHelpPanel"); hp.hidden=!hp.hidden; return; }
     var mo=e.target.closest("[data-gxmo]"); if(mo){ if(GX.z==="month"||GX.z==="week"){ GX.z=GX.z==="week"?"month":"quarters"; } else { GX.z="month"; GX.V=mo.dataset.gxmo; } gxDraw(); return; }
