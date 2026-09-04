@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 42">
+<meta name="qagc-ver" content="beta 43">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -4289,10 +4289,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       </div>
     </section>
 
-    <p class="foot">
-      <span lang="ar">نموذج أولي للتصميم. جميع البيانات المعروضة توضيحية وليست بيانات حقيقية، وأسماء المسؤولين مذكورة بالمسمى الوظيفي فقط. الغرض منه عرض بنية الخطة المقترحة: الخطة المرجعية المستخرجة من وثيقة الوزارة، ومطابقة كل هدف عليها، والإسناد إلى موظف، والميزانية الاختيارية على مستوى الخطوة.</span>
-      <span lang="en">Design prototype. All data shown is illustrative, not real, and owners are named by role only. Its purpose is to show the proposed plan structure: a master plan derived from the Ministry document, every objective assessed against it, assignment to a person, and an optional budget at step level.</span>
-    </p>
+    
 
     <section class="screen gx-scope" id="gen">
       <div class="head">
@@ -4330,7 +4327,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
               <div class="gx-nav">
                 <button id="gxPrev" title="›">›</button><button id="gxNext" title="‹">‹</button>
                 <button id="gxHome"><span lang="ar">بداية الهدف</span><span lang="en">Start</span></button>
-                <span class="gx-zoom" id="gxZoom"><button data-gz="year" class="on"><span lang="ar">سنة</span><span lang="en">Year</span></button><button data-gz="quarter"><span lang="ar">ربع</span><span lang="en">Quarter</span></button><button data-gz="month"><span lang="ar">شهر</span><span lang="en">Month</span></button><button data-gz="week"><span lang="ar">أسبوع</span><span lang="en">Week</span></button></span>
+                <span class="gx-zoom" id="gxZoom"><button data-gz="quarter" class="on"><span lang="ar">ربع</span><span lang="en">Quarter</span></button><button data-gz="month"><span lang="ar">شهر</span><span lang="en">Month</span></button><button data-gz="week"><span lang="ar">أسبوع</span><span lang="en">Week</span></button></span>
               </div>
             </div>
           </div>
@@ -13991,7 +13988,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     else if(GX.z==="quarter"){ qrow='<div class="qb on" data-gxq="back" style="inset-inline-start:0;width:'+W+'px" title="'+(isAr()?"النقر للعودة إلى السنة بالأرباع":"Click to return to the year by quarters")+'">'+QN[Math.floor(new Date(t0).getUTCMonth()/3)]+' '+new Date(t0).getUTCFullYear()+' — ↩ '+(isAr()?"السنة":"year")+'</div>'; }
     var q3=(GX.z==="quarters"||GX.z==="quarter");
     var h='<div class="gx-th z-'+GX.z+(q3?' q3':'')+'" style="width:'+W+'px">'+(q3?'<div class="qrow">'+qrow+'</div>':'');
-    for(var t=t0;t<=t1;t+=GXD){ var d=new Date(t); if(d.getUTCDate()===1||t===t0){ var end=Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,1); var mw=(Math.min(end,t1+GXD)-t)/GXD*px; h+='<div class="mo'+(d.getUTCMonth()%2?' alt':'')+'" data-gxmo="'+gxIso(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),1))+'" title="'+(isAr()?"عرض الشهر":"Open this month")+'" style="inset-inline-start:'+((t-t0)/GXD*px)+'px;width:'+mw+'px">'+MO[d.getUTCMonth()]+((GX.z==="year"||GX.z==="quarters"||GX.z==="quarter")?'':' '+d.getUTCFullYear())+'</div>'; } }
+    for(var t=t0;t<=t1;t+=GXD){ var d=new Date(t); if(d.getUTCDate()===1||t===t0){ var end=Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,1); var mw=(Math.min(end,t1+GXD)-t)/GXD*px; h+='<div class="mo'+(d.getUTCMonth()%2?' alt':'')+'" data-gxmo="'+gxIso(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),1))+'" title="'+(GX.z==="month"?(isAr()?"العودة إلى الأرباع":"Back to quarters"):GX.z==="week"?(isAr()?"العودة إلى الشهر":"Back to the month"):(isAr()?"عرض الشهر":"Open this month"))+'" style="inset-inline-start:'+((t-t0)/GXD*px)+'px;width:'+mw+'px">'+MO[d.getUTCMonth()]+((GX.z==="year"||GX.z==="quarters"||GX.z==="quarter")?'':' '+d.getUTCFullYear())+'</div>'; } }
     if(tone==="day"){ for(var t=t0;t<=t1;t+=GXD){ var d=new Date(t), wd=d.getUTCDay(); h+='<div class="un'+((wd===5||wd===6)?' we':'')+(GX.z==="month"?'" data-gxun="'+gxIso(t)+'" title="'+(isAr()?"عرض الأسبوع":"Open this week")+'"':'"')+' style="inset-inline-start:'+((t-t0)/GXD*px)+'px;width:'+px+'px">'+(GX.z==="week"?'<b>'+GX_WD[wd]+'</b>':'')+d.getUTCDate()+'</div>'; } }
     else if(GX.z!=="quarters"){ for(var t=t0;t<=t1;t+=GXD){ var d=new Date(t); if(d.getUTCDay()===0||t===t0){ var ww=Math.min(7-(t===t0?d.getUTCDay():0),(t1-t)/GXD+1); h+='<div class="un" data-gxun="'+gxIso(t)+'" title="'+(isAr()?"عرض الأسبوع":"Open this week")+'" style="inset-inline-start:'+((t-t0)/GXD*px)+'px;width:'+(ww*px)+'px">'+d.getUTCDate()+'</div>'; } } }
     h+='</div>';
@@ -14273,7 +14270,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       else { S.editReq={by:gxMe().name, at:PLATFORM_TODAY}; gxSave(); gxDraw(); gxToast("أُرسل طلب التعديل إلى "+vr.who[0]+".","Edit request sent to "+vr.who[1]+"."); } return; }
     if(e.target.closest("[data-gxeditcancel]")){ S.editReq=null; gxSave(); gxDraw(); return; }
     if(e.target.closest("#gxHelp")){ var hp=document.getElementById("gxHelpPanel"); hp.hidden=!hp.hidden; return; }
-    var mo=e.target.closest("[data-gxmo]"); if(mo){ GX.z="month"; GX.V=mo.dataset.gxmo; gxDraw(); return; }
+    var mo=e.target.closest("[data-gxmo]"); if(mo){ if(GX.z==="month"||GX.z==="week"){ GX.z=GX.z==="week"?"month":"quarters"; } else { GX.z="month"; GX.V=mo.dataset.gxmo; } gxDraw(); return; }
     var un=e.target.closest("[data-gxun]"); if(un){ GX.z="week"; GX.V=un.dataset.gxun; gxDraw(); return; }
     if(e.target.closest("[data-gxeditlock]")){ S.editGrant=false; S.editGrantBy=""; gxSave(); gxDraw(); gxToast("أُقفل التعديل.","Relocked."); return; }
     if(e.target.closest("[data-gxaddt],[data-gxaddph],#gx-nf-name")&&S.objOpen!==false&&document.querySelector("#gxG .gx-lr.obj.open")){ S.objOpen=false; }
