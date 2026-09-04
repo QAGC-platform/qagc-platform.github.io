@@ -124,6 +124,14 @@ function fsheet_() {
   if (!sh) { sh = ss.insertSheet('feedback'); sh.appendRow(FCOLS); }
   return sh;
 }
+const ICOLS = ['id', 'when', 'kind', 'to', 'toName', 'from', 'fromId', 'quote', 'note',
+  'srcSid', 'srcRef', 'srcTk', 'opened', 'openedAt', 'reply', 'replyWhen', 'state'];
+function isheet_() {
+  const ss = ss_();
+  let sh = ss.getSheetByName('inbox');
+  if (!sh) { sh = ss.insertSheet('inbox'); sh.appendRow(ICOLS); }
+  return sh;
+}
 function sheet_(name) {
   const ss = ss_();
   let sh = ss.getSheetByName(name);
@@ -362,6 +370,50 @@ function doPost(e) {
         nt.to === 'dg' ? 'dg' : 'dev']);
     });
     return json_({ ok: true, ids: ids });
+  }
+  // ── work mail: the daily lane — items routed to the person responsible ──
+  if (fn === 'inboxAdd') {
+    const it = body.item || {};
+    if (!it.to || !it.quote) return json_({ ok: false, error: 'to and quote are required' });
+    const id = String(it.id || ('IB' + Utilities.getUuid().slice(0, 8)));
+    isheet_().appendRow([id, String(it.when || new Date().toISOString()).slice(0, 16),
+      it.kind === 'agenda' ? 'agenda' : 'note', String(it.to).slice(0, 12), String(it.toName || '').slice(0, 80),
+      String(it.from || '').slice(0, 80), String(it.fromId || '').slice(0, 12),
+      String(it.quote || '').slice(0, 300), String(it.note || '').slice(0, 1000),
+      String(it.srcSid || '').slice(0, 24), String(it.srcRef || '').slice(0, 24), String(it.srcTk || '').slice(0, 120),
+      0, '', '', '', 'new']);
+    // optional email nudge: set QAGC_INBOX_MAIL in Script Properties to a mailbox the office watches
+    try { const mailTo = PROPS.getProperty('QAGC_INBOX_MAIL');
+      if (mailTo) MailApp.sendEmail(mailTo, 'بريد عمل جديد — ' + String(it.toName || ''),
+        (it.kind === 'agenda' ? 'اقتراح لجدول أعمال' : 'ملاحظة') + ' إلى ' + String(it.toName || '') +
+        ' من ' + String(it.from || '') + '\n«' + String(it.quote || '') + '»\n' + String(it.note || '') +
+        '\nافتح المنصة: https://qagc-platform.github.io/app/');
+    } catch (err) {}
+    return json_({ ok: true, id: id });
+  }
+  if (fn === 'inboxList') {
+    const vals = isheet_().getDataRange().getValues();
+    const head = vals[0]; const items = [];
+    for (let r = 1; r < vals.length; r++) {
+      const o = {}; head.forEach((h, c) => o[h] = vals[r][c]); items.push(o);
+    }
+    return json_({ ok: true, items: items });
+  }
+  if (fn === 'inboxUpdate') {
+    const id = String(body.id || '').trim();
+    if (!id) return json_({ ok: false, error: 'id is required' });
+    const sh = isheet_(); const vals = sh.getDataRange().getValues(); const head = vals[0];
+    for (let r = 1; r < vals.length; r++) {
+      if (String(vals[r][head.indexOf('id')]) === id) {
+        const set = (col, v) => sh.getRange(r + 1, head.indexOf(col) + 1).setValue(v);
+        if (body.opened !== undefined) set('opened', body.opened ? 1 : 0);
+        if (body.openedAt) set('openedAt', String(body.openedAt).slice(0, 16));
+        if (body.reply) { set('reply', String(body.reply).slice(0, 1000)); set('replyWhen', String(body.replyWhen || '').slice(0, 16)); }
+        if (body.state) set('state', String(body.state).slice(0, 16));
+        return json_({ ok: true, id: id });
+      }
+    }
+    return json_({ ok: false, error: 'not found' });
   }
   if (fn === 'resolveFeedback') {
     const id = String(body.id || '').trim();

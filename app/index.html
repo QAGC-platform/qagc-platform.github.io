@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 36">
+<meta name="qagc-ver" content="beta 37">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -13953,9 +13953,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     S.phases.forEach(function(ph){ ph.tasks.forEach(function(t){ total+=+t.budget||0; }); });
     var oOpen=!!S.title && !ro && (S.objOpen===true || (S.objOpen!==false && !S.phases.some(function(ph){return ph.name;})));
     var scopeLbl=GX_SCOPE[S.scope]||GX_SCOPE.centre;
-    L+='<div class="gx-lr obj'+(oOpen?' open':'')+'"><span class="name">'+(S.title&&!ro?'<span class="gx-car" data-gxobjtoggle="1">▶</span>':'')+
+    var objOwner=gxPersonById(S.by);
+    var objTip=S.title? (isAr()?scopeLbl[0]:scopeLbl[1])+(S.scope==="mine"?" — "+gxMe().name:S.unit?" — "+S.unit:"")+" · "+gxYear()+(objOwner?" · "+(isAr()?"المسؤول: ":"owner: ")+objOwner.who[0]:"")+(total?" · "+(isAr()?"ميزانية مقترحة ":"proposed budget ")+gxMoney(total):"") : "";
+    L+='<div class="gx-lr obj'+(oOpen?' open':'')+'"'+(objTip?' title="'+gxEsc(objTip)+'"':'')+'><span class="name">'+(S.title&&!ro?'<span class="gx-car" data-gxobjtoggle="1">▶</span>':'')+
       (ro?'<span style="font-weight:700">'+gxEsc(S.title)+'</span>':'<input class="gx-title" id="gx-title" value="'+gxEsc(S.title)+'" placeholder="'+(isAr()?"الهدف هنا — وبه يُفتح الباقي":"The objective — the rest unlocks from it")+'">')+
-      (S.title&&!oOpen?'<span class="gx-scope">'+bi(scopeLbl[0],scopeLbl[1])+(S.scope==="mine"?' — '+gxEsc(gxMe().name):S.unit?' — '+gxEsc(S.unit):'')+' · '+gxYear()+'</span><span class="gx-sum">'+(total?bi("ميزانية مقترحة ","Proposed budget ")+gxMoney(total):"")+(ro?' · <span class="gx-prog"><i style="--rest:'+(100-gxProgress(S))+'%"></i>'+gxProgress(S)+'%</span>':'')+'</span>':'')+'</span>'+
+      (S.title&&!oOpen&&ro?'<span class="gx-sum"><span class="gx-prog"><i style="--rest:'+(100-gxProgress(S))+'%"></i>'+gxProgress(S)+'%</span></span>':'')+'</span>'+
       (oOpen?'<div class="gx-det"><div class="f"><label>'+bi("لمن الهدف؟","For whom?")+'</label><select id="gx-scope">'+gxScopes().map(function(k){return '<option value="'+k+'"'+(S.scope===k?" selected":"")+'>'+(isAr()?GX_SCOPE[k][0]:GX_SCOPE[k][1])+'</option>';}).join("")+'</select></div>'+
         (gxUnits(S.scope).length?'<div class="f w"><label>'+(S.scope==="department"?bi("القسم","Department"):bi("الدائرة","Directorate"))+'</label><select id="gx-unit">'+gxUnits(S.scope).map(function(u){return '<option'+(S.unit===u?" selected":"")+'>'+gxEsc(u)+'</option>';}).join("")+'</select></div>':'')+
         '<div class="f"><label>'+bi("يبدأ","Starts")+'</label><input type="date" id="gx-from" value="'+S.from+'"></div><div class="f"><label>'+bi("ينتهي","Ends")+'</label><input type="date" id="gx-to" value="'+S.to+'"></div>'+
@@ -13977,7 +13979,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         ph.tasks.forEach(function(t,ti){
           var ok=gxWithin(t.from,t.to,S.from,S.to)&&gxWithin(t.from,t.to,ph.from,ph.to); if(!ok) oob++; var open=!!t.open, id=pi+":"+ti;
           var sst=gxStepState(t); var stBtn = ro ? '<span class="gx-st '+sst+'">'+gxStateLabel(sst)+(t.done?' '+t.done:'')+'</span>' : '';
-          L+='<div class="gx-lr tk'+(open?' open':'')+'" data-gxtk="'+id+'"><span class="name"><span class="gx-car">▶</span><span class="t">'+gxEsc(t.name)+'</span>'+stBtn+(!open&&t.owner?'<span class="meta">· '+gxEsc(t.owner)+(t.budget?' · '+gxMoney(t.budget):'')+'</span>':'')+'</span>'+
+          var wp=t.owner?gxPersonByName(t.owner):null;
+          var whoTip=t.owner? (isAr()?"المسؤول: ":"Owner: ")+t.owner+(wp?" — "+wp.dep[0]+" · "+wp.dir[0]:"")+(t.budget?" · "+gxMoney(t.budget):"") : "";
+          L+='<div class="gx-lr tk'+(open?' open':'')+'" data-gxtk="'+id+'"'+(whoTip?' title="'+gxEsc(whoTip)+'"':'')+'><span class="name"><span class="gx-car">▶</span><span class="t">'+gxEsc(t.name)+'</span>'+stBtn+'</span>'+
             (open?'<div class="gx-det'+(ro?' gx-ro':'')+'"><div class="f w"><label>'+bi("الخطوة","Step")+'</label><input data-gxtk="'+id+'" data-f="name" value="'+gxEsc(t.name)+'"'+(ro?' readonly':'')+'></div>'+gxOwnerField('data-gxtk="'+id+'" data-f="owner"'+(ro?' disabled':''),t.owner,S)+'<div class="f"><label>'+bi("من","From")+'</label><input type="date" data-gxtk="'+id+'" data-f="from" value="'+t.from+'"'+(ro?' readonly':'')+'></div><div class="f"><label>'+bi("إلى","To")+'</label><input type="date" data-gxtk="'+id+'" data-f="to" value="'+t.to+'"'+(ro?' readonly':'')+'></div><div class="f"><label>'+bi("الميزانية (ر.ع.)","Budget (OMR)")+'</label><input type="number" min="0" data-gxtk="'+id+'" data-f="budget" value="'+(t.budget||"")+'"'+(ro?' readonly':'')+'></div><div class="f w"><label>'+bi("ملاحظة","Note")+'</label><input data-gxtk="'+id+'" data-f="note" value="'+gxEsc(t.note)+'"></div>'+(ro?'':'<button class="gx-del" style="opacity:1;color:var(--critical-ink)" data-gxdelt="'+id+'">'+bi("حذف الخطوة","Delete step")+'</button>')+'</div>':'')+'</div>';
           T+=track("tk"+(open?' open':''), bar(sst==="done"?"done":sst==="fed"?"fed":sst==="late"?"late":"",t.from,t.to,t.name,!ok), 'data-gxrow="'+id+'"');
         });
@@ -14438,8 +14442,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(!QCM.to){ gxToast("تعذّر تحديد المستلم.","No recipient resolved."); return; }
     var bx=document.getElementById("qcmBox");
     if(!bx){ bx=document.createElement("div"); bx.id="qcmBox"; document.body.appendChild(bx); }
-    bx.innerHTML='<div class="qh">'+(kind==="agenda"?bi("اقتراح لجدول أعمال — إلى ","Agenda suggestion — to "):bi("ملاحظة — إلى ","Note — to "))+'<b>'+gxEsc(QCM.to.who[0])+'</b><br>«'+gxEsc(QCM.quote.slice(0,80))+'»</div>'+
-      '<textarea id="qcmTxt" placeholder="'+(isAr()?"نص الرسالة…":"Message…")+'"></textarea>'+
+    bx.innerHTML='<div class="qh">'+(kind==="agenda"?bi("اقتراح لجدول أعمال","Agenda suggestion"):bi("ملاحظة","Note"))+'<br>«'+gxEsc(QCM.quote.slice(0,80))+'»</div>'+
+      '<div class="qh" style="margin-top:6px">'+bi("الوجهة:","Destination:")+'</div>'+
+      '<select id="qcmTo" style="width:100%;border:1px solid var(--rule);border-radius:8px;padding:6px;font:inherit;font-size:13px;margin-bottom:6px">'+STAFF.map(function(pp){ return '<option value="'+pp.id+'"'+(pp.id===QCM.to.id?" selected":"")+'>'+gxEsc(pp.who[0])+' — '+gxEsc((pp.desig&&pp.desig[0])||pp.dep[0]||"")+'</option>'; }).join("")+'</select>'+
+      '<textarea id="qcmTxt" placeholder="'+(isAr()?"تعليق يُرفق مع الاقتباس…":"Comment sent with the quote…")+'"></textarea>'+
       '<div style="display:flex;gap:8px;margin-top:8px"><button class="btn btn-p" id="qcmSend">'+bi("إرسال","Send")+'</button><button class="btn" id="qcmCancel">'+bi("إلغاء","Cancel")+'</button></div>';
     bx.style.display="block"; bx.style.top="120px"; bx.style.insetInlineStart="50%"; bx.style.transform="translateX(50%)"; if(!isAr()) bx.style.transform="translateX(-50%)";
     document.getElementById("qcmTxt").focus();
@@ -14448,16 +14454,30 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(e.target.closest&&e.target.closest("#qcmCancel")){ document.getElementById("qcmBox").style.display="none"; return; }
     if(!e.target.closest||!e.target.closest("#qcmSend")) return;
     var me=gxMe(), ctx=QCM.ctx;
-    INBOX.unshift({ id:"IB"+Date.now(), kind:QCM.kind, to:QCM.to.id, toName:QCM.to.who[0], from:me.name, fromId:me.p.id,
+    var toSel=document.getElementById("qcmTo"); var toP=(toSel&&gxPersonById(toSel.value))||QCM.to;
+    INBOX.unshift({ id:"IB"+Date.now(), kind:QCM.kind, to:toP.id, toName:toP.who[0], from:me.name, fromId:me.p.id,
       quote:QCM.quote, note:(document.getElementById("qcmTxt").value||"").trim(),
       src:{ sid:ctx&&ctx.S?ctx.S.id:"", ref:ctx&&ctx.S?(ctx.S.ref||""):"", tk:ctx&&ctx.t?ctx.t.name:"" },
       when:PLATFORM_TODAY, opened:false, openedAt:"", reply:null, state:"new" });
-    ibSave(); document.getElementById("qcmBox").style.display="none"; ibAttention(); ibDraw();
-    gxToast("أُرسل إلى "+QCM.to.who[0]+".","Sent to "+QCM.to.who[1]+"."); });
+    ibSave(); ibPush(INBOX[0]); document.getElementById("qcmBox").style.display="none"; ibAttention(); ibDraw();
+    gxToast("أُرسل إلى "+toP.who[0]+".","Sent to "+toP.who[1]+"."); });
   function ibMine(){ var me=gxMe(); return INBOX.filter(function(x){return x.to===me.p.id;}); }
   function ibUnread(){ return ibMine().filter(function(x){return !x.opened;}); }
   function ibSent(){ var me=gxMe(); return INBOX.filter(function(x){return x.fromId===me.p.id;}); }
-  function ibOpen(it){ if(!it.opened){ it.opened=true; it.openedAt=PLATFORM_TODAY; ibSave(); ibAttention(); } }
+  function ibOpen(it){ if(!it.opened){ it.opened=true; it.openedAt=PLATFORM_TODAY; ibSave(); ibAttention(); ibPushUpd(it); } }
+  function ibCfg(){ return (typeof dgCalCfg==="function")?dgCalCfg():null; }
+  function ibPush(it){ var cfg=ibCfg(); if(!cfg||!it) return;
+    try{ fetch(cfg.url+"?key="+encodeURIComponent(cfg.key),{method:"POST",body:JSON.stringify({fn:"inboxAdd",item:{id:it.id,when:it.when,kind:it.kind,to:it.to,toName:it.toName,from:it.from,fromId:it.fromId,quote:it.quote,note:it.note,srcSid:it.src.sid,srcRef:it.src.ref,srcTk:it.src.tk}})}).catch(function(){}); }catch(_){} }
+  function ibPushUpd(it){ var cfg=ibCfg(); if(!cfg||!it) return;
+    try{ fetch(cfg.url+"?key="+encodeURIComponent(cfg.key),{method:"POST",body:JSON.stringify({fn:"inboxUpdate",id:it.id,opened:it.opened?1:0,openedAt:it.openedAt||"",reply:it.reply?it.reply.text:"",replyWhen:it.reply?it.reply.when:"",state:it.state||""})}).catch(function(){}); }catch(_){} }
+  var IB_PULLED=0;
+  function ibPull(force){ var cfg=ibCfg(); if(!cfg) return; var now=Date.now(); if(!force&&now-IB_PULLED<60000) return; IB_PULLED=now;
+    try{ fetch(cfg.url+"?key="+encodeURIComponent(cfg.key),{method:"POST",body:JSON.stringify({fn:"inboxList"})}).then(function(r){return r.json();}).then(function(j){
+      if(!j.ok||!j.items) return; var changed=false;
+      j.items.forEach(function(ri){ var loc=INBOX.filter(function(x){return x.id===ri.id;})[0]; var rOpened=(ri.opened===true||+ri.opened===1||ri.opened==="TRUE");
+        if(!loc){ INBOX.push({id:ri.id,kind:ri.kind,to:ri.to,toName:ri.toName,from:ri.from,fromId:ri.fromId,quote:ri.quote,note:ri.note,src:{sid:ri.srcSid||"",ref:ri.srcRef||"",tk:ri.srcTk||""},when:ri.when,opened:rOpened,openedAt:ri.openedAt||"",reply:ri.reply?{text:ri.reply,when:ri.replyWhen||""}:null,state:ri.state||"new"}); changed=true; }
+        else { if(rOpened&&!loc.opened){ loc.opened=true; loc.openedAt=ri.openedAt||loc.openedAt; changed=true; } if(ri.reply&&!loc.reply){ loc.reply={text:ri.reply,when:ri.replyWhen||""}; loc.state=ri.state||"replied"; changed=true; } } });
+      if(changed){ ibSave(); ibAttention(); ibDraw(); } }).catch(function(){}); }catch(_){} }
   function ibDraw(){
     var scr=document.getElementById("mine"); if(!scr) return; var host=document.getElementById("mineInbox");
     if(!host){ host=document.createElement("div"); host.id="mineInbox"; }
@@ -14479,7 +14499,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   document.addEventListener("click",function(e){
     if(!e.target.closest) return; var t;
     if((t=e.target.closest("[data-ibok]"))){ var it=INBOX.filter(function(x){return x.id===t.dataset.ibok;})[0]; if(it){ ibOpen(it); ibDraw(); } return; }
-    if((t=e.target.closest("[data-ibreply]"))){ var it2=INBOX.filter(function(x){return x.id===t.dataset.ibreply;})[0]; if(it2){ var txt=prompt(isAr()?"نص الرد:":"Reply:"); if(txt){ it2.reply={text:txt,when:PLATFORM_TODAY}; it2.state="replied"; ibOpen(it2); ibSave(); ibDraw(); } } return; }
+    if((t=e.target.closest("[data-ibreply]"))){ var it2=INBOX.filter(function(x){return x.id===t.dataset.ibreply;})[0]; if(it2){ var txt=prompt(isAr()?"نص الرد:":"Reply:"); if(txt){ it2.reply={text:txt,when:PLATFORM_TODAY}; it2.state="replied"; ibOpen(it2); ibSave(); ibPushUpd(it2); ibDraw(); } } return; }
     if((t=e.target.closest("[data-ibsrc]"))){ var it3=INBOX.filter(function(x){return x.id===t.dataset.ibsrc;})[0]; if(it3){ ibOpen(it3); var gb=document.querySelector('[data-go="gen"]'); if(gb) gb.click(); if(it3.src.sid) setTimeout(function(){ gxSelect(it3.src.sid); },40); ibDraw(); } return; }
     if(e.target.closest("#ibStrip")){ var mb=document.querySelector('[data-go="mine"]'); if(mb) mb.click(); var om=document.querySelector('[data-minemode="objs"]'); ibDraw(); return; }
   });
@@ -14503,9 +14523,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     sp.onclick=function(ev){ if(ev.target.id==="ibSpotLater"||ev.target===sp){ sp.style.display="none"; }
       if(ev.target.id==="ibSpotGo"){ sp.style.display="none"; var mb=document.querySelector('[data-go="mine"]'); if(mb) mb.click(); ibDraw(); } };
   }
-  var _ibApply=applyRole; applyRole=function(){ _ibApply(); try{ ibAttention(); ibDraw(); }catch(err){ console.error("ib",err); } };
+  var _ibApply=applyRole; applyRole=function(){ _ibApply(); try{ ibAttention(); ibDraw(); ibPull(); }catch(err){ console.error("ib",err); } };
   window.__ib={ list:function(){ return INBOX; }, draw:function(){ ibDraw(); }, att:function(){ ibAttention(); }, spot:function(){ ibSpotlight(); } };
-  try{ ibAttention(); ibDraw(); if(document.querySelector("#gate.done")) ibSpotlight(); }catch(err){ console.error("ib init",err); }   // a restored session signs in before this module loads
+  try{ ibAttention(); ibDraw(); ibPull(true); if(document.querySelector("#gate.done")) ibSpotlight(); }catch(err){ console.error("ib init",err); }   // a restored session signs in before this module loads
   try{ gxLoad(); var dl=document.createElement("datalist"); dl.id="gxPeople"; dl.innerHTML=STAFF.map(function(p){return '<option value="'+gxEsc(p.who[0])+'">';}).join(""); document.body.appendChild(dl); if(typeof drawPlan==="function") drawPlan(); }catch(err){ console.error("gen init", err); }   // the plan was drawn before the generator loaded — redraw so tracking tabs appear
 
 })();
