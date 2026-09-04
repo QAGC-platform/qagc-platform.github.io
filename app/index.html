@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 40">
+<meta name="qagc-ver" content="beta 41">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -2008,6 +2008,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 .gx-scope .gx-th .qb.on{background:var(--brand-ink);color:#fff}
 .gx-scope .gx-bg.q3{top:66px}
 .gx-scope .gx-lh.q3{height:66px}
+#rvPop .cx{cursor:move;user-select:none}
 .gx-info{width:20px;height:20px;border-radius:99px;border:1.5px solid var(--gold-ink);color:var(--gold-ink);background:transparent;font:italic 700 12px Georgia,serif;cursor:pointer;vertical-align:middle;margin-inline-start:6px;line-height:1}
 .gx-info:hover{background:var(--brand-gold);color:var(--brand-ink);border-color:var(--brand-gold)}
 #gxHelpPanel{background:var(--surface);border:1px solid var(--brand-gold);border-radius:var(--r-lg,14px);padding:16px 20px;margin:10px 0 4px;box-shadow:var(--shadow)}
@@ -13274,8 +13275,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   function rvRows(){
     var host=document.getElementById("rvList"); if(!host) return;
-    document.getElementById("rvCount").textContent=String(RVNOTES.length);
-    host.innerHTML = RVNOTES.length ? RVNOTES.map(function(nt,i){
+    var doneIds={}; RVREMOTE.forEach(function(n){ if(n.state==="done"||n.state==="kept") doneIds[n.id]=1; });
+    var loc=RVNOTES.filter(function(nt){ return !(nt.fid&&doneIds[nt.fid]); });
+    document.getElementById("rvCount").textContent=String(loc.length);
+    host.innerHTML = loc.length ? loc.map(function(nt,i){
       return '<div class="rvitem"><span class="num">'+(i+1)+'</span><span class="bd">'+
         '<span class="wh">'+nt.a.screenName+(nt.a.where?' · '+nt.a.where:'')+
           ' <span class="rvchip'+(nt.to==="dg"?' dgc':'')+'">'+(nt.to==="dg"?bi("إلى المديرة","to the DG"):bi("إلى Claude","to Claude"))+'</span></span>'+
@@ -13289,10 +13292,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       bi("لا ملاحظات بعد. تشغيل وضع المراجعة، ثم النقر على أي عنصر على الشاشة.",
          "No notes yet. Turn on review mode, then click anything on screen.")+'</div>';
     if(RVREMOTE.length){
+      var rOpen=RVREMOTE.filter(function(n){ return !(n.state==="done"||n.state==="kept"); });
+      var rDone=RVREMOTE.length-rOpen.length;
       host.innerHTML += '<div class="rvsec">'+bi("لوحة الجسر المشتركة","The shared board")+'</div>'+
-        RVREMOTE.map(function(n){
-          var done = n.state==="done"||n.state==="kept";
-          return '<div class="rvitem'+(done?' rvdone':'')+'"><span class="num">'+(done?'✓':'•')+'</span><span class="bd">'+
+        rOpen.map(function(n){
+          var done=false;
+          return '<div class="rvitem"><span class="num">•</span><span class="bd">'+
             '<span class="wh">'+String(n.screen||"").replace(/</g,"&lt;")+(n.where?' · '+String(n.where).replace(/</g,"&lt;"):'')+
               (n.by?' — '+String(n.by).replace(/</g,"&lt;"):'')+
               ' <span class="rvchip'+(n.to==="dg"?' dgc':'')+'">'+(n.to==="dg"?bi("إلى المديرة","to the DG"):bi("إلى Claude","to Claude"))+'</span></span>'+
@@ -13300,7 +13305,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             (n.reply?'<span class="tx rvreply">↩ '+String(n.reply).replace(/</g,"&lt;")+'</span>':'')+
             (!done?'<span class="ac"><button class="mini" data-rvresolve="'+n.id+'">'+bi("عُولجت","Resolve")+'</button></span>':'')+
           '</span></div>';
-        }).join("");
+        }).join("") + (rDone?'<div class="rvempty" style="padding:6px 10px">'+rDone+' '+bi("ملاحظة منجزة — أُخفيت من القائمة.","resolved note(s) hidden from the list.")+'</div>':'') +
+        (rOpen.length?'':'<div class="rvempty" style="padding:6px 10px">'+bi("لا ملاحظات مفتوحة على اللوحة.","Nothing open on the board.")+'</div>');
     }
   }
   // one paste that tells Claude exactly what you meant, and where
@@ -13375,11 +13381,29 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       b.classList.toggle("on", b.dataset.rvto===RVTO);
     });
     pop.hidden=false;
+    RVDRAGGED=false; pop.style.position=""; pop.style.left=""; pop.style.top="";
     rvPopPlace(el);
     ta.focus();
   }
+  (function(){ var drag=null;
+    document.addEventListener("pointerdown",function(e){
+      var h=e.target.closest&&e.target.closest("#rvPopCx"); if(!h) return;
+      var pop=document.getElementById("rvPop"); var r=pop.getBoundingClientRect();
+      drag={dx:e.clientX-r.left, dy:e.clientY-r.top}; e.preventDefault();
+      pop.style.position="fixed"; pop.style.left=r.left+"px"; pop.style.top=r.top+"px"; pop.style.insetInlineStart="auto";
+    });
+    document.addEventListener("pointermove",function(e){
+      if(!drag) return; var pop=document.getElementById("rvPop"); RVDRAGGED=true;
+      var vw=innerWidth||document.documentElement.clientWidth||1280, vh=innerHeight||document.documentElement.clientHeight||720;
+      pop.style.left=Math.max(4,Math.min(e.clientX-drag.dx, vw-120))+"px";
+      pop.style.top=Math.max(4,Math.min(e.clientY-drag.dy, vh-80))+"px";
+    });
+    document.addEventListener("pointerup",function(){ drag=null; });
+  })();
+  var RVDRAGGED=false;
   function rvPopPlace(el){
     var pop=document.getElementById("rvPop"); if(!pop||pop.hidden||!el) return;
+    if(RVDRAGGED) return;                                   // she moved it to see underneath — leave it where she put it
     var r=el.getBoundingClientRect();
     var fx=el.closest&&el.closest("nav.rail");
     pop.classList.toggle("fx", !!fx);
