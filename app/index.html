@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 37">
+<meta name="qagc-ver" content="beta 38">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -2006,6 +2006,12 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 .gx-scope .gx-th .qb.on{background:var(--brand-ink);color:#fff}
 .gx-scope .gx-bg.q3{top:66px}
 .gx-scope .gx-lh.q3{height:66px}
+.gx-info{width:20px;height:20px;border-radius:99px;border:1.5px solid var(--gold-ink);color:var(--gold-ink);background:transparent;font:italic 700 12px Georgia,serif;cursor:pointer;vertical-align:middle;margin-inline-start:6px;line-height:1}
+.gx-info:hover{background:var(--brand-gold);color:var(--brand-ink);border-color:var(--brand-gold)}
+#gxHelpPanel{background:var(--surface);border:1px solid var(--brand-gold);border-radius:var(--r-lg,14px);padding:16px 20px;margin:10px 0 4px;box-shadow:var(--shadow)}
+#gxHelpPanel h3{margin:0 0 8px}
+#gxHelpPanel ol{margin:0;padding-inline-start:20px}
+#gxHelpPanel li{margin-bottom:6px;font-size:var(--t-sm);color:var(--ink-2);line-height:1.9}
 .gx-scope .gx-klock .gx-card.auto,.gx-scope .gx-klock #gxKSave,.gx-scope .gx-klock #gxKNew,.gx-scope .gx-klock #gxKList .gx-del,.gx-scope .gx-klock #gxMil .gx-del{display:none!important}
 /* ── work mail: highlight → right-click → routed to the responsible person ── */
 #qcm{position:fixed;z-index:99;background:var(--surface);border:1px solid var(--brand-ink);border-radius:12px;box-shadow:0 12px 34px rgba(23,63,69,.25);min-width:250px;max-width:340px;display:none;overflow:hidden}
@@ -4286,7 +4292,18 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 
     <section class="screen gx-scope" id="gen">
       <div class="head">
-        <p class="eyebrow"><span lang="ar">الخطة السنوية · إنشاء ومتابعة</span><span lang="en">Annual plan · create and track</span></p>
+        <p class="eyebrow"><span lang="ar">الخطة السنوية · إنشاء ومتابعة</span><span lang="en">Annual plan · create and track</span> <button id="gxHelp" class="gx-info" title="كيف أستخدم المولّد؟">i</button></p>
+        <div id="gxHelpPanel" hidden>
+          <h3><span lang="ar">كيف يعمل مولّد الأهداف؟</span><span lang="en">How the generator works</span></h3>
+          <ol>
+            <li><span lang="ar"><b>الهدف أولاً:</b> «＋ هدف جديد» في تبويب المسودات، والكتابة في الصف الأول. المدة تُرسم بالسحب على التقويم أو تُختار من سهم التفاصيل.</span><span lang="en"><b>The objective first:</b> “New objective” under Drafts; write in the first row. Draw the period by dragging on the calendar, or pick the dates from the details arrow.</span></li>
+            <li><span lang="ar"><b>ثم المراحل والخطوات:</b> تسمية المرحلة تفتح خطواتها؛ لكل خطوة مسؤول وتاريخان وميزانية اختيارية. الصف المطوي يعرض العنوان، والمسؤول يظهر عند التمرير، والتفاصيل بالسهم.</span><span lang="en"><b>Then phases and steps:</b> naming a phase opens its steps; each step takes an assignee, two dates, and an optional budget. A collapsed row shows its headline; hover for the owner, the arrow for details.</span></li>
+            <li><span lang="ar"><b>المؤشرات:</b> «اقتراح مؤشرات من الخطة» يصوغ بطاقات جاهزة، أو تُبنى بطاقة يدوياً وفق الملحق ٦ — ولا قراءات للمسودات.</span><span lang="en"><b>KPIs:</b> “Suggest from the plan” drafts full cards, or build one manually per Appendix 6 — drafts carry no readings.</span></li>
+            <li><span lang="ar"><b>الاعتماد:</b> الإرسال يتبع خط الإدارة. بعد الاعتماد يُقفل التحرير — صاحب الهدف يطلب التعديل ورئيسه المباشر يوافق. «هدفي» مستثنى.</span><span lang="en"><b>Approval:</b> submission follows the line of management. Approval locks editing — the owner requests an edit, the line manager approves. Personal objectives are exempt.</span></li>
+            <li><span lang="ar"><b>التغذية:</b> من تبويب «المغذّي»: المكلّف بالخطوة أو صاحب الخطة يسجّل الإنجاز ثم «إرسال للتوثيق» إلى رئيسه المباشر. التقدم يحسب الموثّق فقط، والمعلّق يظهر مظلّلاً.</span><span lang="en"><b>Feeding:</b> in the Feeder, the step's assignee or the plan owner records completion, then sends it for verification to their own line manager. Progress counts verified entries only.</span></li>
+            <li><span lang="ar"><b>المتابعة:</b> ألوان الأشرطة: موثّقة، بانتظار التوثيق، متأخرة. التمرير على أي شريط يعرض تاريخيه، وطابور التوثيق في «المهام والأهداف».</span><span lang="en"><b>Tracking:</b> bar colours mean verified, awaiting, late. Hover a bar for its dates; the verification queue lives in Tasks & Objectives.</span></li>
+          </ol>
+        </div>
         <h1><span lang="ar">مولّد الأهداف</span><span lang="en">Objective generator</span></h1>
         
       </div>
@@ -4306,7 +4323,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
             <div class="gx-g" id="gxG"></div>
             <div class="gx-foot save" id="gxSaveBar"></div>
             <div class="gx-foot">
-              <span id="gxStage"></span><span id="gxOob"></span>
+              <span id="gxOob"></span>
               <div class="gx-nav">
                 <button id="gxPrev" title="›">›</button><span class="win" id="gxWin"></span><button id="gxNext" title="‹">‹</button>
                 <button id="gxHome"><span lang="ar">بداية الهدف</span><span lang="en">Start</span></button>
@@ -13999,8 +14016,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     }
     host.innerHTML='<div class="gx-labels">'+L+'</div><div class="gx-time">'+BG+T+'</div>';
     if(embed){ gxSyncRows(host); var ew=host.parentElement&&host.parentElement.querySelector(".win"); if(ew) ew.textContent=gxWinLabel(w); return; }
-    document.getElementById("gxStage").innerHTML=stage;
-    document.getElementById("gxOob").innerHTML= !S.title?"" : !gxHasDates()?'<span class="gx-warn">'+bi("مدة الهدف غير محددة.","Objective period not set.")+'</span>' : oob?'<span class="gx-warn">'+oob+' '+bi("عنصر خارج مدة مستواه الأعلى.","item(s) outside the level above.")+'</span>':'<span>'+bi("المراحل داخل الهدف والخطوات داخل مراحلها ✓","Phases inside the objective, steps inside their phases ✓")+'</span>';
+    document.getElementById("gxOob").innerHTML= !S.title?"" : !gxHasDates()?'<span class="gx-warn">'+bi("مدة الهدف غير محددة.","Objective period not set.")+'</span>' : oob?'<span class="gx-warn">'+oob+' '+bi("عنصر خارج مدة مستواه الأعلى.","item(s) outside the level above.")+'</span>':"";
     document.getElementById("gxWin").textContent=gxWinLabel(w);
     document.querySelectorAll("#gxZoom button").forEach(function(b){b.classList.toggle("on",b.dataset.gz===GX.z||(b.dataset.gz==="quarter"&&(GX.z==="quarters"||GX.z==="quarter")));});
     var rt=gxRoute(S); var sb=document.getElementById("gxSaveBar");
@@ -14218,6 +14234,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       if(!vr){ S.editGrant=true; S.editGrantBy=isAr()?"ذاتي":"self"; gxSave(); gxDraw(); gxToast("لا رئيس أعلى في السلسلة — فُتح التعديل.","Top of the chain — unlocked."); }
       else { S.editReq={by:gxMe().name, at:PLATFORM_TODAY}; gxSave(); gxDraw(); gxToast("أُرسل طلب التعديل إلى "+vr.who[0]+".","Edit request sent to "+vr.who[1]+"."); } return; }
     if(e.target.closest("[data-gxeditcancel]")){ S.editReq=null; gxSave(); gxDraw(); return; }
+    if(e.target.closest("#gxHelp")){ var hp=document.getElementById("gxHelpPanel"); hp.hidden=!hp.hidden; return; }
     if(e.target.closest("[data-gxeditlock]")){ S.editGrant=false; S.editGrantBy=""; gxSave(); gxDraw(); gxToast("أُقفل التعديل.","Relocked."); return; }
     if(e.target.closest("[data-gxaddt],[data-gxaddph],#gx-nf-name")&&S.objOpen!==false&&document.querySelector("#gxG .gx-lr.obj.open")){ S.objOpen=false; }
     if(e.target.closest(".gx-st")){ e.stopPropagation(); gxShowTab("feed"); return; }
