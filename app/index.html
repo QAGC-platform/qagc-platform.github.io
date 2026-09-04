@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 39">
+<meta name="qagc-ver" content="beta 40">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -13843,7 +13843,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   function gxLoad(){
     var saved=null; try{ saved=JSON.parse(localStorage.getItem("qagcGen")||"null"); }catch(_){}
-    if(saved&&saved.v===9&&saved.list&&saved.list.length){ GX.list=saved.list; GX.list.forEach(function(S){ S.kpis.forEach(gxNormK); }); }
+    if(saved&&saved.v===9&&saved.list&&saved.list.length){ GX.list=saved.list; GX.list.forEach(function(S){ S.kpis.forEach(gxNormK);
+      S.phases.forEach(function(ph){ ph.open=false; ph.tasks.forEach(function(t){ t.open=false; }); });
+      if(S.title&&S.phases.some(function(ph){return ph.name;})) S.objOpen=false; }); }
     else {
       // one approved directorate objective and one department draft per directorate, so every line has something to track, verify or feed
       var dirCodes=ORG.filter(function(d){return d.deps.length;}).map(function(d){return d.code;});
@@ -14000,7 +14002,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           var wp=t.owner?gxPersonByName(t.owner):null;
           var whoTip=t.owner? (isAr()?"المسؤول: ":"Owner: ")+t.owner+(wp?" — "+wp.dep[0]+" · "+wp.dir[0]:"")+(t.budget?" · "+gxMoney(t.budget):"") : "";
           L+='<div class="gx-lr tk'+(open?' open':'')+'" data-gxtk="'+id+'"'+(whoTip?' title="'+gxEsc(whoTip)+'"':'')+'><span class="name"><span class="gx-car">▶</span><span class="t">'+gxEsc(t.name)+'</span>'+stBtn+'</span>'+
-            (open?'<div class="gx-det'+(ro?' gx-ro':'')+'"><div class="f w"><label>'+bi("الخطوة","Step")+'</label><input data-gxtk="'+id+'" data-f="name" value="'+gxEsc(t.name)+'"'+(ro?' readonly':'')+'></div>'+gxOwnerField('data-gxtk="'+id+'" data-f="owner"'+(ro?' disabled':''),t.owner,S)+'<div class="f"><label>'+bi("من","From")+'</label><input type="date" data-gxtk="'+id+'" data-f="from" value="'+t.from+'"'+(ro?' readonly':'')+'></div><div class="f"><label>'+bi("إلى","To")+'</label><input type="date" data-gxtk="'+id+'" data-f="to" value="'+t.to+'"'+(ro?' readonly':'')+'></div><div class="f"><label>'+bi("الميزانية (ر.ع.)","Budget (OMR)")+'</label><input type="number" min="0" data-gxtk="'+id+'" data-f="budget" value="'+(t.budget||"")+'"'+(ro?' readonly':'')+'></div><div class="f w"><label>'+bi("ملاحظة","Note")+'</label><input data-gxtk="'+id+'" data-f="note" value="'+gxEsc(t.note)+'"></div>'+(ro?'':'<button class="gx-del" style="opacity:1;color:var(--critical-ink)" data-gxdelt="'+id+'">'+bi("حذف الخطوة","Delete step")+'</button>')+'</div>':'')+'</div>';
+            (open?'<div class="gx-det'+(ro?' gx-ro':'')+'"><div class="f w"><label>'+bi("الخطوة","Step")+'</label><input data-gxtk="'+id+'" data-f="name" value="'+gxEsc(t.name)+'"'+(ro?' readonly':'')+'></div>'+((!ro||t.owner)?gxOwnerField('data-gxtk="'+id+'" data-f="owner"'+(ro?' disabled':''),t.owner,S):'')+'<div class="f"><label>'+bi("من","From")+'</label><input type="date" data-gxtk="'+id+'" data-f="from" value="'+t.from+'"'+(ro?' readonly':'')+'></div><div class="f"><label>'+bi("إلى","To")+'</label><input type="date" data-gxtk="'+id+'" data-f="to" value="'+t.to+'"'+(ro?' readonly':'')+'></div>'+((!ro||t.budget)?'<div class="f"><label>'+bi("الميزانية (ر.ع.)","Budget (OMR)")+'</label><input type="number" min="0" data-gxtk="'+id+'" data-f="budget" value="'+(t.budget||"")+'"'+(ro?' readonly':'')+'></div>':'')+((!ro||t.note)?'<div class="f w"><label>'+bi("ملاحظة","Note")+'</label><input data-gxtk="'+id+'" data-f="note" value="'+gxEsc(t.note)+'"'+(ro?' readonly':'')+'></div>':'')+(ro?'':'<button class="gx-del" style="opacity:1;color:var(--critical-ink)" data-gxdelt="'+id+'">'+bi("حذف الخطوة","Delete step")+'</button>')+'</div>':'')+'</div>';
           T+=track("tk"+(open?' open':''), bar(sst==="done"?"done":sst==="fed"?"fed":sst==="late"?"late":"",t.from,t.to,t.name,!ok), 'data-gxrow="'+id+'"');
         });
         if(ro) return;
