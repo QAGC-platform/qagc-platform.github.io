@@ -128,8 +128,8 @@ const ICOLS = ['id', 'when', 'kind', 'to', 'toName', 'from', 'fromId', 'quote', 
   'srcSid', 'srcRef', 'srcTk', 'opened', 'openedAt', 'reply', 'replyWhen', 'state'];
 function isheet_() {
   const ss = ss_();
-  let sh = ss.getSheetByName('inbox');
-  if (!sh) { sh = ss.insertSheet('inbox'); sh.appendRow(ICOLS); }
+  let sh = ss.getSheetByName('workmail');
+  if (!sh) { sh = ss.insertSheet('workmail'); sh.appendRow(ICOLS); }
   return sh;
 }
 function sheet_(name) {
@@ -375,7 +375,12 @@ function doPost(e) {
   if (fn === 'inboxAdd') {
     const it = body.item || {};
     if (!it.to || !it.quote) return json_({ ok: false, error: 'to and quote are required' });
-    const id = String(it.id || ('IB' + Utilities.getUuid().slice(0, 8)));
+    let id = String(it.id || '');
+    if (!/^[A-Za-z0-9_-]{1,40}$/.test(id)) id = 'IB' + Utilities.getUuid().slice(0, 8);
+    const sh0 = isheet_(); const vals0 = sh0.getDataRange().getValues();
+    for (let r0 = 1; r0 < vals0.length; r0++) {
+      if (String(vals0[r0][0]) === id) return json_({ ok: true, id: id, duplicate: true });
+    }
     isheet_().appendRow([id, String(it.when || new Date().toISOString()).slice(0, 16),
       it.kind === 'agenda' ? 'agenda' : 'note', String(it.to).slice(0, 12), String(it.toName || '').slice(0, 80),
       String(it.from || '').slice(0, 80), String(it.fromId || '').slice(0, 12),
