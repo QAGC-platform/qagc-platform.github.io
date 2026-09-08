@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 45">
+<meta name="qagc-ver" content="beta 46">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -267,8 +267,8 @@ tr:last-child td{border-bottom:0}
 .fbox{flex:1;min-width:130px;border:1px solid var(--rule);border-radius:var(--r-sm);background:var(--surface);
   padding:var(--sp-3);font-size:var(--t-sm)}
 .fbox b{display:block;font-size:var(--t-xs);color:var(--ink-4);font-weight:700;font-family:var(--latin)}
-.fbox.gate{background:var(--surface-ink);color:var(--rail-ink);border-color:var(--surface-ink)}
-.fbox.gate b{color:var(--brand-gold)}
+.fbox.inkbox{background:var(--surface-ink);color:var(--rail-ink);border-color:var(--surface-ink)}
+.fbox.inkbox b{color:var(--brand-gold)}
 .fbox.stop{background:var(--warn-bg);border-color:var(--warn-rule);color:var(--warn-ink)}
 .never{border:1px solid var(--critical-rule);background:var(--critical-bg);border-radius:var(--r);
   padding:var(--sp-4);color:var(--critical-ink);font-size:var(--t-sm)}
@@ -1766,7 +1766,7 @@ body.editmode .screen .head > p span[lang]:focus,
 body.editmode .card-h h2 span[lang]:focus{
   outline-style:solid;background:var(--surface-2)}
 #czExit{position:fixed;bottom:18px;inset-inline-start:18px;z-index:400;
-  background:var(--ink);color:var(--paper,#fff);border:none;border-radius:999px;
+  background:var(--ink-1);color:var(--paper,#fff);border:none;border-radius:999px;
   padding:10px 22px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3)}
 #czExit[hidden]{display:none}
 .dcm-head{display:flex;gap:10px;align-items:center;margin:8px 0 6px}
@@ -1776,7 +1776,7 @@ body.editmode .card-h h2 span[lang]:focus{
 .dcm-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
 .dcm-dow{font-size:var(--t-xs);color:var(--ink-4);text-align:center;padding:3px 0}
 .dcm-cell{border:1px solid var(--rule);border-radius:7px;min-height:62px;padding:3px 5px;
-  background:var(--surface-1);font-size:var(--t-xs)}
+  background:var(--surface);font-size:var(--t-xs)}
 .dcm-cell.out{opacity:.35}
 .dcm-cell.today{border-color:var(--good-ink);border-width:2px}
 .dcm-day{color:var(--ink-4);font-family:var(--mono,monospace)}
@@ -1796,27 +1796,27 @@ body.editmode .card-h h2 span[lang]:focus{
 .ccal-filters{display:flex;gap:8px;flex-wrap:wrap;margin-inline-start:auto}
 .ccal-chip{display:inline-flex;gap:7px;align-items:center;border:1.5px solid var(--rule);
   border-radius:999px;padding:4px 13px;cursor:pointer;font-size:var(--t-xs);
-  background:var(--surface-1);user-select:none;transition:opacity .15s}
+  background:var(--surface);user-select:none;transition:opacity .15s}
 .ccal-chip .sw{width:11px;height:11px;border-radius:3px;display:inline-block}
 .ccal-chip.off{opacity:.4;border-style:dashed}
 .ccal-chip b{font-weight:700}
 .ccal-months{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
-.ccal-mon{border:1px solid var(--rule);border-radius:12px;padding:10px;background:var(--surface-1)}
+.ccal-mon{border:1px solid var(--rule);border-radius:12px;padding:10px;background:var(--surface)}
 .ccal-mon h4{margin:0 0 7px;font-size:var(--t-sm);color:var(--ink-2);display:flex;justify-content:space-between}
 .ccal-mon h4 .cnt2{font-size:var(--t-xs);color:var(--ink-4);font-weight:400}
 .ccal-g{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
 .ccal-dw{font-size:9px;color:var(--ink-4);text-align:center}
 .ccal-d{position:relative;min-height:30px;border-radius:5px;padding:1px 3px;font-size:10px;
   color:var(--ink-3);background:var(--surface-2);cursor:default}
-.ccal-d.has{cursor:pointer;background:var(--surface-1);border:1px solid var(--rule)}
+.ccal-d.has{cursor:pointer;background:var(--surface);border:1px solid var(--rule)}
 .ccal-d.has:hover{border-color:var(--ink-3)}
 .ccal-d.tdy{outline:2px solid var(--good-ink);outline-offset:-2px}
-.ccal-d.sel{outline:2px solid var(--ink);outline-offset:-2px}
+.ccal-d.sel{outline:2px solid var(--ink-1);outline-offset:-2px}
 .ccal-dots{display:flex;gap:2px;flex-wrap:wrap;margin-top:1px}
 .ccal-dot{width:7px;height:7px;border-radius:2px}
 .ccal-more{font-size:8px;color:var(--ink-4)}
 #ccalDayDetail{border:1px solid var(--rule);border-radius:12px;padding:12px 16px;
-  margin-bottom:14px;background:var(--surface-1)}
+  margin-bottom:14px;background:var(--surface)}
 #ccalDayDetail .ddrow{display:flex;gap:10px;align-items:center;padding:4px 0}
 #ccalDayDetail .ddcat{font-size:var(--t-xs);border-radius:999px;padding:1px 10px;color:#fff}
 /* ══ review mode: comment on anything, from inside the platform ══ */
@@ -1839,7 +1839,7 @@ body[data-review="on"] .rv-hot{outline:2px dashed var(--gold-ink);outline-offset
 #verBar .btn{white-space:nowrap}
 #verBar .btn:not(.btn-p){background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
 #rvPop.fx{position:fixed}
-.plansec{font-size:var(--t-md);font-weight:800;margin:var(--sp-4) 0 var(--sp-2);padding-top:var(--sp-3);border-top:1px solid var(--rule);display:flex;align-items:center;gap:8px}
+.plansec{font-size:var(--t-body);font-weight:800;margin:var(--sp-4) 0 var(--sp-2);padding-top:var(--sp-3);border-top:1px solid var(--rule);display:flex;align-items:center;gap:8px}
 .plansec .badge{font-size:10px}
 #mineObjList .prow2 .pm{font-size:var(--t-xs);color:var(--ink-3);font-weight:400}
 #mineObjList .prow2 .pr{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -4238,7 +4238,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
         <div class="flow">
           <div class="fbox"><b>1</b><span lang="ar">الصياغة في ChatGPT</span><span lang="en">You draft in ChatGPT</span></div>
           <div class="fbox"><b>2</b><span lang="ar">إجراء مخصّص + مفتاح باسمك</span><span lang="en">Custom action + your token</span></div>
-          <div class="fbox gate"><b>3</b><span lang="ar">واجهة المنصة تتحقق من الصلاحية والقواعد</span><span lang="en">Platform API checks permission and rules</span></div>
+          <div class="fbox inkbox"><b>3</b><span lang="ar">واجهة المنصة تتحقق من الصلاحية والقواعد</span><span lang="en">Platform API checks permission and rules</span></div>
           <div class="fbox"><b>4</b><span lang="ar">يُكتب العمل ويُشعر الموظف</span><span lang="en">Work is written, employee notified</span></div>
         </div>
         <div style="margin-top:var(--sp-3)">
@@ -9643,7 +9643,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     ord.innerHTML=czVisibleOrder().map(function(id,i,arr){
       var o=CZ_ORIG.heads[id]||{}, c=CUSTOM.heads[id]||{};
       var lab=c.rail||o.rail||["",""];
-      return '<div class="czrow" draggable="true" data-czid="'+id+'" style="display:flex;gap:8px;align-items:center;border:1px solid var(--rule);border-radius:8px;padding:5px 10px;cursor:grab;background:var(--surface-1)">'+
+      return '<div class="czrow" draggable="true" data-czid="'+id+'" style="display:flex;gap:8px;align-items:center;border:1px solid var(--rule);border-radius:8px;padding:5px 10px;cursor:grab;background:var(--surface)">'+
         '<span style="color:var(--ink-4)">⠿</span>'+
         '<span style="flex:1;font-size:var(--t-sm)">'+bi(lab[0],lab[1])+'</span>'+
         '<button class="mini" data-czup="'+id+'"'+(i===0?' disabled style="opacity:.3"':'')+'>↑</button>'+
@@ -11578,7 +11578,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var mo=myObjectives(), list=mo.list;
     var cnt=document.getElementById("mineObjCount"); if(cnt){ var qn=(typeof gxQueue==="function")?gxQueue().length:0; cnt.textContent=list.length+(qn?" · "+qn+"⏳":""); }
     var sc=document.getElementById("mineObjScope"); if(sc) sc.innerHTML=bi(mo.scope[0],mo.scope[1]);
-    var risk=list.filter(function(o){ return stOf(progOf(o))[2]!=="ok"; }).length;
+    var risk=list.filter(function(o){ return stOf(progOf(o))[2]!=="p-good"; }).length;
     var avg=list.length?Math.round(list.reduce(function(a,o){return a+progOf(o);},0)/list.length):0;
     var t=document.getElementById("mineObjTiles");
     if(t) t.innerHTML='<div class="tile"><div class="th"><span class="tl">'+bi("أهداف في نطاقي","In my scope")+'</span></div><div class="tv">'+list.length+'</div><div class="ts">'+bi("من الخطة السنوية","from the annual plan")+'</div></div>'+
@@ -14253,7 +14253,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
 
   // ── drawing durations on the grid ──
   var gxDrag=null;
-  function gxDayAt(tr,clientX){ var r=tr.getBoundingClientRect(), w=gxWindow(); var x=(r.right-clientX); var i=Math.max(0,Math.min(w.n-1,Math.floor(x/w.px))); return gxIso(w.t0+i*GXD); }
+  function gxDayAt(tr,clientX){ var r=tr.getBoundingClientRect(), w=gxWindow(); var rtl=(document.documentElement.getAttribute("dir")||"rtl")!=="ltr"; var x=rtl?(r.right-clientX):(clientX-r.left); var i=Math.max(0,Math.min(w.n-1,Math.floor(x/w.px))); return gxIso(w.t0+i*GXD); }
   function gxPaint(tr,a,b){ var w=gxWindow(); var bar=tr.querySelector(".gx-barx"); if(!bar){ bar=document.createElement("div"); bar.className="gx-barx"+(tr.classList.contains("obj")?" obj":tr.classList.contains("ph")?" ph":""); bar.innerHTML='<div class="lbl"></div>'; tr.appendChild(bar); var g=tr.querySelector(".gx-gh"); if(g) g.remove(); } bar.style.insetInlineStart=((gxP(a)-w.t0)/GXD*w.px)+"px"; bar.style.width=(gxDays(a,b)*w.px)+"px"; }
   function gxShowTab(tab){ GX.tab=tab; document.querySelectorAll("#gxTabs button").forEach(function(b){b.classList.toggle("on",b.dataset.gxtab===tab);}); document.querySelectorAll("#gen .gx-pane").forEach(function(p){p.classList.toggle("on",p.id==="gxp-"+tab);}); gxDrawStrip(); if(tab==="kpi") gxDrawK(); else if(tab==="feed") gxDrawFeed(); else gxDraw(); }
   function gxSelect(id){ var S=GX.list.filter(function(x){return x.id===id;})[0]; if(!S) return; GX.cur=S; GX.V=S.from||null; GX.formFor=null; GX.K=null; GX.KD=gxBlankK(); GX.drafts=[]; gxShowTab(GX.tab); }
@@ -14557,7 +14557,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         (!it.reply?'<button class="btn" style="padding:3px 10px" data-ibreply="'+gxEsc(it.id)+'">'+bi("رد","Reply")+'</button>':'')+
         (!it.opened?'<button class="btn btn-p" style="padding:3px 10px" data-ibok="'+gxEsc(it.id)+'">'+bi("عُلم","Noted")+'</button>':'')+'</div></div>'; }).join("") : '<p class="ibm">'+bi("لا وارد.","Nothing received.")+'</p>')+
       (sent.length?'<details style="margin-top:8px"><summary style="cursor:pointer;font-size:13px;color:var(--ink-2)">'+bi("ما أرسلتُه ","Sent ")+'('+sent.length+')</summary>'+
-        sent.map(function(it){ return '<div class="ibitem"><b>'+bi(KIND[it.kind][0],KIND[it.kind][1])+'</b> · '+bi("إلى ","to ")+gxEsc(it.toName)+' · <span class="ibm">'+(it.opened?bi("فُتح ","opened ")+gxEsc(it.openedAt):bi("لم يُفتح بعد","not opened yet"))+'</span><div class="ibq">«'+gxEsc(it.quote)+'»</div>'+(it.reply?'<div class="ibm">↩ '+gxEsc(it.reply.text)+'</div>':'')+'</div>'; }).join("")+'</details>':'')+'</div></div>';
+        sent.map(function(it){ return '<div class="ibitem"><b>'+bi(KIND[it.kind][0],KIND[it.kind][1])+'</b> · '+bi("إلى ","to ")+gxEsc(it.toName)+' · <span class="ibm">'+(it.opened?bi("فُتح ","opened ")+gxEsc(it.openedAt):bi("لم يُفتح بعد","not opened yet"))+(ibCfg()?' · '+(it.synced?bi("سُلّمت عبر الجسر ✓","delivered ✓"):bi("في قائمة الإرسال…","queued…")):'')+'</span><div class="ibq">«'+gxEsc(it.quote)+'»</div>'+(it.reply?'<div class="ibm">↩ '+gxEsc(it.reply.text)+'</div>':'')+'</div>'; }).join("")+'</details>':'')+'</div></div>';
   }
   document.addEventListener("click",function(e){
     if(!e.target.closest) return; var t;
@@ -14583,8 +14583,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       un.slice(0,3).map(function(it){ return '<div class="ibq" style="background:var(--surface-2);border-radius:6px;padding:4px 8px;margin:4px 0;font-size:12.5px">'+gxEsc(it.from)+': «'+gxEsc(it.quote.slice(0,60))+'»</div>'; }).join("")+
       '<div class="row"><button class="btn btn-p" id="ibSpotGo">'+bi("فتح البريد","Open the mail")+'</button><button class="btn" id="ibSpotLater">'+bi("لاحقاً","Later")+'</button></div></div>';
     sp.style.display="flex";
-    sp.onclick=function(ev){ if(ev.target.id==="ibSpotLater"||ev.target===sp){ sp.style.display="none"; }
-      if(ev.target.id==="ibSpotGo"){ sp.style.display="none"; var mb=document.querySelector('[data-go="mine"]'); if(mb) mb.click(); ibDraw(); } };
+    sp.onclick=function(ev){ var t=ev.target.closest?ev.target.closest("#ibSpotLater,#ibSpotGo"):null;
+      if((t&&t.id==="ibSpotLater")||ev.target===sp){ sp.style.display="none"; return; }
+      if(t&&t.id==="ibSpotGo"){ sp.style.display="none"; var mb=document.querySelector('[data-go="mine"]'); if(mb) mb.click(); ibDraw(); } };
   }
   var _ibApply=applyRole; applyRole=function(){ _ibApply(); try{ ibAttention(); ibDraw(); ibPull(); }catch(err){ console.error("ib",err); } };
   window.__ib={ list:function(){ return INBOX; }, draw:function(){ ibDraw(); }, att:function(){ ibAttention(); }, spot:function(){ ibSpotlight(); } };
