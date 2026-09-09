@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 65">
+<meta name="qagc-ver" content="beta 66">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -14473,9 +14473,15 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var dt=new Date(Date.UTC(+m[1],+m[2]-1,+m[3]));
     return dt.getUTCFullYear()===+m[1] && dt.getUTCMonth()===+m[2]-1 && dt.getUTCDate()===+m[3]; }
   function gxCell(fd,r,c,depth){ depth=depth||0; var raw=(fd.rows[r]||[])[c]; if(raw==null) return ""; raw=String(raw).trim(); if(raw.charAt(0)!=="="){ return gxNum(raw); } if(depth>20) return "#دورة"; try{ return gxEval(fd,raw.slice(1),depth+1); }catch(_){ return "#!"; } }
-  function gxRange(fd,a,b,depth){ var m1=a.match(/^([A-Z]+)(\d+)$/), m2=b.match(/^([A-Z]+)(\d+)$/); if(!m1||!m2) return []; var c1=gxColIndex(m1[1]),r1=+m1[2]-1,c2=gxColIndex(m2[1]),r2=+m2[2]-1,out=[]; for(var r=Math.min(r1,r2);r<=Math.max(r1,r2);r++) for(var c=Math.min(c1,c2);c<=Math.max(c1,c2);c++){ var v=gxCell(fd,r,c,depth); if(typeof v==="number") out.push(v); } return out; }
+  function gxRange(fd,a,b,depth){ var m1=a.match(/^([A-Z]+)(\d+)$/), m2=b.match(/^([A-Z]+)(\d+)$/); if(!m1||!m2) return []; var c1=gxColIndex(m1[1]),r1=+m1[2]-1,c2=gxColIndex(m2[1]),r2=+m2[2]-1,out=[];
+    var cells=(Math.abs(r2-r1)+1)*(Math.abs(c2-c1)+1); if(cells>5000) return "#كبير";
+    for(var r=Math.min(r1,r2);r<=Math.max(r1,r2);r++) for(var c=Math.min(c1,c2);c<=Math.max(c1,c2);c++){ var v=gxCell(fd,r,c,depth);
+    if(typeof v==="string"&&v.charAt(0)==="#") return v;            // an error inside a range fails the range
+    if(typeof v==="number") out.push(v); } return out; }
   function gxEval(fd,expr,depth){ expr=expr.toUpperCase().replace(/\s+/g,"");
-    expr=expr.replace(/(SUM|AVG|AVERAGE|COUNT|MIN|MAX)\(([A-Z]+\d+):([A-Z]+\d+)\)/g,function(_,fn,a,b){ var v=gxRange(fd,a,b,depth); if(!v.length) return (fn==="COUNT"||fn==="SUM")?"0":"#لاقيم"; if(fn==="SUM") return String(v.reduce(function(x,y){return x+y;},0)); if(fn==="AVG"||fn==="AVERAGE") return String(v.reduce(function(x,y){return x+y;},0)/v.length); if(fn==="COUNT") return String(v.length); if(fn==="MIN") return String(Math.min.apply(null,v)); return String(Math.max.apply(null,v)); });
+    expr=expr.replace(/(SUM|AVG|AVERAGE|COUNT|MIN|MAX)\(([A-Z]+\d+):([A-Z]+\d+)\)/g,function(_,fn,a,b){ var v=gxRange(fd,a,b,depth);
+      if(typeof v==="string") return v;                              // propagate the range's error
+      if(!v.length) return (fn==="COUNT"||fn==="SUM")?"0":"#لاقيم"; if(fn==="SUM") return String(v.reduce(function(x,y){return x+y;},0)); if(fn==="AVG"||fn==="AVERAGE") return String(v.reduce(function(x,y){return x+y;},0)/v.length); if(fn==="COUNT") return String(v.length); if(fn==="MIN") return String(Math.min.apply(null,v)); return String(Math.max.apply(null,v)); });
     var refErr=null;
     expr=expr.replace(/([A-Z]+)(\d+)/g,function(_,cn,rn){ var v=gxCell(fd,+rn-1,gxColIndex(cn),depth);
       if(typeof v==="number") return "("+v+")";
@@ -14491,7 +14497,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function gxArith(src){
     var i=0; function ws(){ while(i<src.length&&src.charAt(i)===" ") i++; }
     function num(){ var st=i; while(i<src.length&&/[0-9.]/.test(src.charAt(i))) i++;
-      if(i===st) throw 0; var n=parseFloat(src.slice(st,i)); if(!isFinite(n)) throw 0;
+      var tok=src.slice(st,i);
+      if(!/^(\d+(\.\d*)?|\.\d+)$/.test(tok)) throw 0;     // 1.2.3 and 1..2 are not numbers
+      var n=parseFloat(tok); if(!isFinite(n)) throw 0;
       while(src.charAt(i)==="%"){ n=n/100; i++; } return n; }
     function prim(){ ws();
       if(src.charAt(i)==="("){ i++; var v=sum(); if(src.charAt(i)!==")") throw 0; i++;
@@ -14585,7 +14593,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var why = !gxValidDate(d) ? (isAr()?"تاريخ غير صالح":"invalid date")
               : typeof v!=="number" ? (isAr()?"قيمة غير رقمية":"non-numeric value") : "";
       if(why) bad.push({line:i+2, raw:row.slice(0,3).join(" | "), why:why});
-      else { if(dups[d]) dupN++; dups[d]=1; ok.push({date:d, v:v}); }
+      else { if(dups[d]) dupN++; dups[d]=1; ok.push({date:d, v:v, line:i+2}); }
     });
     var held=(fd.meta||[]).filter(function(m){ return m&&(m.verified||m.pending); }).length;
     return {head:head, rows:body, ok:ok, bad:bad, dupN:dupN, held:held, dateCol:dc, valCol:vc};
@@ -14746,15 +14754,21 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(act==="cancel"){ GXIMP=null; gxToast("أُلغي الاستيراد — لم يتغيّر شيء.","Import cancelled — nothing changed."); return; }
     var held=(fd.meta||[]).filter(function(m){ return m&&(m.verified||m.pending); }).length;
     if(!sc.ok.length && act==="replace"){ GXIMP=null; gxToast("لا صفوف صالحة — لم يُستبدل شيء.","No usable rows — nothing replaced."); return; }
-    if(held && act==="replace"){ GXIMP=null; gxToast("يوجد "+held+" قراءة موثّقة أو معلّقة — الاستبدال غير مسموح، استخدم الإضافة.","Protected readings present — replace is not allowed; append instead."); return; }
+    // any path that would discard stored rows is refused while attested readings exist,
+    // including the template/locked path, which used to clear them regardless of the action
+    if(held && (act==="replace" || GXIMP.lock)){ GXIMP=null;
+      gxToast("يوجد "+held+" قراءة موثّقة أو معلّقة — لا يمكن استبدال الجدول؛ استخدم الإضافة أو مسار التصحيح المعتمد.",
+              "Protected readings present — the table cannot be replaced; append, or use the approved correction route."); return; }
     fd.file=GXIMP.file;
     if(GXIMP.lock){ fd.cols=sc.head.slice(); fd.dateCol=sc.dateCol; fd.valCol=sc.valCol; fd.rows=[]; fd.meta=[]; }
     else if(act==="replace"){ fd.cols=sc.head.slice(); fd.dateCol=sc.dateCol; fd.valCol=sc.valCol;
-      fd.rows=sc.rows.slice(); fd.meta=[]; }                        // whole rows, every column kept
+      // only rows the preview accepted are committed — whole rows, every column kept
+      var okAt={}; sc.ok.forEach(function(o){ okAt[o.line]=1; });
+      fd.rows=sc.rows.filter(function(row,i){ return okAt[i+2]; }); fd.meta=[]; }
     else {
       // append maps the incoming file into THIS feed's existing columns; stored rows keep their meaning
       var dc=(fd.rows&&fd.rows.length)?fd.dateCol:sc.dateCol, vc=(fd.rows&&fd.rows.length)?fd.valCol:sc.valCol;
-      if(!fd.cols||!fd.cols.length){ fd.cols=sc.head.slice(); dc=sc.dateCol; vc=sc.valCol; }
+      if(!fd.rows||!fd.rows.length){ fd.cols=sc.head.slice(); dc=sc.dateCol; vc=sc.valCol; }   // empty feed takes the file's schema and mapping together
       fd.dateCol=dc; fd.valCol=vc;
       var have={}; (fd.rows||[]).forEach(function(row){ have[String(row[dc]||"").trim()]=1; });
       var added=0, skipped=0;
