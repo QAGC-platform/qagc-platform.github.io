@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 67">
+<meta name="qagc-ver" content="beta 68">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -2012,6 +2012,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 :is(.card-h,[tabindex="0"]):focus-visible{outline:2px solid var(--brand-gold);outline-offset:2px;border-radius:4px}
 #rvPop .cx{cursor:move;user-select:none}
 #rvPanel .ph{cursor:move;user-select:none}
+.gx-grid .v.err{color:var(--critical-ink);font-weight:600;cursor:help}
 .gx-secst{font-weight:400;font-size:var(--t-xs);letter-spacing:0;margin-inline-start:8px}
 .gx-secst.need{color:var(--critical-ink)}
 .gx-secst.soft{color:var(--ink-3)}
@@ -14479,6 +14480,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function gxValidDate(d){ var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(d||"")); if(!m) return false;
     var dt=new Date(Date.UTC(+m[1],+m[2]-1,+m[3]));
     return dt.getUTCFullYear()===+m[1] && dt.getUTCMonth()===+m[2]-1 && dt.getUTCDate()===+m[3]; }
+  var GX_ERR={ "#!":["صيغة غير صالحة","invalid formula"], "#دورة":["مرجع دائري","circular reference"],
+    "#فارغ":["خلية فارغة في الحساب","empty cell in the calculation"], "#نص":["نص في موضع رقم","text where a number is expected"],
+    "#لاقيم":["لا قيم في النطاق","no values in the range"], "#كبير":["النطاق أكبر من الحد","range beyond the limit"],
+    "#أُس":["الأُس (**) غير مدعوم — استخدم الضرب","exponentiation (**) is not supported — use multiplication"],
+    "#باقي":["% صارت نسبة مئوية لا باقي قسمة","% now means percent, not remainder"] };
+  function gxErrTip(v){ var e=GX_ERR[v]; return e?(isAr()?e[0]:e[1]):""; }
   function gxCell(fd,r,c,depth){ depth=depth||0; var raw=(fd.rows[r]||[])[c]; if(raw==null) return ""; raw=String(raw).trim(); if(raw.charAt(0)!=="="){ return gxNum(raw); } if(depth>20) return "#دورة"; try{ return gxEval(fd,raw.slice(1),depth+1); }catch(_){ return "#!"; } }
   function gxRange(fd,a,b,depth){ var m1=a.match(/^([A-Z]+)(\d+)$/), m2=b.match(/^([A-Z]+)(\d+)$/); if(!m1||!m2) return []; var c1=gxColIndex(m1[1]),r1=+m1[2]-1,c2=gxColIndex(m2[1]),r2=+m2[2]-1,out=[];
     var cells=(Math.abs(r2-r1)+1)*(Math.abs(c2-c1)+1); if(cells>5000) return "#كبير";
@@ -14497,6 +14504,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       refErr=refErr||"#نص"; return "(0)"; });                                        // text is not zero
     if(refErr) return refErr;
     if(expr.indexOf("#")>-1) return expr.match(/#[^\s()+\-*/]*/)[0];   // an aggregate's error survives
+    // these two were accepted by the old evaluator and mean something different now; name them
+    // rather than returning a bare error, so an existing sheet can be corrected knowingly
+    if(/\*\*/.test(expr)) return "#أُس";                              // 2**3 — exponentiation is not supported
+    if(/%\s*[0-9.(]/.test(expr)) return "#باقي";                      // 10%3 was a remainder; % is now a percentage
     if(!/^[0-9.+\-*/()%]+$/.test(expr)) return "#!";
     var v; try{ v=gxArith(expr); }catch(_){ return "#!"; }
     return isFinite(v)?Math.round(v*1000)/1000:"#!"; }
@@ -14556,7 +14567,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     else { var shown=lock?rows.length:Math.max(rows.length+3,5);   // a sheet, not a form: empty cells are there to type into
       html+='<div class="gx-grid"><table><tr><th class="rn">#</th>'+cols.map(function(c,i){return '<th><input data-gxfcol="'+i+'" value="'+gxEsc(c)+'" style="width:calc(100% - 18px);border:none;background:transparent;font:inherit;font-weight:700;color:var(--ink-2)"><span class="x" data-gxfdelc="'+i+'">✕</span><div style="font-size:9px;color:var(--ink-3);direction:ltr;text-align:left">'+gxColName(i)+'</div></th>';}).join("")+'</tr>';
       for(var r=0;r<shown;r++){ var row=rows[r]||[]; var real=r<rows.length; var mt=(fd.meta||[])[r]; var tag= !real?'' : fd.mode==="sheet"?'<span title="'+(isAr()?"مصدر نظامي":"system-sourced")+'" style="color:var(--good-ink)">◆</span>' : (mt&&mt.verified)?'<span title="'+(isAr()?"موثّقة":"verified")+'" style="color:var(--good-ink)">✓✓</span>' : (mt&&mt.pending)?'<span title="'+(isAr()?"بانتظار التوثيق":"pending")+'" style="color:var(--warn-ink)">…</span>' : '';
-        html+='<tr'+(real?'':' class="empty"')+'><th class="rn">'+(r+1)+' '+tag+(real&&!(mt&&(mt.verified||mt.pending))?' <span class="x" data-gxfdelr="'+r+'">✕</span>':'')+'</th>'+cols.map(function(c,ci){ var raw=row[ci]==null?"":String(row[ci]); var isF=raw.charAt(0)==="="; var v=isF?gxCell(fd,r,ci):""; return '<td'+(isF?' class="fx"':'')+'><input data-gxfr="'+r+'" data-gxfc="'+ci+'" value="'+gxEsc(raw)+'"'+((lock||(mt&&(mt.pending||mt.verified)))?' readonly':'')+'>'+(isF?'<span class="v">= '+gxEsc(v)+'</span>':'')+'</td>'; }).join("")+'</tr>'; }
+        html+='<tr'+(real?'':' class="empty"')+'><th class="rn">'+(r+1)+' '+tag+(real&&!(mt&&(mt.verified||mt.pending))?' <span class="x" data-gxfdelr="'+r+'">✕</span>':'')+'</th>'+cols.map(function(c,ci){ var raw=row[ci]==null?"":String(row[ci]); var isF=raw.charAt(0)==="="; var v=isF?gxCell(fd,r,ci):""; return '<td'+(isF?' class="fx"':'')+'><input data-gxfr="'+r+'" data-gxfc="'+ci+'" value="'+gxEsc(raw)+'"'+((lock||(mt&&(mt.pending||mt.verified)))?' readonly':'')+'>'+(isF?'<span class="v'+((typeof v==="string"&&v.charAt(0)==="#")?' err':'')+'"'+((typeof v==="string"&&gxErrTip(v))?' title="'+gxEsc(gxErrTip(v))+'"':'')+'>= '+gxEsc(v)+'</span>':'')+'</td>'; }).join("")+'</tr>'; }
       if(!shown) html+='<tr><td colspan="'+(cols.length+1)+'" style="padding:10px;color:var(--ink-3);text-align:center">'+bi("بنية الجدول جاهزة — القراءات تُدخل بعد الاعتماد","Structure ready — readings are entered after approval")+'</td></tr>';
       html+='</table></div>'; }
     var rd=gxReadings(fd); if(rd.length&&!lock){ var last=rd[rd.length-1], st=gxStatusOf(k,last.v); var pc=gxPaceOf(k,last.v);
