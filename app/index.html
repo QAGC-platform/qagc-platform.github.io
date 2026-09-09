@@ -2171,6 +2171,57 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 .gx-prog i::after{content:"";position:absolute;inset:0;inset-inline-end:var(--rest,100%);background:var(--good)}
 @media (prefers-reduced-motion:reduce){.gx-scope .gx-toast,.gx-scope .gx-car{transition:none}}
 
+/* ── the KPI card decision paper: a document that answers back ── */
+.kf-num{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;
+  background:var(--brand-ink);color:var(--brand-gold);font-family:var(--latin);
+  font-size:.8125rem;font-weight:600;flex:0 0 auto}
+.kf-why-row{display:flex;gap:var(--sp-3);align-items:flex-start;padding:var(--sp-3) 0;border-top:1px solid var(--rule)}
+.kf-why-row:first-child{border-top:0;padding-top:0}
+.kf-why-row h3{font-size:var(--t-body);font-weight:650;margin:0 0 4px}
+.kf-why-row p{font-size:var(--t-sm);color:var(--ink-3);margin:0;line-height:1.7}
+.kf-d{margin-bottom:var(--sp-4)}
+.kf-head{display:flex;gap:var(--sp-3);align-items:flex-start;margin-bottom:var(--sp-3)}
+.kf-q{font-size:var(--t-h2);font-weight:650;line-height:1.4;margin:0}
+.kf-find{font-size:var(--t-sm);color:var(--ink-3);line-height:1.75;background:var(--surface-2);
+  border-radius:var(--r-sm);padding:var(--sp-3);margin:var(--sp-3) 0}
+.kf-find b{color:var(--ink-2);font-weight:650}
+.kf-opts{display:flex;flex-direction:column;gap:var(--sp-2);margin:var(--sp-3) 0}
+.kf-opt{display:flex;gap:var(--sp-2);align-items:flex-start;padding:var(--sp-3);
+  border:1px solid var(--rule);border-radius:var(--r-sm);cursor:pointer;
+  font-size:var(--t-sm);line-height:1.65;background:var(--surface)}
+.kf-opt:hover{border-color:var(--rule-strong)}
+.kf-opt input{margin-top:3px;flex:0 0 auto;accent-color:var(--s1)}
+.kf-opt.on{border-color:var(--s1);box-shadow:inset 0 0 0 1px var(--s1)}
+.kf-rec{font-size:var(--t-xs);font-weight:700;color:var(--good-ink);white-space:nowrap;
+  border:1px solid var(--good-rule);background:var(--good-bg);border-radius:var(--r-pill);
+  padding:1px 8px;margin-inline-start:6px}
+.kf-sub{display:flex;justify-content:space-between;gap:var(--sp-3);align-items:center;flex-wrap:wrap;
+  padding:var(--sp-3) 0;border-top:1px dashed var(--rule);font-size:var(--t-sm);line-height:1.6}
+.kf-yn{display:flex;gap:4px;flex:0 0 auto}
+.kf-yn button{border:1px solid var(--rule);background:var(--surface);border-radius:var(--r-pill);
+  padding:3px 14px;font:inherit;font-size:var(--t-xs);cursor:pointer;color:var(--ink-3)}
+.kf-yn button.on{background:var(--brand-ink);border-color:var(--brand-ink);color:var(--brand-gold)}
+.kf-note{width:100%;min-height:58px;border:1px solid var(--rule);border-radius:var(--r-sm);
+  padding:var(--sp-2) var(--sp-3);font:inherit;font-size:var(--t-sm);
+  background:var(--surface-2);resize:vertical;line-height:1.6}
+.kf-note:focus{outline:2px solid var(--s1);outline-offset:1px;background:var(--surface)}
+.kf-lab{font-size:var(--t-sm);font-weight:650;color:var(--ink-4);display:block;margin-bottom:5px}
+.kf-tags{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin:var(--sp-3) 0}
+.kf-tag{display:flex;gap:6px;align-items:center;border:1px solid var(--rule);border-radius:var(--r-pill);
+  padding:5px 13px;font-size:var(--t-sm);cursor:pointer;background:var(--surface)}
+.kf-tag.on{border-color:var(--s1);box-shadow:inset 0 0 0 1px var(--s1)}
+.kf-tag input{accent-color:var(--s1)}
+.kf-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-4)}
+.kf-cols h3{font-size:var(--t-sm);font-weight:700;margin:0}
+.kf-cols ul{margin:8px 0 0;padding-inline-start:1.1em}
+.kf-cols li{font-size:var(--t-sm);color:var(--ink-3);line-height:1.65;margin-bottom:6px}
+.kf-bar{position:sticky;bottom:var(--sp-3);display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;
+  background:var(--surface);border:1px solid var(--rule-strong);border-radius:var(--r);
+  padding:var(--sp-3);box-shadow:var(--lift-2);margin-top:var(--sp-4)}
+.kf-saved{font-size:var(--t-xs);color:var(--ink-4);margin-inline-start:auto;font-variant-numeric:tabular-nums}
+@media (max-width:900px){.kf-cols{grid-template-columns:1fr}}
+@media print{.nav,.rail,.kf-bar,#rvPanel,#rvToggle{display:none!important}}
+
 </style>
 
 <div class="gate" id="gate">
@@ -2316,6 +2367,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       <button data-go="master"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v18H5.5A1.5 1.5 0 0 1 4 19.5z"/><path d="M8 8h7M8 12h7"/></svg><span lang="ar">الخطة المرجعية</span><span lang="en">Master plan</span></button>
       <button data-go="annual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="17" rx="2"/><path d="M8 2v4M16 2v4M8 12l2 2 4-4"/></svg><span lang="ar">الخطة السنوية</span><span lang="en">Annual plan</span><span class="count tnum">3</span></button>
       <button data-go="gen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h6M7 13h10M7 17h4"/></svg><span lang="ar">مولّد الأهداف</span><span lang="en">Objective generator</span></button>
+      <button data-go="kfld"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 11.5a1.6 1.6 0 1 1 1.6 1.6v1.2M13.6 17.5h.01"/></svg><span lang="ar">قرارات بطاقة المؤشر</span><span lang="en">KPI card decisions</span></button>
       <button data-go="dept"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-5h6v5"/><path d="M9 11h.01M15 11h.01"/></svg><span lang="ar">سجل الأقسام</span><span lang="en">Department register</span></button>
       <button data-go="people"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 20a6.2 6.2 0 0 1 12.4 0"/><path d="M17 5.3a3.2 3.2 0 0 1 0 5.4M18.4 20a6.2 6.2 0 0 0-2.6-4.4"/></svg><span lang="ar">الموظفون</span><span lang="en">People</span><span class="count tnum">3</span></button>
       <button data-go="mine"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="3.5"/><path d="M3.5 20a6.5 6.5 0 0 1 11.4-4.3"/><path d="m15.5 18.5 2 2 4-4"/></svg><span lang="ar">المهام والأهداف</span><span lang="en">Assignments &amp; objectives</span></button>
@@ -3303,6 +3355,106 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
            <span lang="en">The reporting line as the Director General set it. Every list in the platform is ordered by it.</span></p>
       </div>
       <div id="orgTree"></div>
+    </section>
+
+    <!-- ══════════ KPI CARD — DECISION PAPER ══════════ -->
+    <section class="screen" id="kfld">
+      <div class="head">
+        <p class="eyebrow"><span lang="ar">ورقة قرار — مراجعة داخلية</span><span lang="en">Decision paper — internal review</span></p>
+        <h1><span lang="ar">بطاقة المؤشر: ما الذي تحتويه؟</span><span lang="en">The KPI card: what should it contain?</span></h1>
+        <p><span lang="ar">قُرئ الدليل كاملاً — تسع وعشرون صفحة — لا الملحق السادس وحده. ما يلي ستة أسئلة لا يحسمها الدليل نفسه، ويحسمها المركز. لم يُنفَّذ أي تغيير في المنصة حتى الآن.</span>
+           <span lang="en">The guideline was read in full — all twenty-nine pages — not Appendix 6 alone. What follows is six questions the guideline itself does not settle; the Centre settles them. Nothing has been changed in the platform yet.</span></p>
+      </div>
+
+      <div class="rolebar">
+        <span lang="ar">للإجابة: اختيار البديل وكتابة الملاحظة تحته. وللتعليق على أي عبارة أخرى في الصفحة: تفعيل «وضع المراجعة» — عندها تصبح النقرة تعليقاً وتتعطل الأزرار عمداً. تُحفَظ الإجابات في هذا الجهاز فور كتابتها.</span>
+        <span lang="en">To answer: choose an option and write the note beneath it. To comment on any other sentence: turn on review mode — there a click becomes a comment and the controls are deliberately inert. Answers are saved on this device as they are typed.</span>
+      </div>
+
+      <div class="stack">
+
+        <div class="card">
+          <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg></span><div>
+            <span class="ceye"><span lang="ar">الخلفية</span><span lang="en">Background</span></span>
+            <h2><span lang="ar">لماذا هذه المراجعة</span><span lang="en">Why this review</span></h2></div></div></div>
+
+          <div class="kf-why-row"><span class="kf-num">١</span><div>
+            <h3><span lang="ar">بُنيت البطاقة من ملحق واحد</span><span lang="en">The card was built from one appendix</span></h3>
+            <p><span lang="ar">حقول البطاقة الحالية مأخوذة من الملحق السادس وحده. الدليل تسع وعشرون صفحة، وفيها اشتراطات ومفاهيم لم تُفحص قط: مراحل سلسلة النتائج، ومصدر المستهدف، وقواعد العتبات، وخطة المراجعة.</span>
+               <span lang="en">The present fields were taken from Appendix 6 alone. The guideline runs to twenty-nine pages, and requirements in the rest of it were never examined: the value-flow stages, the source of the target, the threshold rules, the review plan.</span></p></div></div>
+
+          <div class="kf-why-row"><span class="kf-num">٢</span><div>
+            <h3><span lang="ar">الدليل يناقض نفسه، واختير نيابةً عن المركز</span><span lang="en">The guideline contradicts itself, and the choice was made for the Centre</span></h3>
+            <p><span lang="ar">الملحق الثاني يعرض سبعة أبعاد للجودة، والملحق السادس يطبع ستة مختلفة. ولا يقول الدليل إن أياً من القائمتين مغلقة، ولا يقول إنها أمثلة. وقد دُمجت «الإتاحة» في «العدالة» ونُقلت «النتائج» إلى حقل آخر — قرار اتُّخذ أثناء البرمجة، لا في اجتماع.</span>
+               <span lang="en">Appendix 2 shows seven quality dimensions; Appendix 6 prints six different ones. The guideline says neither that either list is closed nor that they are examples. Access was folded into Equity and Outcome moved to another field — a decision taken while coding, not in a meeting.</span></p></div></div>
+
+          <div class="kf-why-row"><span class="kf-num">٣</span><div>
+            <h3><span lang="ar">الدليل لوزارة الصحة، والمركز ليس مستشفى</span><span lang="en">It is a health ministry's guideline, and this is not a hospital</span></h3>
+            <p><span lang="ar">المرجع كُتب لمستشفيات وزارة الصحة وخدماتها. أما المنصة فلمركز ضمان الجودة والحوكمة، قطاع الأشخاص ذوي الإعاقة، وزارة التنمية الاجتماعية: موضوعها المستفيدون وأسرهم، والمؤسسات، والخطط الفردية، ومتابعة الحالات. والتكييف يجب أن يكون مقصوداً وموثقاً، لا استبدال كلمة «مريض» بكلمة «مستفيد».</span>
+               <span lang="en">The source document was written for the Ministry of Health's hospitals and services. This platform belongs to the Quality Assurance and Governance Centre, People with Disabilities Sector, Ministry of Social Development: its subjects are beneficiaries and their families, institutions, individual plans and case follow-up. The adaptation must be deliberate and recorded — not the word "patient" swapped for "beneficiary".</span></p></div></div>
+        </div>
+
+        <div id="kfList"></div>
+
+        <div class="card">
+          <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg></span><div>
+            <span class="ceye"><span lang="ar">أثر القرار</span><span lang="en">What the decision changes</span></span>
+            <h2><span lang="ar">ما يعود، وما هو جديد، وما لن يمسّه شيء</span><span lang="en">Restored, new, and untouched</span></h2></div></div></div>
+          <div class="kf-cols">
+            <div>
+              <h3><span lang="ar">يعود</span><span lang="en">Restored</span></h3>
+              <ul>
+                <li><span lang="ar">صيغة القياس: نسبة، عدد، معدل، درجة، مدة</span><span lang="en">Calculation form: percentage, count, rate, score, duration</span></li>
+                <li><span lang="ar">وحدة النتيجة</span><span lang="en">The result unit</span></li>
+                <li><span lang="ar">حقول المقارنة المرجعية كاملة: الجهة، القيمة، الفترة، المصدر، وسبب غيابها</span><span lang="en">The full benchmarking set: comparator, value, period, source, and the reason for its absence</span></li>
+                <li><span lang="ar">المؤشرات ذات الصلة</span><span lang="en">Related indicators</span></li>
+                <li><span lang="ar">«التمحور حول المستفيد» بُعداً للجودة</span><span lang="en">Beneficiary-centredness as a quality dimension</span></li>
+              </ul>
+            </div>
+            <div>
+              <h3><span lang="ar">جديد</span><span lang="en">New</span></h3>
+              <ul>
+                <li><span lang="ar">وحدة العدّ: شخص، أسرة، مؤسسة، خطة، خدمة، حدث — المقام يتغير بتغيرها</span><span lang="en">The counting entity: person, family, institution, plan, service, event — the denominator changes with it</span></li>
+                <li><span lang="ar">معادلة الحساب: كيف تُجمَع الفترات، وحكم القيمة الناقصة والمقام الصفري</span><span lang="en">The calculation rule: how periods combine, what a missing value and a zero denominator mean</span></li>
+                <li><span lang="ar">قواعد العتبات: نطاقات مرتّبة بحدود واضحة، بدل نسبة تفاوت واحدة</span><span lang="en">Threshold rules: ordered bands with explicit bounds, instead of a single tolerance percentage</span></li>
+                <li><span lang="ar">مصدر المستهدف ومبرره</span><span lang="en">The target's source and rationale</span></li>
+                <li><span lang="ar">فترة خط الأساس، أو سبب غيابه</span><span lang="en">The baseline period, or the reason there is none</span></li>
+                <li><span lang="ar">طريقة الجمع والتحقق، ومرجع العملية، وخطة مراجعة التعريف</span><span lang="en">Collection and validation method, process reference, definition review plan</span></li>
+              </ul>
+            </div>
+            <div>
+              <h3><span lang="ar">لن يمسّه شيء</span><span lang="en">Untouched</span></h3>
+              <ul>
+                <li><span lang="ar">كل بطاقة محفوظة تبقى بقيمها كما هي</span><span lang="en">Every stored card keeps its values exactly</span></li>
+                <li><span lang="ar">«العدالة والإتاحة» تبقى كما كُتبت — لا تُقسَّم آلياً</span><span lang="en">«العدالة والإتاحة» stays as written — no automatic split</span></li>
+                <li><span lang="ar">لا يُعاد تفسير نتيجة موثَّقة بقاعدة جديدة</span><span lang="en">No attested reading is reinterpreted under a new rule</span></li>
+                <li><span lang="ar">سلسلة التوثيق وقفل التحرير وصلاحيات التغذية كما استقرت</span><span lang="en">The attestation chain, the edit lock and feeder permissions stand as settled</span></li>
+                <li><span lang="ar">تعريف الالتزام بالمواعيد كما اعتُمد في ٩ سبتمبر ٢٠٢٦</span><span lang="en">The on-time definition as ruled on 9 September 2026</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><div class="chrow"><span class="ib warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></span><div>
+            <span class="ceye"><span lang="ar">أمانة العرض</span><span lang="en">Honesty of this paper</span></span>
+            <h2><span lang="ar">حدود هذه المراجعة</span><span lang="en">The limits of this review</span></h2></div></div></div>
+          <ul style="margin:0;padding-inline-start:1.1em">
+            <li style="font-size:var(--t-sm);color:var(--ink-3);line-height:1.7;margin-bottom:8px"><span lang="ar">لم يُنفَّذ أي تعديل على المنصة. هذه ورقة قرار، لا إشعار بتغيير.</span><span lang="en">Nothing in the platform was changed. This is a decision paper, not a notice of change.</span></li>
+            <li style="font-size:var(--t-sm);color:var(--ink-3);line-height:1.7;margin-bottom:8px"><span lang="ar">نسخة الدليل المتوفرة تحمل أرقام إصدار متضاربة على صفحاتها: رقم على الغلاف وآخر في المتن وثالث على نموذج الملحق السادس. لم تُحسم هذه الفروق ولم يُدَّعَ أن النسخة هي المعتمدة حالياً.</span><span lang="en">The available copy carries conflicting document numbers: one on the cover, another in the body, a third on the Appendix 6 form. Those differences were not resolved, and no claim is made that this copy is the current standard.</span></li>
+            <li style="font-size:var(--t-sm);color:var(--ink-3);line-height:1.7;margin-bottom:8px"><span lang="ar">الدليل لا يقرر بنفسه انطباقه على هذا المركز؛ اعتماده قرار إداري، لا نتيجة تلقائية للقراءة.</span><span lang="en">The guideline does not itself establish that it governs this Centre; adopting it is an administrative decision, not an automatic consequence of reading it.</span></li>
+            <li style="font-size:var(--t-sm);color:var(--ink-3);line-height:1.7;margin-bottom:8px"><span lang="ar">مجالات الخدمة المقترحة اجتهاد مبني على الدليل ووصف عمل المركز، لا على مراجع قطاعية معتمدة. ولا يتضمن هذا العرض حكماً قانونياً، ولا شروط ترخيص، ولا إجراءات حماية، ولا قواعد موافقة أو إنابة.</span><span lang="en">The proposed service topics are reasoned from the guideline and the Centre's described remit, not from approved sector sources. This paper makes no legal finding, and states no licensing criteria, safeguarding procedures, or consent and proxy rules.</span></li>
+            <li style="font-size:var(--t-sm);color:var(--ink-3);line-height:1.7"><span lang="ar">لا ادعاء باعتماد وزارة الصحة. أي تصدير يُعرِّف نفسه بأنه «تكييف المركز للملحق السادس».</span><span lang="en">No claim of Ministry of Health certification. Any export identifies itself as "the Centre's adaptation of Appendix 6".</span></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="kf-bar">
+        <button class="btn btn-p" id="kfCopy"><span lang="ar">نسخ القرارات</span><span lang="en">Copy the decisions</span></button>
+        <button class="btn" id="kfPrint"><span lang="ar">طباعة</span><span lang="en">Print</span></button>
+        <span class="kf-saved" id="kfSaved"></span>
+      </div>
     </section>
 
     <!-- ══════════ DEPARTMENT HEAD ══════════ -->
@@ -12764,8 +12916,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
 
   // ══ role views: each persona sees only what its scope allows ══
   var ROLE_NAV={
-    dg:    ["cc","master","annual","gen","dept","people","mine","approvals","leave","cpd","ccal","coord","ai","prefs","own","org"],
-    dir:   ["dir","master","annual","gen","dept","people","mine","approvals","leave","cpd","ccal","prefs","org"],
+    dg:    ["cc","master","annual","gen","kfld","dept","people","mine","approvals","leave","cpd","ccal","coord","ai","prefs","own","org"],
+    dir:   ["dir","master","annual","gen","kfld","dept","people","mine","approvals","leave","cpd","ccal","prefs","org"],
     head:  ["head","master","annual","gen","people","mine","approvals","leave","cpd","ccal","prefs","org"],
     coord: ["coord","master","annual","gen","people","mine","approvals","leave","cpd","ccal","prefs","org"],
     staff: ["staffhome","master","annual","gen","mine","approvals","leave","cpd","ccal","prefs","org"]
@@ -15045,6 +15197,185 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   var _ibApply=applyRole; applyRole=function(){ _ibApply(); try{ ibAttention(); ibDraw(); ibPull(); }catch(err){ console.error("ib",err); } };
   window.__ib={ list:function(){ return INBOX; }, draw:function(){ ibDraw(); }, att:function(){ ibAttention(); }, spot:function(){ ibSpotlight(); } };
   try{ ibAttention(); ibDraw(); ibPull(true); if(document.querySelector("#gate.done")) ibSpotlight(); }catch(err){ console.error("ib init",err); }   // a restored session signs in before this module loads
+
+  // ── the KPI card decision paper: six questions the guideline leaves open ──
+  var KF_K="qagcKFld";
+  var KFA={v:1,a:{},at:""};
+  try{ var _kfs=JSON.parse(localStorage.getItem(KF_K)||"null"); if(_kfs&&_kfs.a) KFA=_kfs; }catch(_){}
+  var KF=[
+    {id:"dim", n:"١", ne:"1",
+     q:["سياسة أبعاد الجودة: قائمة مغلقة أم مقترحات؟","The quality-dimension policy: a closed list, or suggestions?"],
+     find:["<b>الملحق الثاني</b> يعرض: السلامة، الفاعلية، الإتاحة، النتائج، التوقيت، تجربة المريض، الكفاءة. و<b>الملحق السادس</b> يطبع: السلامة، التوقيت، الفاعلية، الكفاءة، العدالة، التمحور حول المريض. لا نص في الدليل يصف أياً منهما بأنها القائمة الوحيدة، ولا بأنها أمثلة.",
+           "<b>Appendix 2</b> lists: Safety, Effectiveness, Access, Outcome, Timely, Patient experience, Efficiency. <b>Appendix 6</b> prints: Safety, Timeliness, Effectiveness, Efficiency, Equity, Patient centeredness. No sentence in the guideline calls either list the only one, nor calls them examples."],
+     parts:[
+       {k:"opts", id:"dim",
+        opts:[["closed","قائمة مغلقة يعتمدها المركز — لا يُقبل غيرها.","A closed list adopted by the Centre — nothing else accepted.",0],
+              ["sugg","قائمة مقترحات، مع بيان مصدر كل بُعد، وإمكانية إضافة بُعد آخر بتبرير مكتوب.","Suggestions with each dimension's source shown, and a further dimension allowed with a written rationale.",1],
+              ["free","نص حر بلا مقترحات.","Free text with no suggestions.",0]]},
+       {k:"yn", id:"dim_split", t:["فصل «الإتاحة» عن «العدالة»، و«تجربة المستفيد» عن «التمحور حوله وإشراك الأسرة» — أربعة بنود لا اثنان.",
+                                   "Separate Access from Equity, and Beneficiary experience from Centredness and family involvement — four items, not two."]},
+       {k:"yn", id:"dim_outcome", t:["الإبقاء على «النتائج» بُعداً للجودة، مع بقائها في الوقت نفسه مرحلةً في سلسلة النتائج.",
+                                     "Keep Outcome as a quality dimension while it also remains a stage in the value flow."]}
+     ]},
+    {id:"stage", n:"٢", ne:"2",
+     q:["هل خانة «النوع» تعني مرحلة سلسلة النتائج؟","Does the card's «Type» cell mean the value-flow stage?"],
+     find:["<b>الملحق الرابع</b> يعرّف أربع مراحل: مدخلات، عمليات، مخرجات، نتائج. وخانة «النوع» في الملحق السادس مطبوعة دون تعريف. القائمة الحالية في المنصة تحوي ثلاثاً منها وتُسقط <b>المدخلات</b>. ربط الخانة بالمراحل تفسير معقول، لا نصٌّ صريح.",
+           "<b>Appendix 4</b> defines four stages: Input, Process, Output, Outcome. Appendix 6's «Type» cell is printed with no definition. The platform's present list holds three of them and omits <b>Input</b> entirely. Binding the cell to the stages is a reasonable interpretation, not an explicit statement."],
+     parts:[{k:"opts", id:"stage",
+        opts:[["yes","نعم — تُسمّى «مرحلة سلسلة النتائج» وتُضاف «المدخلات»، ويُسجَّل أن هذا تفسير المركز.","Yes — name it «value-flow stage», add Input, and record that this is the Centre's interpretation.",1],
+              ["no","لا — تُترك الخانة كما هي.","No — leave the cell as it is.",0],
+              ["defer","تأجيل حتى تُراجَع مع مالكي المؤشرات.","Defer until it is reviewed with the indicator owners.",0]]}]},
+    {id:"topics", n:"٣", ne:"3",
+     q:["مجالات خدمة القطاع: أيها يعكس عمل المركز فعلاً؟","The sector's service topics: which ones reflect the Centre's actual remit?"],
+     find:["الدليل الصحي لا يذكر مجالات القطاع الاجتماعي، فهذه اقتراحات. وأهميتها أن لكل مجال <b>وحدة عدّ</b> مختلفة تُحدد المقام: الشخص غير الأسرة، والمؤسسة غير الزيارة التفتيشية، والخطة غير هدفها.",
+           "A health guideline names no social-sector topics, so these are proposals. They matter because each carries a different <b>counting entity</b>, which decides the denominator: a person is not a family, an institution is not an inspection visit, a plan is not one of its goals."],
+     parts:[{k:"tags", id:"topics", items:[
+        ["الإتاحة والترتيبات التيسيرية المعقولة","Access and reasonable accommodation"],
+        ["مشاركة المستفيد والأسرة ومقدمي الرعاية","Beneficiary, family and carer involvement"],
+        ["استمرارية الخدمات ومتابعة الحالات","Service continuity and case follow-up"],
+        ["الحماية من الإساءة والإهمال","Safeguarding from abuse and neglect"],
+        ["تحقيق أهداف الخطة الفردية","Individual plan attainment"],
+        ["جودة المؤسسات والامتثال","Institutional quality and compliance"],
+        ["المشاركة والدمج","Participation and inclusion"]]},
+       {k:"text", id:"topics_add", t:["ما يُضاف أو يُحذف، وبأي تسمية معتمدة","What to add or remove, and under which approved name"],
+        ph:["…","…"]}]},
+    {id:"report", n:"٤", ne:"4",
+     q:["التقارير: ما أسماؤها المعتمدة، ومن يستقبلها؟","Reports: what are their approved names, and who receives them?"],
+     find:["الملحق السادس يسمّي دائرتين في وزارة الصحة، وهو توجيه خاص بها لا قائمة عامة. أما الخيارات الأربع الحالية في المنصة فقد اختيرت أثناء البناء. وهناك خطأ قائم يستحق التصحيح: «تقرير الدائرة» يقابله في الواجهة الإنجليزية <b>Directorate report</b> بينما «الدائرة» في هذا الهيكل هي <b>Department</b>.",
+           "Appendix 6 names two Ministry of Health directorates — routing specific to that ministry, not a general vocabulary. The platform's four present options were chosen while building. One live error deserves correction: «تقرير الدائرة» is labelled <b>Directorate report</b> in English, while الدائرة in this hierarchy is a <b>Department</b>."],
+     parts:[{k:"text", id:"report_names", t:["أسماء التقارير المعتمدة وجهاتها، بالعربية والإنجليزية","The approved report names and their recipients, in Arabic and English"],
+             ph:["مثال: تقرير الأداء الربعي — يُرفع إلى…","e.g. Quarterly performance report — submitted to…"]},
+            {k:"yn", id:"report_fix", t:["تصحيح المقابل الإنجليزي إلى Department report.","Correct the English label to Department report."]}]},
+    {id:"complete", n:"٥", ne:"5",
+     q:["سياسة الاكتمال: أي الحقول يمنع نقصُها اعتماد البطاقة؟","The completion policy: which missing fields should block a card?"],
+     find:["الدليل لا يحدد هذا إطلاقاً — فهي سياسة المركز وحده. ومبدأ واحد يستحق التثبيت: <b>الخانة الفارغة والصفر شيئان مختلفان</b>، ولا تُملأ الحقول بقيم افتراضية تبدو بعد ذلك وكأنها قرار من كاتب البطاقة.",
+           "The guideline does not address this at all — it is the Centre's policy alone. One principle deserves settling: <b>a blank is not a zero</b>, and fields must not be pre-filled with defaults that later read as the author's decision."],
+     parts:[{k:"opts", id:"complete",
+        opts:[["all","كل الحقول المقترحة إلزامية.","Every proposed field is mandatory.",0],
+              ["rc","الإلزامي كما في المقترح، مع قبول «لا ينطبق» ببيان سبب مكتوب.","Mandatory as proposed, with «not applicable» accepted when a written reason is given.",1],
+              ["min","الحد الأدنى فقط: العنوان، التعريف، المستهدف، المصدر.","A minimum only: title, definition, target, source.",0]]}]},
+    {id:"review", n:"٦", ne:"6",
+     q:["المراجعة والتغطية: متى يُراجَع التعريف، وهل يُلزَم كل مجال بمؤشرين؟","Review and coverage: when is a definition reviewed, and must every area carry two indicators?"],
+     find:["صفحة ١٣ تذكر ستة أشهر وسنة وثلاث إلى خمس سنوات في عبارة واحدة غير محسومة؛ فلا يصح تحويلها إلى مؤقّت إلزامي. والبند ٥٫٢٫١ يطلب معالجة كل مجال بمؤشرين على الأقل — وهي قاعدة لا تطبّقها المنصة اليوم بأي صورة.",
+           "Page 13 mentions six months, one year and three-to-five years in a single unresolved sentence; it should not be turned into a mandatory timer. Section 5.2.1 asks that each area be addressed by at least two indicators — a rule the platform does not implement in any form today."],
+     parts:[{k:"opts", id:"review_int", label:["دورية مراجعة تعريف المؤشر","How often an indicator's definition is reviewed"],
+        opts:[["h","كل ستة أشهر.","Every six months.",0],
+              ["y","سنوياً.","Annually.",1],
+              ["ev","عند تغيّر الخدمة أو مصدر البيانات فقط.","Only when the service or the data source changes.",0],
+              ["own","يحدده مالك المؤشر ضمن سقف يعتمده المركز.","Set by the indicator owner within a ceiling the Centre approves.",0]]},
+       {k:"opts", id:"review_cov", label:["قاعدة «مؤشران على الأقل لكل مجال»","The «at least two indicators per area» rule"],
+        opts:[["track","تتبُّع وتنبيه فقط — يُعرَض النقص دون منع.","Track and flag only — the gap is shown, nothing is blocked.",1],
+              ["block","إلزام يمنع اعتماد الخطة.","Enforced — the plan cannot be approved.",0],
+              ["off","لا تُطبَّق.","Not applied.",0]]}]}
+  ];
+  function kfEsc(x){ return String(x==null?"":x).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+  function kfDraw(){
+    var host=document.getElementById("kfList"); if(!host) return;
+    host.innerHTML=KF.map(function(d){
+      var body=d.parts.map(function(p){
+        if(p.k==="opts"){
+          var lab=p.label?'<span class="kf-lab">'+bi(p.label[0],p.label[1])+'</span>':"";
+          return lab+'<div class="kf-opts">'+p.opts.map(function(o){
+            var on=KFA.a[p.id]===o[0];
+            return '<label class="kf-opt'+(on?" on":"")+'"><input type="radio" name="kf_'+p.id+'" data-kfr="'+p.id+'" value="'+o[0]+'"'+(on?" checked":"")+'><span>'+
+              bi(o[1],o[2])+(o[3]?'<span class="kf-rec">'+bi("المقترح","proposed")+'</span>':"")+'</span></label>';
+          }).join("")+'</div>';
+        }
+        if(p.k==="yn"){
+          var v=KFA.a[p.id];
+          return '<div class="kf-sub"><span>'+bi(p.t[0],p.t[1])+'</span><span class="kf-yn">'+
+            '<button data-kfy="'+p.id+'" data-v="y" class="'+(v==="y"?"on":"")+'">'+bi("نعم","Yes")+'</button>'+
+            '<button data-kfy="'+p.id+'" data-v="n" class="'+(v==="n"?"on":"")+'">'+bi("لا","No")+'</button></span></div>';
+        }
+        if(p.k==="tags"){
+          var sel=KFA.a[p.id]||[];
+          return '<div class="kf-tags">'+p.items.map(function(it,i){
+            var on=sel.indexOf(i)>=0;
+            return '<label class="kf-tag'+(on?" on":"")+'"><input type="checkbox" data-kft="'+p.id+'" value="'+i+'"'+(on?" checked":"")+'>'+bi(it[0],it[1])+'</label>';
+          }).join("")+'</div>';
+        }
+        return '<span class="kf-lab">'+bi(p.t[0],p.t[1])+'</span>'+
+          '<textarea class="kf-note" data-kfn="'+p.id+'" placeholder="'+kfEsc(p.ph?p.ph[0]:"")+'">'+kfEsc(KFA.a[p.id]||"")+'</textarea>';
+      }).join("");
+      return '<div class="card kf-d">'+
+        '<div class="kf-head"><span class="kf-num">'+bi(d.n,d.ne)+'</span>'+
+        '<h2 class="kf-q">'+bi(d.q[0],d.q[1])+'</h2></div>'+
+        '<div class="kf-find">'+bi(d.find[0],d.find[1])+'</div>'+ body +
+        '<div style="margin-top:12px"><span class="kf-lab">'+bi("ملاحظة المديرة العامة","The Director General's note")+'</span>'+
+        '<textarea class="kf-note" data-kfn="note_'+d.id+'">'+kfEsc(KFA.a["note_"+d.id]||"")+'</textarea></div></div>';
+    }).join("");
+    kfStamp();
+  }
+  function kfSave(){
+    KFA.at=new Date().toISOString();
+    try{ localStorage.setItem(KF_K, JSON.stringify(KFA)); }catch(_){}
+    kfStamp();
+  }
+  function kfStamp(){
+    var el=document.getElementById("kfSaved"); if(!el) return;
+    if(!KFA.at){ el.innerHTML=bi("لم تُسجَّل إجابات بعد","No answers recorded yet"); return; }
+    var d=new Date(KFA.at);
+    var hh=("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);
+    el.innerHTML=bi("حُفظ في هذا الجهاز · "+hh, "Saved on this device · "+hh);
+  }
+  function kfSummary(){
+    var L=[];
+    L.push("بطاقة المؤشر — قرارات المركز / KPI card — Centre decisions");
+    L.push(KFA.at? ("آخر حفظ: "+KFA.at) : "");
+    KF.forEach(function(d){
+      L.push(""); L.push(d.ne+". "+d.q[0]);
+      d.parts.forEach(function(p){
+        var v=KFA.a[p.id];
+        if(p.k==="opts"){
+          var o=null; p.opts.forEach(function(x){ if(x[0]===v) o=x; });
+          L.push("   "+(p.label?p.label[0]+": ":"")+(o?o[1]:"— لم يُختَر —"));
+        } else if(p.k==="yn"){
+          L.push("   "+p.t[0]+" → "+(v==="y"?"نعم":v==="n"?"لا":"— لم يُختَر —"));
+        } else if(p.k==="tags"){
+          var sel=(v||[]).map(function(i){ return p.items[i][0]; });
+          L.push("   المجالات المختارة: "+(sel.length?sel.join(" · "):"— لا شيء —"));
+        } else if(v){ L.push("   "+p.t[0]+": "+v); }
+      });
+      if(KFA.a["note_"+d.id]) L.push("   ملاحظة: "+KFA.a["note_"+d.id]);
+    });
+    return L.join("\n");
+  }
+  document.addEventListener("change", function(e){
+    if(typeof RVON!=="undefined" && RVON) return;
+    var r=e.target.closest?e.target.closest("[data-kfr]"):null;
+    if(r){ KFA.a[r.dataset.kfr]=r.value; kfSave(); kfDraw(); return; }
+    var c=e.target.closest?e.target.closest("[data-kft]"):null;
+    if(c){
+      var id=c.dataset.kft, i=+c.value, cur=KFA.a[id]||[], at=cur.indexOf(i);
+      if(c.checked && at<0) cur.push(i); else if(!c.checked && at>=0) cur.splice(at,1);
+      KFA.a[id]=cur; kfSave(); kfDraw();
+    }
+  });
+  var _kfT;
+  document.addEventListener("input", function(e){
+    var t=e.target.closest?e.target.closest("[data-kfn]"):null; if(!t) return;
+    KFA.a[t.dataset.kfn]=t.value;
+    clearTimeout(_kfT); _kfT=setTimeout(kfSave, 400);
+  });
+  document.addEventListener("click", function(e){
+    if(typeof RVON!=="undefined" && RVON) return;
+    var y=e.target.closest?e.target.closest("[data-kfy]"):null;
+    if(y){ KFA.a[y.dataset.kfy]=(KFA.a[y.dataset.kfy]===y.dataset.v)?"":y.dataset.v; kfSave(); kfDraw(); return; }
+    if(e.target.closest&&e.target.closest("#kfPrint")){ window.print(); return; }
+    if(e.target.closest&&e.target.closest("#kfCopy")){
+      var txt=kfSummary(), done=function(){ if(typeof rvToast==="function") rvToast(bi("نُسخت القرارات","The decisions were copied")); };
+      try{ navigator.clipboard.writeText(txt).then(done, function(){ kfFallback(txt); done(); }); }
+      catch(_){ kfFallback(txt); done(); }
+    }
+  });
+  function kfFallback(txt){
+    var ta=document.createElement("textarea"); ta.value=txt;
+    ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta);
+    ta.select(); try{ document.execCommand("copy"); }catch(_){}
+    document.body.removeChild(ta);
+  }
+  try{ kfDraw(); }catch(err){ console.error("kfld", err); }
+
   try{ gxLoad(); var dl=document.createElement("datalist"); dl.id="gxPeople"; dl.innerHTML=STAFF.map(function(p){return '<option value="'+gxEsc(p.who[0])+'">';}).join(""); document.body.appendChild(dl); if(typeof drawPlan==="function") drawPlan(); }catch(err){ console.error("gen init", err); }   // the plan was drawn before the generator loaded — redraw so tracking tabs appear
 
 })();
