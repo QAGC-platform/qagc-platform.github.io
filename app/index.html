@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 63">
+<meta name="qagc-ver" content="beta 64">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -14278,7 +14278,19 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     function gxCtx(){ var S=GX.cur, hit=GX_OUT.filter(function(o){return o[0].test(S.title||"");})[0], o=hit?hit[1]:null, t=S.title||(isAr()?"الهدف":"the objective");
     return {name:o?(isAr()?o.name:(o.nameEn||o.name)):"نسبة تحقق «"+t+"»", desc:o?("ما يقيسه: "+(isAr()?o.name:(o.nameEn||o.name))):("ما يتغيّر فعلاً بتحقق «"+t+"»، ولمن"), rationale:"لماذا نحتاج هذا المؤشر لهدف «"+t+"»", num:o?o.num:"ما يستوفي معيار «"+t+"»", den:o?o.den:"المجتمع المستهدف", excl:o&&o.excl?o.excl:"ما يُستثنى من القياس", elements:o?o.elements:"الحقول اللازمة للحساب", source:o?o.source:"أين تُؤخذ البيانات", limits:o&&o.limits?o.limits:"ما قد يُضعف الدقة", related:"مؤشر آخر يفسّر «"+t+"»", cohort:o&&o.cohort?o.cohort:"", ask:o&&o.ask?o.ask:"", key:o?o.key:""}; }
   function gxAutoDraft(S){ S=S||GX.cur; var out=[]; if(!S.title) return out; var all=[]; S.phases.forEach(function(ph){ ph.tasks.forEach(function(t){all.push(t);}); }); var base0=S.from?gxIso(gxP(S.from)-GXD):"";
-    if(all.length){ out.push(gxNormK({auto:true,plan:{phase:""},name:"نسبة خطوات خطة العمل المنجزة الموثّقة",dim:GX_DIMS[1],kind:"process",desc:"ما أُنجز ووُثّق من خطوات خطة عمل الهدف «"+S.title+"» ("+all.length+" خطوة). لا يقيس الالتزام بالمواعيد.",rationale:"الإنجاز الموثّق يبيّن ما تحقق فعلاً؛ ويُقرأ مع مؤشر الالتزام بالمواعيد إن وُجد.",num:"عدد الخطوات المنجزة الموثّقة",den:"عدد خطوات الخطة ("+all.length+")",excl:"خطوات أُلغيت باعتماد المديرة العامة",elements:"الخطوة، المرحلة، الموعد، تاريخ الإنجاز، المسؤول",type:"نسبة مئوية",unit:"%",base:0,baseDate:base0,target:100,targetDate:S.to,dir:"up",tol:10,source:"خطة العمل على المنصة — حالة الخطوات",cfreq:"w",mfreq:"m",reader:"قسم التنسيق والمتابعة",rfreq:"m",report:GX_REPORTS[1]}));
+    if(all.length){
+      var dated=all.filter(function(t){ return t.to; }).length;
+      if(dated) out.push(gxNormK({auto:true,plan:{phase:"",onTime:true},name:"نسبة خطوات الخطة المنجزة في موعدها",
+        dim:GX_DIMS[1],kind:"process",
+        desc:"من الخطوات الموثّقة، ما اكتمل في تاريخ استحقاقه أو قبله ("+dated+" خطوة لها موعد).",
+        rationale:"الإنجاز وحده لا يكشف التأخير؛ هذا المؤشر يقيس الالتزام بالمواعيد تحديداً.",
+        num:"عدد الخطوات التي تاريخ إنجازها ≤ تاريخ استحقاقها",den:"عدد خطوات الخطة ("+all.length+")",
+        excl:"الخطوات التي أُعيد جدولتها بقرار موثّق",
+        elements:"الخطوة، تاريخ الاستحقاق، تاريخ الإنجاز، تاريخ التوثيق",
+        type:"نسبة مئوية",unit:"%",base:0,baseDate:base0,target:90,targetDate:S.to,dir:"up",tol:10,
+        source:"خطة العمل على المنصة",cfreq:"m",mfreq:"m",reader:"",rfreq:"q",report:GX_REPORTS[1],
+        limits:"يعتمد على دقة تاريخ الإنجاز المسجَّل، وهو غير تاريخ التوثيق."}));
+      out.push(gxNormK({auto:true,plan:{phase:""},name:"نسبة خطوات خطة العمل المنجزة الموثّقة",dim:GX_DIMS[1],kind:"process",desc:"ما أُنجز ووُثّق من خطوات خطة عمل الهدف «"+S.title+"» ("+all.length+" خطوة). لا يقيس الالتزام بالمواعيد.",rationale:"الإنجاز الموثّق يبيّن ما تحقق فعلاً؛ ويُقرأ مع مؤشر الالتزام بالمواعيد إن وُجد.",num:"عدد الخطوات المنجزة الموثّقة",den:"عدد خطوات الخطة ("+all.length+")",excl:"خطوات أُلغيت باعتماد المديرة العامة",elements:"الخطوة، المرحلة، الموعد، تاريخ الإنجاز، المسؤول",type:"نسبة مئوية",unit:"%",base:0,baseDate:base0,target:100,targetDate:S.to,dir:"up",tol:10,source:"خطة العمل على المنصة — حالة الخطوات",cfreq:"w",mfreq:"m",reader:"قسم التنسيق والمتابعة",rfreq:"m",report:GX_REPORTS[1]}));
       S.phases.forEach(function(ph){ if(!ph.name||!ph.to||!ph.tasks.length) return; out.push(gxNormK({auto:true,plan:{phase:ph.name},name:"نسبة إنجاز مرحلة «"+ph.name+"» بحلول "+ph.to,dim:GX_DIMS[1],kind:"output",phase:ph.name,desc:"اكتمال خطوات مرحلة «"+ph.name+"» ("+ph.tasks.length+") ضمن مدتها.",rationale:"كل مرحلة تمهّد لما بعدها.",num:"عدد خطوات المرحلة المنجزة",den:"عدد خطوات المرحلة ("+ph.tasks.length+")",type:"نسبة مئوية",unit:"%",base:0,baseDate:gxIso(gxP(ph.from)-GXD),target:100,targetDate:ph.to,dir:"up",tol:0,source:"خطة العمل على المنصة",cfreq:"w",mfreq:"w",reader:ph.tasks[0].owner||"",rfreq:"m",report:GX_REPORTS[1]})); });
       // budget utilisation is not an outcome and underspending is not success — a local definition is needed first (Codex turn 04/05)
     }
@@ -14294,7 +14306,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(!done.length) return 0;
     var onTime=done.filter(function(t){ return t.done && t.to && gxP(t.done)<=gxP(t.to); }).length;
     return Math.round(onTime/steps.length*100); }
-  function gxPlanReading(k){ var S=GX.cur; if(!k.plan||S.status!=="approved") return null; var steps=[]; S.phases.forEach(function(ph){ if(!k.plan.phase||k.plan.phase===ph.name) ph.tasks.forEach(function(t){steps.push(t);}); }); if(!steps.length) return null; return Math.round(steps.filter(function(t){return t.verified;}).length/steps.length*100); }
+  function gxPlanReading(k){ var S=GX.cur; if(!k.plan||S.status!=="approved") return null;
+    if(k.plan.onTime) return gxOnTimeReading(k); var steps=[]; S.phases.forEach(function(ph){ if(!k.plan.phase||k.plan.phase===ph.name) ph.tasks.forEach(function(t){steps.push(t);}); }); if(!steps.length) return null; return Math.round(steps.filter(function(t){return t.verified;}).length/steps.length*100); }
   function gxF(label,key,k,o){ o=o||{}; var w=o.w?' w'+o.w:'', v=k[key], inner;
     if(o.sel) inner='<select data-gxk="'+key+'">'+o.sel.map(function(x){ var val=Array.isArray(x)?x[0]:x, lab=Array.isArray(x)?x[1]:x; if(o.lab) lab=o.lab(val); return '<option value="'+gxEsc(val)+'"'+(String(v)===String(val)?" selected":"")+'>'+gxEsc(lab)+'</option>'; }).join("")+'</select>';
     else inner='<input'+(o.type?' type="'+o.type+'"':'')+(o.list?' list="'+o.list+'"':'')+(o.min?' min="'+o.min+'"':'')+(o.max?' max="'+o.max+'"':'')+(o.step?' step="'+o.step+'"':'')+' data-gxk="'+key+'" value="'+gxEsc(v)+'" placeholder="'+gxEsc(o.ph||"")+'">';
@@ -14374,8 +14387,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(!(b>a)) return null;
     if(t<=a) return {v:+k.base, basis:"base"};
     if(t>=b) return {v:+k.target, basis:"target"};
-    var ms=gxMilestones(k).filter(function(m){ return gxP(m.date)<=t && m.val!==""&&m.val!=null; });
-    if(ms.length) return {v:+ms[ms.length-1].val, basis:k.plan?"plan":"milestone"};
+    // only a milestone the author actually adopted counts as an expectation; a generated
+    // proposal leaves the estimate labelled as an estimate
+    var adopted=gxMilestones(k).filter(function(m){ return gxP(m.date)<=t && k.mil && k.mil[m.date]!==undefined; });
+    if(adopted.length) return {v:+adopted[adopted.length-1].val, basis:k.plan?"plan":"milestone"};
     return {v:+k.base+(+k.target-+k.base)*((t-a)/(b-a)), basis:"interp"};
   }
   function gxPaceOf(k,v,today){
@@ -14442,14 +14457,41 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function gxValidDate(d){ var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(d||"")); if(!m) return false;
     var dt=new Date(Date.UTC(+m[1],+m[2]-1,+m[3]));
     return dt.getUTCFullYear()===+m[1] && dt.getUTCMonth()===+m[2]-1 && dt.getUTCDate()===+m[3]; }
-  function gxCell(fd,r,c,depth){ depth=depth||0; var raw=(fd.rows[r]||[])[c]; if(raw==null) return ""; raw=String(raw).trim(); if(raw.charAt(0)!=="="){ return gxNum(raw); } if(depth>20) return "#!"; try{ return gxEval(fd,raw.slice(1),depth+1); }catch(_){ return "#!"; } }
+  function gxCell(fd,r,c,depth){ depth=depth||0; var raw=(fd.rows[r]||[])[c]; if(raw==null) return ""; raw=String(raw).trim(); if(raw.charAt(0)!=="="){ return gxNum(raw); } if(depth>20) return "#دورة"; try{ return gxEval(fd,raw.slice(1),depth+1); }catch(_){ return "#!"; } }
   function gxRange(fd,a,b,depth){ var m1=a.match(/^([A-Z]+)(\d+)$/), m2=b.match(/^([A-Z]+)(\d+)$/); if(!m1||!m2) return []; var c1=gxColIndex(m1[1]),r1=+m1[2]-1,c2=gxColIndex(m2[1]),r2=+m2[2]-1,out=[]; for(var r=Math.min(r1,r2);r<=Math.max(r1,r2);r++) for(var c=Math.min(c1,c2);c<=Math.max(c1,c2);c++){ var v=gxCell(fd,r,c,depth); if(typeof v==="number") out.push(v); } return out; }
   function gxEval(fd,expr,depth){ expr=expr.toUpperCase().replace(/\s+/g,"");
-    expr=expr.replace(/(SUM|AVG|AVERAGE|COUNT|MIN|MAX)\(([A-Z]+\d+):([A-Z]+\d+)\)/g,function(_,fn,a,b){ var v=gxRange(fd,a,b,depth); if(!v.length) return "0"; if(fn==="SUM") return String(v.reduce(function(x,y){return x+y;},0)); if(fn==="AVG"||fn==="AVERAGE") return String(v.reduce(function(x,y){return x+y;},0)/v.length); if(fn==="COUNT") return String(v.length); if(fn==="MIN") return String(Math.min.apply(null,v)); return String(Math.max.apply(null,v)); });
-    expr=expr.replace(/([A-Z]+)(\d+)/g,function(_,cn,rn){ var v=gxCell(fd,+rn-1,gxColIndex(cn),depth); return typeof v==="number"?"("+v+")":"0"; });
-    if(!/^[0-9.+\-*/()%]+$/.test(expr)) throw 0; var v=Function('"use strict";return ('+expr+')')(); return isFinite(v)?Math.round(v*1000)/1000:"#!"; }
+    expr=expr.replace(/(SUM|AVG|AVERAGE|COUNT|MIN|MAX)\(([A-Z]+\d+):([A-Z]+\d+)\)/g,function(_,fn,a,b){ var v=gxRange(fd,a,b,depth); if(!v.length) return (fn==="COUNT"||fn==="SUM")?"0":"#لاقيم"; if(fn==="SUM") return String(v.reduce(function(x,y){return x+y;},0)); if(fn==="AVG"||fn==="AVERAGE") return String(v.reduce(function(x,y){return x+y;},0)/v.length); if(fn==="COUNT") return String(v.length); if(fn==="MIN") return String(Math.min.apply(null,v)); return String(Math.max.apply(null,v)); });
+    var refErr=null;
+    expr=expr.replace(/([A-Z]+)(\d+)/g,function(_,cn,rn){ var v=gxCell(fd,+rn-1,gxColIndex(cn),depth);
+      if(typeof v==="number") return "("+v+")";
+      if(typeof v==="string"&&v.charAt(0)==="#") { refErr=refErr||v; return "(0)"; }   // any error propagates unchanged
+      if(String(v).trim()==="") { refErr=refErr||"#فارغ"; return "(0)"; }           // empty is not zero
+      refErr=refErr||"#نص"; return "(0)"; });                                        // text is not zero
+    if(refErr) return refErr;
+    if(expr.indexOf("#")>-1) return expr.match(/#[^\s()+\-*/]*/)[0];   // an aggregate's error survives
+    if(!/^[0-9.+\-*/()%]+$/.test(expr)) return "#!";
+    var v; try{ v=gxArith(expr); }catch(_){ return "#!"; }
+    return isFinite(v)?Math.round(v*1000)/1000:"#!"; }
+  // a small arithmetic reader — no dynamic compilation, and % is a percent, not a remainder
+  function gxArith(src){
+    var i=0; function ws(){ while(i<src.length&&src.charAt(i)===" ") i++; }
+    function num(){ var st=i; while(i<src.length&&/[0-9.]/.test(src.charAt(i))) i++;
+      if(i===st) throw 0; var n=parseFloat(src.slice(st,i)); if(!isFinite(n)) throw 0;
+      while(src.charAt(i)==="%"){ n=n/100; i++; } return n; }
+    function prim(){ ws();
+      if(src.charAt(i)==="("){ i++; var v=sum(); if(src.charAt(i)!==")") throw 0; i++;
+        while(src.charAt(i)==="%"){ v=v/100; i++; } return v; }
+      if(src.charAt(i)==="-"){ i++; return -prim(); }
+      if(src.charAt(i)==="+"){ i++; return prim(); }
+      return num(); }
+    function mul(){ var v=prim(); for(;;){ ws(); var c=src.charAt(i);
+      if(c==="*"){ i++; v*=prim(); } else if(c==="/"){ i++; var d=prim(); if(d===0) throw 0; v/=d; } else return v; } }
+    function sum(){ var v=mul(); for(;;){ ws(); var c=src.charAt(i);
+      if(c==="+"){ i++; v+=mul(); } else if(c==="-"){ i++; v-=mul(); } else return v; } }
+    var out=sum(); ws(); if(i<src.length) throw 0; return out; }
   function gxParseCSV(txt){ txt=String(txt).replace(/^\uFEFF/,"").replace(/\r\n?/g,"\n");
-    var first=txt.split("\n")[0]||""; var sep= first.indexOf("\t")>-1?"\t" : first.indexOf(";")>-1?";" : ",";
+    var first=(txt.split("\n")[0]||"").replace(/"[^"]*"/g,"");   // a quoted ; must not choose the separator
+    var sep= first.indexOf("\t")>-1?"\t" : first.indexOf(";")>-1?";" : ",";
     var rows=[], row=[], cell="", q=false;                       // quoted commas and newlines survive
     for(var i=0;i<txt.length;i++){ var ch=txt.charAt(i);
       if(q){ if(ch==='"'){ if(txt.charAt(i+1)==='"'){ cell+='"'; i++; } else q=false; } else cell+=ch; }
