@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 53">
+<meta name="qagc-ver" content="beta 54">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -14041,6 +14041,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var ro=gxRO();
     if(S.title && !S.phases.length && !ro) S.phases.push({name:"",from:"",to:"",tasks:[]});
     var act=document.activeElement, actId=act&&act.id, caret=(act&&act.selectionEnd!==undefined)?act.selectionEnd:null;
+    var actPath=null;   // carets and rows have no id; remember where the caret sat
+    if(act&&!actId&&act.closest&&act.closest("#gxG")){
+      var row=act.closest("[data-gxtk],[data-gxrow],.gx-lr"); 
+      if(row){ var rows=[].slice.call(document.querySelectorAll("#gxG .gx-labels .gx-lr")); var ri=rows.indexOf(row);
+        if(ri>=0) actPath={row:ri, caret:act.classList&&act.classList.contains("gx-car")}; } }
     var w=gxWindow(host), px=w.px, t0=w.t0, t1=w.t1, W=w.W, MO=isAr()?GX_MO:GX_MOE;
     var X=function(d){ return (gxP(d)-t0)/GXD*px; };
     var tone=(GX.z==="week"||GX.z==="month")?"day":"week";
@@ -14121,6 +14126,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       : '<button class="btn" id="gxSaveDraft">'+bi("حفظ كمسودة","Save draft")+'</button><button class="btn btn-p" id="gxSubmit">'+(S.scope==="mine"?bi("إرسال إلى المدير المباشر","Send to line manager"):S.scope==="centre"?bi("اعتماد وإدراج في الخطة","Approve and add to the plan"):bi("إرسال للاعتماد","Send for approval"))+'</button><span style="font-size:var(--t-xs);color:var(--ink-2)"><b>'+bi("المسار:","Route:")+'</b> '+rt.chain.map(gxEsc).join(" ← ")+' · <b>'+bi("بعد الاعتماد:","After approval:")+'</b> '+bi("الخطة السنوية ← ","Annual plan ← ")+gxEsc(rt.dest.join(" ← "))+'</span>';
     gxSyncRows(host);
     if(actId){ var again=document.getElementById(actId); if(again){ again.focus(); if(caret!==null&&again.setSelectionRange){ try{ again.setSelectionRange(caret,caret); }catch(_){} } } }
+    else if(actPath){ var rows2=host.querySelectorAll(".gx-labels .gx-lr"); var tgt=rows2[actPath.row];
+      if(tgt){ var f=actPath.caret?(tgt.querySelector(".gx-car")||tgt):tgt;
+        if(f&&!f.hasAttribute("tabindex")) f.setAttribute("tabindex","0");   // the keyboard pass is debounced; focus now
+        try{ f.focus(); }catch(_){} } }
     else { var fo=host.querySelector("[data-gxfocus]"); if(fo) fo.focus(); }
   }
   function gxFind(id){ var a=id.split(":"); return GX.cur.phases[+a[0]].tasks[+a[1]]; }
