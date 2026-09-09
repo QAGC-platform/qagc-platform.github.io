@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 46">
+<meta name="qagc-ver" content="beta 47">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -1985,7 +1985,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 .gx-scope .gx-lr .n{font-variant-numeric:tabular-nums;color:var(--ink-2);font-size:var(--t-xs);text-align:center}
 .gx-scope .gx-add{font-size:var(--t-xs);color:var(--brand-ink);background:none;border:none;cursor:pointer;font:inherit;font-weight:700;padding:0 6px}
 .gx-scope .gx-del{opacity:0;font-size:var(--t-xs);color:var(--ink-3);background:none;border:none;cursor:pointer;padding:0 4px}
-.gx-scope .gx-lr:hover .gx-del{opacity:1}
+.gx-scope .gx-lr:hover .gx-del,.gx-scope .gx-del:focus-visible,.gx-scope .gx-lr:focus-within .gx-del{opacity:1}
 .gx-scope .gx-lr.new{height:30px}
 .gx-scope .gx-lr.new button{grid-column:1/-1;justify-self:start;margin-inline-start:8px}
 .gx-scope .f label{display:block;font-size:var(--t-xs);color:var(--ink-3);font-weight:700;margin-bottom:3px}
@@ -2008,6 +2008,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 .gx-scope .gx-th .qb.on{background:var(--brand-ink);color:#fff}
 .gx-scope .gx-bg.q3{top:66px}
 .gx-scope .gx-lh.q3{height:66px}
+:is(.card-h,[tabindex="0"]):focus-visible{outline:2px solid var(--brand-gold);outline-offset:2px;border-radius:4px}
 #rvPop .cx{cursor:move;user-select:none}
 #rvPanel .ph{cursor:move;user-select:none}
 .gx-info{width:20px;height:20px;border-radius:99px;border:1.5px solid var(--gold-ink);color:var(--gold-ink);background:transparent;font:italic 700 12px Georgia,serif;cursor:pointer;vertical-align:middle;margin-inline-start:6px;line-height:1}
@@ -2173,12 +2174,12 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       <span><span class="t1"><span lang="ar">قطاع الأشخاص ذوي الإعاقة</span><span lang="en">People with Disabilities Sector</span></span>
         <span class="t2"><span lang="ar">منصة ضمان الجودة</span><span lang="en">Quality Assurance Platform</span></span></span>
     </div>
-    <div id="gateMsg"></div>
+    <div id="gateMsg" role="status" aria-live="polite"></div>
     <div id="gateForm">
       <div class="fld"><label><span lang="ar">اسم المستخدم</span><span lang="en">Username</span></label>
-        <input id="gi-user" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" style="direction:ltr;text-align:start"></div>
+        <input id="gi-user" aria-label="اسم المستخدم · Username" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" style="direction:ltr;text-align:start"></div>
       <div class="fld"><label><span lang="ar">كلمة المرور</span><span lang="en">Password</span></label>
-        <input id="gi-pass" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" style="direction:ltr;text-align:start"></div>
+        <input id="gi-pass" aria-label="كلمة المرور · Password" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" style="direction:ltr;text-align:start"></div>
       <button class="btn btn-p" id="gi-go"><span lang="ar">تسجيل الدخول</span><span lang="en">Sign in</span></button>
     </div>
     <div id="gateInvite" hidden>
@@ -4411,7 +4412,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 </div>
 
 <div class="ovl" id="statsOvl">
-  <div class="modal" role="dialog" aria-modal="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="statsTitle">
     <h3 id="statsTitle"></h3>
     <div id="statsBody"></div>
     <button class="btn close" id="statsClose"><span lang="ar">إغلاق</span><span lang="en">Close</span></button>
@@ -7493,6 +7494,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(sw){
       sw.classList.toggle("on");
       var on=sw.classList.contains("on");
+      sw.setAttribute("role","switch"); sw.setAttribute("aria-checked", on?"true":"false");
       if(sw.id==="swDark"){ document.documentElement.setAttribute("data-ui", on?"dark":"light"); paintShell(); }
       if(sw.id==="swDense") document.documentElement.style.setProperty("--sp-4", on?"14px":"20px");
     }
@@ -13047,6 +13049,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   document.addEventListener("click",function(e){
     if(typeof RVON!=="undefined" && RVON) return;
     var b=e.target.closest?e.target.closest("[data-orgu]"):null; if(!b) return;
+    b.setAttribute("aria-expanded", b.parentElement&&b.parentElement.getAttribute("data-open")==="1"?"false":"true");
     var c=b.dataset.orgu;
     ORG_OPEN[c]=!ORG_OPEN[c];
     try{ localStorage.setItem("qagcOrgOpen", JSON.stringify(ORG_OPEN)); }catch(_){}
@@ -13677,6 +13680,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       if(!h||!h.classList||!h.classList.contains("card-h")) return;  // nothing to tap
       c.setAttribute("data-cinit","");
       if(!OPEN[cardKey(c)]) c.setAttribute("data-shut","");
+      h.setAttribute("tabindex","0"); h.setAttribute("role","button");
+      h.setAttribute("aria-expanded", c.hasAttribute("data-shut")?"false":"true");
     });
   }
   document.addEventListener("click",function(e){
@@ -13687,6 +13692,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var h=e.target.closest(".card > .card-h"); if(!h) return;
     var c=h.parentElement, wasShut=c.hasAttribute("data-shut");
     if(wasShut) c.removeAttribute("data-shut"); else c.setAttribute("data-shut","");
+    h.setAttribute("aria-expanded", wasShut?"true":"false");
     OPEN[cardKey(c)]=wasShut;
     try{ localStorage.setItem("qagcOpen", JSON.stringify(OPEN)); }catch(_){}
   });
@@ -13697,6 +13703,29 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     clearTimeout(_ciT); _ciT=setTimeout(initCards,120);
   }).observe(document.querySelector("main")||document.body,{childList:true,subtree:true});
   initCards();
+
+  // ── keyboard layer: the mouse-only interactions gain focus + Enter/Space ──
+  var KBD_SEL=".card > .card-h,.ohead[data-toggle],.asnhead,[data-asntoggle],.gx-car,[data-gxmo],[data-gxun],.qb,[data-gxq],.rperson,[data-ccd],.ccal-chip,[data-cpd],[data-cpdmo],[data-gxtk].gx-lr,.gx-lh,[data-minemode]";
+  function kbdPass(root){
+    (root||document).querySelectorAll(KBD_SEL).forEach(function(el){
+      if(el.tagName==="BUTTON"||el.tagName==="A"||el.hasAttribute("tabindex")) return;
+      el.setAttribute("tabindex","0");
+    });
+    (root||document).querySelectorAll(".sw-btn").forEach(function(swb){
+      if(!swb.getAttribute("role")){ swb.setAttribute("role","switch"); swb.setAttribute("aria-checked", swb.classList.contains("on")?"true":"false"); }
+      if(!swb.getAttribute("aria-label")){ var row=swb.closest(".toggle"); var lbl=row?row.querySelector(".tl2,span"):null; if(lbl) swb.setAttribute("aria-label", lbl.textContent.replace(/\s+/g," ").trim().slice(0,80)); }
+    });
+  }
+  document.addEventListener("keydown",function(e){
+    if(e.key!=="Enter"&&e.key!==" ") return;
+    var el=document.activeElement; if(!el||!el.matches) return;
+    if(el.matches("input,textarea,select,[contenteditable]")) return;
+    if(el.matches(KBD_SEL)||el.classList.contains("sw-btn")){ e.preventDefault(); el.click(); }
+  });
+  var _kbT=null;
+  new MutationObserver(function(){ clearTimeout(_kbT); _kbT=setTimeout(function(){ kbdPass(); },160); })
+    .observe(document.querySelector("main")||document.body,{childList:true,subtree:true});
+  kbdPass();
 
   applyRole();
   gateFoot(); drawAccounts(); drawInvites();
