@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 59">
+<meta name="qagc-ver" content="beta 60">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -4372,6 +4372,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
             <h3><span lang="ar">مغذّي القراءات</span><span lang="en">Readings feeder</span> <span class="sub" id="gxFeedFor"></span></h3>
             <p class="lede"><span lang="ar">من أين تأتي قراءات المؤشر المختار: جدول داخل المنصة (صفوف وأعمدة وصيغ وعرض محوري)، أو ملف CSV/Excel، أو ورقة Google Sheets عبر الجسر. عمودا التاريخ والقراءة هما ما يغذّي المسار.</span><span lang="en">Where the selected KPI's readings come from: an on-site table (rows, columns, formulas, pivot), a CSV/Excel file, or a Google Sheet through the bridge.</span></p>
             <div class="gx-seg" id="gxFeedMode" style="max-width:520px"><button type="button" data-gfm="table"><span lang="ar">جدول داخل المنصة</span><span lang="en">On-site table</span></button><button type="button" data-gfm="file"><span lang="ar">ملف CSV / Excel</span><span lang="en">CSV / Excel file</span></button><button type="button" data-gfm="sheet"><span lang="ar">Google Sheets</span><span lang="en">Google Sheets</span></button></div>
+            <div id="gxImportBox" hidden style="margin-top:10px"></div>
             <div id="gxFeed" style="margin-top:10px"></div>
           </div>
         </div>
@@ -14475,7 +14476,41 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var seg=document.getElementById("gxFeedMode"); var slot=document.getElementById("gxFeedSrc"); if(seg&&slot){ slot.appendChild(seg); seg.style.margin="6px 0"; }
     var fz=document.getElementById("gxFz"); if(fz){ fz.addEventListener("dragover",function(e){e.preventDefault();fz.classList.add("over");}); fz.addEventListener("dragleave",function(){fz.classList.remove("over");}); fz.addEventListener("drop",function(e){e.preventDefault();fz.classList.remove("over"); var f=e.dataTransfer.files[0]; if(f) gxLoadFile(f,k);}); var ff=document.getElementById("gxFf"); if(ff) ff.addEventListener("change",function(){ if(ff.files[0]) gxLoadFile(ff.files[0],k); }); }
   }
-  function gxLoadFile(f,k,lock){ var fd=k.feed; fd.file=f.name; fd.meta=[]; if(/\.csv$|\.txt$/i.test(f.name)){ var rdr=new FileReader(); rdr.onload=function(){ var t=gxParseCSV(String(rdr.result)); if(t.length){ fd.cols=t[0]; fd.rows=lock?[]:t.slice(1); fd.dateCol=0; fd.valCol=Math.min(1,fd.cols.length-1); } gxSave(); gxDrawFeed(); gxDrawTool(); gxDrawKSide(); gxToast(lock?"أُخذت أعمدة الملف كقالب — القراءات بعد الاعتماد.":"قُرئ الملف: "+fd.rows.length+" صفاً.", lock?"Columns taken as a template — readings after approval.":"File read: "+fd.rows.length+" rows."); }; rdr.readAsText(f); } else { gxSave(); gxDrawFeed(); gxDrawTool(); gxToast("ملف Excel — يُقرأ بأداة تحليل المؤشرات عبر الجسر؛ سُجّل اسمه.","Excel — read through the bridge tool; name recorded."); } }
+  // an import is examined before it touches stored readings: what parsed, what did not,
+  // which rows carry attestations that would be lost, and append or replace.
+  var GXIMP=null;
+  function gxImportScan(rows,fd){
+    var head=rows[0]||[], body=rows.slice(1);
+    var dc=0, vc=Math.min(1,Math.max(0,head.length-1));
+    var ok=[], bad=[], dups={}, dupN=0;
+    body.forEach(function(row,i){
+      var d=String(row[dc]==null?"":row[dc]).trim(), v=gxNum(row[vc]);
+      var why = !gxValidDate(d) ? (isAr()?"تاريخ غير صالح":"invalid date")
+              : typeof v!=="number" ? (isAr()?"قيمة غير رقمية":"non-numeric value") : "";
+      if(why) bad.push({line:i+2, raw:row.slice(0,3).join(" | "), why:why});
+      else { if(dups[d]) dupN++; dups[d]=1; ok.push({date:d, v:v}); }
+    });
+    var held=(fd.meta||[]).filter(function(m){ return m&&(m.verified||m.pending); }).length;
+    return {head:head, rows:body, ok:ok, bad:bad, dupN:dupN, held:held, dateCol:dc, valCol:vc};
+  }
+  function gxImportHTML(sc,fname){
+    return '<div class="gx-card" style="border-color:var(--brand-gold)"><h3>'+bi("مراجعة الاستيراد","Import review")+' — '+gxEsc(fname)+'</h3>'+
+      '<p class="lede">'+bi(sc.ok.length+" صفاً صالحاً للقراءة من "+sc.rows.length,sc.ok.length+" usable of "+sc.rows.length+" rows")+
+      (sc.dupN?' · '+bi(sc.dupN+" تاريخاً مكرراً",sc.dupN+" duplicate dates"):'')+
+      (sc.held?' · <b class="gx-warn">'+bi(sc.held+" قراءة موثّقة أو معلّقة في الجدول الحالي",sc.held+" verified or pending readings already stored")+'</b>':'')+'</p>'+
+      (sc.bad.length?'<div class="gx-sm">'+bi("صفوف لم تُقرأ:","Rows not read:")+'<ul style="margin:4px 18px 0">'+
+        sc.bad.slice(0,8).map(function(b){ return '<li>'+bi("السطر ","line ")+b.line+' — '+gxEsc(b.why)+': <span dir="ltr">'+gxEsc(b.raw)+'</span></li>'; }).join("")+
+        (sc.bad.length>8?'<li>'+bi("و"+(sc.bad.length-8)+" غيرها","and "+(sc.bad.length-8)+" more")+'</li>':'')+'</ul></div>':'')+
+      '<div class="gx-acts" style="margin-top:10px">'+
+        '<button class="btn btn-p" data-gximp="append">'+bi("إضافة إلى الموجود","Append to existing")+'</button>'+
+        '<button class="btn" data-gximp="replace">'+bi("استبدال الكل","Replace all")+'</button>'+
+        '<button class="btn" data-gximp="cancel">'+bi("إلغاء","Cancel")+'</button></div></div>';
+  }
+  function gxLoadFile(f,k,lock){ var fd=k.feed; if(/\.csv$|\.txt$/i.test(f.name)){ var rdr=new FileReader(); rdr.onload=function(){ var t=gxParseCSV(String(rdr.result));
+      if(t.length){ GXIMP={rows:t, k:k, lock:lock, file:f.name, scan:gxImportScan(t,fd)};
+        var box=document.getElementById("gxImportBox"); if(box){ box.innerHTML=gxImportHTML(GXIMP.scan,f.name); box.hidden=false; }
+        return; }
+      gxSave(); gxDrawFeed(); gxDrawTool(); gxDrawKSide(); gxToast(lock?"أُخذت أعمدة الملف كقالب — القراءات بعد الاعتماد.":"قُرئ الملف: "+fd.rows.length+" صفاً.", lock?"Columns taken as a template — readings after approval.":"File read: "+fd.rows.length+" rows."); }; rdr.readAsText(f); } else { gxSave(); gxDrawFeed(); gxDrawTool(); gxToast("ملف Excel — يُقرأ بأداة تحليل المؤشرات عبر الجسر؛ سُجّل اسمه.","Excel — read through the bridge tool; name recorded."); } }
   function gxFeedK(){ var S=GX.cur; return GX.K!==null?S.kpis[GX.K]:GX.KD; }
   function gxEmbedDraw(ref){ var S=gxTracked(ref); var host=document.getElementById("gxE-"+ref); if(!S||!host) return; var st=GX.embed[ref]||(GX.embed[ref]={z:"year",V:S.from});
     var keep={cur:GX.cur,z:GX.z,V:GX.V}; GX.cur=S; GX.z=st.z; GX.V=st.V; try{ gxDraw(host,{embed:true}); }finally{ st.V=GX.V; GX.cur=keep.cur; GX.z=keep.z; GX.V=keep.V; }
@@ -14607,6 +14642,21 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(gxDrag.kind==="step"){ var t=gxFind(gxDrag.id); t.from=a; t.to=b; } else if(gxDrag.kind==="obj"){ S.from=a; S.to=b; var f=document.getElementById("gx-from"),g=document.getElementById("gx-to"); if(f) f.value=a; if(g) g.value=b; } else if(gxDrag.kind==="phase"){ var pz=S.phases[gxDrag.pi]; pz.from=a; pz.to=b; } else { document.getElementById("gx-nf-from").value=a; document.getElementById("gx-nf-to").value=b; }
     gxPaint(gxDrag.tr,a,b); });
   document.addEventListener("pointerup",function(){ if(!gxDrag) return; var k=gxDrag.kind; gxDrag=null; gxSave(); if(k==="form"){ gxToast("رُسمت مدة الخطوة — تُكمَل التفاصيل ثم «إضافة الخطوة».","Step drawn — complete the details."); return; } gxDraw(); });
+  document.addEventListener("click",function(e){
+    var ib=e.target.closest&&e.target.closest("[data-gximp]"); if(!ib||!GXIMP) return;
+    var act=ib.dataset.gximp, fd=GXIMP.k.feed, sc=GXIMP.scan;
+    var box=document.getElementById("gxImportBox"); if(box){ box.hidden=true; box.innerHTML=""; }
+    if(act==="cancel"){ GXIMP=null; gxToast("أُلغي الاستيراد — لم يتغيّر شيء.","Import cancelled — nothing changed."); return; }
+    fd.file=GXIMP.file; fd.cols=sc.head.slice(); fd.dateCol=sc.dateCol; fd.valCol=sc.valCol;
+    var newRows=sc.ok.map(function(o){ var row=[]; row[sc.dateCol]=o.date; row[sc.valCol]=String(o.v); return row; });
+    if(GXIMP.lock){ fd.rows=[]; fd.meta=[]; }
+    else if(act==="replace"){ fd.rows=newRows; fd.meta=[]; }
+    else { fd.rows=(fd.rows||[]).concat(newRows); }                 // append keeps existing attestations
+    gxSave(); gxDrawFeed(); gxDrawTool(); gxDrawKSide();
+    gxToast(GXIMP.lock?"أُخذت الأعمدة كقالب — القراءات بعد الاعتماد.":(act==="replace"?"استُبدلت القراءات.":"أُضيفت "+newRows.length+" قراءة."),
+            GXIMP.lock?"Columns taken as a template.":(act==="replace"?"Readings replaced.":newRows.length+" readings appended."));
+    GXIMP=null; return;
+  });
   document.addEventListener("click",function(e){ if(!e.target.closest||typeof GX==="undefined"||!GX) return; var S=GX.cur;
     var vq=e.target.closest("[data-gxvq]"); if(vq){ var q=vq.dataset.gxvq.split("|"); var So=GX.list.filter(function(x){return x.id===q[0];})[0]; if(!So) return; var keep=GX.cur; GX.cur=So;
       if(q[1]==="editreq"){ if(q[2]==="approve"){ So.editGrant=true; So.editGrantBy=gxMe().name; } So.editReq=null; GX.cur=keep; gxSave(); if(typeof drawMineObjs==="function") drawMineObjs(); gxToast(q[2]==="approve"?"فُتح التعديل لصاحب الهدف.":"رُفض طلب التعديل.", q[2]==="approve"?"Unlocked for the owner.":"Edit request declined."); return; }
