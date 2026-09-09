@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 61">
+<meta name="qagc-ver" content="beta 62">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -14743,10 +14743,20 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var ink="173F45", gold="97804D", paper="F7F5F0";
     var th=gxThresholds(k), rd=(S.status==="approved"?gxReadings(k.feed||gxBlankFeed()):[]), last=rd[rd.length-1], pr=gxPlanReading(k);
     var cur= pr!==null?pr : last?last.v:null; var st=cur!==null?gxStatusOf(k,cur):null;
-    var facts=[ [isAr()?"البُعد":"Dimension", k.dim], [isAr()?"النوع":"Type", isAr()?GX_KIND[k.kind][0]:GX_KIND[k.kind][1]], [isAr()?"الرقم الحالي":"Current", k.base+" "+k.unit+(k.baseDate?" ("+k.baseDate+")":"")], [isAr()?"المستهدف":"Target", k.target+" "+k.unit+(k.targetDate?" — "+k.targetDate:"")],
+    var facts=[ [isAr()?"البُعد":"Dimension", k.dim], [isAr()?"النوع":"Type", isAr()?GX_KIND[k.kind][0]:GX_KIND[k.kind][1]], [isAr()?"خط الأساس":"Baseline", k.base+" "+k.unit+(k.baseDate?" ("+k.baseDate+")":"")], [isAr()?"المستهدف":"Target", k.target+" "+k.unit+(k.targetDate?" — "+k.targetDate:"")],
       [isAr()?"العتبات":"Thresholds", th?((k.dir==="up"?"≥ ":"≤ ")+th.above+" / "+th.tolLo.toFixed(1)+" / "+(k.dir==="up"?"< ":"> ")+th.tolLo.toFixed(1)+" "+k.unit):"—"], [isAr()?"آخر قراءة":"Latest", cur!==null?(cur+" "+k.unit+(st?" — "+(st==="a"?(isAr()?"بلغ المستهدف":"target met"):st==="t"?(isAr()?"ضمن حدود التفاوت":"within tolerance"):(isAr()?"خارج حدود التفاوت":"outside tolerance")):"")):"—"],
       [isAr()?"مقابل خطة اليوم":"Against plan to date", (function(){ var pc=gxPaceOf(k,cur); return pc?(gxPaceLabel(pc).replace(/<[^>]*>/g,"")+" — "+(isAr()?"المتوقع ":"expected ")+(Math.round(pc.expected*10)/10)+" "+k.unit):"—"; })()],
-      [isAr()?"المصدر":"Source", k.source||"—"], [isAr()?"جهة الرصد":"Monitored by", k.reader||"—"], [isAr()?"الوتيرة":"Frequency", (isAr()?GX_FREQ[k.cfreq][0]:GX_FREQ[k.cfreq][1])+" · "+(isAr()?GX_FREQ[k.rfreq][0]:GX_FREQ[k.rfreq][1])] ];
+      [isAr()?"المصدر":"Source", k.source||"—"], [isAr()?"جهة الرصد":"Monitored by", k.reader||"—"], [isAr()?"الوتيرة":"Frequency", (isAr()?GX_FREQ[k.cfreq][0]:GX_FREQ[k.cfreq][1])+" · "+(isAr()?GX_FREQ[k.rfreq][0]:GX_FREQ[k.rfreq][1])],
+      [isAr()?"ما يقيسه":"What it measures", k.desc||"—"],
+      [isAr()?"مسوّغ القياس":"Rationale", k.rationale||"—"],
+      [isAr()?"البسط":"Numerator", k.num||"—"],
+      [isAr()?"المقام":"Denominator", k.den||"—"],
+      [isAr()?"الاستثناءات":"Exclusions", k.excl||"—"],
+      [isAr()?"عناصر البيانات":"Data elements", k.elements||"—"],
+      [isAr()?"حدود الدقة":"Limitations", k.limits||"—"],
+      [isAr()?"المقارنة المرجعية":"Benchmark", k.bench?(k.bench+(k.benchVal?" — "+k.benchVal+" "+(k.unit||""):"")+(k.benchPeriod?" ("+k.benchPeriod+")":"")+(k.benchSrc?" · "+k.benchSrc:"")):(k.benchNA?((isAr()?"غير متوفرة: ":"none: ")+k.benchNA):"—")],
+      [isAr()?"مؤشر ذو صلة":"Related indicator", k.related||(k.relatedNone?(isAr()?"لا يوجد":"none identified"):"—")],
+      [isAr()?"يُدرج في":"Reported in", (typeof gxRepLabel==="function"?gxRepLabel(k.report):k.report)||"—"] ];
     var rtl=isAr()?' rtl="1" algn="r"':'';
     var para=function(t,sz,b,col){ return '<a:p><a:pPr'+rtl+'/><a:r><a:rPr lang="ar-OM" sz="'+sz+'"'+(b?' b="1"':'')+' dirty="0"><a:solidFill><a:srgbClr val="'+(col||ink)+'"/></a:solidFill><a:latin typeface="Calibri"/><a:cs typeface="Noto Kufi Arabic"/></a:rPr><a:t>'+gxX(t)+'</a:t></a:r></a:p>'; };
     var sp=function(id,name,x,y,cx,cy,body){ return '<p:sp><p:nvSpPr><p:cNvPr id="'+id+'" name="'+name+'"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="'+x+'" y="'+y+'"/><a:ext cx="'+cx+'" cy="'+cy+'"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr><p:txBody><a:bodyPr wrap="square" rtlCol="'+(isAr()?1:0)+'"><a:normAutofit/></a:bodyPr><a:lstStyle/>'+body+'</p:txBody></p:sp>'; };
