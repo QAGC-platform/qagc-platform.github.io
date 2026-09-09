@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 54">
+<meta name="qagc-ver" content="beta 55">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -14145,8 +14145,15 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function gxMilestones(k){ var S=GX.cur, out=[]; if(k.baseDate===""||k.targetDate===""||k.base===""||k.target==="") return out; var a=gxP(k.baseDate), b=gxP(k.targetDate); if(b<=a) return out;
     if(k.plan){ var steps=[]; S.phases.forEach(function(ph){ if(!k.plan.phase||k.plan.phase===ph.name) ph.tasks.forEach(function(t){steps.push(t);}); }); var n=steps.length||1; var ends=[]; S.phases.forEach(function(ph){ if(ph.to&&(!k.plan.phase||k.plan.phase===ph.name)) ends.push(ph.to); }); ends=ends.filter(function(d,i,arr){return arr.indexOf(d)===i&&gxP(d)>a&&gxP(d)<b;}).sort();
       ends.forEach(function(d){ var due=steps.filter(function(t){return gxP(t.to)<=gxP(d);}).length; var v=Math.round(due/n*100); out.push({date:d,auto:v,val:(k.mil&&k.mil[d]!==undefined)?k.mil[d]:v,why:due+" / "+n}); }); out.push({date:k.targetDate,auto:+k.target,val:+k.target,final:true}); return out; }
+    var wk = k.cfreq==="w";
     var step= k.cfreq==="m"?1 : k.cfreq==="q"?3 : k.cfreq==="h"?6 : k.cfreq==="y"?12 : 1; var d=new Date(a), i=0;
-    while(true){ i++; var t=Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+step*i,d.getUTCDate()); if(t>=b) break; var frac=(t-a)/(b-a); var v=+k.base+(+k.target-+k.base)*frac, key=gxIso(t); out.push({date:key,auto:Math.round(v*10)/10,val:(k.mil&&k.mil[key]!==undefined)?k.mil[key]:Math.round(v*10)/10}); }
+    while(true){ i++;
+      var t;
+      if(wk){ t=a+i*7*GXD; }
+      else { var y=d.getUTCFullYear(), mo=d.getUTCMonth()+step*i, day=d.getUTCDate();
+        var last=new Date(Date.UTC(y,mo+1,0)).getUTCDate();       // clamp to the month's own end
+        t=Date.UTC(y,mo,Math.min(day,last)); }
+      if(t>=b) break; var frac=(t-a)/(b-a); var v=+k.base+(+k.target-+k.base)*frac, key=gxIso(t); out.push({date:key,auto:Math.round(v*10)/10,val:(k.mil&&k.mil[key]!==undefined)?k.mil[key]:Math.round(v*10)/10}); }
     out.push({date:k.targetDate,auto:+k.target,val:+k.target,final:true}); return out; }
   function gxSmart(k){ var S=GX.cur; return [
     [bi("عنوان ووصف ومسوّغ","Title, description, rationale"), !!k.name&&!!k.desc&&!!k.rationale],
@@ -14202,8 +14209,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     document.getElementById("gxf4").innerHTML= gxF(bi("مصدر البيانات","Data source"),"source",k,{w:3,ph:C.source})+gxF(bi("المحددات","Limitations"),"limits",k,{w:3,ph:C.limits})+gxF(bi("وتيرة الجمع","Collection"),"cfreq",k,{w:2,sel:fr})+gxF(bi("وتيرة الرصد","Monitoring"),"mfreq",k,{w:2,sel:fr})+gxF(bi("جهة الرصد","Monitored by"),"reader",k,{w:2,list:"gxPeople",ph:isAr()?"اسم من الكشف أو وحدة":"A name or a unit"})+gxF(bi("وتيرة التقرير","Reporting"),"rfreq",k,{w:2,sel:fr})+gxF(bi("يُدرج في","Reported in"),"report",k,{w:4,sel:GX_REPORTS,lab:gxRepLabel});
     document.getElementById("gxKSave").innerHTML= GX.K===null?bi("إضافة المؤشر","Add KPI"):bi("حفظ التعديل","Save changes"); document.getElementById("gxKNew").hidden= GX.K===null&&!k.auto;
   }
-  function gxReadings(fd){ var out=[]; (fd.rows||[]).forEach(function(row,r){ var d=String(row[fd.dateCol]||"").trim(); var v=gxCell(fd,r,fd.valCol); var m=(fd.meta||[])[r]; if(/^\d{4}-\d{2}-\d{2}$/.test(d)&&typeof v==="number") out.push({date:d,v:v,pendingR: fd.mode!=="sheet" && !(m&&m.verified)}); }); return out.sort(function(a,b){return gxP(a.date)-gxP(b.date);}); }
-  function gxStatusOf(k,v){ var th=gxThresholds(k); if(!th||typeof v!=="number") return null; if(k.dir==="up") return v>=th.above?"a":v>=th.tolLo?"t":"b"; return v<=th.above?"a":v<=th.tolLo?"t":"b"; }
+  function gxReadings(fd){ var out=[]; (fd.rows||[]).forEach(function(row,r){ var d=String(row[fd.dateCol]||"").trim(); var v=gxCell(fd,r,fd.valCol); var m=(fd.meta||[])[r]; if(gxValidDate(d)&&typeof v==="number"&&isFinite(v)) out.push({date:d,v:v,pendingR: fd.mode!=="sheet" && !(m&&m.verified)}); }); return out.sort(function(a,b){return gxP(a.date)-gxP(b.date);}); }
+  function gxStatusOf(k,v){ var th=gxThresholds(k); if(!th||typeof v!=="number"||!isFinite(v)) return null; if(k.dir==="up") return v>=th.above?"a":v>=th.tolLo?"t":"b"; return v<=th.above?"a":v<=th.tolLo?"t":"b"; }
   function gxDrawKSide(){ var S=GX.cur; if(!S||!GX.KD) return; var k=GX.KD, ms=gxMilestones(k), u=gxEsc(k.unit);
     var milFocused=document.activeElement&&document.activeElement.dataset&&document.activeElement.dataset.gxmil;
     if(!milFocused) document.getElementById("gxMil").innerHTML= ms.length ? '<table class="gx-mil"><tr><th>'+bi("التاريخ","Date")+'</th><th>'+bi("المقترح","Proposed")+'</th><th>'+bi("المعتمد","Adopted")+'</th><th></th></tr>'+ms.map(function(m){return '<tr><td>'+m.date+'</td><td>'+m.auto+u+'</td><td>'+(m.final?'<b>'+m.val+u+'</b>':'<input type="number" step="any" data-gxmil="'+m.date+'" value="'+m.val+'">')+'</td><td>'+(m.final?bi("المستهدف النهائي","final target"):(m.val!==m.auto?'<span style="color:var(--gold-ink)">'+bi("معدَّل","edited")+'</span>':(m.why||'')))+'</td></tr>';}).join("")+'</table>' : '<div style="font-size:var(--t-xs);color:var(--ink-3)">'+bi("تظهر المعالم بعد إدخال الرقم الحالي والمستهدف وتاريخيهما.","Milestones appear once both figures and dates exist.")+'</div>';
@@ -14226,10 +14233,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         : (ctype==="area" ? '<path d="'+pathD+' L'+P[P.length-1][0]+',84 L'+P[0][0]+',84 Z" fill="var(--brand-ink)" opacity=".16"/>' : '')+'<path d="'+pathD+'" fill="none" stroke="var(--brand-ink)" stroke-width="2" stroke-dasharray="'+(RD.length?'4 3':'0')+'"/>'+P.map(function(a,i){return '<circle cx="'+a[0]+'" cy="'+a[1]+'" r="'+(i===0||i===P.length-1?4:2.5)+'" fill="'+(i===P.length-1?'var(--gold-ink)':'var(--brand-ink)')+'"/>';}).join("");
       svg.innerHTML=band+planShape+RP+'<text x="10" y="90" font-size="9" fill="var(--ink-3)">'+gxEsc(k.base)+u+'</text><text x="310" y="90" font-size="9" text-anchor="end" fill="var(--ink-3)">'+gxEsc(k.target)+u+'</text>';
     } else svg.innerHTML='<text x="160" y="50" font-size="11" text-anchor="middle" fill="var(--ink-3)">'+(isAr()?"يُرسم المسار بعد إدخال الرقمين وتاريخيهما":"The path draws once both figures and dates exist")+'</text>';
-    document.getElementById("gxThr").innerHTML= th?'<div class="a">'+bi("فوق المستهدف","Above")+'<b>'+(k.dir==="up"?"≥ ":"≤ ")+th.above+u+'</b></div><div class="t">'+bi("ضمن التفاوت","In tolerance")+'<b>'+(k.dir==="up"?th.tolLo.toFixed(1)+" – "+th.above:th.above+" – "+th.tolLo.toFixed(1))+u+'</b></div><div class="b">'+bi("دون المستهدف","Below")+'<b>'+(k.dir==="up"?"< ":"> ")+th.tolLo.toFixed(1)+u+'</b></div>':'';
+    document.getElementById("gxThr").innerHTML= th?'<div class="a">'+bi("بلوغ المستهدف","Target met")+'<b>'+(k.dir==="up"?"≥ ":"≤ ")+th.above+u+'</b></div><div class="t">'+bi("ضمن حدود التفاوت","Within tolerance")+'<b>'+(k.dir==="up"?th.tolLo.toFixed(1)+" – "+th.above:th.above+" – "+th.tolLo.toFixed(1))+u+'</b></div><div class="b">'+bi("خارج حدود التفاوت","Outside tolerance")+'<b>'+(k.dir==="up"?"< ":"> ")+th.tolLo.toFixed(1)+u+'</b></div>':'';
     document.getElementById("gxSmart").innerHTML=gxSmart(k).map(function(r){return '<div><span>'+r[0]+'</span><span class="'+(r[1]?"ok":"no")+'">'+(r[1]?"✓":"—")+'</span></div>';}).join("");
     document.getElementById("gxKList").innerHTML= S.kpis.length ? S.kpis.map(function(x,i){ var ok=gxSmart(x).filter(function(r){return r[1];}).length; var last=S.status==="approved"?gxReadings(x.feed||gxBlankFeed()).pop():null; var prx=gxPlanReading(x); var cur= prx!==null?prx : last?last.v:null; var st=cur!==null?gxStatusOf(x,cur):null;
-      return '<div class="gx-kitem" data-gxki="'+i+'"><span class="kn">'+gxEsc(x.name)+'</span><span class="pill '+(ok<5?'p-warn':'p-good')+'">'+ok+'/8</span><span class="km">'+gxEsc(x.dim)+' · '+gxEsc(x.base)+gxEsc(x.unit)+' ← '+gxEsc(x.target)+gxEsc(x.unit)+' '+bi("بحلول","by")+' '+gxEsc(x.targetDate)+(cur!==null?' · <b>'+bi("الآن","now")+' '+cur+gxEsc(x.unit)+'</b>'+(st?' <span class="gx-rd"><span class="st '+st+'">'+(st==="a"?bi("فوق المستهدف","above"):st==="t"?bi("ضمن التفاوت","tolerance"):bi("دون المستهدف","below"))+'</span></span>':''):'')+(x.auto?' <span class="gx-tag">'+bi("مقترح آلياً","auto")+'</span>':'')+(GX.cur.status!=="approved"?' <button class="gx-del" style="opacity:1" data-gxdelk="'+i+'">'+bi("حذف","Delete")+'</button>':'')+'</span></div>'; }).join("") : '<div style="font-size:var(--t-xs);color:var(--ink-3)">'+bi("لا مؤشرات بعد — كل هدف يحتاج مؤشراً واحداً على الأقل.","No KPIs yet — every objective needs at least one.")+'</div>';
+      return '<div class="gx-kitem" data-gxki="'+i+'"><span class="kn">'+gxEsc(x.name)+'</span><span class="pill '+(ok<5?'p-warn':'p-good')+'">'+ok+'/8</span><span class="km">'+gxEsc(x.dim)+' · '+gxEsc(x.base)+gxEsc(x.unit)+' ← '+gxEsc(x.target)+gxEsc(x.unit)+' '+bi("بحلول","by")+' '+gxEsc(x.targetDate)+(cur!==null?' · <b>'+bi("الآن","now")+' '+cur+gxEsc(x.unit)+'</b>'+(st?' <span class="gx-rd"><span class="st '+st+'">'+(st==="a"?bi("بلغ المستهدف","met"):st==="t"?bi("ضمن التفاوت","tolerance"):bi("خارج التفاوت","outside"))+'</span></span>':''):'')+(x.auto?' <span class="gx-tag">'+bi("مقترح آلياً","auto")+'</span>':'')+(GX.cur.status!=="approved"?' <button class="gx-del" style="opacity:1" data-gxdelk="'+i+'">'+bi("حذف","Delete")+'</button>':'')+'</span></div>'; }).join("") : '<div style="font-size:var(--t-xs);color:var(--ink-3)">'+bi("لا مؤشرات بعد — كل هدف يحتاج مؤشراً واحداً على الأقل.","No KPIs yet — every objective needs at least one.")+'</div>';
     var kc=document.getElementById("gxKcnt"); if(kc) kc.textContent=S.kpis.length;
   }
   function gxDrawDrafts(){ var host=document.getElementById("gxDrafts"); if(!host) return; var S=GX.cur;
@@ -14239,13 +14246,38 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   // ── feeder: an on-site table with formulas and pivot, CSV drop, or a Google Sheet ──
   function gxColName(i){ var n=""; i++; while(i>0){ var m=(i-1)%26; n=String.fromCharCode(65+m)+n; i=Math.floor((i-1)/26); } return n; }
   function gxColIndex(nm){ var i=0; nm.toUpperCase().split("").forEach(function(ch){ i=i*26+(ch.charCodeAt(0)-64); }); return i-1; }
-  function gxCell(fd,r,c,depth){ depth=depth||0; var raw=(fd.rows[r]||[])[c]; if(raw==null) return ""; raw=String(raw).trim(); if(raw.charAt(0)!=="="){ var n=parseFloat(raw.replace(/,/g,"")); return isNaN(n)?raw:n; } if(depth>20) return "#!"; try{ return gxEval(fd,raw.slice(1),depth+1); }catch(_){ return "#!"; } }
+  // a reading is a complete finite number or it is text — "12oops" and "1,5" are not 12 and 15
+  function gxNum(raw){ var t=String(raw==null?"":raw).trim();
+    t=t.replace(/[\u0660-\u0669]/g,function(d){ return String(d.charCodeAt(0)-0x0660); })      // Arabic-Indic
+     .replace(/[\u06F0-\u06F9]/g,function(d){ return String(d.charCodeAt(0)-0x06F0); })
+     .replace(/\u066B/g,".").replace(/\u066C/g,"");
+    // a comma is a thousands separator only in its proper position; "1,5" is ambiguous, so it stays text
+    var bare=t.replace(/%$/,"");
+    var ok = /^[+-]?(\d+(\.\d+)?|\.\d+)$/.test(bare) || /^[+-]?\d{1,3}(,\d{3})+(\.\d+)?$/.test(bare);
+    if(!ok) return raw;
+    var n=parseFloat(bare.replace(/,/g,""));
+    return (isFinite(n)? n : raw); }
+  function gxValidDate(d){ var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(d||"")); if(!m) return false;
+    var dt=new Date(Date.UTC(+m[1],+m[2]-1,+m[3]));
+    return dt.getUTCFullYear()===+m[1] && dt.getUTCMonth()===+m[2]-1 && dt.getUTCDate()===+m[3]; }
+  function gxCell(fd,r,c,depth){ depth=depth||0; var raw=(fd.rows[r]||[])[c]; if(raw==null) return ""; raw=String(raw).trim(); if(raw.charAt(0)!=="="){ return gxNum(raw); } if(depth>20) return "#!"; try{ return gxEval(fd,raw.slice(1),depth+1); }catch(_){ return "#!"; } }
   function gxRange(fd,a,b,depth){ var m1=a.match(/^([A-Z]+)(\d+)$/), m2=b.match(/^([A-Z]+)(\d+)$/); if(!m1||!m2) return []; var c1=gxColIndex(m1[1]),r1=+m1[2]-1,c2=gxColIndex(m2[1]),r2=+m2[2]-1,out=[]; for(var r=Math.min(r1,r2);r<=Math.max(r1,r2);r++) for(var c=Math.min(c1,c2);c<=Math.max(c1,c2);c++){ var v=gxCell(fd,r,c,depth); if(typeof v==="number") out.push(v); } return out; }
   function gxEval(fd,expr,depth){ expr=expr.toUpperCase().replace(/\s+/g,"");
     expr=expr.replace(/(SUM|AVG|AVERAGE|COUNT|MIN|MAX)\(([A-Z]+\d+):([A-Z]+\d+)\)/g,function(_,fn,a,b){ var v=gxRange(fd,a,b,depth); if(!v.length) return "0"; if(fn==="SUM") return String(v.reduce(function(x,y){return x+y;},0)); if(fn==="AVG"||fn==="AVERAGE") return String(v.reduce(function(x,y){return x+y;},0)/v.length); if(fn==="COUNT") return String(v.length); if(fn==="MIN") return String(Math.min.apply(null,v)); return String(Math.max.apply(null,v)); });
     expr=expr.replace(/([A-Z]+)(\d+)/g,function(_,cn,rn){ var v=gxCell(fd,+rn-1,gxColIndex(cn),depth); return typeof v==="number"?"("+v+")":"0"; });
     if(!/^[0-9.+\-*/()%]+$/.test(expr)) throw 0; var v=Function('"use strict";return ('+expr+')')(); return isFinite(v)?Math.round(v*1000)/1000:"#!"; }
-  function gxParseCSV(txt){ var lines=txt.replace(/\r/g,"").split("\n").filter(function(l){return l.trim();}); var sep=(lines[0]||"").indexOf("\t")>-1?"\t":(lines[0]||"").indexOf(";")>-1?";":","; return lines.map(function(l){ return l.split(sep).map(function(c){return c.replace(/^"|"$/g,"").trim();}); }); }
+  function gxParseCSV(txt){ txt=String(txt).replace(/^\uFEFF/,"").replace(/\r\n?/g,"\n");
+    var first=txt.split("\n")[0]||""; var sep= first.indexOf("\t")>-1?"\t" : first.indexOf(";")>-1?";" : ",";
+    var rows=[], row=[], cell="", q=false;                       // quoted commas and newlines survive
+    for(var i=0;i<txt.length;i++){ var ch=txt.charAt(i);
+      if(q){ if(ch==='"'){ if(txt.charAt(i+1)==='"'){ cell+='"'; i++; } else q=false; } else cell+=ch; }
+      else if(ch==='"') q=true;
+      else if(ch===sep){ row.push(cell.trim()); cell=""; }
+      else if(ch==="\n"){ row.push(cell.trim()); cell=""; if(row.join("").trim()!=="") rows.push(row); row=[]; }
+      else cell+=ch; }
+    row.push(cell.trim()); if(row.join("").trim()!=="") rows.push(row);
+    return rows; }
+  function gxParseCSV_unused(txt){ var lines=txt.replace(/\r/g,"").split("\n").filter(function(l){return l.trim();}); var sep=(lines[0]||"").indexOf("\t")>-1?"\t":(lines[0]||"").indexOf(";")>-1?";":","; return lines.map(function(l){ return l.split(sep).map(function(c){return c.replace(/^"|"$/g,"").trim();}); }); }
   function gxStepsFeed(){ var S=GX.cur, me=gxMe(), rows=[];
     S.phases.forEach(function(ph,pi){ ph.tasks.forEach(function(t,ti){ var id=pi+":"+ti; var st=gxStepState(t); var canFeed=gxCanFeedStep(S,t) && st!=="done" && st!=="fed"; var canVerify=gxCanVerifyStep(S,t); var override= ROLE==="dg" && !canFeed && st!=="done"; var mineStep=t.owner===me.name||gxOwnsPlan(S);
       var act= canVerify ? '<button class="btn btn-p" style="padding:3px 9px" data-gxverify="'+id+'">'+bi("توثيق","Verify")+'</button> <button class="btn" style="padding:3px 9px" data-gxreturn="'+id+'">'+bi("إعادة بملاحظة","Return")+'</button>'
@@ -14273,7 +14305,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         html+='<tr'+(real?'':' class="empty"')+'><th class="rn">'+(r+1)+' '+tag+(real&&!(mt&&(mt.verified||mt.pending))?' <span class="x" data-gxfdelr="'+r+'">✕</span>':'')+'</th>'+cols.map(function(c,ci){ var raw=row[ci]==null?"":String(row[ci]); var isF=raw.charAt(0)==="="; var v=isF?gxCell(fd,r,ci):""; return '<td'+(isF?' class="fx"':'')+'><input data-gxfr="'+r+'" data-gxfc="'+ci+'" value="'+gxEsc(raw)+'"'+((lock||(mt&&(mt.pending||mt.verified)))?' readonly':'')+'>'+(isF?'<span class="v">= '+gxEsc(v)+'</span>':'')+'</td>'; }).join("")+'</tr>'; }
       if(!shown) html+='<tr><td colspan="'+(cols.length+1)+'" style="padding:10px;color:var(--ink-3);text-align:center">'+bi("بنية الجدول جاهزة — القراءات تُدخل بعد الاعتماد","Structure ready — readings are entered after approval")+'</td></tr>';
       html+='</table></div>'; }
-    var rd=gxReadings(fd); if(rd.length&&!lock){ var last=rd[rd.length-1], st=gxStatusOf(k,last.v); html+='<div class="gx-rd"><b>'+rd.length+' '+bi("قراءة","readings")+'</b> · '+last.date+': <b>'+last.v+gxEsc(k.unit)+'</b> '+(st?'<span class="st '+st+'">'+(st==="a"?bi("فوق المستهدف","above target"):st==="t"?bi("ضمن التفاوت","in tolerance"):bi("دون المستهدف","below target"))+'</span>':'')+'</div>'; }
+    var rd=gxReadings(fd); if(rd.length&&!lock){ var last=rd[rd.length-1], st=gxStatusOf(k,last.v); html+='<div class="gx-rd"><b>'+rd.length+' '+bi("قراءة","readings")+'</b> · '+last.date+': <b>'+last.v+gxEsc(k.unit)+'</b> '+(st?'<span class="st '+st+'">'+(st==="a"?bi("بلغ المستهدف","target met"):st==="t"?bi("ضمن حدود التفاوت","within tolerance"):bi("خارج حدود التفاوت","outside tolerance"))+'</span>':'')+'</div>'; }
     return html; }
   function gxDrawTool(){ var host=document.getElementById("gxTool"); if(!host) return; var S=GX.cur; var k=GX.KD; if(!S||!k){ host.innerHTML=""; return; } if(!k.feed) k.feed=gxBlankFeed(); var fd=k.feed; var lock=S.status!=="approved";
     document.querySelectorAll("#gxToolMode button").forEach(function(b){b.classList.toggle("on",b.dataset.gfm===fd.mode);});
@@ -14481,7 +14513,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var th=gxThresholds(k), rd=(S.status==="approved"?gxReadings(k.feed||gxBlankFeed()):[]), last=rd[rd.length-1], pr=gxPlanReading(k);
     var cur= pr!==null?pr : last?last.v:null; var st=cur!==null?gxStatusOf(k,cur):null;
     var facts=[ [isAr()?"البُعد":"Dimension", k.dim], [isAr()?"النوع":"Type", isAr()?GX_KIND[k.kind][0]:GX_KIND[k.kind][1]], [isAr()?"الرقم الحالي":"Current", k.base+" "+k.unit+(k.baseDate?" ("+k.baseDate+")":"")], [isAr()?"المستهدف":"Target", k.target+" "+k.unit+(k.targetDate?" — "+k.targetDate:"")],
-      [isAr()?"العتبات":"Thresholds", th?((k.dir==="up"?"≥ ":"≤ ")+th.above+" / "+th.tolLo.toFixed(1)+" / "+(k.dir==="up"?"< ":"> ")+th.tolLo.toFixed(1)+" "+k.unit):"—"], [isAr()?"آخر قراءة":"Latest", cur!==null?(cur+" "+k.unit+(st?" — "+(st==="a"?(isAr()?"فوق المستهدف":"above target"):st==="t"?(isAr()?"ضمن التفاوت":"in tolerance"):(isAr()?"دون المستهدف":"below target")):"")):"—"],
+      [isAr()?"العتبات":"Thresholds", th?((k.dir==="up"?"≥ ":"≤ ")+th.above+" / "+th.tolLo.toFixed(1)+" / "+(k.dir==="up"?"< ":"> ")+th.tolLo.toFixed(1)+" "+k.unit):"—"], [isAr()?"آخر قراءة":"Latest", cur!==null?(cur+" "+k.unit+(st?" — "+(st==="a"?(isAr()?"بلغ المستهدف":"target met"):st==="t"?(isAr()?"ضمن حدود التفاوت":"within tolerance"):(isAr()?"خارج حدود التفاوت":"outside tolerance")):"")):"—"],
       [isAr()?"المصدر":"Source", k.source||"—"], [isAr()?"جهة الرصد":"Monitored by", k.reader||"—"], [isAr()?"الوتيرة":"Frequency", (isAr()?GX_FREQ[k.cfreq][0]:GX_FREQ[k.cfreq][1])+" · "+(isAr()?GX_FREQ[k.rfreq][0]:GX_FREQ[k.rfreq][1])] ];
     var rtl=isAr()?' rtl="1" algn="r"':'';
     var para=function(t,sz,b,col){ return '<a:p><a:pPr'+rtl+'/><a:r><a:rPr lang="ar-OM" sz="'+sz+'"'+(b?' b="1"':'')+' dirty="0"><a:solidFill><a:srgbClr val="'+(col||ink)+'"/></a:solidFill><a:latin typeface="Calibri"/><a:cs typeface="Noto Kufi Arabic"/></a:rPr><a:t>'+gxX(t)+'</a:t></a:r></a:p>'; };
