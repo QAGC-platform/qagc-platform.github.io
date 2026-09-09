@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 47">
+<meta name="qagc-ver" content="beta 48">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -3302,7 +3302,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
     <!-- ══════════ DEPARTMENT HEAD ══════════ -->
     <section class="screen" id="head">
       <div class="head">
-        <p class="eyebrow"><span lang="ar">قسم تطوير الخدمات</span><span lang="en">Service Development</span></p>
+        <p class="eyebrow" id="headEyebrow"><span lang="ar">قسم تطوير الخدمات</span><span lang="en">Service Development</span></p>
         <h1><span lang="ar">لوحة رئيس القسم</span><span lang="en">Department head</span></h1>
         <p><span lang="ar">القسم وحده: من يعمل فيه، وما ينتظر قراري، وما أُزكّيه فيرتفع إلى مدير الدائرة.</span>
            <span lang="en">The department alone: who works in it, what awaits my decision, and what I endorse upward to the directorate.</span></p>
@@ -3334,7 +3334,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
     <!-- ══════════ STAFF ══════════ -->
     <section class="screen" id="staffhome">
       <div class="head">
-        <p class="eyebrow"><span lang="ar">أخصائي تربية خاصة · قسم تطوير الخدمات</span><span lang="en">Special Education Specialist · Service Development</span></p>
+        <p class="eyebrow" id="staffEyebrow"><span lang="ar">أخصائي تربية خاصة · قسم تطوير الخدمات</span><span lang="en">Special Education Specialist · Service Development</span></p>
         <h1><span lang="ar">صفحتي</span><span lang="en">My page</span></h1>
         <p><span lang="ar">ما هو مسند إليّ، وما يجب أن أفعله هذا الأسبوع، وإجازتي وتطويري.</span>
            <span lang="en">What is assigned to me, what I owe this week, and my leave and development.</span></p>
@@ -6919,15 +6919,19 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function drawPlan(){
     var host=document.getElementById("planCascade"); if(!host) return;
     var tot=PLAN2027.length, budget=PLAN2027.reduce(function(a,x){return a+x.b;},0);
-    var avg=Math.round(PLAN2027.reduce(function(a,x){return a+progOf(x);},0)/tot);
+    var nC=PLAN2027.filter(function(x){return x.l==="center";}).length,
+        nD=PLAN2027.filter(function(x){return x.l==="directorate";}).length,
+        nP=tot-nC-nD,
+        nB=PLAN2027.filter(function(x){return x.b>0;}).length;
+    var avg=tot?Math.round(PLAN2027.reduce(function(a,x){return a+progOf(x);},0)/tot):0;
     var untag=PLAN2027.filter(function(x){return tagOf(x)==="t-none";}).length;
     document.getElementById("planTiles").innerHTML=
       '<div class="tile"><div class="th"><span class="tl">'+bi("أهداف الخطة","Objectives")+'</span></div>'+
-        '<div class="tv">'+tot+'</div><div class="ts">'+bi("6 مركز · 10 دائرة · 17 قسم","6 centre · 10 directorate · 17 department")+'</div></div>'+
+        '<div class="tv">'+tot+'</div><div class="ts">'+bi(nC+" مركز · "+nD+" دائرة · "+nP+" قسم",nC+" centre · "+nD+" directorate · "+nP+" department")+'</div></div>'+
       '<div class="tile"><div class="th"><span class="tl">'+bi("متوسط التقدم","Average progress")+'</span></div>'+
         '<div class="tv">'+avg+'%</div><div class="ts">'+bi("عبر التسلسل كاملاً","across the whole cascade")+'</div></div>'+
       '<div class="tile"><div class="th"><span class="tl">'+bi("تقدير الميزانية","Budget estimate")+'</span></div>'+
-        '<div class="tv">'+budget.toLocaleString("en")+'</div><div class="ts">'+bi("ر.ع · على 12 هدفاً فقط","OMR · on 12 objectives only")+'</div></div>'+
+        '<div class="tv">'+budget.toLocaleString("en")+'</div><div class="ts">'+bi("ر.ع · على "+nB+" هدفاً مقدَّر الميزانية","OMR · across "+nB+" budgeted objectives")+'</div></div>'+
       '<div class="tile warn"><div class="th"><span class="tl">'+bi("بلا تصنيف","Untagged")+'</span></div>'+
         '<div class="tv">'+untag+'</div><div class="ts">'+bi("تحتاج فئة قبل الاعتماد","need a category first")+'</div></div>';
 
@@ -8618,7 +8622,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var i=CPD.indexOf(ev), mo=+ev.from.slice(5,7)-1;
       return '<tr><td class="act" data-cpd="'+i+'">'+bi(ev.t[0],ev.t[1])+
         '<span class="cpdtype">'+bi(CPD_TYPES[ev.type][0],CPD_TYPES[ev.type][1])+
-        (ev.to?' · '+bi("يومان","2 days"):'')+
+        (ev.to?(function(){ var dd=Math.round((new Date(ev.to)-new Date(ev.from))/864e5)+1; return ' · '+bi(dd+(dd>=3&&dd<=10?" أيام":" يوم"),dd+" day"+(dd>1?"s":"")); })():'')+
         (ev.confirmed?' · <b style="color:var(--s1)">'+bi("مؤكد","confirmed")+'</b>':' · '+bi("مبدئي","tentative"))+'</span>'+
         (ev.owner?'<span class="cpdown">'+bi("التنظيم: ","organiser: ")+cpdOwnerName(ev)+
           (ev.check?' · <span class="tnum">'+checkStats(ev.check).pct+'%</span>':'')+'</span>':'')+'</td>'+
@@ -10349,7 +10353,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         '<span class="sw" style="background:'+ccalColor(cat)+'"></span>'+
         bi(CCAL_CATS[cat].l[0],CCAL_CATS[cat].l[1])+' <b class="tnum">'+counts[cat]+'</b></span>';
     }).join("");
-    var todayS="2026-11-20";
+    var todayS=PLATFORM_TODAY;
     host.style.gridTemplateColumns = (CCAL_VIEW==="month"||CCAL_VIEW==="mine") ? "1fr" : "";
     if(CCAL_VIEW==="month"||CCAL_VIEW==="mine"){
       // one large month, its days carrying full chips rather than dots
@@ -11595,7 +11599,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       return '<div class="prow2" data-goobj="'+o.r+'" role="listitem" tabindex="0" style="cursor:pointer">'+
         '<span class="ref">'+o.r+'</span><span class="pt"><b>'+o.t+'</b><span class="pm"> · '+bi(LVL[o.l][0],LVL[o.l][1])+' · '+o.o+'</span></span>'+
         '<span class="pr"><span class="pbar-s"><i style="width:'+pr+'%"></i></span><span class="pnum">'+pr+'%</span><span class="pill '+st[2]+'">'+bi(st[0],st[1])+'</span><span class="tag '+tg+'"><span class="dot"></span>'+bi(TAGLBL[tg][0],TAGLBL[tg][1])+'</span></span></div>'; }).join("")
-      : '<div class="noresult">'+bi("لا أهداف في نطاقك بعد — «هدف جديد» يفتح الخطة السنوية لإضافته.","No objectives in your scope yet — “New objective” opens the annual plan.")+'</div>';
+      : '<div class="noresult">'+bi("لا أهداف في نطاقك بعد — «هدف جديد» يفتح مولّد الأهداف.","No objectives in your scope yet — “New objective” opens the generator.")+'</div>';
   }
   document.addEventListener("click",function(e){
     var m=e.target.closest("[data-minemode]"); if(m){
@@ -11634,6 +11638,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var TAGL={"t-min":["الخطة الخمسية","Five-year"],"t-dir":["خطة الدائرة","Directorate"],
               "t-third":["الفئة الثالثة","Third"]};
     ASSIGN_INDEX={};
+    if(!rows.length){ host.innerHTML='<div class="noresult">'+bi("لا مهام مسندة الآن.","No tasks assigned right now.")+'</div>'; ASSIGN_INDEX={}; return; }
     host.innerHTML=rows.map(function(r,i){
       var st=ST[r.st]||ST.not_started;
       var ref="AS"+(i+1);
@@ -12955,8 +12960,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   // ── directorate head ──
   function drawDir(){
     var t=document.getElementById("dirTiles"); if(!t) return;
-    var mine=PLAN2027.filter(function(o){return o.l!=="center";}).slice(0,12);
-    var deps=["قسم الحوكمة ومعايير الجودة","قسم تطوير الخدمات"];
+    var dirRef=STAFF.filter(function(p){return (p.dir[0]||"").indexOf("الحوكمة")>=0;})[0];
+    var dirName=dirRef?dirRef.dir[0]:"";
+    var deps=[]; STAFF.forEach(function(p){ if(p.dir[0]===dirName && deps.indexOf(p.dep[0])<0) deps.push(p.dep[0]); });
+    var orgD=null; ORG.forEach(function(d){ if(!orgD && ((d.ar||"").indexOf("الحوكمة")>=0)) orgD=d; });
+    var mine=PLAN2027.filter(function(o){return o.l!=="center" && (!orgD || o.dir===orgD.code);});
     var people=STAFF.filter(function(p){return deps.indexOf(p.dep[0])>=0;});
     var budgets=people.reduce(function(a,p){
       return a+(p.steps||[]).filter(function(x){return x.budget&&x.budget.state==="proposed";}).length;},0);
@@ -12965,27 +12973,23 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       '<div class="tile"><div class="th"><span class="tl">'+bi("أهداف الدائرة","Directorate objectives")+'</span></div>'+
         '<div class="tv">'+mine.length+'</div><div class="ts">'+bi("دائرة وأقسامها","directorate and its departments")+'</div></div>'+
       '<div class="tile"><div class="th"><span class="tl">'+bi("موظفو الدائرة","Directorate staff")+'</span></div>'+
-        '<div class="tv">'+people.length+'</div><div class="ts">'+bi("عبر قسمين","across two departments")+'</div></div>'+
+        '<div class="tv">'+people.length+'</div><div class="ts">'+bi("عبر "+deps.length+" أقسام","across "+deps.length+" departments")+'</div></div>'+
       '<div class="tile warn"><div class="th"><span class="tl">'+bi("ميزانيات مقترحة","Budgets proposed")+'</span></div>'+
         '<div class="tv">'+budgets+'</div><div class="ts">'+bi("تُرفع للمدير العام","escalate to the DG")+'</div></div>'+
       '<div class="tile"><div class="th"><span class="tl">'+bi("بلا تصنيف","Untagged")+'</span></div>'+
         '<div class="tv">'+untag+'</div><div class="ts">'+bi("ضمن نطاق الدائرة","within this scope")+'</div></div>';
 
     var q=document.getElementById("dirQueue");
-    q.innerHTML=
-      '<div class="q-item"><span class="q-dot" style="background:var(--warn)"></span><div class="q-b">'+
+    var qrows=[];
+    if(budgets) qrows.push('<div class="q-item"><span class="q-dot" style="background:var(--warn)"></span><div class="q-b">'+
         '<div class="t">'+bi(budgets+" تقدير ميزانية من الأقسام",budgets+" budget estimates from departments")+'</div>'+
         '<div class="d">'+bi("تُراجع هنا ثم تُرفع للاعتماد النهائي.","Reviewed here, then escalated for final validation.")+'</div></div>'+
-        '<button class="q-act" data-goto="approvals">'+bi("مراجعة","Review")+'</button></div>'+
-      '<div class="q-item"><span class="q-dot" style="background:var(--warn)"></span><div class="q-b">'+
-        '<div class="t">'+bi("طلب إجازة بانتظار الاعتماد المبدئي","A leave request awaiting initial approval")+'</div>'+
-        '<div class="d">'+bi("رئيس قسم الامتثال · 22–26 نوفمبر","Head of Compliance · 22–26 Nov")+'</div></div>'+
-        '<button class="q-act" data-goto="leave">'+bi("فتح","Open")+'</button></div>'+
-      '<div class="q-item"><span class="q-dot" style="background:var(--serious)"></span><div class="q-b">'+
+        '<button class="q-act" data-goto="approvals">'+bi("مراجعة","Review")+'</button></div>');
+    if(untag) qrows.push('<div class="q-item"><span class="q-dot" style="background:var(--serious)"></span><div class="q-b">'+
         '<div class="t">'+bi(untag+" هدف بلا تصنيف",untag+" objectives with no category")+'</div>'+
         '<div class="d">'+bi("تُصنّف قبل رفع الخطة.","Classify before the plan is submitted.")+'</div></div>'+
-        '<button class="q-act" data-goto="annual">'+bi("تصنيف","Classify")+'</button></div>';
-
+        '<button class="q-act" data-goto="annual">'+bi("تصنيف","Classify")+'</button></div>');
+    q.innerHTML= qrows.length? qrows.join("") : '<div class="noresult">'+bi("لا شيء ينتظر قرار الدائرة الآن.","Nothing awaits the directorate right now.")+'</div>';
     var dd=document.getElementById("dirDeps");
     dd.innerHTML=deps.map(function(dep){
       var ppl=STAFF.filter(function(p){return p.dep[0]===dep;});
@@ -13057,7 +13061,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   });
 
   // ── department head: the first line manager the platform has ──
+  function ebSet(id,ar,en){ var el=document.getElementById(id); if(el) el.innerHTML='<span lang="ar">'+ar+'</span><span lang="en">'+en+'</span>'; }
   function drawHead(){
+    (function(){ try{ var me=(ROLE==="head"&&typeof myPerson==="function")?myPerson():null; if(me) ebSet("headEyebrow", me.dep[0], me.dep[1]); }catch(_){}})();
     var t=document.getElementById("headTiles"); if(!t) return;
     var me=(typeof myPerson==="function")?myPerson():null; if(!me) return;
     var team=STAFF.filter(function(p){ return p.id!==me.id && p.dep[0]===me.dep[0]; });
@@ -13135,6 +13141,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
 
   // ── staff ──
   function drawStaffHome(){
+    (function(){ try{ var me=(ROLE==="staff"&&typeof myPerson==="function")?myPerson():null; if(me) ebSet("staffEyebrow", ((me.desig&&me.desig[0])||"")+" · "+me.dep[0], ((me.desig&&me.desig[1])||"")+" · "+me.dep[1]); }catch(_){}})();
     var t=document.getElementById("staffTiles"); if(!t) return;
     // the page belongs to whoever is signed in as staff; off-role it previews the demo one
     var me=(ROLE==="staff"&&typeof myPerson==="function") ? myPerson()
