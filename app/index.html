@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 55">
+<meta name="qagc-ver" content="beta 58">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -4339,7 +4339,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
             <div class="gx-kcol">
               <div class="gx-card auto">
                 <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-                  <div><h3 id="gxKObj">—</h3><p class="lede" style="margin:0"><span lang="ar">مسوّدات يقترحها النظام من الهدف وخطته: الالتزام بإنجاز الخطوات في مواعيدها أولاً، ثم مؤشر نتيجة من صياغة الهدف — بطاقات كاملة وفق الملحق 6 من دليل مؤشرات الأداء.</span><span lang="en">Drafts the system proposes from the objective and its plan — step completion on schedule first, then an outcome KPI from the wording — as full Appendix-6 cards.</span></p></div>
+                  <div><h3 id="gxKObj">—</h3><p class="lede" style="margin:0"><span lang="ar">مسوّدات يقترحها النظام من الهدف وخطته: إنجاز الخطوات الموثّق أولاً، ثم مؤشر نتيجة من صياغة الهدف — بطاقات كاملة وفق الملحق 6 من دليل مؤشرات الأداء.</span><span lang="en">Drafts the system proposes from the objective and its plan — verified step completion first, then an outcome KPI from the wording — as full Appendix-6 cards.</span></p></div>
                   <button class="btn btn-p" id="gxAuto">✦ <span lang="ar">اقتراح مؤشرات من الخطة</span><span lang="en">Suggest KPIs from the plan</span></button>
                 </div>
                 <div id="gxDrafts"></div>
@@ -13872,7 +13872,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   var GX_DIMS=GX_DIMS_B.map(function(x){return x[0];});
   function gxDimLabel(v){ var m=GX_DIMS_B.filter(function(x){return x[0]===v;})[0]; return m?(isAr()?m[0]:m[1]):v; }
   var GX_KIND={process:["عملية (إجرائي)","Process"],output:["مخرج","Output"],outcome:["نتيجة (أثر)","Outcome"]};
-  var GX_FREQ={w:["أسبوعي","Weekly"],m:["شهري","Monthly"],q:["ربع سنوي","Quarterly"],h:["نصف سنوي","Semi-annual"],y:["سنوي","Annual"]};
+  var GX_FREQ={d:["يومي","Daily"],w:["أسبوعي","Weekly"],m:["شهري","Monthly"],q:["ربع سنوي","Quarterly"],h:["نصف سنوي","Semi-annual"],y:["سنوي","Annual"]};
   var GX_TYPES=[["نسبة مئوية","%"],["عدد",""],["معدل",""],["درجة",""],["مدة","يوم"]];
   var GX_TYPES_EN={"نسبة مئوية":"Percentage","عدد":"Count","معدل":"Rate","درجة":"Score","مدة":"Duration"};
   function gxTypeLabel(v){ return isAr()?v:(GX_TYPES_EN[v]||v); }
@@ -13911,7 +13911,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   // ── state ──
   var GX={list:[], cur:null, z:"quarters", V:null, tab:"tl", formFor:null, K:null, KD:null, drafts:[], embed:{}, pk:{}};
   function gxBlankFeed(){ return {mode:"table", cols:["التاريخ","القراءة"], rows:[], dateCol:0, valCol:1, pivot:{on:false,row:0,val:1,agg:"avg"}, file:"", sheet:""}; }
-  function gxBlankK(){ return {name:"",dim:GX_DIMS[2],kind:"outcome",desc:"",rationale:"",num:"",den:"",excl:"",elements:"",limits:"",type:"نسبة مئوية",unit:"%",base:"",baseDate:"",target:"",targetDate:"",dir:"up",tol:10,source:"",cfreq:"m",mfreq:"m",reader:"",rfreq:"q",report:GX_REPORTS[0],related:"",phase:"",sheet:true,mil:{},auto:false,plan:null,feed:gxBlankFeed(),chart:"line"}; }
+  function gxBlankK(){ return {name:"",dim:GX_DIMS[2],kind:"outcome",desc:"",rationale:"",num:"",den:"",excl:"",elements:"",limits:"",type:"نسبة مئوية",unit:"%",base:"",baseDate:"",target:"",targetDate:"",dir:"up",tol:10,source:"",cfreq:"m",mfreq:"m",reader:"",rfreq:"q",report:GX_REPORTS[0],related:"",relatedNone:false,
+      bench:"",benchVal:"",benchPeriod:"",benchSrc:"",benchNA:"",phase:"",sheet:true,mil:{},auto:false,plan:null,feed:gxBlankFeed(),chart:"line"}; }
   function gxNormK(k){ var b=gxBlankK(); Object.keys(b).forEach(function(key){ if(k[key]===undefined) k[key]=b[key]; }); if(!k.feed) k.feed=gxBlankFeed(); return k; }
   function gxSave(){ try{ localStorage.setItem("qagcGen", JSON.stringify({v:9, list:GX.list})); }catch(_){} }
   // three approved objectives come with ready data; three drafts stay editable — all from the plan itself
@@ -14174,12 +14175,21 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function gxCtx(){ var S=GX.cur, hit=GX_OUT.filter(function(o){return o[0].test(S.title||"");})[0], o=hit?hit[1]:null, t=S.title||(isAr()?"الهدف":"the objective");
     return {name:o?o.name:"نسبة تحقق «"+t+"»", desc:o?("ما يقيسه: "+o.name):("ما يتغيّر فعلاً بتحقق «"+t+"»، ولمن"), rationale:"لماذا نحتاج هذا المؤشر لهدف «"+t+"»", num:o?o.num:"ما يستوفي معيار «"+t+"»", den:o?o.den:"المجتمع المستهدف", excl:"ما يُستثنى من القياس", elements:o?o.elements:"الحقول اللازمة للحساب", source:o?o.source:"أين تُؤخذ البيانات", limits:"ما قد يُضعف الدقة", related:"مؤشر آخر يفسّر «"+t+"»"}; }
   function gxAutoDraft(S){ S=S||GX.cur; var out=[]; if(!S.title) return out; var all=[]; S.phases.forEach(function(ph){ ph.tasks.forEach(function(t){all.push(t);}); }); var base0=S.from?gxIso(gxP(S.from)-GXD):"";
-    if(all.length){ out.push(gxNormK({auto:true,plan:{phase:""},name:"نسبة خطوات خطة العمل المنجزة في موعدها المحدد",dim:GX_DIMS[1],kind:"process",desc:"إنجاز خطوات خطة عمل الهدف «"+S.title+"» في المواعيد المرسومة ("+all.length+" خطوة).",rationale:"الخطة وعدٌ زمني؛ تراكم التأخير أول إنذار على تعثّر الهدف.",num:"عدد الخطوات المنجزة في موعدها أو قبله",den:"عدد خطوات الخطة ("+all.length+")",excl:"خطوات أُلغيت باعتماد المديرة العامة",elements:"الخطوة، المرحلة، الموعد، تاريخ الإنجاز، المسؤول",type:"نسبة مئوية",unit:"%",base:0,baseDate:base0,target:100,targetDate:S.to,dir:"up",tol:10,source:"خطة العمل على المنصة — حالة الخطوات",cfreq:"w",mfreq:"m",reader:"قسم التنسيق والمتابعة",rfreq:"m",report:GX_REPORTS[1]}));
+    if(all.length){ out.push(gxNormK({auto:true,plan:{phase:""},name:"نسبة خطوات خطة العمل المنجزة الموثّقة",dim:GX_DIMS[1],kind:"process",desc:"إنجاز خطوات خطة عمل الهدف «"+S.title+"» في المواعيد المرسومة ("+all.length+" خطوة).",rationale:"الخطة وعدٌ زمني؛ تراكم التأخير أول إنذار على تعثّر الهدف.",num:"عدد الخطوات المنجزة في موعدها أو قبله",den:"عدد خطوات الخطة ("+all.length+")",excl:"خطوات أُلغيت باعتماد المديرة العامة",elements:"الخطوة، المرحلة، الموعد، تاريخ الإنجاز، المسؤول",type:"نسبة مئوية",unit:"%",base:0,baseDate:base0,target:100,targetDate:S.to,dir:"up",tol:10,source:"خطة العمل على المنصة — حالة الخطوات",cfreq:"w",mfreq:"m",reader:"قسم التنسيق والمتابعة",rfreq:"m",report:GX_REPORTS[1]}));
       S.phases.forEach(function(ph){ if(!ph.name||!ph.to||!ph.tasks.length) return; out.push(gxNormK({auto:true,plan:{phase:ph.name},name:"نسبة إنجاز مرحلة «"+ph.name+"» بحلول "+ph.to,dim:GX_DIMS[1],kind:"output",phase:ph.name,desc:"اكتمال خطوات مرحلة «"+ph.name+"» ("+ph.tasks.length+") ضمن مدتها.",rationale:"كل مرحلة تمهّد لما بعدها.",num:"عدد خطوات المرحلة المنجزة",den:"عدد خطوات المرحلة ("+ph.tasks.length+")",type:"نسبة مئوية",unit:"%",base:0,baseDate:gxIso(gxP(ph.from)-GXD),target:100,targetDate:ph.to,dir:"up",tol:0,source:"خطة العمل على المنصة",cfreq:"w",mfreq:"w",reader:ph.tasks[0].owner||"",rfreq:"m",report:GX_REPORTS[1]})); });
       var budget=all.reduce(function(a,t){return a+(+t.budget||0);},0); if(budget>0) out.push(gxNormK({auto:true,name:"نسبة الإنفاق الفعلي إلى الميزانية المقترحة",dim:GX_DIMS[3],kind:"process",desc:"الالتزام بالميزانية المقترحة ("+gxMoney(budget)+").",rationale:"تجاوز الميزانية يهدد الخطوات التالية.",num:"مجموع المصروف الفعلي",den:"الميزانية المقترحة",type:"نسبة مئوية",unit:"%",base:0,baseDate:base0,target:100,targetDate:S.to,dir:"down",tol:5,source:"سجل الصرف",cfreq:"m",mfreq:"q",reader:"دائرة الرقابة والامتثال",rfreq:"q",report:GX_REPORTS[0]})); }
     var hit=GX_OUT.filter(function(o){return o[0].test(S.title);})[0]; var o=hit?hit[1]:{name:"نسبة تحقق الهدف: "+S.title,dim:GX_DIMS[2],num:"ما تحقق من الهدف وفق معيار القياس",den:"المستهدف الكامل",source:"تقارير المتابعة — المنصة",elements:"المعيار، القراءة، التاريخ"};
     out.push(gxNormK(Object.assign({auto:true,kind:"outcome",desc:"الأثر الذي يسعى إليه الهدف «"+S.title+"».",rationale:"مؤشر نتيجة يقيس ما يتغيّر فعلاً.",type:"نسبة مئوية",unit:"%",base:"",baseDate:base0,target:"",targetDate:S.to,dir:"up",tol:10,cfreq:"m",mfreq:"m",reader:"قسم التنسيق والمتابعة",rfreq:"q",report:GX_REPORTS[0]},o))); return out; }
   // plan-completion KPIs read themselves from the steps
+  // completion counts verified steps; timeliness counts those completed by their due date.
+  // Two different questions — a step verified a month late is complete, not on time.
+  function gxOnTimeReading(k){ var S=GX.cur; if(!k.plan||S.status!=="approved") return null;
+    var steps=[]; S.phases.forEach(function(ph){ if(!k.plan.phase||k.plan.phase===ph.name) ph.tasks.forEach(function(t){steps.push(t);}); });
+    if(!steps.length) return null;
+    var done=steps.filter(function(t){ return t.verified; });
+    if(!done.length) return 0;
+    var onTime=done.filter(function(t){ return t.done && t.to && gxP(t.done)<=gxP(t.to); }).length;
+    return Math.round(onTime/steps.length*100); }
   function gxPlanReading(k){ var S=GX.cur; if(!k.plan||S.status!=="approved") return null; var steps=[]; S.phases.forEach(function(ph){ if(!k.plan.phase||k.plan.phase===ph.name) ph.tasks.forEach(function(t){steps.push(t);}); }); if(!steps.length) return null; return Math.round(steps.filter(function(t){return t.verified;}).length/steps.length*100); }
   function gxF(label,key,k,o){ o=o||{}; var w=o.w?' w'+o.w:'', v=k[key], inner;
     if(o.sel) inner='<select data-gxk="'+key+'">'+o.sel.map(function(x){ var val=Array.isArray(x)?x[0]:x, lab=Array.isArray(x)?x[1]:x; if(o.lab) lab=o.lab(val); return '<option value="'+gxEsc(val)+'"'+(String(v)===String(val)?" selected":"")+'>'+gxEsc(lab)+'</option>'; }).join("")+'</select>';
@@ -14203,13 +14213,47 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     document.getElementById("gxKTitle").innerHTML= klock ? bi("بطاقة معتمدة — تعديلها بطلبٍ من صاحبها يوافق عليه رئيسه المباشر","Approved card — its owner requests an edit, the line manager approves")+kctl : GX.K===null ? (k.auto?bi("بطاقة مسودة مقترحة — للمراجعة","Proposed draft card — review"):bi("بطاقة مؤشر جديد","New KPI card")) : bi("تعديل بطاقة المؤشر","Edit KPI card");
     var ph=[["",isAr()?"— الهدف كله":"— whole objective"]].concat(S.phases.filter(function(x){return x.name;}).map(function(x){return [x.name,x.name];}));
     document.getElementById("gxf1").innerHTML= gxF(bi("عنوان المؤشر","Title"),"name",k,{w:6,ph:C.name})+gxF(bi("البُعد","Dimension"),"dim",k,{w:2,sel:GX_DIMS,lab:gxDimLabel})+gxF(bi("النوع","Type"),"kind",k,{w:2,sel:Object.keys(GX_KIND).map(function(x){return [x,isAr()?GX_KIND[x][0]:GX_KIND[x][1]];})})+gxF(bi("مرتبط بـ","Linked to"),"phase",k,{w:2,sel:ph})+gxF(bi("الوصف","Description"),"desc",k,{w:6,ph:C.desc})+gxF(bi("المسوّغ","Rationale"),"rationale",k,{w:6,ph:C.rationale});
-    document.getElementById("gxf2").innerHTML= gxF(bi("البسط","Numerator"),"num",k,{w:3,ph:C.num})+gxF(bi("المقام","Denominator"),"den",k,{w:3,ph:C.den})+gxF(bi("الاستثناءات","Exclusions"),"excl",k,{w:3,ph:C.excl})+gxF(bi("عناصر البيانات","Data elements"),"elements",k,{w:3,ph:C.elements})+gxF(bi("نوع القياس","Measure type"),"type",k,{w:2,sel:GX_TYPES.map(function(t){return t[0];}),lab:gxTypeLabel})+gxF(bi("الوحدة","Unit"),"unit",k,{w:1,ph:"%"})+gxF(bi("الرقم الحالي","Current"),"base",k,{w:1,type:"number",step:"any",ph:"45"})+gxF(bi("بتاريخ","As of"),"baseDate",k,{w:2,type:"date"});
-    document.getElementById("gxf3").innerHTML= gxF(bi("المستهدف","Target"),"target",k,{w:1,type:"number",step:"any",ph:"90"})+gxF(bi("بحلول","By"),"targetDate",k,{w:2,type:"date",min:S.from||"",max:S.to||""})+'<div class="f w2"><label>'+bi("الاتجاه","Trend")+'</label><div class="gx-seg"><button type="button" data-gxdir="up" class="'+(k.dir==="up"?"on":"")+'">'+bi("تصاعدي ↑","Increasing ↑")+'</button><button type="button" data-gxdir="down" class="'+(k.dir==="down"?"on":"")+'">'+bi("تنازلي ↓","Decreasing ↓")+'</button></div></div>'+gxF(bi("نطاق التفاوت %","Tolerance %"),"tol",k,{w:1,type:"number",min:"0",max:"100",ph:"10"});
+    document.getElementById("gxf2").innerHTML= gxF(bi("البسط","Numerator"),"num",k,{w:3,ph:C.num})+gxF(bi("المقام","Denominator"),"den",k,{w:3,ph:C.den})+gxF(bi("الاستثناءات","Exclusions"),"excl",k,{w:3,ph:C.excl})+gxF(bi("عناصر البيانات","Data elements"),"elements",k,{w:3,ph:C.elements})+gxF(bi("نوع القياس","Measure type"),"type",k,{w:2,sel:GX_TYPES.map(function(t){return t[0];}),lab:gxTypeLabel})+gxF(bi("الوحدة","Unit"),"unit",k,{w:1,ph:"%"})+gxF(bi("خط الأساس","Baseline"),"base",k,{w:1,type:"number",step:"any",ph:"45"})+gxF(bi("بتاريخ","As of"),"baseDate",k,{w:2,type:"date"});
+    document.getElementById("gxf3").innerHTML= gxF(bi("المستهدف","Target"),"target",k,{w:1,type:"number",step:"any",ph:"90"})+gxF(bi("بحلول","By"),"targetDate",k,{w:2,type:"date",min:S.from||"",max:S.to||""})+'<div class="f w2"><label>'+bi("الاتجاه","Trend")+'</label><div class="gx-seg"><button type="button" data-gxdir="up" class="'+(k.dir==="up"?"on":"")+'">'+bi("تصاعدي ↑","Increasing ↑")+'</button><button type="button" data-gxdir="down" class="'+(k.dir==="down"?"on":"")+'">'+bi("تنازلي ↓","Decreasing ↓")+'</button></div></div>'+gxF(bi("نطاق التفاوت %","Tolerance %"),"tol",k,{w:1,type:"number",min:"0",max:"100",ph:"10"})
+      +'<div class="gx-sec" style="grid-column:1/-1">'+bi("المقارنة المرجعية","Benchmarking")+'</div>'
+      +gxF(bi("جهة المقارنة","Comparator"),"bench",k,{w:2,ph:isAr()?"مركز مماثل · المعدل الوطني · أداؤنا العام الماضي":"peer centre · national rate · our own last year"})
+      +gxF(bi("قيمتها","Its value"),"benchVal",k,{w:1,ph:k.unit||""})
+      +gxF(bi("عن فترة","Period"),"benchPeriod",k,{w:1,ph:"2026"})
+      +gxF(bi("مصدرها وحدود مقارنتها","Source and comparability"),"benchSrc",k,{w:2,ph:isAr()?"من أين، وما الذي يحدّ من قابلية المقارنة":"where from, and what limits comparability"})
+      +gxF(bi("لا تتوفر مقارنة — السبب","No comparator — why"),"benchNA",k,{w:6,ph:isAr()?"يُترك فارغاً إن وُجدت مقارنة":"leave empty if a comparator exists"});
     var fr=Object.keys(GX_FREQ).map(function(x){return [x,isAr()?GX_FREQ[x][0]:GX_FREQ[x][1]];});
-    document.getElementById("gxf4").innerHTML= gxF(bi("مصدر البيانات","Data source"),"source",k,{w:3,ph:C.source})+gxF(bi("المحددات","Limitations"),"limits",k,{w:3,ph:C.limits})+gxF(bi("وتيرة الجمع","Collection"),"cfreq",k,{w:2,sel:fr})+gxF(bi("وتيرة الرصد","Monitoring"),"mfreq",k,{w:2,sel:fr})+gxF(bi("جهة الرصد","Monitored by"),"reader",k,{w:2,list:"gxPeople",ph:isAr()?"اسم من الكشف أو وحدة":"A name or a unit"})+gxF(bi("وتيرة التقرير","Reporting"),"rfreq",k,{w:2,sel:fr})+gxF(bi("يُدرج في","Reported in"),"report",k,{w:4,sel:GX_REPORTS,lab:gxRepLabel});
+    document.getElementById("gxf4").innerHTML= gxF(bi("مصدر البيانات","Data source"),"source",k,{w:3,ph:C.source})+gxF(bi("المحددات","Limitations"),"limits",k,{w:3,ph:C.limits})+gxF(bi("وتيرة الجمع","Collection"),"cfreq",k,{w:2,sel:fr})+gxF(bi("وتيرة الرصد","Monitoring"),"mfreq",k,{w:2,sel:fr})+gxF(bi("جهة الرصد","Monitored by"),"reader",k,{w:2,list:"gxPeople",ph:isAr()?"اسم من الكشف أو وحدة":"A name or a unit"})+gxF(bi("وتيرة التقرير","Reporting"),"rfreq",k,{w:2,sel:fr})+gxF(bi("يُدرج في","Reported in"),"report",k,{w:4,sel:GX_REPORTS,lab:gxRepLabel})
+      +gxF(bi("مؤشر ذو صلة","Related indicator"),"related",k,{w:4,ph:isAr()?"اسم مؤشر يقرأ معه — أو يُترك فارغاً":"a KPI read alongside it — or leave empty"})
+      +'<div class="f w2"><label>&nbsp;</label><label style="font-weight:400;font-size:var(--t-xs);display:flex;gap:6px;align-items:center"><input type="checkbox" data-gxk="relatedNone"'+(k.relatedNone?" checked":"")+'> '+bi("لا يوجد مؤشر ذو صلة","No related indicator")+'</label></div>';
     document.getElementById("gxKSave").innerHTML= GX.K===null?bi("إضافة المؤشر","Add KPI"):bi("حفظ التعديل","Save changes"); document.getElementById("gxKNew").hidden= GX.K===null&&!k.auto;
   }
   function gxReadings(fd){ var out=[]; (fd.rows||[]).forEach(function(row,r){ var d=String(row[fd.dateCol]||"").trim(); var v=gxCell(fd,r,fd.valCol); var m=(fd.meta||[])[r]; if(gxValidDate(d)&&typeof v==="number"&&isFinite(v)) out.push({date:d,v:v,pendingR: fd.mode!=="sheet" && !(m&&m.verified)}); }); return out.sort(function(a,b){return gxP(a.date)-gxP(b.date);}); }
+  // where the plan says this indicator should stand today — from the adopted milestones,
+  // or by interpolation between baseline and target when none are dated. Interpolation is an
+  // assumption and is labelled as such wherever it is shown.
+  function gxExpectedNow(k,today){
+    if(k.base===""||k.target===""||!k.baseDate||!k.targetDate) return null;
+    var t=gxP(today||PLATFORM_TODAY), a=gxP(k.baseDate), b=gxP(k.targetDate);
+    if(!(b>a)) return null;
+    if(t<=a) return {v:+k.base, basis:"base"};
+    if(t>=b) return {v:+k.target, basis:"target"};
+    var ms=gxMilestones(k).filter(function(m){ return gxP(m.date)<=t && m.val!==""&&m.val!=null; });
+    if(ms.length) return {v:+ms[ms.length-1].val, basis:k.plan?"plan":"milestone"};
+    return {v:+k.base+(+k.target-+k.base)*((t-a)/(b-a)), basis:"interp"};
+  }
+  function gxPaceOf(k,v,today){
+    var e=gxExpectedNow(k,today); if(e===null||typeof v!=="number"||!isFinite(v)) return null;
+    var ahead = k.dir==="up" ? v>=e.v : v<=e.v;
+    var span=Math.abs(+k.target-(+k.base||0))||Math.abs(+k.target)||1;
+    var near=Math.abs(v-e.v) <= span*0.05;
+    return {expected:e.v, basis:e.basis, state: near?"on" : (ahead?"ahead":"behind")};
+  }
+  function gxPaceLabel(p){ if(!p) return "";
+    var lbl = p.state==="ahead" ? bi("متقدّم على الخطة","ahead of plan")
+            : p.state==="behind" ? bi("متأخر عن الخطة","behind plan")
+            : bi("على خطّته","on plan");
+    var basis = p.basis==="interp" ? bi(" (تقدير خطّي)"," (linear estimate)") : "";
+    return lbl+basis; }
   function gxStatusOf(k,v){ var th=gxThresholds(k); if(!th||typeof v!=="number"||!isFinite(v)) return null; if(k.dir==="up") return v>=th.above?"a":v>=th.tolLo?"t":"b"; return v<=th.above?"a":v<=th.tolLo?"t":"b"; }
   function gxDrawKSide(){ var S=GX.cur; if(!S||!GX.KD) return; var k=GX.KD, ms=gxMilestones(k), u=gxEsc(k.unit);
     var milFocused=document.activeElement&&document.activeElement.dataset&&document.activeElement.dataset.gxmil;
@@ -14236,7 +14280,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     document.getElementById("gxThr").innerHTML= th?'<div class="a">'+bi("بلوغ المستهدف","Target met")+'<b>'+(k.dir==="up"?"≥ ":"≤ ")+th.above+u+'</b></div><div class="t">'+bi("ضمن حدود التفاوت","Within tolerance")+'<b>'+(k.dir==="up"?th.tolLo.toFixed(1)+" – "+th.above:th.above+" – "+th.tolLo.toFixed(1))+u+'</b></div><div class="b">'+bi("خارج حدود التفاوت","Outside tolerance")+'<b>'+(k.dir==="up"?"< ":"> ")+th.tolLo.toFixed(1)+u+'</b></div>':'';
     document.getElementById("gxSmart").innerHTML=gxSmart(k).map(function(r){return '<div><span>'+r[0]+'</span><span class="'+(r[1]?"ok":"no")+'">'+(r[1]?"✓":"—")+'</span></div>';}).join("");
     document.getElementById("gxKList").innerHTML= S.kpis.length ? S.kpis.map(function(x,i){ var ok=gxSmart(x).filter(function(r){return r[1];}).length; var last=S.status==="approved"?gxReadings(x.feed||gxBlankFeed()).pop():null; var prx=gxPlanReading(x); var cur= prx!==null?prx : last?last.v:null; var st=cur!==null?gxStatusOf(x,cur):null;
-      return '<div class="gx-kitem" data-gxki="'+i+'"><span class="kn">'+gxEsc(x.name)+'</span><span class="pill '+(ok<5?'p-warn':'p-good')+'">'+ok+'/8</span><span class="km">'+gxEsc(x.dim)+' · '+gxEsc(x.base)+gxEsc(x.unit)+' ← '+gxEsc(x.target)+gxEsc(x.unit)+' '+bi("بحلول","by")+' '+gxEsc(x.targetDate)+(cur!==null?' · <b>'+bi("الآن","now")+' '+cur+gxEsc(x.unit)+'</b>'+(st?' <span class="gx-rd"><span class="st '+st+'">'+(st==="a"?bi("بلغ المستهدف","met"):st==="t"?bi("ضمن التفاوت","tolerance"):bi("خارج التفاوت","outside"))+'</span></span>':''):'')+(x.auto?' <span class="gx-tag">'+bi("مقترح آلياً","auto")+'</span>':'')+(GX.cur.status!=="approved"?' <button class="gx-del" style="opacity:1" data-gxdelk="'+i+'">'+bi("حذف","Delete")+'</button>':'')+'</span></div>'; }).join("") : '<div style="font-size:var(--t-xs);color:var(--ink-3)">'+bi("لا مؤشرات بعد — كل هدف يحتاج مؤشراً واحداً على الأقل.","No KPIs yet — every objective needs at least one.")+'</div>';
+      return '<div class="gx-kitem" data-gxki="'+i+'"><span class="kn">'+gxEsc(x.name)+'</span><span class="pill '+(ok<5?'p-warn':'p-good')+'">'+ok+'/8</span><span class="km">'+gxEsc(x.dim)+' · '+gxEsc(x.base)+gxEsc(x.unit)+' ← '+gxEsc(x.target)+gxEsc(x.unit)+' '+bi("بحلول","by")+' '+gxEsc(x.targetDate)+(cur!==null?' · <b>'+bi("الآن","now")+' '+cur+gxEsc(x.unit)+'</b>'+(st?' <span class="gx-rd"><span class="st '+st+'">'+(st==="a"?bi("بلغ المستهدف","met"):st==="t"?bi("ضمن التفاوت","tolerance"):bi("خارج التفاوت","outside"))+'</span></span>'+
+             (function(){ var pc=gxPaceOf(x,cur); return pc?' <span class="gx-rd"><span class="st '+(pc.state==="behind"?"b":pc.state==="ahead"?"a":"t")+'">'+gxPaceLabel(pc)+'</span></span>':''; })():''):'')+(x.auto?' <span class="gx-tag">'+bi("مقترح آلياً","auto")+'</span>':'')+(GX.cur.status!=="approved"?' <button class="gx-del" style="opacity:1" data-gxdelk="'+i+'">'+bi("حذف","Delete")+'</button>':'')+'</span></div>'; }).join("") : '<div style="font-size:var(--t-xs);color:var(--ink-3)">'+bi("لا مؤشرات بعد — كل هدف يحتاج مؤشراً واحداً على الأقل.","No KPIs yet — every objective needs at least one.")+'</div>';
     var kc=document.getElementById("gxKcnt"); if(kc) kc.textContent=S.kpis.length;
   }
   function gxDrawDrafts(){ var host=document.getElementById("gxDrafts"); if(!host) return; var S=GX.cur;
@@ -14305,7 +14350,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         html+='<tr'+(real?'':' class="empty"')+'><th class="rn">'+(r+1)+' '+tag+(real&&!(mt&&(mt.verified||mt.pending))?' <span class="x" data-gxfdelr="'+r+'">✕</span>':'')+'</th>'+cols.map(function(c,ci){ var raw=row[ci]==null?"":String(row[ci]); var isF=raw.charAt(0)==="="; var v=isF?gxCell(fd,r,ci):""; return '<td'+(isF?' class="fx"':'')+'><input data-gxfr="'+r+'" data-gxfc="'+ci+'" value="'+gxEsc(raw)+'"'+((lock||(mt&&(mt.pending||mt.verified)))?' readonly':'')+'>'+(isF?'<span class="v">= '+gxEsc(v)+'</span>':'')+'</td>'; }).join("")+'</tr>'; }
       if(!shown) html+='<tr><td colspan="'+(cols.length+1)+'" style="padding:10px;color:var(--ink-3);text-align:center">'+bi("بنية الجدول جاهزة — القراءات تُدخل بعد الاعتماد","Structure ready — readings are entered after approval")+'</td></tr>';
       html+='</table></div>'; }
-    var rd=gxReadings(fd); if(rd.length&&!lock){ var last=rd[rd.length-1], st=gxStatusOf(k,last.v); html+='<div class="gx-rd"><b>'+rd.length+' '+bi("قراءة","readings")+'</b> · '+last.date+': <b>'+last.v+gxEsc(k.unit)+'</b> '+(st?'<span class="st '+st+'">'+(st==="a"?bi("بلغ المستهدف","target met"):st==="t"?bi("ضمن حدود التفاوت","within tolerance"):bi("خارج حدود التفاوت","outside tolerance"))+'</span>':'')+'</div>'; }
+    var rd=gxReadings(fd); if(rd.length&&!lock){ var last=rd[rd.length-1], st=gxStatusOf(k,last.v); var pc=gxPaceOf(k,last.v);
+      html+='<div class="gx-rd"><b>'+rd.length+' '+bi("قراءة","readings")+'</b> · '+last.date+': <b>'+last.v+gxEsc(k.unit)+'</b> '+
+        (st?'<span class="st '+st+'">'+(st==="a"?bi("بلغ المستهدف","target met"):st==="t"?bi("ضمن حدود التفاوت","within tolerance"):bi("خارج حدود التفاوت","outside tolerance"))+'</span>':'')+
+        (pc?' <span class="st '+(pc.state==="behind"?"b":pc.state==="ahead"?"a":"t")+'" title="'+gxEsc((isAr()?"المتوقع اليوم: ":"expected today: ")+(Math.round(pc.expected*10)/10)+(k.unit||""))+'">'+gxPaceLabel(pc)+'</span>':'')+'</div>'; }
     return html; }
   function gxDrawTool(){ var host=document.getElementById("gxTool"); if(!host) return; var S=GX.cur; var k=GX.KD; if(!S||!k){ host.innerHTML=""; return; } if(!k.feed) k.feed=gxBlankFeed(); var fd=k.feed; var lock=S.status!=="approved";
     document.querySelectorAll("#gxToolMode button").forEach(function(b){b.classList.toggle("on",b.dataset.gfm===fd.mode);});
@@ -14514,6 +14562,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var cur= pr!==null?pr : last?last.v:null; var st=cur!==null?gxStatusOf(k,cur):null;
     var facts=[ [isAr()?"البُعد":"Dimension", k.dim], [isAr()?"النوع":"Type", isAr()?GX_KIND[k.kind][0]:GX_KIND[k.kind][1]], [isAr()?"الرقم الحالي":"Current", k.base+" "+k.unit+(k.baseDate?" ("+k.baseDate+")":"")], [isAr()?"المستهدف":"Target", k.target+" "+k.unit+(k.targetDate?" — "+k.targetDate:"")],
       [isAr()?"العتبات":"Thresholds", th?((k.dir==="up"?"≥ ":"≤ ")+th.above+" / "+th.tolLo.toFixed(1)+" / "+(k.dir==="up"?"< ":"> ")+th.tolLo.toFixed(1)+" "+k.unit):"—"], [isAr()?"آخر قراءة":"Latest", cur!==null?(cur+" "+k.unit+(st?" — "+(st==="a"?(isAr()?"بلغ المستهدف":"target met"):st==="t"?(isAr()?"ضمن حدود التفاوت":"within tolerance"):(isAr()?"خارج حدود التفاوت":"outside tolerance")):"")):"—"],
+      [isAr()?"مقابل خطة اليوم":"Against plan to date", (function(){ var pc=gxPaceOf(k,cur); return pc?(gxPaceLabel(pc).replace(/<[^>]*>/g,"")+" — "+(isAr()?"المتوقع ":"expected ")+(Math.round(pc.expected*10)/10)+" "+k.unit):"—"; })()],
       [isAr()?"المصدر":"Source", k.source||"—"], [isAr()?"جهة الرصد":"Monitored by", k.reader||"—"], [isAr()?"الوتيرة":"Frequency", (isAr()?GX_FREQ[k.cfreq][0]:GX_FREQ[k.cfreq][1])+" · "+(isAr()?GX_FREQ[k.rfreq][0]:GX_FREQ[k.rfreq][1])] ];
     var rtl=isAr()?' rtl="1" algn="r"':'';
     var para=function(t,sz,b,col){ return '<a:p><a:pPr'+rtl+'/><a:r><a:rPr lang="ar-OM" sz="'+sz+'"'+(b?' b="1"':'')+' dirty="0"><a:solidFill><a:srgbClr val="'+(col||ink)+'"/></a:solidFill><a:latin typeface="Calibri"/><a:cs typeface="Noto Kufi Arabic"/></a:rPr><a:t>'+gxX(t)+'</a:t></a:r></a:p>'; };
