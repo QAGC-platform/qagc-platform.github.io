@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 48">
+<meta name="qagc-ver" content="beta 49">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -48,7 +48,7 @@ body{
 h1,h2,h3,p,figure{margin:0}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 table{border-collapse:collapse;width:100%}
-.tnum{font-variant-numeric:tabular-nums}
+.tnum{font-variant-numeric:tabular-nums;unicode-bidi:isolate;direction:ltr}
 :focus-visible{outline:2px solid var(--brand-ink);outline-offset:2px;border-radius:3px}
 code,.ltr{direction:ltr;unicode-bidi:isolate;font-family:ui-monospace,"SF Mono",monospace;
   font-size:.92em;background:rgba(16,41,44,.05);border-radius:4px;padding:1px 4px}
@@ -4294,7 +4294,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 
     <section class="screen gx-scope" id="gen">
       <div class="head">
-        <p class="eyebrow"><span lang="ar">الخطة السنوية · إنشاء ومتابعة</span><span lang="en">Annual plan · create and track</span> <button id="gxHelp" class="gx-info" title="كيف أستخدم المولّد؟">i</button></p>
+        <p class="eyebrow"><span lang="ar">الخطة السنوية · إنشاء ومتابعة</span><span lang="en">Annual plan · create and track</span> <button id="gxHelp" class="gx-info" title="كيف أستخدم المولّد؟ · How the generator works" aria-label="كيف أستخدم المولّد؟ · How the generator works">i</button></p>
         <div id="gxHelpPanel" hidden>
           <h3><span lang="ar">كيف يعمل مولّد الأهداف؟</span><span lang="en">How the generator works</span></h3>
           <ol>
@@ -4383,7 +4383,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 <div id="rvToast" hidden></div>
 <div id="rvPop" hidden>
   <div class="cx" id="rvPopCx"></div>
-  <textarea id="rvPopTa" placeholder="ما ملاحظتك على هذا العنصر؟"></textarea>
+  <textarea id="rvPopTa" aria-label="نص الملاحظة · Note text" placeholder="ما ملاحظتك على هذا العنصر؟ · Your note on this element"></textarea>
   <div class="rvto" id="rvToWrap">
     <span class="rvto-l"><span lang="ar">إلى من؟</span><span lang="en">To whom?</span></span>
     <button type="button" class="rvto-b on" data-rvto="dev"><span lang="ar">Claude — التطوير</span><span lang="en">Claude — development</span></button>
@@ -8598,7 +8598,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         var evs=cpdOn(iso), we=((r? (ci):(ci))===5||ci===6);
         return '<td class="cpdm'+(we?" we":"")+'"><span class="dnum tnum">'+d+'</span>'+
           evs.map(function(x){return '<span class="cpdchip mchip'+(x.ev.confirmed?" conf":"")+'" data-cpd="'+x.i+'">'+
-            bi(x.ev.t[0],x.ev.t[1]).replace(/<[^>]*>/g,"").slice(0,26)+'</span>';}).join("")+'</td>';
+            gxEsc((isAr()?x.ev.t[0]:x.ev.t[1]).slice(0,26))+'</span>';}).join("")+'</td>';
       }).join("")+'</tr>';
     }
     h.classList.add("monthview");
@@ -12996,7 +12996,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var avg=ppl.length?Math.round(ppl.reduce(function(a,p){return a+obOf(p).pct;},0)/ppl.length):0;
       return '<div class="cov-row"><div class="cov-t"><div class="g">'+
         bi(dep,(ppl[0]||{dep:[dep,dep]}).dep[1])+'</div>'+
-        '<div class="c">'+ppl.length+' staff</div></div>'+
+        '<div class="c">'+ppl.length+' '+bi("موظفاً","staff")+'</div></div>'+
         '<div class="bar'+(avg<60?" low":"")+'"><i style="width:'+avg+'%"></i></div>'+
         '<div class="cov-n tnum">'+avg+'%</div></div>';
     }).join("");
@@ -13847,13 +13847,20 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function gxMoney(n){ return n?Number(n).toLocaleString("en")+" "+(isAr()?"ر.ع.":"OMR"):"—"; }
   var GX_MO=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
   var GX_MOE=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  var GX_WD=["ح","ن","ث","ر","خ","ج","س"];
+  var GX_WD_AR=["ح","ن","ث","ر","خ","ج","س"], GX_WD_EN=["S","M","T","W","T","F","S"];
+  var GX_WD=GX_WD_AR;
   var GX_SCOPE={mine:["هدفي","Mine"],department:["للقسم","Department"],directorate:["للدائرة","Directorate"],centre:["للمركز","Centre"]};
-  var GX_DIMS=["سلامة المستفيدين","الوقت المناسب (الاستجابة)","الفاعلية","الكفاءة","العدالة والإتاحة","التمحور حول المستفيد وأسرته"];
+  var GX_DIMS_B=[["سلامة المستفيدين","Beneficiary safety"],["الوقت المناسب (الاستجابة)","Timeliness"],["الفاعلية","Effectiveness"],["الكفاءة","Efficiency"],["العدالة والإتاحة","Equity and access"],["التمحور حول المستفيد وأسرته","Person- and family-centred"]];
+  var GX_DIMS=GX_DIMS_B.map(function(x){return x[0];});
+  function gxDimLabel(v){ var m=GX_DIMS_B.filter(function(x){return x[0]===v;})[0]; return m?(isAr()?m[0]:m[1]):v; }
   var GX_KIND={process:["عملية (إجرائي)","Process"],output:["مخرج","Output"],outcome:["نتيجة (أثر)","Outcome"]};
   var GX_FREQ={w:["أسبوعي","Weekly"],m:["شهري","Monthly"],q:["ربع سنوي","Quarterly"],h:["نصف سنوي","Semi-annual"],y:["سنوي","Annual"]};
   var GX_TYPES=[["نسبة مئوية","%"],["عدد",""],["معدل",""],["درجة",""],["مدة","يوم"]];
-  var GX_REPORTS=["تقرير أداء المركز الربعي","تقرير المديرة العامة الشهري","تقرير الدائرة","لوحة مؤشرات المنصة"];
+  var GX_TYPES_EN={"نسبة مئوية":"Percentage","عدد":"Count","معدل":"Rate","درجة":"Score","مدة":"Duration"};
+  function gxTypeLabel(v){ return isAr()?v:(GX_TYPES_EN[v]||v); }
+  var GX_REPORTS_B=[["تقرير أداء المركز الربعي","Centre quarterly performance report"],["تقرير المديرة العامة الشهري","DG monthly report"],["تقرير الدائرة","Directorate report"],["لوحة مؤشرات المنصة","Platform KPI board"]];
+  var GX_REPORTS=GX_REPORTS_B.map(function(x){return x[0];});
+  function gxRepLabel(v){ var m=GX_REPORTS_B.filter(function(x){return x[0]===v;})[0]; return m?(isAr()?m[0]:m[1]):v; }
 
   // ── people, from the platform's own roster and chain ──
   function gxRole(p){ if(p.id==="dg0") return "dg"; if(p.id==="m1") return "coord"; var d=(p.desig&&p.desig[0])||""; if(/^مدير/.test(d) && p.dep[0]===p.dir[0]) return "dir"; if(/رئيس قسم/.test(d)) return "head"; return "staff"; }
@@ -14025,7 +14032,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var q3=(GX.z==="quarters"||GX.z==="quarter");
     var h='<div class="gx-th z-'+GX.z+(q3?' q3':'')+'" style="width:'+W+'px">'+(q3?'<div class="qrow">'+qrow+'</div>':'');
     for(var t=t0;t<=t1;t+=GXD){ var d=new Date(t); if(d.getUTCDate()===1||t===t0){ var end=Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,1); var mw=(Math.min(end,t1+GXD)-t)/GXD*px; h+='<div class="mo'+(d.getUTCMonth()%2?' alt':'')+'" data-gxmo="'+gxIso(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),1))+'" title="'+(GX.z==="month"?(isAr()?"العودة إلى الأرباع":"Back to quarters"):GX.z==="week"?(isAr()?"العودة إلى الشهر":"Back to the month"):(isAr()?"عرض الشهر":"Open this month"))+'" style="inset-inline-start:'+((t-t0)/GXD*px)+'px;width:'+mw+'px">'+MO[d.getUTCMonth()]+((GX.z==="year"||GX.z==="quarters"||GX.z==="quarter")?'':' '+d.getUTCFullYear())+'</div>'; } }
-    if(tone==="day"){ for(var t=t0;t<=t1;t+=GXD){ var d=new Date(t), wd=d.getUTCDay(); h+='<div class="un'+((wd===5||wd===6)?' we':'')+(GX.z==="month"?'" data-gxun="'+gxIso(t)+'" title="'+(isAr()?"عرض الأسبوع":"Open this week")+'"':'"')+' style="inset-inline-start:'+((t-t0)/GXD*px)+'px;width:'+px+'px">'+(GX.z==="week"?'<b>'+GX_WD[wd]+'</b>':'')+d.getUTCDate()+'</div>'; } }
+    if(tone==="day"){ for(var t=t0;t<=t1;t+=GXD){ var d=new Date(t), wd=d.getUTCDay(); h+='<div class="un'+((wd===5||wd===6)?' we':'')+(GX.z==="month"?'" data-gxun="'+gxIso(t)+'" title="'+(isAr()?"عرض الأسبوع":"Open this week")+'"':'"')+' style="inset-inline-start:'+((t-t0)/GXD*px)+'px;width:'+px+'px">'+(GX.z==="week"?'<b>'+(isAr()?GX_WD_AR:GX_WD_EN)[wd]+'</b>':'')+d.getUTCDate()+'</div>'; } }
     else { for(var t=t0;t<=t1;t+=GXD){ var d=new Date(t); if(d.getUTCDay()===0||t===t0){ var ww=Math.min(7-(t===t0?d.getUTCDay():0),(t1-t)/GXD+1); h+='<div class="un" data-gxun="'+gxIso(t)+'" title="'+(isAr()?"عرض الأسبوع":"Open this week")+'" style="inset-inline-start:'+((t-t0)/GXD*px)+'px;width:'+(ww*px)+'px">'+d.getUTCDate()+'</div>'; } } }
     h+='</div>';
     var BG='<div class="gx-bg'+(q3?' q3':'')+'" style="width:'+W+'px">';
@@ -14141,7 +14148,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   // plan-completion KPIs read themselves from the steps
   function gxPlanReading(k){ var S=GX.cur; if(!k.plan||S.status!=="approved") return null; var steps=[]; S.phases.forEach(function(ph){ if(!k.plan.phase||k.plan.phase===ph.name) ph.tasks.forEach(function(t){steps.push(t);}); }); if(!steps.length) return null; return Math.round(steps.filter(function(t){return t.verified;}).length/steps.length*100); }
   function gxF(label,key,k,o){ o=o||{}; var w=o.w?' w'+o.w:'', v=k[key], inner;
-    if(o.sel) inner='<select data-gxk="'+key+'">'+o.sel.map(function(x){ var val=Array.isArray(x)?x[0]:x, lab=Array.isArray(x)?x[1]:x; return '<option value="'+gxEsc(val)+'"'+(String(v)===String(val)?" selected":"")+'>'+gxEsc(lab)+'</option>'; }).join("")+'</select>';
+    if(o.sel) inner='<select data-gxk="'+key+'">'+o.sel.map(function(x){ var val=Array.isArray(x)?x[0]:x, lab=Array.isArray(x)?x[1]:x; if(o.lab) lab=o.lab(val); return '<option value="'+gxEsc(val)+'"'+(String(v)===String(val)?" selected":"")+'>'+gxEsc(lab)+'</option>'; }).join("")+'</select>';
     else inner='<input'+(o.type?' type="'+o.type+'"':'')+(o.list?' list="'+o.list+'"':'')+(o.min?' min="'+o.min+'"':'')+(o.max?' max="'+o.max+'"':'')+(o.step?' step="'+o.step+'"':'')+' data-gxk="'+key+'" value="'+gxEsc(v)+'" placeholder="'+gxEsc(o.ph||"")+'">';
     return '<div class="f'+w+'"><label>'+label+'</label>'+inner+'</div>'; }
   function gxDrawK(){ gxDrawKForm(); gxDrawKSide(); gxDrawDrafts(); gxDrawTool();
@@ -14161,11 +14168,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     }
     document.getElementById("gxKTitle").innerHTML= klock ? bi("بطاقة معتمدة — تعديلها بطلبٍ من صاحبها يوافق عليه رئيسه المباشر","Approved card — its owner requests an edit, the line manager approves")+kctl : GX.K===null ? (k.auto?bi("بطاقة مسودة مقترحة — للمراجعة","Proposed draft card — review"):bi("بطاقة مؤشر جديد","New KPI card")) : bi("تعديل بطاقة المؤشر","Edit KPI card");
     var ph=[["",isAr()?"— الهدف كله":"— whole objective"]].concat(S.phases.filter(function(x){return x.name;}).map(function(x){return [x.name,x.name];}));
-    document.getElementById("gxf1").innerHTML= gxF(bi("عنوان المؤشر","Title"),"name",k,{w:6,ph:C.name})+gxF(bi("البُعد","Dimension"),"dim",k,{w:2,sel:GX_DIMS})+gxF(bi("النوع","Type"),"kind",k,{w:2,sel:Object.keys(GX_KIND).map(function(x){return [x,isAr()?GX_KIND[x][0]:GX_KIND[x][1]];})})+gxF(bi("مرتبط بـ","Linked to"),"phase",k,{w:2,sel:ph})+gxF(bi("الوصف","Description"),"desc",k,{w:6,ph:C.desc})+gxF(bi("المسوّغ","Rationale"),"rationale",k,{w:6,ph:C.rationale});
-    document.getElementById("gxf2").innerHTML= gxF(bi("البسط","Numerator"),"num",k,{w:3,ph:C.num})+gxF(bi("المقام","Denominator"),"den",k,{w:3,ph:C.den})+gxF(bi("الاستثناءات","Exclusions"),"excl",k,{w:3,ph:C.excl})+gxF(bi("عناصر البيانات","Data elements"),"elements",k,{w:3,ph:C.elements})+gxF(bi("نوع القياس","Measure type"),"type",k,{w:2,sel:GX_TYPES.map(function(t){return t[0];})})+gxF(bi("الوحدة","Unit"),"unit",k,{w:1,ph:"%"})+gxF(bi("الرقم الحالي","Current"),"base",k,{w:1,type:"number",step:"any",ph:"45"})+gxF(bi("بتاريخ","As of"),"baseDate",k,{w:2,type:"date"});
+    document.getElementById("gxf1").innerHTML= gxF(bi("عنوان المؤشر","Title"),"name",k,{w:6,ph:C.name})+gxF(bi("البُعد","Dimension"),"dim",k,{w:2,sel:GX_DIMS,lab:gxDimLabel})+gxF(bi("النوع","Type"),"kind",k,{w:2,sel:Object.keys(GX_KIND).map(function(x){return [x,isAr()?GX_KIND[x][0]:GX_KIND[x][1]];})})+gxF(bi("مرتبط بـ","Linked to"),"phase",k,{w:2,sel:ph})+gxF(bi("الوصف","Description"),"desc",k,{w:6,ph:C.desc})+gxF(bi("المسوّغ","Rationale"),"rationale",k,{w:6,ph:C.rationale});
+    document.getElementById("gxf2").innerHTML= gxF(bi("البسط","Numerator"),"num",k,{w:3,ph:C.num})+gxF(bi("المقام","Denominator"),"den",k,{w:3,ph:C.den})+gxF(bi("الاستثناءات","Exclusions"),"excl",k,{w:3,ph:C.excl})+gxF(bi("عناصر البيانات","Data elements"),"elements",k,{w:3,ph:C.elements})+gxF(bi("نوع القياس","Measure type"),"type",k,{w:2,sel:GX_TYPES.map(function(t){return t[0];}),lab:gxTypeLabel})+gxF(bi("الوحدة","Unit"),"unit",k,{w:1,ph:"%"})+gxF(bi("الرقم الحالي","Current"),"base",k,{w:1,type:"number",step:"any",ph:"45"})+gxF(bi("بتاريخ","As of"),"baseDate",k,{w:2,type:"date"});
     document.getElementById("gxf3").innerHTML= gxF(bi("المستهدف","Target"),"target",k,{w:1,type:"number",step:"any",ph:"90"})+gxF(bi("بحلول","By"),"targetDate",k,{w:2,type:"date",min:S.from||"",max:S.to||""})+'<div class="f w2"><label>'+bi("الاتجاه","Trend")+'</label><div class="gx-seg"><button type="button" data-gxdir="up" class="'+(k.dir==="up"?"on":"")+'">'+bi("تصاعدي ↑","Increasing ↑")+'</button><button type="button" data-gxdir="down" class="'+(k.dir==="down"?"on":"")+'">'+bi("تنازلي ↓","Decreasing ↓")+'</button></div></div>'+gxF(bi("نطاق التفاوت %","Tolerance %"),"tol",k,{w:1,type:"number",min:"0",max:"100",ph:"10"});
     var fr=Object.keys(GX_FREQ).map(function(x){return [x,isAr()?GX_FREQ[x][0]:GX_FREQ[x][1]];});
-    document.getElementById("gxf4").innerHTML= gxF(bi("مصدر البيانات","Data source"),"source",k,{w:3,ph:C.source})+gxF(bi("المحددات","Limitations"),"limits",k,{w:3,ph:C.limits})+gxF(bi("وتيرة الجمع","Collection"),"cfreq",k,{w:2,sel:fr})+gxF(bi("وتيرة الرصد","Monitoring"),"mfreq",k,{w:2,sel:fr})+gxF(bi("جهة الرصد","Monitored by"),"reader",k,{w:2,list:"gxPeople",ph:isAr()?"اسم من الكشف أو وحدة":"A name or a unit"})+gxF(bi("وتيرة التقرير","Reporting"),"rfreq",k,{w:2,sel:fr})+gxF(bi("يُدرج في","Reported in"),"report",k,{w:4,sel:GX_REPORTS});
+    document.getElementById("gxf4").innerHTML= gxF(bi("مصدر البيانات","Data source"),"source",k,{w:3,ph:C.source})+gxF(bi("المحددات","Limitations"),"limits",k,{w:3,ph:C.limits})+gxF(bi("وتيرة الجمع","Collection"),"cfreq",k,{w:2,sel:fr})+gxF(bi("وتيرة الرصد","Monitoring"),"mfreq",k,{w:2,sel:fr})+gxF(bi("جهة الرصد","Monitored by"),"reader",k,{w:2,list:"gxPeople",ph:isAr()?"اسم من الكشف أو وحدة":"A name or a unit"})+gxF(bi("وتيرة التقرير","Reporting"),"rfreq",k,{w:2,sel:fr})+gxF(bi("يُدرج في","Reported in"),"report",k,{w:4,sel:GX_REPORTS,lab:gxRepLabel});
     document.getElementById("gxKSave").innerHTML= GX.K===null?bi("إضافة المؤشر","Add KPI"):bi("حفظ التعديل","Save changes"); document.getElementById("gxKNew").hidden= GX.K===null&&!k.auto;
   }
   function gxReadings(fd){ var out=[]; (fd.rows||[]).forEach(function(row,r){ var d=String(row[fd.dateCol]||"").trim(); var v=gxCell(fd,r,fd.valCol); var m=(fd.meta||[])[r]; if(/^\d{4}-\d{2}-\d{2}$/.test(d)&&typeof v==="number") out.push({date:d,v:v,pendingR: fd.mode!=="sheet" && !(m&&m.verified)}); }); return out.sort(function(a,b){return gxP(a.date)-gxP(b.date);}); }
