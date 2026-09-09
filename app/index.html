@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 64">
+<meta name="qagc-ver" content="beta 65">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -2116,7 +2116,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 .gx-scope .gx-kitem:hover{border-color:var(--brand-ink)}
 .gx-scope .gx-kitem .kn{font-weight:600;font-size:var(--t-sm)}
 .gx-scope .gx-kitem .km{font-size:var(--t-xs);color:var(--ink-3);grid-column:1/-1}
-.gx-scope .gx-spark{width:100%;height:92px;display:block}
+.gx-scope .gx-spark{width:100%;height:180px;display:block}
 .gx-scope .gx-thr{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0;font-size:var(--t-xs);text-align:center}
 .gx-scope .gx-thr div{border-radius:var(--r-sm);padding:6px 4px;border:1px solid var(--rule)}
 .gx-scope .gx-thr .a{background:var(--good-bg)}.gx-scope .gx-thr .t{background:var(--warn-bg)}.gx-scope .gx-thr .b{background:var(--critical-bg)}
@@ -14412,23 +14412,38 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(!milFocused) document.getElementById("gxMil").innerHTML= ms.length ? '<table class="gx-mil"><tr><th>'+bi("التاريخ","Date")+'</th><th>'+bi("المقترح","Proposed")+'</th><th>'+bi("المعتمد","Adopted")+'</th><th></th></tr>'+ms.map(function(m){return '<tr><td>'+m.date+'</td><td>'+m.auto+u+'</td><td>'+(m.final?'<b>'+m.val+u+'</b>':'<input type="number" step="any" data-gxmil="'+m.date+'" value="'+m.val+'">')+'</td><td>'+(m.final?bi("المستهدف النهائي","final target"):(m.val!==m.auto?'<span style="color:var(--gold-ink)">'+bi("معدَّل","edited")+'</span>':(m.why||'')))+'</td></tr>';}).join("")+'</table>' : '<div style="font-size:var(--t-xs);color:var(--ink-3)">'+bi("تظهر المعالم بعد إدخال الرقم الحالي والمستهدف وتاريخيهما.","Milestones appear once both figures and dates exist.")+'</div>';
     var pts=[]; if(k.baseDate&&k.base!=="") pts.push({d:gxP(k.baseDate),v:+k.base}); ms.forEach(function(m){pts.push({d:gxP(m.date),v:+m.val});});
     var svg=document.getElementById("gxSpark"), th=gxThresholds(k);
+    // the old fixed 320x92 viewBox was stretched to the card's width, turning points into
+    // ellipses and flattening the plot; draw in the element's own pixels instead
+    var CW=Math.max(280, Math.round(svg.getBoundingClientRect().width) || svg.clientWidth ||
+             (svg.parentElement?svg.parentElement.clientWidth-24:0) || 320), CH=180;
+    svg.setAttribute("viewBox","0 0 "+CW+" "+CH);
+    svg.setAttribute("preserveAspectRatio","xMidYMid meet");
+    var PL=44, PR=12, PT=12, PB=24;            // room for the value axis and the date row
+    var PWID=Math.max(40, CW-PL-PR), PHGT=CH-PT-PB;
     var RD=S.status==="approved"?gxReadings(k.feed||gxBlankFeed()):[]; var pr=gxPlanReading(k); if(pr!==null) RD=RD.concat([{date:PLATFORM_TODAY,v:pr,plan:true}]);
-    if(pts.length>=2){ var x0=pts[0].d,x1=pts[pts.length-1].d, vs=pts.map(function(q){return q.v;}); if(th) vs.push(th.tolLo); RD=RD.filter(function(q){return gxP(q.date)>=x0&&gxP(q.date)<=x1;}); RD.forEach(function(q){vs.push(q.v);}); var lo=Math.min.apply(null,vs), hi=Math.max.apply(null,vs); if(hi===lo) hi=lo+1; var Y=function(v){return 80-((v-lo)/(hi-lo))*64;}; var P=pts.map(function(q){return [(q.d-x0)/(x1-x0)*300+10,Y(q.v)];});
-      var band= th?'<rect x="10" y="'+Math.min(Y(th.above),Y(th.tolLo))+'" width="300" height="'+Math.abs(Y(th.above)-Y(th.tolLo))+'" fill="var(--brand-gold)" opacity=".35"/>':'';
+    if(pts.length>=2){ var x0=pts[0].d,x1=pts[pts.length-1].d, vs=pts.map(function(q){return q.v;}); if(th) vs.push(th.tolLo); RD=RD.filter(function(q){return gxP(q.date)>=x0&&gxP(q.date)<=x1;}); RD.forEach(function(q){vs.push(q.v);}); var lo=Math.min.apply(null,vs), hi=Math.max.apply(null,vs); if(hi===lo) hi=lo+1; var Y=function(v){return PT+PHGT-((v-lo)/(hi-lo))*PHGT;}; var X=function(d){return PL+(x1===x0?0:(d-x0)/(x1-x0)*PWID);};
+      var BASE=PT+PHGT; var P=pts.map(function(q){return [X(q.d),Y(q.v)];});
+      var band= th?'<rect x="'+PL+'" y="'+Math.min(Y(th.above),Y(th.tolLo))+'" width="'+PWID+'" height="'+Math.max(2,Math.abs(Y(th.above)-Y(th.tolLo)))+'" fill="var(--brand-gold)" opacity=".35"><title>'+gxEsc((isAr()?"حدود التفاوت":"tolerance band"))+'</title></rect>':'';
       var ctype=k.chart||"line"; var colOf=function(st){ return st==="a"?"var(--good)":st==="t"?"var(--warn)":"var(--critical)"; };
-      var RX=RD.map(function(q){ return [(gxP(q.date)-x0)/(x1-x0)*300+10, Y(q.v), gxStatusOf(k,q.v), q]; });
+      var RX=RD.map(function(q){ return [X(gxP(q.date)), Y(q.v), gxStatusOf(k,q.v), q]; });
       var hollow=function(a){ return a[3].pendingR ? ' fill-opacity=".15" stroke="'+colOf(a[2])+'" stroke-width="2"' : ''; };
-      var RP = ctype==="bars" ? RX.map(function(a){ return '<rect x="'+(a[0]-4)+'" y="'+a[1]+'" width="8" height="'+Math.max(1,84-a[1])+'" rx="1.5" fill="'+colOf(a[2])+'" opacity=".85"><title>'+a[3].date+': '+a[3].v+'</title></rect>'; }).join("")
-        : ctype==="area" ? (RX.length?'<path d="M'+RX.map(function(a){return a[0]+','+a[1];}).join(' L')+' L'+RX[RX.length-1][0]+',84 L'+RX[0][0]+',84 Z" fill="var(--s1)" opacity=".25"/><path d="M'+RX.map(function(a){return a[0]+','+a[1];}).join(' L')+'" fill="none" stroke="var(--s1)" stroke-width="2"/>':'')+RX.map(function(a){ return '<circle cx="'+a[0]+'" cy="'+a[1]+'" r="3" fill="'+colOf(a[2])+'"><title>'+a[3].date+': '+a[3].v+'</title></circle>'; }).join("")
+      var RP = ctype==="bars" ? RX.map(function(a){ return '<rect x="'+(a[0]-4)+'" y="'+a[1]+'" width="8" height="'+Math.max(1,BASE-a[1])+'" rx="1.5" fill="'+colOf(a[2])+'" opacity=".85"><title>'+a[3].date+': '+a[3].v+'</title></rect>'; }).join("")
+        : ctype==="area" ? (RX.length?'<path d="M'+RX.map(function(a){return a[0]+','+a[1];}).join(' L')+' L'+RX[RX.length-1][0]+','+BASE+' L'+RX[0][0]+','+BASE+' Z" fill="var(--s1)" opacity=".25"/><path d="M'+RX.map(function(a){return a[0]+','+a[1];}).join(' L')+'" fill="none" stroke="var(--s1)" stroke-width="2"/>':'')+RX.map(function(a){ return '<circle cx="'+a[0]+'" cy="'+a[1]+'" r="3" fill="'+colOf(a[2])+'"><title>'+a[3].date+': '+a[3].v+'</title></circle>'; }).join("")
         : ctype==="line" ? (RX.length>1?'<path d="M'+RX.map(function(a){return a[0]+','+a[1];}).join(' L')+'" fill="none" stroke="var(--s1)" stroke-width="2"/>':'')+RX.map(function(a){ return '<circle cx="'+a[0]+'" cy="'+a[1]+'" r="3.5" fill="'+colOf(a[2])+'"'+(a[3].pendingR?hollow(a):' stroke="var(--surface)" stroke-width="1.2"')+'><title>'+a[3].date+': '+a[3].v+(a[3].pendingR?(isAr()?" (بانتظار التوثيق)":" (pending)"):"")+'</title></circle>'; }).join("")
         : RX.map(function(a){ return '<circle cx="'+a[0]+'" cy="'+a[1]+'" r="4" fill="'+colOf(a[2])+'"'+(a[3].pendingR?hollow(a):' stroke="var(--surface)" stroke-width="1.2"')+'><title>'+a[3].date+': '+a[3].v+'</title></circle>'; }).join("");
       document.querySelectorAll("#gxChartType button").forEach(function(b){b.classList.toggle("on",b.dataset.gxct===ctype);});
       var pathD='M'+P.map(function(a){return a[0]+','+a[1];}).join(' L');
-      var planShape = ctype==="bars" ? P.map(function(a,i){ return '<rect x="'+(a[0]-5)+'" y="'+a[1]+'" width="10" height="'+Math.max(1,84-a[1])+'" rx="2" fill="'+(i===P.length-1?'var(--gold-ink)':'var(--brand-ink)')+'" opacity=".55"/>'; }).join("")
+      var planShape = ctype==="bars" ? P.map(function(a,i){ return '<rect x="'+(a[0]-5)+'" y="'+a[1]+'" width="10" height="'+Math.max(1,BASE-a[1])+'" rx="2" fill="'+(i===P.length-1?'var(--gold-ink)':'var(--brand-ink)')+'" opacity=".55"/>'; }).join("")
         : ctype==="dots" ? P.map(function(a,i){ return '<circle cx="'+a[0]+'" cy="'+a[1]+'" r="'+(i===0||i===P.length-1?5:3.5)+'" fill="'+(i===P.length-1?'var(--gold-ink)':'var(--brand-ink)')+'" opacity=".8"/>'; }).join("")
-        : (ctype==="area" ? '<path d="'+pathD+' L'+P[P.length-1][0]+',84 L'+P[0][0]+',84 Z" fill="var(--brand-ink)" opacity=".16"/>' : '')+'<path d="'+pathD+'" fill="none" stroke="var(--brand-ink)" stroke-width="2" stroke-dasharray="'+(RD.length?'4 3':'0')+'"/>'+P.map(function(a,i){return '<circle cx="'+a[0]+'" cy="'+a[1]+'" r="'+(i===0||i===P.length-1?4:2.5)+'" fill="'+(i===P.length-1?'var(--gold-ink)':'var(--brand-ink)')+'"/>';}).join("");
-      svg.innerHTML=band+planShape+RP+'<text x="10" y="90" font-size="9" fill="var(--ink-3)">'+gxEsc(k.base)+u+'</text><text x="310" y="90" font-size="9" text-anchor="end" fill="var(--ink-3)">'+gxEsc(k.target)+u+'</text>';
-    } else svg.innerHTML='<text x="160" y="50" font-size="11" text-anchor="middle" fill="var(--ink-3)">'+(isAr()?"يُرسم المسار بعد إدخال الرقمين وتاريخيهما":"The path draws once both figures and dates exist")+'</text>';
+        : (ctype==="area" ? '<path d="'+pathD+' L'+P[P.length-1][0]+','+BASE+' L'+P[0][0]+','+BASE+' Z" fill="var(--brand-ink)" opacity=".16"/>' : '')+'<path d="'+pathD+'" fill="none" stroke="var(--brand-ink)" stroke-width="2" stroke-dasharray="'+(RD.length?'4 3':'0')+'"/>'+P.map(function(a,i){return '<circle cx="'+a[0]+'" cy="'+a[1]+'" r="'+(i===0||i===P.length-1?4:2.5)+'" fill="'+(i===P.length-1?'var(--gold-ink)':'var(--brand-ink)')+'"/>';}).join("");
+      var axis='<line x1="'+PL+'" y1="'+PT+'" x2="'+PL+'" y2="'+BASE+'" stroke="var(--rule)" stroke-width="1"/>'+
+        '<line x1="'+PL+'" y1="'+BASE+'" x2="'+(PL+PWID)+'" y2="'+BASE+'" stroke="var(--rule)" stroke-width="1"/>'+
+        '<text x="'+(PL-6)+'" y="'+(PT+4)+'" font-size="10" text-anchor="end" fill="var(--ink-3)">'+gxEsc(Math.round(hi*10)/10)+u+'</text>'+
+        '<text x="'+(PL-6)+'" y="'+(BASE+3)+'" font-size="10" text-anchor="end" fill="var(--ink-3)">'+gxEsc(Math.round(lo*10)/10)+u+'</text>'+
+        '<text x="'+PL+'" y="'+(CH-6)+'" font-size="9" fill="var(--ink-3)" style="direction:ltr">'+gxEsc(gxIso(x0))+'</text>'+
+        '<text x="'+(PL+PWID)+'" y="'+(CH-6)+'" font-size="9" text-anchor="end" fill="var(--ink-3)" style="direction:ltr">'+gxEsc(gxIso(x1))+'</text>';
+      svg.innerHTML=band+axis+planShape+RP;
+    } else svg.innerHTML='<text x="'+(CW/2)+'" y="'+(CH/2)+'" font-size="12" text-anchor="middle" fill="var(--ink-3)">'+(isAr()?"يُرسم المسار بعد إدخال الرقمين وتاريخيهما":"The path draws once both figures and dates exist")+'</text>';
     document.getElementById("gxThr").innerHTML= th?'<div class="a">'+bi("بلوغ المستهدف","Target met")+'<b>'+(k.dir==="up"?"≥ ":"≤ ")+th.above+u+'</b></div><div class="t">'+bi("ضمن حدود التفاوت","Within tolerance")+'<b>'+(k.dir==="up"?th.tolLo.toFixed(1)+" – "+th.above:th.above+" – "+th.tolLo.toFixed(1))+u+'</b></div><div class="b">'+bi("خارج حدود التفاوت","Outside tolerance")+'<b>'+(k.dir==="up"?"< ":"> ")+th.tolLo.toFixed(1)+u+'</b></div>':'';
     document.getElementById("gxSmart").innerHTML=gxSmart(k).map(function(r){return '<div><span>'+r[0]+'</span><span class="'+(r[1]?"ok":"no")+'">'+(r[1]?"✓":"—")+'</span></div>';}).join("");
     document.getElementById("gxKList").innerHTML= S.kpis.length ? S.kpis.map(function(x,i){ var ok=gxSmart(x).filter(function(r){return r[1];}).length; var last=S.status==="approved"?gxReadings(x.feed||gxBlankFeed()).pop():null; var prx=gxPlanReading(x); var cur= prx!==null?prx : last?last.v:null; var st=cur!==null?gxStatusOf(x,cur):null;
