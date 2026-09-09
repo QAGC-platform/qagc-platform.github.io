@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 66">
+<meta name="qagc-ver" content="beta 67">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -13986,6 +13986,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function gxCanFeedStep(S,t){ var me=gxMe(); return S.status==="approved" && (t.owner===me.name || gxOwnsPlan(S)); }
   function gxCanVerifyStep(S,t){ var me=gxMe(); if(!t.pending) return false; if(ROLE==="dg") return true; var v=gxVerifierOf(t.fedBy||t.owner); return !!v && v.id===me.p.id; }
   function gxStepState(t){ if(t.verified) return "done"; if(t.pending) return "fed"; if(t.returned) return "returned"; if(gxP(t.to)<gxP(PLATFORM_TODAY)) return "late"; return "todo"; }
+  function gxReschedTag(t){ return t&&t.resched?' <span class="gx-st late" title="'+gxEsc((isAr()?"الموعد الأصلي: ":"original due date: ")+(t.reschedFrom||""))+'">'+bi("أُعيد جدولتها","rescheduled")+'</span>':''; }
   function gxStateLabel(st){ return st==="done"?bi("✓✓ موثّقة","✓✓ verified"):st==="fed"?bi("بانتظار التوثيق","awaiting verification"):st==="returned"?bi("مُعادة بملاحظة","returned"):st==="late"?bi("متأخرة","late"):bi("قيد التنفيذ","in progress"); }
   function gxPending(S){ var all=[]; S.phases.forEach(function(ph){ ph.tasks.forEach(function(t){ all.push(t); }); }); if(!all.length) return 0; return Math.min(Math.round(all.filter(function(t){return t.pending&&!t.verified;}).length/all.length*100), 100-gxProgress(S)); }
   function gxQueue(){ var out=[]; if(typeof GX==="undefined"||!GX||!GX.list) return out; GX.list.forEach(function(S){ if(S.status!=="approved") return; S.phases.forEach(function(ph,pi){ ph.tasks.forEach(function(t,ti){ if(gxCanVerifyStep(S,t)) out.push({S:S,ph:ph,t:t,id:pi+":"+ti,kind:"step"}); }); });
@@ -14103,7 +14104,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         if(!sp){ stage=stage||bi("<b>الخطوة الآن:</b> تحديد مدة المرحلة «"+gxEsc(ph.name)+"» داخل مدة الهدف — ثم تُفتح خطواتها.","<b>Now:</b> set the period of “"+gxEsc(ph.name)+"” inside the objective's."); return; }
         ph.tasks.forEach(function(t,ti){
           var ok=gxWithin(t.from,t.to,S.from,S.to)&&gxWithin(t.from,t.to,ph.from,ph.to); if(!ok) oob++; var open=!!t.open, id=pi+":"+ti;
-          var sst=gxStepState(t); var stBtn = ro ? '<span class="gx-st '+sst+'">'+gxStateLabel(sst)+(t.done?' '+t.done:'')+'</span>' : '';
+          var sst=gxStepState(t); var stBtn = ro ? '<span class="gx-st '+sst+'">'+gxStateLabel(sst)+(t.done?' '+t.done:'')+'</span>'+gxReschedTag(t) : gxReschedTag(t);
           var wp=t.owner?gxPersonByName(t.owner):null;
           var whoTip=t.owner? (isAr()?"المسؤول: ":"Owner: ")+t.owner+(wp?" — "+wp.dep[0]+" · "+wp.dir[0]:"")+(t.budget?" · "+gxMoney(t.budget):"") : "";
           L+='<div class="gx-lr tk'+(open?' open':'')+'" data-gxtk="'+id+'"'+(whoTip?' title="'+gxEsc(whoTip)+'"':'')+'><span class="name"><span class="gx-car">▶</span><span class="t">'+gxEsc(t.name)+'</span>'+stBtn+'</span>'+
@@ -14282,14 +14283,15 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var dated=all.filter(function(t){ return t.to; }).length;
       if(dated) out.push(gxNormK({auto:true,plan:{phase:"",onTime:true},name:"نسبة خطوات الخطة المنجزة في موعدها",
         dim:GX_DIMS[1],kind:"process",
-        desc:"من الخطوات الموثّقة، ما اكتمل في تاريخ استحقاقه أو قبله ("+dated+" خطوة لها موعد).",
+        desc:"من الخطوات الموثّقة، ما اكتمل في تاريخ استحقاقه أو قبله. المقام: الخطوات الموثّقة فقط ("+dated+" خطوة لها موعد).",
         rationale:"الإنجاز وحده لا يكشف التأخير؛ هذا المؤشر يقيس الالتزام بالمواعيد تحديداً.",
-        num:"عدد الخطوات التي تاريخ إنجازها ≤ تاريخ استحقاقها",den:"عدد خطوات الخطة ("+all.length+")",
-        excl:"الخطوات التي أُعيد جدولتها بقرار موثّق",
+        num:"عدد الخطوات الموثّقة التي تاريخ إنجازها ≤ تاريخ استحقاقها",den:"عدد الخطوات الموثّقة",
+        excl:"لا استثناء: الخطوة المؤجَّلة بقرار تُقاس بموعدها الجديد وتُعلَّم أنها أُعيد جدولتها",
         elements:"الخطوة، تاريخ الاستحقاق، تاريخ الإنجاز، تاريخ التوثيق",
-        type:"نسبة مئوية",unit:"%",base:0,baseDate:base0,target:90,targetDate:S.to,dir:"up",tol:10,
+        type:"نسبة مئوية",unit:"%",base:"",baseDate:base0,target:"",targetDate:S.to,dir:"up",tol:10,
         source:"خطة العمل على المنصة",cfreq:"m",mfreq:"m",reader:"",rfreq:"q",report:GX_REPORTS[1],
-        limits:"يعتمد على دقة تاريخ الإنجاز المسجَّل، وهو غير تاريخ التوثيق."}));
+        ask:"ما النسبة المستهدفة للالتزام بالمواعيد؟ يحددها المدير المسؤول عن الخطة.",
+        limits:"المقام هو الخطوات الموثّقة وحدها. الخطوة المؤجَّلة بقرار تُقاس بموعدها الجديد وتُعلَّم «أُعيد جدولتها». يعتمد على تاريخ الإنجاز المسجَّل، وهو غير تاريخ التوثيق."}));
       out.push(gxNormK({auto:true,plan:{phase:""},name:"نسبة خطوات خطة العمل المنجزة الموثّقة",dim:GX_DIMS[1],kind:"process",desc:"ما أُنجز ووُثّق من خطوات خطة عمل الهدف «"+S.title+"» ("+all.length+" خطوة). لا يقيس الالتزام بالمواعيد.",rationale:"الإنجاز الموثّق يبيّن ما تحقق فعلاً؛ ويُقرأ مع مؤشر الالتزام بالمواعيد إن وُجد.",num:"عدد الخطوات المنجزة الموثّقة",den:"عدد خطوات الخطة ("+all.length+")",excl:"خطوات أُلغيت باعتماد المديرة العامة",elements:"الخطوة، المرحلة، الموعد، تاريخ الإنجاز، المسؤول",type:"نسبة مئوية",unit:"%",base:0,baseDate:base0,target:100,targetDate:S.to,dir:"up",tol:10,source:"خطة العمل على المنصة — حالة الخطوات",cfreq:"w",mfreq:"m",reader:"قسم التنسيق والمتابعة",rfreq:"m",report:GX_REPORTS[1]}));
       S.phases.forEach(function(ph){ if(!ph.name||!ph.to||!ph.tasks.length) return; out.push(gxNormK({auto:true,plan:{phase:ph.name},name:"نسبة إنجاز مرحلة «"+ph.name+"» بحلول "+ph.to,dim:GX_DIMS[1],kind:"output",phase:ph.name,desc:"اكتمال خطوات مرحلة «"+ph.name+"» ("+ph.tasks.length+") ضمن مدتها.",rationale:"كل مرحلة تمهّد لما بعدها.",num:"عدد خطوات المرحلة المنجزة",den:"عدد خطوات المرحلة ("+ph.tasks.length+")",type:"نسبة مئوية",unit:"%",base:0,baseDate:gxIso(gxP(ph.from)-GXD),target:100,targetDate:ph.to,dir:"up",tol:0,source:"خطة العمل على المنصة",cfreq:"w",mfreq:"w",reader:ph.tasks[0].owner||"",rfreq:"m",report:GX_REPORTS[1]})); });
       // budget utilisation is not an outcome and underspending is not success — a local definition is needed first (Codex turn 04/05)
@@ -14299,13 +14301,18 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   // plan-completion KPIs read themselves from the steps
   // completion counts verified steps; timeliness counts those completed by their due date.
   // Two different questions — a step verified a month late is complete, not on time.
+  // ruled 2026-09-09: the denominator is the verified steps, a step is judged against its
+  // current due date, and a rescheduled step is counted but marked as rescheduled.
   function gxOnTimeReading(k){ var S=GX.cur; if(!k.plan||S.status!=="approved") return null;
     var steps=[]; S.phases.forEach(function(ph){ if(!k.plan.phase||k.plan.phase===ph.name) ph.tasks.forEach(function(t){steps.push(t);}); });
-    if(!steps.length) return null;
-    var done=steps.filter(function(t){ return t.verified; });
-    if(!done.length) return 0;
-    var onTime=done.filter(function(t){ return t.done && t.to && gxP(t.done)<=gxP(t.to); }).length;
-    return Math.round(onTime/steps.length*100); }
+    var done=steps.filter(function(t){ return t.verified && t.done && t.to; });
+    if(!done.length) return null;                                  // nothing verified yet is not 0%
+    var onTime=done.filter(function(t){ return gxP(t.done)<=gxP(t.to); }).length;
+    return Math.round(onTime/done.length*100); }
+  function gxReschedCount(k){ var S=GX.cur, n=0;
+    S.phases.forEach(function(ph){ if(!k||!k.plan||!k.plan.phase||k.plan.phase===ph.name)
+      ph.tasks.forEach(function(t){ if(t.verified&&t.resched) n++; }); });
+    return n; }
   function gxPlanReading(k){ var S=GX.cur; if(!k.plan||S.status!=="approved") return null;
     if(k.plan.onTime) return gxOnTimeReading(k); var steps=[]; S.phases.forEach(function(ph){ if(!k.plan.phase||k.plan.phase===ph.name) ph.tasks.forEach(function(t){steps.push(t);}); }); if(!steps.length) return null; return Math.round(steps.filter(function(t){return t.verified;}).length/steps.length*100); }
   function gxF(label,key,k,o){ o=o||{}; var w=o.w?' w'+o.w:'', v=k[key], inner;
@@ -14711,7 +14718,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(el.id==="gx-title"){ var was=!!S.title; S.title=el.value.trim(); if(was!==!!S.title){ if(S.title) S.objOpen=undefined; gxDraw(); } else { var b=document.querySelector("#gen .gx-barx.obj .lbl"); if(b) b.textContent=S.title; } gxSave(); return; }
     if(el.id==="gx-from"||el.id==="gx-to"){ S[el.id==="gx-from"?"from":"to"]=el.value; if(S.from&&S.to&&gxP(S.from)>gxP(S.to)){ if(el.id==="gx-from") S.to=S.from; else S.from=S.to; } if(el.id==="gx-from"&&el.value) GX.V=el.value; gxSave(); gxDraw(); return; }
     if(el.dataset.gxph!==undefined){ var ph=S.phases[+el.dataset.gxph]; if(el.dataset.f==="name"){ ph.name=el.value.trim(); return; } if(!el.value) return; ph[el.dataset.f]=el.value; if(ph.from&&ph.to){ if(gxP(ph.from)>gxP(ph.to)){ if(el.dataset.f==="from") ph.to=ph.from; else ph.from=ph.to; } var cc=gxClamp(ph.from,ph.to,S.from,S.to); if(cc){ ph.from=cc[0]; ph.to=cc[1]; } } gxSave(); gxDraw(); return; }
-    if(el.dataset.gxtk){ var t=gxFind(el.dataset.gxtk), f=el.dataset.f; if(f==="from"||f==="to"){ if(!el.value) return; t[f]=el.value; if(gxP(t.from)>gxP(t.to)){ if(f==="from") t.to=t.from; else t.from=t.to; } var phs=S.phases[+el.dataset.gxtk.split(":")[0]]; var cs=gxClamp(t.from,t.to,phs.from,phs.to); if(cs){ t.from=cs[0]; t.to=cs[1]; } gxSave(); gxDraw(); } else if(f==="budget") t.budget=+el.value||0; else t[f]=el.value; gxSave(); return; }
+    if(el.dataset.gxtk){ var t=gxFind(el.dataset.gxtk), f=el.dataset.f; if(f==="from"||f==="to"){ if(!el.value) return;
+      if(f==="to" && S.status==="approved" && t.to && t.to!==el.value){ if(!t.reschedFrom) t.reschedFrom=t.to; t.resched=true; }
+      t[f]=el.value; if(gxP(t.from)>gxP(t.to)){ if(f==="from") t.to=t.from; else t.from=t.to; } var phs=S.phases[+el.dataset.gxtk.split(":")[0]]; var cs=gxClamp(t.from,t.to,phs.from,phs.to); if(cs){ t.from=cs[0]; t.to=cs[1]; } gxSave(); gxDraw(); } else if(f==="budget") t.budget=+el.value||0; else t[f]=el.value; gxSave(); return; }
     if(el.id==="gx-nf-from"||el.id==="gx-nf-to"){ var a=document.getElementById("gx-nf-from").value,b2=document.getElementById("gx-nf-to").value; if(a&&b2){ if(gxP(a)>gxP(b2)){ b2=a; document.getElementById("gx-nf-to").value=b2; } var tr=document.querySelector("#gen .gx-tr[data-gxformrow]"); if(tr) gxPaint(tr,a,b2); } return; }
     if(el.dataset.gxk){ var key=el.dataset.gxk; GX.KD[key]= el.type==="checkbox"?el.checked:el.value; if(typeof gxDrawSections==="function") gxDrawSections(); if(key==="type"){ var u=GX_TYPES.filter(function(x){return x[0]===el.value;})[0]; GX.KD.unit=u?u[1]:""; var ui=document.querySelector('#gen [data-gxk="unit"]'); if(ui) ui.value=GX.KD.unit; } gxDrawKSide(); return; }
     if(el.dataset.gxmil){ GX.KD.mil[el.dataset.gxmil]=+el.value; gxDrawKSide(); return; }
