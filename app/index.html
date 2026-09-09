@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 60">
+<meta name="qagc-ver" content="beta 61">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -2012,6 +2012,10 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 :is(.card-h,[tabindex="0"]):focus-visible{outline:2px solid var(--brand-gold);outline-offset:2px;border-radius:4px}
 #rvPop .cx{cursor:move;user-select:none}
 #rvPanel .ph{cursor:move;user-select:none}
+.gx-secst{font-weight:400;font-size:var(--t-xs);letter-spacing:0;margin-inline-start:8px}
+.gx-secst.need{color:var(--critical-ink)}
+.gx-secst.soft{color:var(--ink-3)}
+.gx-secst.ok{color:var(--good-ink)}
 .gx-info{width:20px;height:20px;border-radius:99px;border:1.5px solid var(--gold-ink);color:var(--gold-ink);background:transparent;font:italic 700 12px Georgia,serif;cursor:pointer;vertical-align:middle;margin-inline-start:6px;line-height:1}
 .gx-info:hover{background:var(--brand-gold);color:var(--brand-ink);border-color:var(--brand-gold)}
 #gxHelpPanel{background:var(--surface);border:1px solid var(--brand-gold);border-radius:var(--r-lg,14px);padding:16px 20px;margin:10px 0 4px;box-shadow:var(--shadow)}
@@ -4347,10 +4351,10 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
               <div class="gx-card">
                 <h3 id="gxKTitle"><span lang="ar">بطاقة المؤشر</span><span lang="en">KPI card</span></h3>
                 <p class="lede"><span lang="ar">وفق «بطاقة مؤشر الأداء» — الملحق 6 من دليل مؤشرات الأداء الرئيسية (MoH/QAC/GUD/004، الإصدار 1، أكتوبر 2023) — مواءمةً لنطاق قطاع الأشخاص ذوي الإعاقة.</span><span lang="en">After the KPI card — Appendix 6 of the KPIs Guideline (MoH/QAC/GUD/004 v1, Oct 2023) — tailored to the disability sector.</span></p>
-                <div class="gx-sec">١ · <span lang="ar">التعريف</span><span lang="en">Definition</span></div><div class="gx-kgrid" id="gxf1"></div>
-                <div class="gx-sec">٢ · <span lang="ar">الحساب</span><span lang="en">Calculation</span></div><div class="gx-kgrid" id="gxf2"></div>
-                <div class="gx-sec">٣ · <span lang="ar">المستهدف والعتبات</span><span lang="en">Target and thresholds</span></div><div class="gx-kgrid" id="gxf3"></div>
-                <div class="gx-sec">٤ · <span lang="ar">البيانات والرصد والتقارير</span><span lang="en">Data, monitoring, reporting</span></div><div class="gx-kgrid" id="gxf4"></div>
+                <div class="gx-sec">١ · <span lang="ar">التعريف</span><span lang="en">Definition</span><span class="gx-secst" id="gxf1-st"></span></div><div class="gx-kgrid" id="gxf1"></div>
+                <div class="gx-sec">٢ · <span lang="ar">الحساب</span><span lang="en">Calculation</span><span class="gx-secst" id="gxf2-st"></span></div><div class="gx-kgrid" id="gxf2"></div>
+                <div class="gx-sec">٣ · <span lang="ar">المستهدف والعتبات</span><span lang="en">Target and thresholds</span><span class="gx-secst" id="gxf3-st"></span></div><div class="gx-kgrid" id="gxf3"></div>
+                <div class="gx-sec">٤ · <span lang="ar">البيانات والرصد والتقارير</span><span lang="en">Data, monitoring, reporting</span><span class="gx-secst" id="gxf4-st"></span></div><div class="gx-kgrid" id="gxf4"></div>
                 <div class="gx-acts" style="margin-top:10px"><button class="btn btn-p" id="gxKSave"></button><button class="btn" id="gxKNew" hidden><span lang="ar">مؤشر جديد</span><span lang="en">New KPI</span></button></div>
               </div>
               <div class="gx-card" id="gxToolCard">
@@ -14292,7 +14296,40 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(o.sel) inner='<select data-gxk="'+key+'">'+o.sel.map(function(x){ var val=Array.isArray(x)?x[0]:x, lab=Array.isArray(x)?x[1]:x; if(o.lab) lab=o.lab(val); return '<option value="'+gxEsc(val)+'"'+(String(v)===String(val)?" selected":"")+'>'+gxEsc(lab)+'</option>'; }).join("")+'</select>';
     else inner='<input'+(o.type?' type="'+o.type+'"':'')+(o.list?' list="'+o.list+'"':'')+(o.min?' min="'+o.min+'"':'')+(o.max?' max="'+o.max+'"':'')+(o.step?' step="'+o.step+'"':'')+' data-gxk="'+key+'" value="'+gxEsc(v)+'" placeholder="'+gxEsc(o.ph||"")+'">';
     return '<div class="f'+w+'"><label>'+label+'</label>'+inner+'</div>'; }
-  function gxDrawK(){ gxDrawKForm(); gxDrawKSide(); gxDrawDrafts(); gxDrawTool();
+  // what each Appendix-6 section still needs, stated as the missing thing rather than a score.
+  // Required = the card cannot be read without it. Advisory = it weakens the card but is a choice.
+  function gxSectionState(k){
+    var need=function(v){ return !(String(v==null?"":v).trim()); };
+    var S=GX.cur;
+    var secs=[
+      {id:"gxf1", req:[[need(k.name), bi("عنوان المؤشر","a title")],[need(k.desc), bi("ما يقيسه ولمن","what it measures, and for whom")],[need(k.rationale), bi("مسوّغ القياس","why it is measured")]],
+                  adv:[[!k.dim, bi("البُعد","the dimension")]]},
+      {id:"gxf2", req:[[need(k.num), bi("البسط","the numerator")],[need(k.den)&&k.type!=="عدد"&&k.type!=="مدة", bi("المقام","the denominator")],[need(k.elements), bi("عناصر البيانات","the data elements")]],
+                  adv:[[need(k.excl), bi("الاستثناءات","exclusions")]]},
+      {id:"gxf3", req:[[k.target==="", bi("المستهدف","a target")],[need(k.targetDate), bi("تاريخ بلوغه","its date")],[k.base==="", bi("خط الأساس","a baseline")],[need(k.baseDate), bi("تاريخ خط الأساس","the baseline date")]],
+                  adv:[[need(k.bench)&&need(k.benchNA), bi("مقارنة مرجعية أو سبب غيابها","a comparator, or why none")]]},
+      {id:"gxf4", req:[[need(k.source), bi("مصدر البيانات","the data source")],[need(k.reader), bi("جهة الرصد","who monitors it")]],
+                  adv:[[need(k.limits), bi("حدود الدقة","accuracy limits")],[need(k.related)&&!k.relatedNone, bi("مؤشر ذو صلة أو تحديد أنه لا يوجد","a related indicator, or none")]]}
+    ];
+    if(S&&S.from&&S.to&&k.targetDate&&!(gxP(k.targetDate)>=gxP(S.from)&&gxP(k.targetDate)<=gxP(S.to)))
+      secs[2].req.push([true, bi("تاريخ المستهدف خارج مدة الهدف","the target date falls outside the objective")]);
+    if(k.base!==""&&k.target!==""&&+k.base===+k.target)
+      secs[2].adv.push([true, bi("خط الأساس والمستهدف متساويان — مؤشر محافظة؟","baseline equals target — a maintenance KPI?")]);
+    return secs;
+  }
+  function gxDrawSections(){
+    var k=GX.KD; if(!k) return; var st=gxSectionState(k);
+    st.forEach(function(sec){
+      var el=document.getElementById(sec.id+"-st"); if(!el) return;
+      var miss=sec.req.filter(function(x){return x[0];}).map(function(x){return x[1];});
+      var soft=sec.adv.filter(function(x){return x[0];}).map(function(x){return x[1];});
+      el.className="gx-secst"+(miss.length?" need":soft.length?" soft":" ok");
+      el.innerHTML= miss.length ? '⚠ '+bi("ينقصه: ","needs: ")+miss.join("، ")
+                  : soft.length ? '· '+bi("يُنصح بإضافة: ","consider: ")+soft.join("، ")
+                  : '✓ '+bi("مكتمل","complete");
+    });
+  }
+  function gxDrawK(){ gxDrawKForm(); gxDrawKSide(); gxDrawDrafts(); gxDrawTool(); gxDrawSections();
     var S=GX.cur, pane=document.getElementById("gxp-kpi"); if(!S||!pane) return;
     var lock=S.status==="approved" && !gxEditable(S);
     pane.classList.toggle("gx-klock",!!lock);
@@ -14608,7 +14645,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(el.dataset.gxph!==undefined){ var ph=S.phases[+el.dataset.gxph]; if(el.dataset.f==="name"){ ph.name=el.value.trim(); return; } if(!el.value) return; ph[el.dataset.f]=el.value; if(ph.from&&ph.to){ if(gxP(ph.from)>gxP(ph.to)){ if(el.dataset.f==="from") ph.to=ph.from; else ph.from=ph.to; } var cc=gxClamp(ph.from,ph.to,S.from,S.to); if(cc){ ph.from=cc[0]; ph.to=cc[1]; } } gxSave(); gxDraw(); return; }
     if(el.dataset.gxtk){ var t=gxFind(el.dataset.gxtk), f=el.dataset.f; if(f==="from"||f==="to"){ if(!el.value) return; t[f]=el.value; if(gxP(t.from)>gxP(t.to)){ if(f==="from") t.to=t.from; else t.from=t.to; } var phs=S.phases[+el.dataset.gxtk.split(":")[0]]; var cs=gxClamp(t.from,t.to,phs.from,phs.to); if(cs){ t.from=cs[0]; t.to=cs[1]; } gxSave(); gxDraw(); } else if(f==="budget") t.budget=+el.value||0; else t[f]=el.value; gxSave(); return; }
     if(el.id==="gx-nf-from"||el.id==="gx-nf-to"){ var a=document.getElementById("gx-nf-from").value,b2=document.getElementById("gx-nf-to").value; if(a&&b2){ if(gxP(a)>gxP(b2)){ b2=a; document.getElementById("gx-nf-to").value=b2; } var tr=document.querySelector("#gen .gx-tr[data-gxformrow]"); if(tr) gxPaint(tr,a,b2); } return; }
-    if(el.dataset.gxk){ var key=el.dataset.gxk; GX.KD[key]= el.type==="checkbox"?el.checked:el.value; if(key==="type"){ var u=GX_TYPES.filter(function(x){return x[0]===el.value;})[0]; GX.KD.unit=u?u[1]:""; var ui=document.querySelector('#gen [data-gxk="unit"]'); if(ui) ui.value=GX.KD.unit; } gxDrawKSide(); return; }
+    if(el.dataset.gxk){ var key=el.dataset.gxk; GX.KD[key]= el.type==="checkbox"?el.checked:el.value; if(typeof gxDrawSections==="function") gxDrawSections(); if(key==="type"){ var u=GX_TYPES.filter(function(x){return x[0]===el.value;})[0]; GX.KD.unit=u?u[1]:""; var ui=document.querySelector('#gen [data-gxk="unit"]'); if(ui) ui.value=GX.KD.unit; } gxDrawKSide(); return; }
     if(el.dataset.gxmil){ GX.KD.mil[el.dataset.gxmil]=+el.value; gxDrawKSide(); return; }
     if(el.dataset.gxfr!==undefined){ var fdx=gxFeedK().feed, ri=+el.dataset.gxfr; while(fdx.rows.length<=ri) fdx.rows.push(fdx.cols.map(function(){return "";})); fdx.rows[ri][+el.dataset.gxfc]=el.value; return; }
     if(el.dataset.gxfcol!==undefined){ gxFeedK().feed.cols[+el.dataset.gxfcol]=el.value; return; }
