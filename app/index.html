@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 62">
+<meta name="qagc-ver" content="beta 63">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -14148,18 +14148,20 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
 
   // ── KPIs ──
   function gxThresholds(k){ if(k.target==="") return null; var t=+k.target, span=Math.abs(t-(+k.base||0))||Math.abs(t)||1, tol=span*(+k.tol||0)/100; return k.dir==="up"?{above:t,tolLo:t-tol}:{above:t,tolLo:t+tol}; }
-  function gxMilestones(k){ var S=GX.cur, out=[]; if(k.baseDate===""||k.targetDate===""||k.base===""||k.target==="") return out; var a=gxP(k.baseDate), b=gxP(k.targetDate); if(b<=a) return out;
+  function gxMilestones(k){ var S=GX.cur, out=[]; if(k.baseDate===""||k.targetDate===""||k.base===""||k.target==="") return out;
+    if(!gxValidDate(k.baseDate)||!gxValidDate(k.targetDate)) return out;   // NaN dates never satisfy the loop's exit test
+    var a=gxP(k.baseDate), b=gxP(k.targetDate); if(!isFinite(a)||!isFinite(b)||b<=a) return out;
     if(k.plan){ var steps=[]; S.phases.forEach(function(ph){ if(!k.plan.phase||k.plan.phase===ph.name) ph.tasks.forEach(function(t){steps.push(t);}); }); var n=steps.length||1; var ends=[]; S.phases.forEach(function(ph){ if(ph.to&&(!k.plan.phase||k.plan.phase===ph.name)) ends.push(ph.to); }); ends=ends.filter(function(d,i,arr){return arr.indexOf(d)===i&&gxP(d)>a&&gxP(d)<b;}).sort();
       ends.forEach(function(d){ var due=steps.filter(function(t){return gxP(t.to)<=gxP(d);}).length; var v=Math.round(due/n*100); out.push({date:d,auto:v,val:(k.mil&&k.mil[d]!==undefined)?k.mil[d]:v,why:due+" / "+n}); }); out.push({date:k.targetDate,auto:+k.target,val:+k.target,final:true}); return out; }
     var wk = k.cfreq==="w";
     var step= k.cfreq==="m"?1 : k.cfreq==="q"?3 : k.cfreq==="h"?6 : k.cfreq==="y"?12 : 1; var d=new Date(a), i=0;
-    while(true){ i++;
+    while(i<600){ i++;                                        // a bounded loop cannot hang the page
       var t;
       if(wk){ t=a+i*7*GXD; }
       else { var y=d.getUTCFullYear(), mo=d.getUTCMonth()+step*i, day=d.getUTCDate();
         var last=new Date(Date.UTC(y,mo+1,0)).getUTCDate();       // clamp to the month's own end
         t=Date.UTC(y,mo,Math.min(day,last)); }
-      if(t>=b) break; var frac=(t-a)/(b-a); var v=+k.base+(+k.target-+k.base)*frac, key=gxIso(t); out.push({date:key,auto:Math.round(v*10)/10,val:(k.mil&&k.mil[key]!==undefined)?k.mil[key]:Math.round(v*10)/10}); }
+      if(!isFinite(t)||t>=b) break; var frac=(t-a)/(b-a); var v=+k.base+(+k.target-+k.base)*frac, key=gxIso(t); out.push({date:key,auto:Math.round(v*10)/10,val:(k.mil&&k.mil[key]!==undefined)?k.mil[key]:Math.round(v*10)/10}); }
     out.push({date:k.targetDate,auto:+k.target,val:+k.target,final:true}); return out; }
   function gxSmart(k){ var S=GX.cur; return [
     [bi("عنوان ووصف ومسوّغ","Title, description, rationale"), !!k.name&&!!k.desc&&!!k.rationale],
@@ -14276,9 +14278,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     function gxCtx(){ var S=GX.cur, hit=GX_OUT.filter(function(o){return o[0].test(S.title||"");})[0], o=hit?hit[1]:null, t=S.title||(isAr()?"الهدف":"the objective");
     return {name:o?(isAr()?o.name:(o.nameEn||o.name)):"نسبة تحقق «"+t+"»", desc:o?("ما يقيسه: "+(isAr()?o.name:(o.nameEn||o.name))):("ما يتغيّر فعلاً بتحقق «"+t+"»، ولمن"), rationale:"لماذا نحتاج هذا المؤشر لهدف «"+t+"»", num:o?o.num:"ما يستوفي معيار «"+t+"»", den:o?o.den:"المجتمع المستهدف", excl:o&&o.excl?o.excl:"ما يُستثنى من القياس", elements:o?o.elements:"الحقول اللازمة للحساب", source:o?o.source:"أين تُؤخذ البيانات", limits:o&&o.limits?o.limits:"ما قد يُضعف الدقة", related:"مؤشر آخر يفسّر «"+t+"»", cohort:o&&o.cohort?o.cohort:"", ask:o&&o.ask?o.ask:"", key:o?o.key:""}; }
   function gxAutoDraft(S){ S=S||GX.cur; var out=[]; if(!S.title) return out; var all=[]; S.phases.forEach(function(ph){ ph.tasks.forEach(function(t){all.push(t);}); }); var base0=S.from?gxIso(gxP(S.from)-GXD):"";
-    if(all.length){ out.push(gxNormK({auto:true,plan:{phase:""},name:"نسبة خطوات خطة العمل المنجزة الموثّقة",dim:GX_DIMS[1],kind:"process",desc:"إنجاز خطوات خطة عمل الهدف «"+S.title+"» في المواعيد المرسومة ("+all.length+" خطوة).",rationale:"الخطة وعدٌ زمني؛ تراكم التأخير أول إنذار على تعثّر الهدف.",num:"عدد الخطوات المنجزة في موعدها أو قبله",den:"عدد خطوات الخطة ("+all.length+")",excl:"خطوات أُلغيت باعتماد المديرة العامة",elements:"الخطوة، المرحلة، الموعد، تاريخ الإنجاز، المسؤول",type:"نسبة مئوية",unit:"%",base:0,baseDate:base0,target:100,targetDate:S.to,dir:"up",tol:10,source:"خطة العمل على المنصة — حالة الخطوات",cfreq:"w",mfreq:"m",reader:"قسم التنسيق والمتابعة",rfreq:"m",report:GX_REPORTS[1]}));
+    if(all.length){ out.push(gxNormK({auto:true,plan:{phase:""},name:"نسبة خطوات خطة العمل المنجزة الموثّقة",dim:GX_DIMS[1],kind:"process",desc:"ما أُنجز ووُثّق من خطوات خطة عمل الهدف «"+S.title+"» ("+all.length+" خطوة). لا يقيس الالتزام بالمواعيد.",rationale:"الإنجاز الموثّق يبيّن ما تحقق فعلاً؛ ويُقرأ مع مؤشر الالتزام بالمواعيد إن وُجد.",num:"عدد الخطوات المنجزة الموثّقة",den:"عدد خطوات الخطة ("+all.length+")",excl:"خطوات أُلغيت باعتماد المديرة العامة",elements:"الخطوة، المرحلة، الموعد، تاريخ الإنجاز، المسؤول",type:"نسبة مئوية",unit:"%",base:0,baseDate:base0,target:100,targetDate:S.to,dir:"up",tol:10,source:"خطة العمل على المنصة — حالة الخطوات",cfreq:"w",mfreq:"m",reader:"قسم التنسيق والمتابعة",rfreq:"m",report:GX_REPORTS[1]}));
       S.phases.forEach(function(ph){ if(!ph.name||!ph.to||!ph.tasks.length) return; out.push(gxNormK({auto:true,plan:{phase:ph.name},name:"نسبة إنجاز مرحلة «"+ph.name+"» بحلول "+ph.to,dim:GX_DIMS[1],kind:"output",phase:ph.name,desc:"اكتمال خطوات مرحلة «"+ph.name+"» ("+ph.tasks.length+") ضمن مدتها.",rationale:"كل مرحلة تمهّد لما بعدها.",num:"عدد خطوات المرحلة المنجزة",den:"عدد خطوات المرحلة ("+ph.tasks.length+")",type:"نسبة مئوية",unit:"%",base:0,baseDate:gxIso(gxP(ph.from)-GXD),target:100,targetDate:ph.to,dir:"up",tol:0,source:"خطة العمل على المنصة",cfreq:"w",mfreq:"w",reader:ph.tasks[0].owner||"",rfreq:"m",report:GX_REPORTS[1]})); });
-      var budget=all.reduce(function(a,t){return a+(+t.budget||0);},0); if(budget>0) out.push(gxNormK({auto:true,name:"نسبة الإنفاق الفعلي إلى الميزانية المقترحة",dim:GX_DIMS[3],kind:"process",desc:"الالتزام بالميزانية المقترحة ("+gxMoney(budget)+").",rationale:"تجاوز الميزانية يهدد الخطوات التالية.",num:"مجموع المصروف الفعلي",den:"الميزانية المقترحة",type:"نسبة مئوية",unit:"%",base:0,baseDate:base0,target:100,targetDate:S.to,dir:"down",tol:5,source:"سجل الصرف",cfreq:"m",mfreq:"q",reader:"دائرة الرقابة والامتثال",rfreq:"q",report:GX_REPORTS[0]})); }
+      // budget utilisation is not an outcome and underspending is not success — a local definition is needed first (Codex turn 04/05)
+    }
     var hit=GX_OUT.filter(function(o){return o[0].test(S.title);})[0]; var o=hit?hit[1]:{name:"نسبة تحقق الهدف: "+S.title,dim:GX_DIMS[2],num:"ما تحقق من الهدف وفق معيار القياس",den:"المستهدف الكامل",source:"تقارير المتابعة — المنصة",elements:"المعيار، القراءة، التاريخ"};
     out.push(gxNormK(Object.assign({auto:true,kind:"outcome",desc:"الأثر الذي يسعى إليه الهدف «"+S.title+"».",rationale:"مؤشر نتيجة يقيس ما يتغيّر فعلاً.",type:"نسبة مئوية",unit:"%",base:"",baseDate:base0,target:"",targetDate:S.to,dir:"up",tol:10,cfreq:"m",mfreq:"m",reader:"قسم التنسيق والمتابعة",rfreq:"q",report:GX_REPORTS[0]},o))); return out; }
   // plan-completion KPIs read themselves from the steps
@@ -14684,11 +14687,28 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var act=ib.dataset.gximp, fd=GXIMP.k.feed, sc=GXIMP.scan;
     var box=document.getElementById("gxImportBox"); if(box){ box.hidden=true; box.innerHTML=""; }
     if(act==="cancel"){ GXIMP=null; gxToast("أُلغي الاستيراد — لم يتغيّر شيء.","Import cancelled — nothing changed."); return; }
-    fd.file=GXIMP.file; fd.cols=sc.head.slice(); fd.dateCol=sc.dateCol; fd.valCol=sc.valCol;
-    var newRows=sc.ok.map(function(o){ var row=[]; row[sc.dateCol]=o.date; row[sc.valCol]=String(o.v); return row; });
-    if(GXIMP.lock){ fd.rows=[]; fd.meta=[]; }
-    else if(act==="replace"){ fd.rows=newRows; fd.meta=[]; }
-    else { fd.rows=(fd.rows||[]).concat(newRows); }                 // append keeps existing attestations
+    var held=(fd.meta||[]).filter(function(m){ return m&&(m.verified||m.pending); }).length;
+    if(!sc.ok.length && act==="replace"){ GXIMP=null; gxToast("لا صفوف صالحة — لم يُستبدل شيء.","No usable rows — nothing replaced."); return; }
+    if(held && act==="replace"){ GXIMP=null; gxToast("يوجد "+held+" قراءة موثّقة أو معلّقة — الاستبدال غير مسموح، استخدم الإضافة.","Protected readings present — replace is not allowed; append instead."); return; }
+    fd.file=GXIMP.file;
+    if(GXIMP.lock){ fd.cols=sc.head.slice(); fd.dateCol=sc.dateCol; fd.valCol=sc.valCol; fd.rows=[]; fd.meta=[]; }
+    else if(act==="replace"){ fd.cols=sc.head.slice(); fd.dateCol=sc.dateCol; fd.valCol=sc.valCol;
+      fd.rows=sc.rows.slice(); fd.meta=[]; }                        // whole rows, every column kept
+    else {
+      // append maps the incoming file into THIS feed's existing columns; stored rows keep their meaning
+      var dc=(fd.rows&&fd.rows.length)?fd.dateCol:sc.dateCol, vc=(fd.rows&&fd.rows.length)?fd.valCol:sc.valCol;
+      if(!fd.cols||!fd.cols.length){ fd.cols=sc.head.slice(); dc=sc.dateCol; vc=sc.valCol; }
+      fd.dateCol=dc; fd.valCol=vc;
+      var have={}; (fd.rows||[]).forEach(function(row){ have[String(row[dc]||"").trim()]=1; });
+      var added=0, skipped=0;
+      sc.ok.forEach(function(o){ if(have[o.date]){ skipped++; return; }
+        var row=[]; row[dc]=o.date; row[vc]=String(o.v); fd.rows.push(row); have[o.date]=1; added++; });
+      if(!fd.meta) fd.meta=[];
+      gxSave(); gxDrawFeed(); gxDrawTool(); gxDrawKSide();
+      gxToast("أُضيفت "+added+" قراءة"+(skipped?"، وتُخطّي "+skipped+" بتاريخ موجود مسبقاً":"")+".",
+              added+" appended"+(skipped?", "+skipped+" skipped as already dated":"")+".");
+      GXIMP=null; return;
+    }
     gxSave(); gxDrawFeed(); gxDrawTool(); gxDrawKSide();
     gxToast(GXIMP.lock?"أُخذت الأعمدة كقالب — القراءات بعد الاعتماد.":(act==="replace"?"استُبدلت القراءات.":"أُضيفت "+newRows.length+" قراءة."),
             GXIMP.lock?"Columns taken as a template.":(act==="replace"?"Readings replaced.":newRows.length+" readings appended."));
