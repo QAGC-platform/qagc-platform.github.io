@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 71">
+<meta name="qagc-ver" content="beta 72">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -2170,6 +2170,21 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 .gx-prog i{width:90px;height:6px;border-radius:99px;background:var(--rule);position:relative;overflow:hidden;display:inline-block}
 .gx-prog i::after{content:"";position:absolute;inset:0;inset-inline-end:var(--rest,100%);background:var(--good)}
 @media (prefers-reduced-motion:reduce){.gx-scope .gx-toast,.gx-scope .gx-car{transition:none}}
+
+/* ── who may feed this table ── */
+.gx-fchips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.gx-fchip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--rule-strong);
+  border-radius:var(--r-pill);padding:4px 11px;font-size:var(--t-sm);background:var(--surface)}
+.gx-fchip .who{font-weight:600}
+.gx-fchip .kind{font-size:var(--t-xs);color:var(--ink-3)}
+.gx-fchip.reader{border-color:var(--brand-ink)}
+.gx-fchip.pend{border-color:var(--warn-rule);background:var(--warn-bg);color:var(--warn-ink)}
+.gx-fchip.sub{border-color:var(--rule-strong);background:var(--surface-2)}
+.gx-fchip .x{cursor:pointer;color:var(--ink-4);font-size:var(--t-xs)}
+.gx-fchip .x:hover{color:var(--critical-ink)}
+.gx-frule{font-size:var(--t-xs);color:var(--ink-3);line-height:1.75;background:var(--surface-2);
+  border-radius:var(--r-sm);padding:var(--sp-3);margin-top:8px}
+.gx-frule b{color:var(--ink-2)}
 
 /* ── the feed table's toolbar, and the shape lock ── */
 .gx-fbar{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin:6px 0;
@@ -4582,6 +4597,11 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
                 <div class="gx-seg" id="gxToolMode" style="max-width:520px"><button type="button" data-gfm="table"><span lang="ar">جدول داخل المنصة</span><span lang="en">On-site table</span></button><button type="button" data-gfm="file"><span lang="ar">ملف CSV / Excel</span><span lang="en">CSV / Excel file</span></button><button type="button" data-gfm="sheet"><span lang="ar">Google Sheets</span><span lang="en">Google Sheets</span></button></div>
                 <div id="gxImportBoxK" hidden style="margin-top:10px"></div>
                 <div id="gxTool" style="margin-top:8px"></div>
+              </div>
+              <div class="gx-card" id="gxFeedersCard">
+                <h3><span lang="ar">من يغذّي هذا الجدول</span><span lang="en">Who feeds this table</span></h3>
+                <p class="lede"><span lang="ar">جهة الرصد المسمّاة في البطاقة تغذّي دائماً. ويمكن ضمّ موظفين آخرين — وكل إدخال يوثّقه رئيس مُدخِله المباشر، لا رئيس صاحب البطاقة.</span><span lang="en">The monitoring role named on the card always feeds. Others may be added — and every entry is verified by the enterer's own line manager, not the card owner's.</span></p>
+                <div id="gxFeeders"></div>
               </div>
               <div class="gx-card"><h3><span lang="ar">المعالم المرحلية</span><span lang="en">Milestones</span></h3><div id="gxMil"></div></div>
             </div>
@@ -14150,7 +14170,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   var GX={list:[], cur:null, z:"quarters", V:null, tab:"tl", formFor:null, K:null, KD:null, drafts:[], embed:{}, pk:{}};
   function gxBlankFeed(){ return {mode:"table", cols:["التاريخ","القراءة"], rows:[], dateCol:0, valCol:1, pivot:{on:false,row:0,val:1,agg:"avg"}, file:"", sheet:"", lock:false}; }
   function gxBlankK(){ return {name:"",dim:GX_DIMS[2],kind:"outcome",desc:"",rationale:"",num:"",den:"",excl:"",elements:"",limits:"",type:"نسبة مئوية",unit:"%",base:"",baseDate:"",target:"",targetDate:"",dir:"up",tol:10,source:"",cfreq:"m",mfreq:"m",reader:"",rfreq:"q",report:GX_REPORTS[0],related:"",relatedNone:false,
-      bench:"",benchVal:"",benchPeriod:"",benchSrc:"",benchNA:"",phase:"",sheet:true,mil:{},auto:false,plan:null,feed:gxBlankFeed(),chart:"line"}; }
+      bench:"",benchVal:"",benchPeriod:"",benchSrc:"",benchNA:"",phase:"",sheet:true,mil:{},auto:false,plan:null,feed:gxBlankFeed(),chart:"line",feeders:[],subs:[]}; }
   function gxNormK(k){ var b=gxBlankK(); Object.keys(b).forEach(function(key){ if(k[key]===undefined) k[key]=b[key]; }); if(!k.feed) k.feed=gxBlankFeed(); return k; }
   function gxSave(){ try{ localStorage.setItem("qagcGen", JSON.stringify({v:9, list:GX.list})); }catch(_){} }
   // three approved objectives come with ready data; three drafts stay editable — all from the plan itself
@@ -14743,6 +14763,84 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(m==="guided") gxDrawGuide(); else { gxDrawKForm(); gxDrawSections(); }
   }
 
+
+  // ══ who may feed this table ══
+  // Settled 2026-09-09: inside the directorate the card owner adds feeders. Across
+  // directorates it needs the Director General's authorisation. A leave substitute needs
+  // none — and in every case the entry is verified by the enterer's own line manager,
+  // which is what keeps a wider feeder list from widening anyone's authority.
+  function k2Anchor(k,S){
+    if(String(k.reader||"").trim() && gxPersonByName(k.reader)) return k.reader;
+    var ow=gxPersonById(S?S.by:null); return ow?ow.who[0]:null;
+  }
+  function gxFeeders(k){ if(!k.feeders) k.feeders=[]; return k.feeders; }
+  function gxSubs(k){ if(!k.subs) k.subs=[]; return k.subs; }
+  function gxSameDir(a,b){ var pa=gxPersonByName(a), pb=gxPersonByName(b); return !!(pa&&pb&&pa.dir[0]===pb.dir[0]); }
+  function gxSubActive(sb){
+    var t=gxP(PLATFORM_TODAY);
+    return gxValidDate(sb.from)&&gxValidDate(sb.to)&&t>=gxP(sb.from)&&t<=gxP(sb.to);
+  }
+  // every name allowed to put a reading into this table today, and why
+  function gxFeedRoster(k,S){
+    var out=[];
+    if(String(k.reader||"").trim()) out.push({name:k.reader, kind:"reader"});
+    var owner=gxPersonById(S?S.by:null);
+    if(owner && owner.who[0]!==k.reader) out.push({name:owner.who[0], kind:"owner"});
+    gxFeeders(k).forEach(function(f){ out.push({name:f.name, kind:"added", pending:!!f.pending, cross:!!f.cross}); });
+    gxSubs(k).forEach(function(sb){ out.push({name:sb.who, kind:"sub", forWhom:sb.forWhom, from:sb.from, to:sb.to, active:gxSubActive(sb)}); });
+    return out;
+  }
+  function gxCanFeedK(k,S){
+    var me=gxMe();
+    if(k.reader===me.name || (S&&gxOwnsPlan(S)) || ROLE==="dg") return true;
+    var ok=false;
+    gxFeeders(k).forEach(function(f){ if(f.name===me.name && !f.pending) ok=true; });
+    gxSubs(k).forEach(function(sb){ if(sb.who===me.name && gxSubActive(sb)) ok=true; });
+    return ok;
+  }
+  function gxDrawFeeders(){
+    var host=document.getElementById("gxFeeders"); if(!host) return;
+    var S=GX.cur, k=GX.KD; if(!S||!k){ host.innerHTML=""; return; }
+    var me=gxMe(), canManage = gxOwnsPlan(S) || ROLE==="dg" || k.reader===me.name;
+    var roster=gxFeedRoster(k,S);
+    var chips=roster.map(function(r,i){
+      var cls = r.kind==="reader"?"reader" : r.pending?"pend" : r.kind==="sub"?"sub" : "";
+      var kind = r.kind==="reader" ? bi("جهة الرصد","monitor")
+               : r.kind==="owner" ? bi("صاحب البطاقة","card owner")
+               : r.kind==="sub" ? bi("إنابة "+r.from+" ← "+r.to+(r.active?"":" — "+(isAr()?"غير سارية اليوم":"not active today")), "substitute "+r.from+" → "+r.to+(r.active?"":" — not active today"))
+               : r.pending ? bi("بانتظار إذن المديرة العامة","awaiting the Director General")
+               : bi("مغذٍّ مضاف","added feeder");
+      var x = (canManage && (r.kind==="added"||r.kind==="sub")) ? '<span class="x" data-gxfdel="'+r.kind+':'+gxEsc(r.name)+'">✕</span>' : '';
+      return '<span class="gx-fchip '+cls+'"><span class="who">'+gxEsc(r.name)+'</span><span class="kind">'+kind+'</span>'+x+'</span>';
+    }).join("");
+    var names=STAFF.filter(function(p){ return !roster.some(function(r){ return r.name===p.who[0]; }); });
+    var opts='<option value="">'+bi("— اختيار —","— choose —")+'</option>'+names.map(function(p){
+      return '<option value="'+gxEsc(p.who[0])+'">'+gxEsc(p.who[0])+' — '+gxEsc(p.dep[0])+'</option>'; }).join("");
+    var add = !canManage ? '' :
+      '<div class="gx-kgrid" style="align-items:end;margin-top:6px">'+
+        '<div class="f w3"><label>'+bi("ضمّ موظف للتغذية","Add someone to feed")+'</label><select id="gxAddFeeder">'+opts+'</select></div>'+
+        '<div class="f w2" style="align-self:end"><button class="btn" id="gxAddFeederGo">'+bi("ضمّ","Add")+'</button></div>'+
+      '</div>'+
+      '<div class="gx-sec">'+bi("إنابة أثناء الإجازة","Cover during leave")+'</div>'+
+      '<div class="gx-kgrid" style="align-items:end">'+
+        '<div class="f w2"><label>'+bi("عن","For")+'</label><select id="gxSubFor">'+roster.filter(function(r){return r.kind!=="sub";}).map(function(r){ return '<option value="'+gxEsc(r.name)+'">'+gxEsc(r.name)+'</option>'; }).join("")+'</select></div>'+
+        '<div class="f w2"><label>'+bi("البديل","Substitute")+'</label><select id="gxSubWho">'+opts+'</select></div>'+
+        '<div class="f w1"><label>'+bi("من","From")+'</label><input type="date" id="gxSubFrom" value="'+PLATFORM_TODAY+'"></div>'+
+        '<div class="f w1"><label>'+bi("إلى","To")+'</label><input type="date" id="gxSubTo"></div>'+
+        '<div class="f w2" style="align-self:end"><button class="btn" id="gxSubGo">'+bi("إسناد الإنابة","Assign cover")+'</button></div>'+
+      '</div>';
+    var pend=gxFeeders(k).filter(function(f){ return f.pending; });
+    var dgBox = (ROLE==="dg" && pend.length) ?
+      '<div class="gx-frule" style="border:1px solid var(--warn-rule);background:var(--warn-bg);color:var(--warn-ink)">'+
+      bi("بانتظار إذنك: ","Awaiting your authorisation: ")+pend.map(function(f){
+        return gxEsc(f.name)+' <button class="btn" style="padding:1px 8px;font-size:var(--t-xs)" data-gxfok="'+gxEsc(f.name)+'">'+bi("أذن","Authorise")+'</button>'; }).join(" · ")+'</div>' : '';
+    host.innerHTML='<div class="gx-fchips">'+(chips||'<span style="color:var(--ink-3);font-size:var(--t-sm)">'+bi("لم تُسمَّ جهة الرصد بعد.","No monitoring role named yet.")+'</span>')+'</div>'+
+      dgBox + add +
+      '<div class="gx-frule">'+bi(
+        "داخل الدائرة يضمّ صاحبُ البطاقة من يشاء. و<b>عبر الدوائر يلزم إذن المديرة العامة</b>. أما الإنابة أثناء الإجازة فيُسنِدها صاحبُ البطاقة أو المغذّي نفسه للمدة المحددة <b>دون إذن</b>، ولو كان البديل من دائرة أخرى. والتوثيق لا يتغيّر في كل الحالات: إدخال كل شخص يوثّقه رئيسه المباشر.",
+        "Within the directorate the card owner adds whom they wish. <b>Across directorates it needs the Director General's authorisation.</b> Leave cover is assigned by the card owner or the feeder themselves for a stated period <b>with no authorisation</b>, even from another directorate. The attestation never changes: each person's entry is verified by their own line manager.")+'</div>';
+  }
+
   function gxDrawSections(){
     var k=GX.KD; if(!k) return; var st=gxSectionState(k);
     st.forEach(function(sec){
@@ -14755,7 +14853,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
                   : '✓ '+bi("مكتمل","complete");
     });
   }
-  function gxDrawK(){ gxDrawKForm(); gxDrawKSide(); gxDrawDrafts(); gxDrawTool(); gxDrawSections();
+  function gxDrawK(){ gxDrawKForm(); gxDrawKSide(); gxDrawDrafts(); gxDrawTool(); gxDrawSections(); gxDrawFeeders();
     if(GX.kui==="guided") gxDrawGuide();
     gxAutoLockNote();
     var S=GX.cur, pane=document.getElementById("gxp-kpi"); if(!S||!pane) return;
@@ -15117,7 +15215,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var k=GX.K!==null?S.kpis[GX.K]:null; var steps=gxStepsFeed();
     if(!k){ host.innerHTML=steps+'<div class="noresult" style="margin-top:10px">'+bi("لا مؤشرات لهذا الهدف بعد.","No KPIs for this objective yet.")+'</div>'; return; } if(!k.feed) k.feed=gxBlankFeed(); var fd=k.feed;
     document.getElementById("gxFeedFor").innerHTML=gxEsc(S.title);
-    var me=gxMe(); var canRead = k.reader===me.name || gxOwnsPlan(S); var lockR = !canRead && ROLE!=="dg";
+    var me=gxMe(); var canRead = gxCanFeedK(k,S); var lockR = !canRead && ROLE!=="dg";
     if(!fd.meta) fd.meta=[]; var unsent=fd.rows.filter(function(row,r){ var m=fd.meta[r]; return !(m&&(m.pending||m.verified)) && String(row[fd.dateCol]||"").trim(); }).length;
     var pick='<div class="gx-sec">'+bi("قراءات المؤشر","KPI readings")+' <span style="font-weight:400;letter-spacing:0;color:var(--ink-3)">— '+(fd.mode==="sheet"?bi("من ورقة Google Sheets: مصدر نظامي لا يحتاج توثيقاً","from a Google Sheet: system-sourced, no verification"):bi("يُدخلها «جهة الرصد» ثم تُرسل لتوثيق مديرها المباشر","entered by the monitor, then sent to their line manager"))+'</span></div><div class="gx-kgrid" style="align-items:end"><div class="f w3"><label>'+bi("المؤشر الذي تُغذَّى قراءاته","KPI being fed")+'</label><select id="gxFeedPick">'+S.kpis.map(function(x,i){return '<option value="'+i+'"'+(i===GX.K?" selected":"")+'>'+gxEsc(x.name)+(x.plan?' — '+(isAr()?"يُحسب من الخطوات تلقائياً":"computed from the steps"):'')+'</option>';}).join("")+'</select></div>'+
       (k.plan?'<div class="f w3" style="font-size:var(--t-xs);color:var(--ink-3)">'+bi("هذا المؤشر يُقرأ من إنجاز الخطوات الموثّقة أعلاه ولا يحتاج إدخالاً.","This KPI reads itself from the verified steps above.")+'</div>'
@@ -15260,6 +15358,38 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     // feeder
     var fm=e.target.closest("[data-gfm]"); if(fm){ var fk=gxFeedK(); if(!fk.feed) fk.feed=gxBlankFeed(); fk.feed.mode=fm.dataset.gfm; gxSave(); gxDrawFeed(); gxDrawTool(); return; }
     var ct=e.target.closest("[data-gxct]"); if(ct){ GX.KD.chart=ct.dataset.gxct; if(GX.K!==null) S.kpis[GX.K].chart=ct.dataset.gxct; gxSave(); gxDrawKSide(); return; }
+    var fdel=e.target.closest("[data-gxfdel]"); if(fdel){ var kk=GX.KD; var a=fdel.dataset.gxfdel.split(":"); var nm=a.slice(1).join(":");
+      if(a[0]==="added") kk.feeders=gxFeeders(kk).filter(function(f){ return f.name!==nm; });
+      else kk.subs=gxSubs(kk).filter(function(sb){ return sb.who!==nm; });
+      if(GX.K!==null && S.kpis[GX.K]){ S.kpis[GX.K].feeders=kk.feeders; S.kpis[GX.K].subs=kk.subs; }
+      gxSave(); gxDrawFeeders(); return; }
+    if(e.target.closest("#gxAddFeederGo")){ var sel=document.getElementById("gxAddFeeder"); var nm2=sel?sel.value:""; if(!nm2){ gxToast("اختر اسماً أولاً.","Choose a name first."); return; }
+      var kk2=GX.KD, me2=gxMe();
+      var anchor=k2Anchor(kk2,S);
+      var cross=anchor && !gxSameDir(anchor, nm2);
+      var needs = cross && ROLE!=="dg";
+      gxFeeders(kk2).push({name:nm2, by:me2.name, at:PLATFORM_TODAY, cross:!!cross, pending:!!needs});
+      if(GX.K!==null && S.kpis[GX.K]) S.kpis[GX.K].feeders=kk2.feeders;
+      gxSave(); gxDrawFeeders();
+      gxToast(needs?"ضُمّ من دائرة أخرى — بانتظار إذن المديرة العامة.":"ضُمّ للتغذية. إدخاله يوثّقه رئيسه المباشر.",
+              needs?"Added from another directorate — awaiting the Director General.":"Added. Their entries are verified by their own line manager.");
+      return; }
+    var fok=e.target.closest("[data-gxfok]"); if(fok){ if(ROLE!=="dg"){ gxToast("الإذن للمديرة العامة وحدها.","Only the Director General authorises this."); return; }
+      var nm3=fok.dataset.gxfok, kk3=GX.KD;
+      gxFeeders(kk3).forEach(function(f){ if(f.name===nm3){ f.pending=false; f.dgBy=gxMe().name; f.dgAt=PLATFORM_TODAY; } });
+      if(GX.K!==null && S.kpis[GX.K]) S.kpis[GX.K].feeders=kk3.feeders;
+      gxSave(); gxDrawFeeders(); gxToast("أُذن بالتغذية عبر الدوائر.","Cross-directorate feeding authorised."); return; }
+    if(e.target.closest("#gxSubGo")){ var sf=document.getElementById("gxSubFor"), sw=document.getElementById("gxSubWho"),
+        s1=document.getElementById("gxSubFrom"), s2=document.getElementById("gxSubTo");
+      var who=sw?sw.value:"", forW=sf?sf.value:"", f1=s1?s1.value:"", f2=s2?s2.value:"";
+      if(!who||!forW){ gxToast("الإنابة تحتاج اسمين.","Cover needs both names."); return; }
+      if(!gxValidDate(f1)||!gxValidDate(f2)||gxP(f2)<gxP(f1)){ gxToast("مدة الإنابة غير صحيحة.","The cover period is not valid."); return; }
+      var kk4=GX.KD;
+      gxSubs(kk4).push({who:who, forWhom:forW, from:f1, to:f2, by:gxMe().name, at:PLATFORM_TODAY});
+      if(GX.K!==null && S.kpis[GX.K]) S.kpis[GX.K].subs=kk4.subs;
+      gxSave(); gxDrawFeeders();
+      gxToast("أُسندت الإنابة للمدة المحددة — دون إذن، والتوثيق كما هو.","Cover assigned for the stated period — no authorisation needed, attestation unchanged.");
+      return; }
     var ft=e.target.closest("[data-gxft]"); if(ft){
       var fk=gxToolK(); if(!fk) return; var fdt=fk.feed, act=ft.dataset.gxft;
       if(act==="undo"){ gxUnDo(true); return; }
