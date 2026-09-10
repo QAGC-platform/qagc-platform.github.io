@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 69">
+<meta name="qagc-ver" content="beta 70">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -2023,7 +2023,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 #gxHelpPanel h3{margin:0 0 8px}
 #gxHelpPanel ol{margin:0;padding-inline-start:20px}
 #gxHelpPanel li{margin-bottom:6px;font-size:var(--t-sm);color:var(--ink-2);line-height:1.9}
-.gx-scope .gx-klock .gx-card.auto,.gx-scope .gx-klock #gxKSave,.gx-scope .gx-klock #gxKNew,.gx-scope .gx-klock #gxKList .gx-del,.gx-scope .gx-klock #gxMil .gx-del{display:none!important}
+.gx-scope .gx-klock #gxKSave,.gx-scope .gx-klock #gxKNew,.gx-scope .gx-klock #gxKList .gx-del,.gx-scope .gx-klock #gxMil .gx-del{display:none!important}
 /* ── work mail: highlight → right-click → routed to the responsible person ── */
 #qcm{position:fixed;z-index:99;background:var(--surface);border:1px solid var(--brand-ink);border-radius:12px;box-shadow:0 12px 34px rgba(23,63,69,.25);min-width:250px;max-width:340px;display:none;overflow:hidden}
 #qcm .qx{padding:8px 12px;font-size:11.5px;color:var(--ink-3);border-bottom:1px solid var(--rule);background:var(--surface-2);line-height:1.6}
@@ -2170,6 +2170,47 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 .gx-prog i{width:90px;height:6px;border-radius:99px;background:var(--rule);position:relative;overflow:hidden;display:inline-block}
 .gx-prog i::after{content:"";position:absolute;inset:0;inset-inline-end:var(--rest,100%);background:var(--good)}
 @media (prefers-reduced-motion:reduce){.gx-scope .gx-toast,.gx-scope .gx-car{transition:none}}
+
+/* ── the KPI card: two modes from one registry, and the denominator tester ── */
+.gx-scope .gx-klock .gx-card.auto [data-gxdacc]{display:none!important}
+.gx-klocknote{font-size:var(--t-xs);color:var(--warn-ink);background:var(--warn-bg);
+  border:1px solid var(--warn-rule);border-radius:var(--r-sm);padding:6px 10px;margin-top:8px}
+.gx-dtb{margin-top:5px;font-size:var(--t-xs);padding:2px 9px;border:1px solid var(--rule-strong);
+  background:var(--surface-2);border-radius:var(--r-pill);cursor:pointer;color:var(--ink-2);font:inherit;
+  font-size:var(--t-xs);align-self:start}
+.gx-dtb:hover{border-color:var(--brand-ink);color:var(--brand-ink)}
+#gxDT{position:fixed;inset:0;z-index:130;background:rgba(13,39,45,.44);display:none;
+  align-items:center;justify-content:center;padding:16px}
+#gxDT.on{display:flex}
+#gxDT .box{background:var(--surface);border-radius:var(--r);max-width:520px;width:100%;
+  max-height:88vh;overflow:auto;padding:var(--sp-4);box-shadow:var(--lift-2)}
+#gxDT h4{margin:0 0 4px;font-size:var(--t-h2)}
+#gxDT .ctx{font-size:var(--t-sm);color:var(--ink-3);background:var(--surface-2);
+  border-radius:var(--r-sm);padding:var(--sp-3);margin:var(--sp-3) 0;line-height:1.7}
+#gxDT .ctx b{color:var(--ink-2)}
+#gxDT .row{display:flex;gap:var(--sp-3);flex-wrap:wrap;align-items:end}
+#gxDT .row .f{flex:1 1 120px;min-width:0}
+#gxDT label{display:block;font-size:var(--t-xs);font-weight:700;color:var(--ink-4);margin-bottom:4px}
+#gxDT input{width:100%;border:1px solid var(--rule-strong);border-radius:var(--r-sm);
+  padding:6px 9px;font:inherit;direction:ltr;text-align:start}
+#gxDT .out{margin-top:var(--sp-3);border-radius:var(--r-sm);padding:var(--sp-3);
+  font-size:var(--t-sm);line-height:1.7;border:1px solid var(--rule)}
+#gxDT .out.ok{background:var(--good-bg);border-color:var(--good-rule);color:var(--good-ink)}
+#gxDT .out.warn{background:var(--warn-bg);border-color:var(--warn-rule);color:var(--warn-ink)}
+#gxDT .out.bad{background:var(--critical-bg);border-color:var(--critical-rule);color:var(--critical-ink)}
+#gxDT .acts{display:flex;gap:var(--sp-2);margin-top:var(--sp-4);justify-content:flex-end}
+.gx-qnav{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:var(--sp-3)}
+.gx-qnav button{border:1px solid var(--rule);background:var(--surface);border-radius:var(--r-pill);
+  padding:3px 11px;font:inherit;font-size:var(--t-xs);cursor:pointer;color:var(--ink-3)}
+.gx-qnav button.on{background:var(--brand-ink);border-color:var(--brand-ink);color:var(--brand-gold)}
+.gx-qnav button.done{border-color:var(--good-rule);background:var(--good-bg);color:var(--good-ink)}
+.gx-qh{font-size:var(--t-h2);font-weight:650;line-height:1.4;margin:0 0 4px}
+.gx-qp{font-size:var(--t-sm);color:var(--ink-3);line-height:1.7;margin:0 0 var(--sp-3);max-width:70ch}
+.gx-qfoot{display:flex;gap:var(--sp-2);align-items:center;margin-top:var(--sp-4);
+  border-top:1px solid var(--rule);padding-top:var(--sp-3);flex-wrap:wrap}
+.gx-qcount{font-size:var(--t-xs);color:var(--ink-4);margin-inline-start:auto;font-variant-numeric:tabular-nums}
+.gx-qrev{border:1px solid var(--rule);border-radius:var(--r-sm);padding:var(--sp-3);margin-bottom:var(--sp-3)}
+.gx-qrev > .gx-sec{margin-top:0}
 
 /* ── the KPI card decision paper: a document that answers back ── */
 .kf-num{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;
@@ -4504,10 +4545,15 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
               <div class="gx-card">
                 <h3 id="gxKTitle"><span lang="ar">بطاقة المؤشر</span><span lang="en">KPI card</span></h3>
                 <p class="lede"><span lang="ar">وفق «بطاقة مؤشر الأداء» — الملحق 6 من دليل مؤشرات الأداء الرئيسية (MoH/QAC/GUD/004، الإصدار 1، أكتوبر 2023) — مواءمةً لنطاق قطاع الأشخاص ذوي الإعاقة.</span><span lang="en">After the KPI card — Appendix 6 of the KPIs Guideline (MoH/QAC/GUD/004 v1, Oct 2023) — tailored to the disability sector.</span></p>
+                <div class="gx-seg" id="gxKMode" style="max-width:420px;margin-bottom:10px"><button type="button" data-gxkm="form" class="on"><span lang="ar">النموذج الكامل</span><span lang="en">Full form</span></button><button type="button" data-gxkm="guided"><span lang="ar">الوضع التفاعلي</span><span lang="en">Guided questions</span></button></div>
+                <p class="lede" id="gxKModeHint" style="margin-top:0"></p>
+                <div id="gxFormBody">
                 <div class="gx-sec">١ · <span lang="ar">التعريف</span><span lang="en">Definition</span><span class="gx-secst" id="gxf1-st"></span></div><div class="gx-kgrid" id="gxf1"></div>
                 <div class="gx-sec">٢ · <span lang="ar">الحساب</span><span lang="en">Calculation</span><span class="gx-secst" id="gxf2-st"></span></div><div class="gx-kgrid" id="gxf2"></div>
                 <div class="gx-sec">٣ · <span lang="ar">المستهدف والعتبات</span><span lang="en">Target and thresholds</span><span class="gx-secst" id="gxf3-st"></span></div><div class="gx-kgrid" id="gxf3"></div>
                 <div class="gx-sec">٤ · <span lang="ar">البيانات والرصد والتقارير</span><span lang="en">Data, monitoring, reporting</span><span class="gx-secst" id="gxf4-st"></span></div><div class="gx-kgrid" id="gxf4"></div>
+                </div>
+                <div id="gxGuide" hidden></div>
                 <div class="gx-acts" style="margin-top:10px"><button class="btn btn-p" id="gxKSave"></button><button class="btn" id="gxKNew" hidden><span lang="ar">مؤشر جديد</span><span lang="en">New KPI</span></button></div>
               </div>
               <div class="gx-card" id="gxToolCard">
@@ -4539,6 +4585,19 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
   </main>
 </div>
 
+<div id="gxDT" role="dialog" aria-modal="true" aria-labelledby="gxDTh">
+  <div class="box">
+    <h4 id="gxDTh"><span lang="ar">اختبار المقام</span><span lang="en">Denominator test</span></h4>
+    <p style="margin:0;font-size:var(--t-sm);color:var(--ink-3)"><span lang="ar">رقمان حقيقيان من فترة واحدة. الاختبار لا يُحفظ ولا يمسّ البطاقة — يقول فقط هل التعريف يعطي نتيجة يمكن قراءتها.</span><span lang="en">Two real numbers from one period. Nothing is saved and the card is untouched — this only says whether the definition yields a readable result.</span></p>
+    <div class="ctx" id="gxDTctx"></div>
+    <div class="row">
+      <div class="f"><label><span lang="ar">البسط</span><span lang="en">Numerator</span></label><input type="number" step="any" id="gxDTn" placeholder="8"></div>
+      <div class="f"><label><span lang="ar">المقام</span><span lang="en">Denominator</span></label><input type="number" step="any" id="gxDTd" placeholder="10"></div>
+    </div>
+    <div class="out" id="gxDTout" hidden></div>
+    <div class="acts"><button class="btn" id="gxDTx"><span lang="ar">إغلاق</span><span lang="en">Close</span></button></div>
+  </div>
+</div>
 <div id="rvToast" hidden></div>
 <div id="rvPop" hidden>
   <div class="cx" id="rvPopCx"></div>
@@ -13874,7 +13933,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   initCards();
 
   // ── keyboard layer: the mouse-only interactions gain focus + Enter/Space ──
-  var KBD_SEL=".card > .card-h,.ohead[data-toggle],.asnhead,[data-asntoggle],.gx-car,[data-gxmo],[data-gxun],.qb,[data-gxq],.rperson,[data-ccd],.ccal-chip,[data-cpd],[data-cpdmo],[data-gxtk].gx-lr,[data-minemode]";
+  var KBD_SEL=".card > .card-h,.ohead[data-toggle],.asnhead,[data-asntoggle],.gx-car,[data-gxmo],[data-gxun],.qb,[data-gxq],[data-gxkq],.rperson,[data-ccd],.ccal-chip,[data-cpd],[data-cpdmo],[data-gxtk].gx-lr,[data-minemode]";
   function kbdPass(root){
     (root||document).querySelectorAll(KBD_SEL).forEach(function(el){
       if(el.tagName==="BUTTON"||el.tagName==="A"||el.hasAttribute("tabindex")) return;
@@ -14493,6 +14552,172 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       secs[2].adv.push([true, bi("خط الأساس والمستهدف متساويان — مؤشر محافظة؟","baseline equals target — a maintenance KPI?")]);
     return secs;
   }
+
+  // ══ one field registry, two renderers ══
+  // The full form and the guided questions are the same list read twice, so a field
+  // added in one cannot be missing from the other. sec = Appendix-6 section, q = which
+  // of the six questions it answers, den = the field is a denominator and gets a tester.
+  var GX_FIELDS=[
+    {k:"name",     sec:1,q:1,lab:["عنوان المؤشر","Title"],        o:function(S,k,C){ return {w:6,ph:C.name}; }},
+    {k:"dim",      sec:1,q:1,lab:["البُعد","Dimension"],           o:function(){ return {w:2,sel:GX_DIMS,lab:gxDimLabel}; }},
+    {k:"kind",     sec:1,q:1,lab:["النوع","Type"],                 o:function(){ return {w:2,sel:Object.keys(GX_KIND).map(function(x){return [x,isAr()?GX_KIND[x][0]:GX_KIND[x][1]];})}; }},
+    {k:"phase",    sec:1,q:1,lab:["مرتبط بـ","Linked to"],         o:function(S){ return {w:2,sel:[["",isAr()?"— الهدف كله":"— whole objective"]].concat(S.phases.filter(function(x){return x.name;}).map(function(x){return [x.name,x.name];}))}; }},
+    {k:"desc",     sec:1,q:1,lab:["الوصف","Description"],          o:function(S,k,C){ return {w:6,ph:C.desc}; }},
+    {k:"rationale",sec:1,q:1,lab:["المسوّغ","Rationale"],          o:function(S,k,C){ return {w:6,ph:C.rationale}; }},
+
+    {k:"num",      sec:2,q:2,lab:["البسط","Numerator"],            o:function(S,k,C){ return {w:3,ph:C.num}; }},
+    {k:"den",      sec:2,q:2,den:1,lab:["المقام","Denominator"],   o:function(S,k,C){ return {w:3,ph:C.den}; }},
+    {k:"excl",     sec:2,q:2,lab:["الاستثناءات","Exclusions"],     o:function(S,k,C){ return {w:3,ph:C.excl}; }},
+    {k:"elements", sec:2,q:2,lab:["عناصر البيانات","Data elements"],o:function(S,k,C){ return {w:3,ph:C.elements}; }},
+    {k:"type",     sec:2,q:2,lab:["نوع القياس","Measure type"],    o:function(){ return {w:2,sel:GX_TYPES.map(function(t){return t[0];}),lab:gxTypeLabel}; }},
+    {k:"unit",     sec:2,q:2,lab:["الوحدة","Unit"],                o:function(){ return {w:1,ph:"%"}; }},
+    {k:"base",     sec:2,q:4,lab:["خط الأساس","Baseline"],         o:function(){ return {w:1,type:"number",step:"any",ph:"45"}; }},
+    {k:"baseDate", sec:2,q:4,lab:["بتاريخ","As of"],               o:function(){ return {w:2,type:"date"}; }},
+
+    {k:"target",   sec:3,q:4,lab:["المستهدف","Target"],            o:function(){ return {w:1,type:"number",step:"any",ph:"90"}; }},
+    {k:"targetDate",sec:3,q:4,lab:["بحلول","By"],                  o:function(S){ return {w:2,type:"date",min:S.from||"",max:S.to||""}; }},
+    {k:"dir",      sec:3,q:4,c:"dir",lab:["الاتجاه","Trend"]},
+    {k:"tol",      sec:3,q:4,lab:["نطاق التفاوت %","Tolerance %"], o:function(){ return {w:1,type:"number",min:"0",max:"100",ph:"10"}; }},
+    {c:"head",     sec:3,q:4,lab:["المقارنة المرجعية","Benchmarking"]},
+    {k:"bench",    sec:3,q:4,lab:["جهة المقارنة","Comparator"],    o:function(){ return {w:2,ph:isAr()?"مركز مماثل · المعدل الوطني · أداؤنا العام الماضي":"peer centre · national rate · our own last year"}; }},
+    {k:"benchVal", sec:3,q:4,lab:["قيمتها","Its value"],           o:function(S,k){ return {w:1,ph:k.unit||""}; }},
+    {k:"benchPeriod",sec:3,q:4,lab:["عن فترة","Period"],           o:function(){ return {w:1,ph:"2026"}; }},
+    {k:"benchSrc", sec:3,q:4,lab:["مصدرها وحدود مقارنتها","Source and comparability"], o:function(){ return {w:2,ph:isAr()?"من أين، وما الذي يحدّ من قابلية المقارنة":"where from, and what limits comparability"}; }},
+    {k:"benchNA",  sec:3,q:4,lab:["لا تتوفر مقارنة — السبب","No comparator — why"],    o:function(){ return {w:6,ph:isAr()?"يُترك فارغاً إن وُجدت مقارنة":"leave empty if a comparator exists"}; }},
+
+    {k:"source",   sec:4,q:3,lab:["مصدر البيانات","Data source"],  o:function(S,k,C){ return {w:3,ph:C.source}; }},
+    {k:"limits",   sec:4,q:5,lab:["المحددات","Limitations"],       o:function(S,k,C){ return {w:3,ph:C.limits}; }},
+    {k:"cfreq",    sec:4,q:3,lab:["وتيرة الجمع","Collection"],     o:function(){ return {w:2,sel:gxFreqSel()}; }},
+    {k:"mfreq",    sec:4,q:3,lab:["وتيرة الرصد","Monitoring"],     o:function(){ return {w:2,sel:gxFreqSel()}; }},
+    {k:"reader",   sec:4,q:5,lab:["جهة الرصد","Monitored by"],     o:function(){ return {w:2,list:"gxPeople",ph:isAr()?"اسم من الكشف أو وحدة":"A name or a unit"}; }},
+    {k:"rfreq",    sec:4,q:5,lab:["وتيرة التقرير","Reporting"],    o:function(){ return {w:2,sel:gxFreqSel()}; }},
+    {k:"report",   sec:4,q:5,lab:["يُدرج في","Reported in"],       o:function(){ return {w:4,sel:GX_REPORTS,lab:gxRepLabel}; }},
+    {k:"related",  sec:4,q:5,lab:["مؤشر ذو صلة","Related indicator"], o:function(){ return {w:4,ph:isAr()?"اسم مؤشر يقرأ معه — أو يُترك فارغاً":"a KPI read alongside it — or leave empty"}; }},
+    {k:"relatedNone",sec:4,q:5,c:"check",lab:["لا يوجد مؤشر ذو صلة","No related indicator"]}
+  ];
+  function gxAN(n){ return isAr() ? String(n).replace(/[0-9]/g,function(d){ return "٠١٢٣٤٥٦٧٨٩".charAt(+d); }) : String(n); }
+  function gxFreqSel(){ return Object.keys(GX_FREQ).map(function(x){ return [x,isAr()?GX_FREQ[x][0]:GX_FREQ[x][1]]; }); }
+  var GX_QS=[
+    {n:1,t:["أي قرار سيغيّره هذا المؤشر؟","What decision will this indicator change?"],
+       p:["اسم المؤشر وما يقيسه ولمن، وبُعد الجودة الذي يخدمه، والسبب الذي يجعل قياسه يستحق العناء. إن لم يكن هناك قرار يتغيّر بالقراءة، فالمؤشر تقرير لا مؤشر.",
+          "Its name, what it measures and for whom, the quality dimension it serves, and why measuring it is worth the effort. If no decision changes with the reading, this is a report, not an indicator."]},
+    {n:2,t:["ما الذي يُعدّ بالضبط؟","What exactly is counted?"],
+       p:["البسط والمقام والاستثناءات وعناصر البيانات. هنا يقع أكثر الخلاف لاحقاً: من دخل العدّ ومن خرج منه ولماذا. «اختبر المقام» يجرّب التعريف برقمين قبل أن يُعتمد.",
+          "Numerator, denominator, exclusions and data elements. This is where later disputes start: who was counted, who was not, and why. «Test the denominator» tries the definition on two numbers before it is adopted."]},
+    {n:3,t:["من أين تأتي البيانات، وهل جمعها ممكن فعلاً؟","Where does the data come from, and can it actually be collected?"],
+       p:["المصدر ووتيرة الجمع ووتيرة الرصد. قائمة أسماء حقول لا تثبت أن الإمداد ممكن — إن لم يكن هناك من يجمعها بهذه الوتيرة، فالمؤشر لن يُقرأ.",
+          "The source and the collection and monitoring frequencies. A list of field names does not prove a feasible supply: if nobody collects it at that cadence, the indicator will not be read."]},
+    {n:4,t:["ما النتيجة المطلوبة، ومتى؟","What result is wanted, and by when?"],
+       p:["خط الأساس ومصدره، والمستهدف وتاريخه واتجاهه وحدود التفاوت، والمقارنة المرجعية إن وُجدت. المستهدف بلا سند رقم أُمنية.",
+          "The baseline and where it came from, the target with its date, direction and tolerance, and the benchmark if there is one. A target with no basis is a wish."]},
+    {n:5,t:["من يقرأ النتيجة، وما حدودها؟","Who reads the result, and what are its limits?"],
+       p:["جهة الرصد، ووتيرة التقرير وأين يُدرج، والمحددات التي تُقيّد تفسيره، والمؤشرات التي تُقرأ معه. المحددات ليست اعترافاً بالضعف — هي ما يمنع قراءة خاطئة.",
+          "The monitoring role, the reporting frequency and destination, the limits on interpretation, and the indicators read alongside it. Stating limits is not an admission of weakness — it prevents a wrong reading."]},
+    {n:6,t:["مراجعة البطاقة كاملة","Review the whole card"],
+       p:["كل الحقول كما ستُقرأ، وما ينقص كل قسم. لا إجابات مخزّنة هنا: هذا هو النموذج الكامل نفسه.",
+          "Every field as it will be read, and what each section still needs. Nothing is stored here separately: this is the full form itself."]}
+  ];
+  function gxFieldHTML(f,S,k,C){
+    if(f.c==="head") return '<div class="gx-sec" style="grid-column:1/-1">'+bi(f.lab[0],f.lab[1])+'</div>';
+    if(f.c==="dir") return '<div class="f w2"><label>'+bi(f.lab[0],f.lab[1])+'</label><div class="gx-seg"><button type="button" data-gxdir="up" class="'+(k.dir==="up"?"on":"")+'">'+bi("تصاعدي ↑","Increasing ↑")+'</button><button type="button" data-gxdir="down" class="'+(k.dir==="down"?"on":"")+'">'+bi("تنازلي ↓","Decreasing ↓")+'</button></div></div>';
+    if(f.c==="check") return '<div class="f w2"><label>&nbsp;</label><label style="font-weight:400;font-size:var(--t-xs);display:flex;gap:6px;align-items:center"><input type="checkbox" data-gxk="'+f.k+'"'+(k[f.k]?" checked":"")+'> '+bi(f.lab[0],f.lab[1])+'</label></div>';
+    var html=gxF(bi(f.lab[0],f.lab[1]),f.k,k,f.o?f.o(S,k,C):{});
+    // the tester belongs beside the field it tests, not in a menu somewhere else
+    if(f.den) html=html.slice(0,-6)+'<button type="button" class="gx-dtb" data-gxdt="'+f.k+'">'+bi("اختبر المقام","Test the denominator")+'</button></div>';
+    return html;
+  }
+  function gxSecHTML(sec,S,k,C){
+    return GX_FIELDS.filter(function(f){return f.sec===sec;}).map(function(f){ return gxFieldHTML(f,S,k,C); }).join("");
+  }
+  // ── the denominator tester: a window over the page, gone when the page changes ──
+  var GXDT=null;
+  function gxDTOpen(key){
+    var k=GX.KD; if(!k) return; GXDT=key;
+    var box=document.getElementById("gxDT"); if(!box) return;
+    var parts=[];
+    parts.push('<b>'+bi("المقام كما كُتب","The denominator as written")+':</b> '+(String(k[key]||"").trim()?gxEsc(k[key]):'<span style="color:var(--critical-ink)">'+bi("لم يُكتب بعد","not written yet")+'</span>'));
+    parts.push('<b>'+bi("الاستثناءات","Exclusions")+':</b> '+(String(k.excl||"").trim()?gxEsc(k.excl):bi("لم تُذكر","none stated")));
+    parts.push('<b>'+bi("وتيرة الجمع","Collection")+':</b> '+(k.cfreq&&GX_FREQ[k.cfreq]?gxEsc(isAr()?GX_FREQ[k.cfreq][0]:GX_FREQ[k.cfreq][1]):bi("لم تُحدد","not set")));
+    document.getElementById("gxDTctx").innerHTML=parts.join("<br>");
+    document.getElementById("gxDTn").value=""; document.getElementById("gxDTd").value="";
+    document.getElementById("gxDTout").hidden=true;
+    box.classList.add("on");
+    var n=document.getElementById("gxDTn"); if(n) setTimeout(function(){ try{ n.focus(); }catch(_){ } },30);
+  }
+  function gxDTClose(){ var b=document.getElementById("gxDT"); if(b) b.classList.remove("on"); GXDT=null; }
+  function gxDTRun(){
+    var out=document.getElementById("gxDTout"); if(!out) return;
+    var nR=document.getElementById("gxDTn").value, dR=document.getElementById("gxDTd").value;
+    if(String(nR).trim()===""||String(dR).trim()===""){ out.hidden=true; return; }
+    var n=gxNum(nR), d=gxNum(dR);
+    out.hidden=false;
+    if(typeof n!=="number"||typeof d!=="number"){ out.className="out bad"; out.innerHTML=bi("أحد الرقمين ليس عدداً.","One of the two is not a number."); return; }
+    if(d<0||n<0){ out.className="out bad"; out.innerHTML=bi("العدّ لا يكون سالباً.","A count is not negative."); return; }
+    if(d===0){ out.className="out bad";
+      out.innerHTML=bi("مقام صفر: <b>لا نتيجة</b> — وليست صفراً بالمئة. الفترة التي لا أحد فيها مؤهل تُترك بلا قراءة، ولا تُقرأ كأداء سيئ.",
+                       "A zero denominator gives <b>no result</b> — not 0%. A period with nobody eligible is left unread, never read as poor performance."); return; }
+    if(n>d){ out.className="out bad";
+      out.innerHTML=bi("البسط أكبر من المقام ("+n+"/"+d+"): مستحيل إن كان البسط جزءاً من المقام. إمّا أن التعريفين لا يصفان الفئة نفسها، أو أن العدّ يكرّر الشخص الواحد.",
+                       "Numerator exceeds denominator ("+n+"/"+d+"): impossible if the numerator is a subset. Either the two definitions describe different populations, or one person is counted more than once."); return; }
+    var pct=Math.round(n/d*1000)/10;
+    if(d<5){ out.className="out warn";
+      out.innerHTML=bi("النتيجة "+pct+"% — لكن المقام <b>"+d+"</b> فقط. عيّنة بهذا الصغر تتحرك بحالة واحدة؛ يُذكر العدد مع النسبة دائماً، أو تُجمع فترات أطول.",
+                       "Result "+pct+"% — but the denominator is only <b>"+d+"</b>. A sample this small moves with a single case; show the count beside the percentage, or aggregate longer periods."); return; }
+    out.className="out ok";
+    out.innerHTML=bi("النتيجة "+pct+"% ("+n+" من "+d+"). التعريف يعطي قراءة صالحة على هذين الرقمين.",
+                     "Result "+pct+"% ("+n+" of "+d+"). The definition yields a valid reading on these two numbers.");
+  }
+  // ── the guided mode: the same registry, one question at a time ──
+  function gxDrawGuide(){
+    var host=document.getElementById("gxGuide"); if(!host) return;
+    var S=GX.cur, k=GX.KD; if(!S||!k){ host.innerHTML=""; return; }
+    var C=gxCtx(), q=Math.min(6,Math.max(1,GX.kq||1)), Q=GX_QS[q-1];
+    var st=gxSectionState(k);
+    var nav=GX_QS.map(function(x){
+      var fs=GX_FIELDS.filter(function(f){ return f.q===x.n && f.k; });
+      var done= x.n===6 ? false : fs.every(function(f){ return f.c==="check"||f.c==="dir"||String(k[f.k]==null?"":k[f.k]).trim()!==""; });
+      return '<button type="button" data-gxkq="'+x.n+'" class="'+(x.n===q?"on":done?"done":"")+'">'+gxAN(x.n)+(x.n===6?' ✓':'')+'</button>';
+    }).join("");
+    var body;
+    if(q===6){
+      body=[1,2,3,4].map(function(sec){
+        var sc=st[sec-1]||{req:[],adv:[]};
+        var miss=sc.req.filter(function(x){return x[0];}).map(function(x){return x[1];});
+        var soft=sc.adv.filter(function(x){return x[0];}).map(function(x){return x[1];});
+        var head=["التعريف","الحساب","المستهدف والعتبات","البيانات والرصد والتقارير"][sec-1];
+        var headEn=["Definition","Calculation","Target and thresholds","Data, monitoring, reporting"][sec-1];
+        return '<div class="gx-qrev"><div class="gx-sec">'+sec+' · '+bi(head,headEn)+
+          '<span class="gx-secst '+(miss.length?"need":soft.length?"soft":"ok")+'">'+
+          (miss.length?'⚠ '+bi("ينقصه: ","needs: ")+miss.join("، "):soft.length?'· '+bi("يُنصح بإضافة: ","consider: ")+soft.join("، "):'✓ '+bi("مكتمل","complete"))+
+          '</span></div><div class="gx-kgrid">'+gxSecHTML(sec,S,k,C)+'</div></div>';
+      }).join("");
+    } else {
+      body='<div class="gx-kgrid">'+GX_FIELDS.filter(function(f){return f.q===q;}).map(function(f){ return gxFieldHTML(f,S,k,C); }).join("")+'</div>';
+    }
+    host.innerHTML='<div class="gx-qnav">'+nav+'</div>'+
+      '<h4 class="gx-qh">'+bi(Q.t[0],Q.t[1])+'</h4><p class="gx-qp">'+bi(Q.p[0],Q.p[1])+'</p>'+ body +
+      '<div class="gx-qfoot">'+
+        (q>1?'<button class="btn" type="button" data-gxkq="'+(q-1)+'">'+bi("السابق","Previous")+'</button>':'')+
+        (q<6?'<button class="btn btn-p" type="button" data-gxkq="'+(q+1)+'">'+bi("التالي","Next")+'</button>':'')+
+        '<span class="gx-qcount">'+bi("سؤال "+gxAN(q)+" من ٦","Question "+q+" of 6")+'</span></div>';
+  }
+  function gxSetKMode(m){
+    GX.kui=m; gxSave();
+    document.querySelectorAll("#gxKMode button").forEach(function(b){ b.classList.toggle("on",b.dataset.gxkm===m); });
+    var fb=document.getElementById("gxFormBody"), gd=document.getElementById("gxGuide");
+    if(fb) fb.hidden = m==="guided";
+    if(gd) gd.hidden = m!=="guided";
+    var h=document.getElementById("gxKModeHint");
+    if(h) h.innerHTML = m==="guided"
+      ? bi("ستة أسئلة، حقولها هي حقول النموذج نفسها — لا نسخة مختصرة منها. السؤال السادس يعرض البطاقة كاملة.",
+           "Six questions whose fields are the form's own fields, not a shortened copy of them. The sixth shows the whole card.")
+      : bi("كل حقول الملحق السادس في أربعة أقسام. الوضع التفاعلي يعرض الحقول نفسها سؤالاً سؤالاً.",
+           "Every Appendix-6 field in four sections. The guided mode walks the same fields one question at a time.");
+    gxDTClose();
+    // the hidden renderer holds whatever it was drawn with, so the one coming into view is redrawn
+    if(m==="guided") gxDrawGuide(); else { gxDrawKForm(); gxDrawSections(); }
+  }
+
   function gxDrawSections(){
     var k=GX.KD; if(!k) return; var st=gxSectionState(k);
     st.forEach(function(sec){
@@ -14506,10 +14731,22 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     });
   }
   function gxDrawK(){ gxDrawKForm(); gxDrawKSide(); gxDrawDrafts(); gxDrawTool(); gxDrawSections();
+    if(GX.kui==="guided") gxDrawGuide();
+    gxAutoLockNote();
     var S=GX.cur, pane=document.getElementById("gxp-kpi"); if(!S||!pane) return;
     var lock=S.status==="approved" && !gxEditable(S);
     pane.classList.toggle("gx-klock",!!lock);
-    if(lock) pane.querySelectorAll("#gxf1 input,#gxf1 select,#gxf2 input,#gxf2 select,#gxf3 input,#gxf3 select,#gxf4 input,#gxf4 select,#gxMil input,#gxThr input").forEach(function(el){ el.disabled=true; }); }
+    if(lock) pane.querySelectorAll("#gxf1 input,#gxf1 select,#gxf2 input,#gxf2 select,#gxf3 input,#gxf3 select,#gxf4 input,#gxf4 select,#gxGuide input,#gxGuide select,#gxMil input,#gxThr input").forEach(function(el){ el.disabled=true; }); }
+  // a suggestion on an approved objective stays readable; only adopting it needs the edit path
+  function gxAutoLockNote(){
+    var S=GX.cur, card=document.querySelector("#gxp-kpi .gx-card.auto"); if(!S||!card) return;
+    var lock=S.status==="approved" && !gxEditable(S);
+    var note=card.querySelector(".gx-klocknote");
+    if(!lock){ if(note) note.remove(); return; }
+    if(!note){ note=document.createElement("div"); note.className="gx-klocknote"; card.appendChild(note); }
+    note.innerHTML=bi("الهدف معتمد: الاقتراحات تبقى للقراءة، واعتماد أيٍّ منها يمرّ بطلب تعديل يوافق عليه الرئيس المباشر.",
+                      "The objective is approved: suggestions stay readable, and adopting one goes through an edit request approved by the line manager.");
+  }
   function gxDrawKForm(){ var S=GX.cur; if(!S) return; if(!GX.KD) GX.KD=gxBlankK(); var k=GX.KD, C=gxCtx();
     if(!k.targetDate&&S.to) k.targetDate=S.to; if(!k.baseDate&&S.from) k.baseDate=gxIso(gxP(S.from)-GXD);
     document.getElementById("gxKObj").textContent=S.title||"—";
@@ -14521,20 +14758,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       } else { var ow=gxPersonById(S.by); if(ow) kctl=' <span style="font-weight:400;color:var(--ink-3)">('+bi("صاحبها: ","owner: ")+gxEsc(ow.who[0])+')</span>'; }
     }
     document.getElementById("gxKTitle").innerHTML= klock ? bi("بطاقة معتمدة — تعديلها بطلبٍ من صاحبها يوافق عليه رئيسه المباشر","Approved card — its owner requests an edit, the line manager approves")+kctl : GX.K===null ? (k.auto?bi("بطاقة مسودة مقترحة — للمراجعة","Proposed draft card — review"):bi("بطاقة مؤشر جديد","New KPI card")) : bi("تعديل بطاقة المؤشر","Edit KPI card");
-    var ph=[["",isAr()?"— الهدف كله":"— whole objective"]].concat(S.phases.filter(function(x){return x.name;}).map(function(x){return [x.name,x.name];}));
-    document.getElementById("gxf1").innerHTML= gxF(bi("عنوان المؤشر","Title"),"name",k,{w:6,ph:C.name})+gxF(bi("البُعد","Dimension"),"dim",k,{w:2,sel:GX_DIMS,lab:gxDimLabel})+gxF(bi("النوع","Type"),"kind",k,{w:2,sel:Object.keys(GX_KIND).map(function(x){return [x,isAr()?GX_KIND[x][0]:GX_KIND[x][1]];})})+gxF(bi("مرتبط بـ","Linked to"),"phase",k,{w:2,sel:ph})+gxF(bi("الوصف","Description"),"desc",k,{w:6,ph:C.desc})+gxF(bi("المسوّغ","Rationale"),"rationale",k,{w:6,ph:C.rationale});
-    document.getElementById("gxf2").innerHTML= gxF(bi("البسط","Numerator"),"num",k,{w:3,ph:C.num})+gxF(bi("المقام","Denominator"),"den",k,{w:3,ph:C.den})+gxF(bi("الاستثناءات","Exclusions"),"excl",k,{w:3,ph:C.excl})+gxF(bi("عناصر البيانات","Data elements"),"elements",k,{w:3,ph:C.elements})+gxF(bi("نوع القياس","Measure type"),"type",k,{w:2,sel:GX_TYPES.map(function(t){return t[0];}),lab:gxTypeLabel})+gxF(bi("الوحدة","Unit"),"unit",k,{w:1,ph:"%"})+gxF(bi("خط الأساس","Baseline"),"base",k,{w:1,type:"number",step:"any",ph:"45"})+gxF(bi("بتاريخ","As of"),"baseDate",k,{w:2,type:"date"});
-    document.getElementById("gxf3").innerHTML= gxF(bi("المستهدف","Target"),"target",k,{w:1,type:"number",step:"any",ph:"90"})+gxF(bi("بحلول","By"),"targetDate",k,{w:2,type:"date",min:S.from||"",max:S.to||""})+'<div class="f w2"><label>'+bi("الاتجاه","Trend")+'</label><div class="gx-seg"><button type="button" data-gxdir="up" class="'+(k.dir==="up"?"on":"")+'">'+bi("تصاعدي ↑","Increasing ↑")+'</button><button type="button" data-gxdir="down" class="'+(k.dir==="down"?"on":"")+'">'+bi("تنازلي ↓","Decreasing ↓")+'</button></div></div>'+gxF(bi("نطاق التفاوت %","Tolerance %"),"tol",k,{w:1,type:"number",min:"0",max:"100",ph:"10"})
-      +'<div class="gx-sec" style="grid-column:1/-1">'+bi("المقارنة المرجعية","Benchmarking")+'</div>'
-      +gxF(bi("جهة المقارنة","Comparator"),"bench",k,{w:2,ph:isAr()?"مركز مماثل · المعدل الوطني · أداؤنا العام الماضي":"peer centre · national rate · our own last year"})
-      +gxF(bi("قيمتها","Its value"),"benchVal",k,{w:1,ph:k.unit||""})
-      +gxF(bi("عن فترة","Period"),"benchPeriod",k,{w:1,ph:"2026"})
-      +gxF(bi("مصدرها وحدود مقارنتها","Source and comparability"),"benchSrc",k,{w:2,ph:isAr()?"من أين، وما الذي يحدّ من قابلية المقارنة":"where from, and what limits comparability"})
-      +gxF(bi("لا تتوفر مقارنة — السبب","No comparator — why"),"benchNA",k,{w:6,ph:isAr()?"يُترك فارغاً إن وُجدت مقارنة":"leave empty if a comparator exists"});
-    var fr=Object.keys(GX_FREQ).map(function(x){return [x,isAr()?GX_FREQ[x][0]:GX_FREQ[x][1]];});
-    document.getElementById("gxf4").innerHTML= gxF(bi("مصدر البيانات","Data source"),"source",k,{w:3,ph:C.source})+gxF(bi("المحددات","Limitations"),"limits",k,{w:3,ph:C.limits})+gxF(bi("وتيرة الجمع","Collection"),"cfreq",k,{w:2,sel:fr})+gxF(bi("وتيرة الرصد","Monitoring"),"mfreq",k,{w:2,sel:fr})+gxF(bi("جهة الرصد","Monitored by"),"reader",k,{w:2,list:"gxPeople",ph:isAr()?"اسم من الكشف أو وحدة":"A name or a unit"})+gxF(bi("وتيرة التقرير","Reporting"),"rfreq",k,{w:2,sel:fr})+gxF(bi("يُدرج في","Reported in"),"report",k,{w:4,sel:GX_REPORTS,lab:gxRepLabel})
-      +gxF(bi("مؤشر ذو صلة","Related indicator"),"related",k,{w:4,ph:isAr()?"اسم مؤشر يقرأ معه — أو يُترك فارغاً":"a KPI read alongside it — or leave empty"})
-      +'<div class="f w2"><label>&nbsp;</label><label style="font-weight:400;font-size:var(--t-xs);display:flex;gap:6px;align-items:center"><input type="checkbox" data-gxk="relatedNone"'+(k.relatedNone?" checked":"")+'> '+bi("لا يوجد مؤشر ذو صلة","No related indicator")+'</label></div>';
+    document.getElementById("gxf1").innerHTML= gxSecHTML(1,S,k,C);
+    document.getElementById("gxf2").innerHTML= gxSecHTML(2,S,k,C);
+    document.getElementById("gxf3").innerHTML= gxSecHTML(3,S,k,C);
+    document.getElementById("gxf4").innerHTML= gxSecHTML(4,S,k,C);
     document.getElementById("gxKSave").innerHTML= GX.K===null?bi("إضافة المؤشر","Add KPI"):bi("حفظ التعديل","Save changes"); document.getElementById("gxKNew").hidden= GX.K===null&&!k.auto;
   }
   function gxReadings(fd){ var out=[]; (fd.rows||[]).forEach(function(row,r){ var d=String(row[fd.dateCol]||"").trim(); var v=gxCell(fd,r,fd.valCol); var m=(fd.meta||[])[r]; if(gxValidDate(d)&&typeof v==="number"&&isFinite(v)) out.push({date:d,v:v,pendingR: fd.mode!=="sheet" && !(m&&m.verified)}); }); return out.sort(function(a,b){return gxP(a.date)-gxP(b.date);}); }
@@ -14811,7 +15038,22 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   var gxDrag=null;
   function gxDayAt(tr,clientX){ var r=tr.getBoundingClientRect(), w=gxWindow(); var rtl=(document.documentElement.getAttribute("dir")||"rtl")!=="ltr"; var x=rtl?(r.right-clientX):(clientX-r.left); var i=Math.max(0,Math.min(w.n-1,Math.floor(x/w.px))); return gxIso(w.t0+i*GXD); }
   function gxPaint(tr,a,b){ var w=gxWindow(); var bar=tr.querySelector(".gx-barx"); if(!bar){ bar=document.createElement("div"); bar.className="gx-barx"+(tr.classList.contains("obj")?" obj":tr.classList.contains("ph")?" ph":""); bar.innerHTML='<div class="lbl"></div>'; tr.appendChild(bar); var g=tr.querySelector(".gx-gh"); if(g) g.remove(); } bar.style.insetInlineStart=((gxP(a)-w.t0)/GXD*w.px)+"px"; bar.style.width=(gxDays(a,b)*w.px)+"px"; }
-  function gxShowTab(tab){ GX.tab=tab; document.querySelectorAll("#gxTabs button").forEach(function(b){b.classList.toggle("on",b.dataset.gxtab===tab);}); document.querySelectorAll("#gen .gx-pane").forEach(function(p){p.classList.toggle("on",p.id==="gxp-"+tab);}); gxDrawStrip(); if(tab==="kpi") gxDrawK(); else if(tab==="feed") gxDrawFeed(); else gxDraw(); }
+
+  // the tester is a window over the card, and a window closes when you leave the room
+  document.addEventListener("click", function(e){
+    if(!e.target.closest) return;
+    if(e.target.closest("#gxDTx")||e.target.id==="gxDT"){ gxDTClose(); return; }
+    if(document.getElementById("gxDT") && document.getElementById("gxDT").classList.contains("on")
+       && !e.target.closest("#gxDT") && !e.target.closest("[data-gxdt]")) gxDTClose();
+  });
+  document.addEventListener("input", function(e){
+    if(e.target.id==="gxDTn"||e.target.id==="gxDTd") gxDTRun();
+  });
+  document.addEventListener("keydown", function(e){
+    if(e.key==="Escape" && document.getElementById("gxDT") && document.getElementById("gxDT").classList.contains("on")){ gxDTClose(); e.stopPropagation(); }
+  });
+
+  function gxShowTab(tab){ GX.tab=tab; gxDTClose(); document.querySelectorAll("#gxTabs button").forEach(function(b){b.classList.toggle("on",b.dataset.gxtab===tab);}); document.querySelectorAll("#gen .gx-pane").forEach(function(p){p.classList.toggle("on",p.id==="gxp-"+tab);}); gxDrawStrip(); if(tab==="kpi") gxDrawK(); else if(tab==="feed") gxDrawFeed(); else gxDraw(); }
   function gxSelect(id){ var S=GX.list.filter(function(x){return x.id===id;})[0]; if(!S) return; GX.cur=S; GX.V=S.from||null; GX.formFor=null; GX.K=null; GX.KD=gxBlankK(); GX.drafts=[]; gxShowTab(GX.tab); }
 
   document.addEventListener("click",function(e){
@@ -14853,7 +15095,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       if(b.dataset.gxdelph){ S.phases.splice(+b.dataset.gxdelph,1); gxSave(); gxDraw(); return; } }
     var row=e.target.closest(".gx-lr.tk"); if(row&&!e.target.closest(".gx-det")){ var t3=gxFind(row.dataset.gxtk); t3.open=!t3.open; gxDraw(); return; }
     // kpi pane
-    var dirB=e.target.closest("[data-gxdir]"); if(dirB){ GX.KD.dir=dirB.dataset.gxdir; gxDrawKForm(); gxDrawKSide(); return; }
+    var dirB=e.target.closest("[data-gxdir]"); if(dirB){ GX.KD.dir=dirB.dataset.gxdir; gxDrawKForm(); if(GX.kui==="guided") gxDrawGuide(); gxDrawKSide(); return; }
+    var km=e.target.closest("[data-gxkm]"); if(km){ gxSetKMode(km.dataset.gxkm); return; }
+    var qb=e.target.closest("[data-gxkq]"); if(qb){ GX.kq=+qb.dataset.gxkq; gxSave(); gxDTClose(); gxDrawGuide(); var g=document.getElementById("gxGuide"); if(g) g.scrollIntoView({block:"nearest"}); return; }
+    var dt=e.target.closest("[data-gxdt]"); if(dt){ gxDTOpen(dt.dataset.gxdt); return; }
     if(e.target.closest("#gxAuto")){ if(!S.title){ gxToast("الهدف مطلوب أولاً.","Objective first."); return; } GX.drafts=gxAutoDraft(S); gxDrawDrafts(); gxToast(GX.drafts.length+" مسودة مؤشر مقترحة — للمراجعة.",GX.drafts.length+" KPI drafts proposed."); return; }
     var da=e.target.closest("[data-gxdacc],[data-gxdedit],[data-gxdskip]"); if(da){ var di=+(da.dataset.gxdacc||da.dataset.gxdedit||da.dataset.gxdskip); var dk=GX.drafts[di]; if(da.dataset.gxdskip!==undefined){ GX.drafts.splice(di,1); gxDrawDrafts(); return; } if(da.dataset.gxdedit!==undefined||dk.base===""||dk.target===""){ GX.K=null; GX.KD=JSON.parse(JSON.stringify(dk)); GX.drafts.splice(di,1); gxDrawK(); return; } S.kpis.push(JSON.parse(JSON.stringify(dk))); GX.drafts.splice(di,1); gxSave(); gxDrawK(); gxToast("اعتُمد المؤشر.","KPI adopted."); return; }
     if(e.target.closest("#gxKSave")){ var KD=GX.KD; if(!KD.name.trim()){ gxToast("اسم المؤشر مطلوب.","KPI name required."); return; } if(KD.base===""||KD.target===""){ gxToast("الرقم الحالي والمستهدف مطلوبان.","Current and target figures required."); return; } var copy=JSON.parse(JSON.stringify(KD)); if(GX.K===null) S.kpis.push(copy); else S.kpis[GX.K]=copy; GX.K=null; GX.KD=gxBlankK(); gxSave(); gxDrawK(); gxToast("حُفظ المؤشر.","KPI saved."); return; }
@@ -14885,7 +15130,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       if(f==="to" && S.status==="approved" && t.to && t.to!==el.value){ if(!t.reschedFrom) t.reschedFrom=t.to; t.resched=true; }
       t[f]=el.value; if(gxP(t.from)>gxP(t.to)){ if(f==="from") t.to=t.from; else t.from=t.to; } var phs=S.phases[+el.dataset.gxtk.split(":")[0]]; var cs=gxClamp(t.from,t.to,phs.from,phs.to); if(cs){ t.from=cs[0]; t.to=cs[1]; } gxSave(); gxDraw(); } else if(f==="budget") t.budget=+el.value||0; else t[f]=el.value; gxSave(); return; }
     if(el.id==="gx-nf-from"||el.id==="gx-nf-to"){ var a=document.getElementById("gx-nf-from").value,b2=document.getElementById("gx-nf-to").value; if(a&&b2){ if(gxP(a)>gxP(b2)){ b2=a; document.getElementById("gx-nf-to").value=b2; } var tr=document.querySelector("#gen .gx-tr[data-gxformrow]"); if(tr) gxPaint(tr,a,b2); } return; }
-    if(el.dataset.gxk){ var key=el.dataset.gxk; GX.KD[key]= el.type==="checkbox"?el.checked:el.value; if(typeof gxDrawSections==="function") gxDrawSections(); if(key==="type"){ var u=GX_TYPES.filter(function(x){return x[0]===el.value;})[0]; GX.KD.unit=u?u[1]:""; var ui=document.querySelector('#gen [data-gxk="unit"]'); if(ui) ui.value=GX.KD.unit; } gxDrawKSide(); return; }
+    if(el.dataset.gxk){ var key=el.dataset.gxk; GX.KD[key]= el.type==="checkbox"?el.checked:el.value; if(typeof gxDrawSections==="function") gxDrawSections(); if(key==="type"){ var u=GX_TYPES.filter(function(x){return x[0]===el.value;})[0]; GX.KD.unit=u?u[1]:""; document.querySelectorAll('#gen [data-gxk="unit"]').forEach(function(ui){ ui.value=GX.KD.unit; }); } gxDrawKSide(); return; }
     if(el.dataset.gxmil){ GX.KD.mil[el.dataset.gxmil]=+el.value; gxDrawKSide(); return; }
     if(el.dataset.gxfr!==undefined){ var fdx=gxFeedK().feed, ri=+el.dataset.gxfr; while(fdx.rows.length<=ri) fdx.rows.push(fdx.cols.map(function(){return "";})); fdx.rows[ri][+el.dataset.gxfc]=el.value; return; }
     if(el.dataset.gxfcol!==undefined){ gxFeedK().feed.cols[+el.dataset.gxfcol]=el.value; return; }
@@ -14899,7 +15144,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(el.id==="gx-unit"){ S.unit=el.value; gxSave(); gxDraw(); }
     if(el.dataset&&el.dataset.gxph!==undefined&&el.dataset.f==="name"){ if(el.value.trim()&&S.objOpen!==false) S.objOpen=undefined; gxSave(); gxDraw(); }
     if(el.dataset&&el.dataset.gxtk&&["name","owner","budget"].indexOf(el.dataset.f)>-1){ gxSave(); gxDraw(); }
-    if(el.dataset&&el.dataset.gxk&&el.tagName==="SELECT"){ GX.KD[el.dataset.gxk]=el.value; if(el.dataset.gxk==="type"){ var u=GX_TYPES.filter(function(x){return x[0]===el.value;})[0]; GX.KD.unit=u?u[1]:""; var ui=document.querySelector('#gen [data-gxk="unit"]'); if(ui) ui.value=GX.KD.unit; } gxDrawKSide(); }
+    if(el.dataset&&el.dataset.gxk&&el.tagName==="SELECT"){ GX.KD[el.dataset.gxk]=el.value; if(el.dataset.gxk==="type"){ var u=GX_TYPES.filter(function(x){return x[0]===el.value;})[0]; GX.KD.unit=u?u[1]:""; document.querySelectorAll('#gen [data-gxk="unit"]').forEach(function(ui){ ui.value=GX.KD.unit; }); } gxDrawKSide(); }
     if(el.dataset&&(el.dataset.gxfr!==undefined||el.dataset.gxfcol!==undefined)){ var want=GX.focusNext||(el.dataset.gxfr!==undefined?{r:+el.dataset.gxfr,c:+el.dataset.gxfc,same:true}:null); GX.focusNext=null; gxSave(); gxDrawFeed(); gxDrawTool(); gxDrawKSide();
       if(want&&(!want.same||document.activeElement===document.body)){ var back=document.querySelector('#gen [data-gxfr="'+want.r+'"][data-gxfc="'+want.c+'"]'); if(back){ back.focus(); if(!want.same&&back.select) back.select(); } } }
     if(el.dataset&&el.dataset.gxfsel){ gxFeedK().feed[el.dataset.gxfsel]=+el.value; gxSave(); gxDrawFeed(); gxDrawTool(); gxDrawKSide(); }
@@ -14965,6 +15210,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       GX.cur=keep; gxSave(); if(typeof drawMineObjs==="function") drawMineObjs(); gxToast(q[q.length-1]==="verify"?"وُثّق.":"أُعيد.", q[q.length-1]==="verify"?"Verified.":"Returned."); return; }
   });
   document.addEventListener("click",function(e){ if(e.target.closest&&e.target.closest('[data-go="gen"]')){ gxShowTab(GX.tab); setTimeout(function(){ gxShowTab(GX.tab); },30); } });
+  try{ gxSetKMode(GX.kui==="guided"?"guided":"form"); }catch(err){ console.error("kmode", err); }
   document.addEventListener("click",function(e){ var nb=e.target.closest&&e.target.closest("#newObjBtn"); if(!nb) return; e.preventDefault(); e.stopPropagation(); var b=document.querySelector('[data-go="gen"]'); if(b) b.click(); setTimeout(function(){ gxNew(); gxShowTab("tl"); gxToast("الأهداف الجديدة تُنشأ هنا — الكتابة في الصف الأول.","New objectives start here — write in the first row."); },40); }, true);
   document.addEventListener("click",function(e){
     var wrap=e.target.closest&&e.target.closest("[data-gxembed]"); if(wrap){ var ref=wrap.dataset.gxembed, st=GX.embed[ref]||(GX.embed[ref]={z:"year",V:(gxTracked(ref)||{}).from});
