@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 72">
+<meta name="qagc-ver" content="beta 73">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -15121,6 +15121,15 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   // rows carry their attestation with them: sorting moves the mark with the reading,
   // never leaves a verified mark sitting on a different row
+  // A1-style references are storage coordinates, not links to a row. Reordering rows
+  // therefore changes what every formula in the table means, and moving the attestation
+  // badge with its row does not save a verified reading whose formula now reads a
+  // different cell. Until references follow their row, a formula-bearing table is not
+  // physically sorted at all.
+  function gxHasFormula(fd){
+    return (fd.rows||[]).some(function(row){
+      return (row||[]).some(function(c){ return String(c==null?"":c).trim().charAt(0)==="="; }); });
+  }
   function gxSortByDate(fd){
     var idx=fd.rows.map(function(row,i){ return i; });
     idx.sort(function(a,b){
@@ -15157,10 +15166,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     return '<div class="gx-pan" id="gxPasteBox">'+
       '<label>'+bi("لصق من Excel أو من ملف نصي","Paste from Excel or a text file")+'</label>'+
       '<textarea id="gxPasteTa" placeholder="2027-01-31&#9;42&#10;2027-02-28&#9;47" dir="ltr"></textarea>'+
+      '<label style="display:flex;gap:7px;align-items:center;margin-top:7px;font-weight:400;font-size:var(--t-sm)"><input type="checkbox" id="gxPasteHdr"> '+
+        bi("السطر الأول عناوين أعمدة، لا قراءة","The first line is column headings, not a reading")+'</label>'+
       '<div class="r" style="margin-top:7px"><button class="btn btn-p" data-gxft="pastego">'+bi("فحص قبل الإدراج","Examine before inserting")+'</button>'+
       '<button class="btn" data-gxft="pastex">'+bi("إلغاء","Cancel")+'</button></div>'+
-      '<p class="why">'+bi("لا شيء يدخل الجدول قبل عرضه: يُفحص الملصوق سطراً سطراً، ويُقال ما قُرئ وما رُفض وما سيُفقد قبل أي تغيير.",
-                           "Nothing enters the table before it is shown: the paste is examined line by line, and what parsed, what was refused and what would be lost is said before anything changes.")+'</p></div>';
+      '<p class="why">'+bi("لا شيء يدخل الجدول قبل عرضه: يُفحص الملصوق سطراً سطراً، ويُقال ما قُرئ وما رُفض وما سيُفقد قبل أي تغيير. وما لم يُؤشَّر الخيار أعلاه، يُعامَل كل سطر قراءةً — فلا يختفي أول رقم بوصفه عنواناً.",
+                           "Nothing enters the table before it is shown: the paste is examined line by line, and what parsed, what was refused and what would be lost is said before anything changes. Unless the box above is ticked, every line is treated as a reading, so the first number does not vanish as a heading.")+'</p></div>';
   }
   function gxBarHTML(fd,o){
     var build=!!o.build, ro=!!o.ro;
@@ -15394,7 +15405,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var fk=gxToolK(); if(!fk) return; var fdt=fk.feed, act=ft.dataset.gxft;
       if(act==="undo"){ gxUnDo(true); return; }
       if(act==="redo"){ gxUnDo(false); return; }
-      if(act==="sort"){ gxSnap(fdt); gxSortByDate(fdt); gxSave(); gxToolRedraw(); gxToast("رُتّبت الصفوف بالتاريخ — والتوثيق انتقل مع صفه.","Sorted by date — each attestation moved with its row."); return; }
+      if(act==="sort"){
+        if(gxHasFormula(fdt)){ gxToast("الجدول يحوي صيغاً تشير إلى خلايا بمواقعها؛ إعادة الترتيب تغيّر ما تقرأه — والصف الموثّق يبقى موثّقاً على معنى جديد. الترتيب موقوف حتى تتبع المراجعُ صفوفَها.",
+                                       "This table holds formulas that reference cells by position; reordering changes what they read, and a verified row would keep its attestation on a new meaning. Sorting is withheld until references follow their rows."); return; }
+        gxSnap(fdt); gxSortByDate(fdt); gxSave(); gxToolRedraw(); gxToast("رُتّبت الصفوف بالتاريخ — والتوثيق انتقل مع صفه.","Sorted by date — each attestation moved with its row."); return; }
       if(act==="dups"){ var dd=gxDupDates(fdt);
         if(!dd.length) gxToast("لا تواريخ مكررة.","No duplicate dates.");
         else gxToast("تواريخ مكررة: "+dd.map(function(x){return x.date+" ×"+x.n;}).join("، "), "Duplicate dates: "+dd.map(function(x){return x.date+" ×"+x.n;}).join(", "));
@@ -15412,6 +15426,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         if(!String(txt).trim()){ gxToast("لا شيء ملصوق.","Nothing pasted."); return; }
         var t2=gxParseCSV(txt);
         if(!t2.length){ gxToast("تعذّرت قراءة الملصوق.","The paste could not be read."); return; }
+        // the scanner reads its first row as headings, which is right for a file a program
+        // wrote and wrong for two rows a person copied out of a sheet
+        var hdrEl=document.getElementById("gxPasteHdr");
+        if(!(hdrEl&&hdrEl.checked)) t2=[fdt.cols.slice()].concat(t2);
         GXIMP={rows:t2, k:fk, lock:(GX.cur&&GX.cur.status!=="approved"), file:(isAr()?"نص ملصوق":"pasted text"), scan:gxImportScan(t2,fdt)};
         GXPASTE=false; gxToolRedraw();
         var bx=gxImpBox(); if(bx){ bx.innerHTML=gxImportHTML(GXIMP.scan, isAr()?"نص ملصوق":"pasted text"); bx.hidden=false; bx.scrollIntoView({block:"nearest"}); }
