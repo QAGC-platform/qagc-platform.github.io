@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 73">
+<meta name="qagc-ver" content="beta 74">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -2170,6 +2170,32 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 .gx-prog i{width:90px;height:6px;border-radius:99px;background:var(--rule);position:relative;overflow:hidden;display:inline-block}
 .gx-prog i::after{content:"";position:absolute;inset:0;inset-inline-end:var(--rest,100%);background:var(--good)}
 @media (prefers-reduced-motion:reduce){.gx-scope .gx-toast,.gx-scope .gx-car{transition:none}}
+
+/* ── the period worklist ── */
+.gx-wl{margin:8px 0}
+.gx-wlbar{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-bottom:7px}
+.gx-wlbar button{border:1px solid var(--rule);background:var(--surface);border-radius:var(--r-pill);
+  padding:3px 11px;font:inherit;font-size:var(--t-xs);cursor:pointer;color:var(--ink-3)}
+.gx-wlbar button.on{background:var(--brand-ink);border-color:var(--brand-ink);color:var(--brand-gold)}
+.gx-wlbar .n{font-variant-numeric:tabular-nums;opacity:.8;margin-inline-start:4px}
+.gx-wlgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(230px,100%),1fr));gap:6px}
+.gx-wlc{border:1px solid var(--rule);border-radius:var(--r-sm);padding:7px 10px;background:var(--surface);
+  display:flex;flex-direction:column;gap:3px}
+.gx-wlc .p{font-size:var(--t-sm);font-weight:650;color:var(--ink-1)}
+.gx-wlc .s{font-size:var(--t-xs);line-height:1.6}
+.gx-wlc .m{font-size:var(--t-xs);color:var(--ink-4);line-height:1.6}
+.gx-wlc.none{border-style:dashed}
+.gx-wlc.none .s{color:var(--ink-3)}
+.gx-wlc.ok{border-color:var(--good-rule);background:var(--good-bg)} .gx-wlc.ok .s{color:var(--good-ink)}
+.gx-wlc.pend{border-color:var(--warn-rule);background:var(--warn-bg)} .gx-wlc.pend .s{color:var(--warn-ink)}
+.gx-wlc.draft{border-color:var(--rule-strong);background:var(--surface-2)} .gx-wlc.draft .s{color:var(--ink-2)}
+.gx-wlc.bad{border-color:var(--critical-rule);background:var(--critical-bg)} .gx-wlc.bad .s{color:var(--critical-ink)}
+.gx-wlc.many{border-color:var(--serious-rule);background:var(--serious-bg)} .gx-wlc.many .s{color:var(--serious-ink)}
+.gx-wlnote{font-size:var(--t-xs);color:var(--ink-3);line-height:1.75;background:var(--surface-2);
+  border-radius:var(--r-sm);padding:var(--sp-3);margin-top:7px}
+.gx-wlnote b{color:var(--ink-2)}
+.gx-wlout{font-size:var(--t-xs);color:var(--serious-ink);background:var(--serious-bg);
+  border:1px solid var(--serious-rule);border-radius:var(--r-sm);padding:6px 10px;margin-top:7px;line-height:1.6}
 
 /* ── who may feed this table ── */
 .gx-fchips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
@@ -15220,6 +15246,119 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var note=document.getElementById("gxToolNote"); if(note) note.innerHTML= lock ? bi("بناء فقط — لا قراءات قبل الاعتماد","build only — no readings before approval") : bi("القراءات تُدخل من تبويب «المغذّي»","readings are entered in the feeder");
     host.innerHTML = k.plan ? '<div style="font-size:var(--t-xs);color:var(--ink-3)">'+bi("مؤشر إنجاز — يُقرأ من خطوات الخطة ولا يحتاج أداة.","A completion KPI — read from the steps; no tool needed.")+'</div>' : gxTableHTML(fd,k,{lock:lock, build:true});
     var fz=document.getElementById("gxFz"); if(fz){ fz.addEventListener("dragover",function(e){e.preventDefault();fz.classList.add("over");}); fz.addEventListener("dragleave",function(){fz.classList.remove("over");}); fz.addEventListener("drop",function(e){e.preventDefault();fz.classList.remove("over"); var f=e.dataTransfer.files[0]; if(f) gxLoadFile(f,k,lock);}); var ff=document.getElementById("gxFf"); if(ff) ff.addEventListener("change",function(){ if(ff.files[0]) gxLoadFile(ff.files[0],k,lock); }); } }
+
+  // ══ the period worklist ══
+  // A reading belongs to the period its own date names. Someone in July entering April's
+  // figure completes April the moment it is saved, and nothing about it is late. When the
+  // row was typed is recorded separately as provenance and never decides a period's state.
+  // The settled on-time rule governs plan steps, not readings; no second lateness rule is
+  // invented here.
+  function gxPerStart(t,f){
+    var d=new Date(t), y=d.getUTCFullYear(), m=d.getUTCMonth();
+    if(f==="y") return Date.UTC(y,0,1);
+    if(f==="h") return Date.UTC(y, m<6?0:6, 1);
+    if(f==="q") return Date.UTC(y, Math.floor(m/3)*3, 1);
+    if(f==="m") return Date.UTC(y,m,1);
+    if(f==="w"){ var dow=new Date(t).getUTCDay(); return t-((dow+1)%7)*GXD; }   // weeks run Saturday→Friday
+    return t;
+  }
+  function gxPerNext(t,f){
+    var d=new Date(t), y=d.getUTCFullYear(), m=d.getUTCMonth();
+    if(f==="y") return Date.UTC(y+1,0,1);
+    if(f==="h") return Date.UTC(y, m<6?6:12, 1);
+    if(f==="q") return Date.UTC(y, Math.floor(m/3)*3+3, 1);
+    if(f==="m") return Date.UTC(y,m+1,1);
+    if(f==="w") return t+7*GXD;
+    return t+GXD;
+  }
+  var GX_AR_M=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+  var GX_EN_M=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  function gxPerLabel(t,f){
+    var d=new Date(t), y=d.getUTCFullYear(), m=d.getUTCMonth();
+    if(f==="y") return String(y);
+    if(f==="h") return bi((m<6?"النصف الأول":"النصف الثاني")+" "+y, (m<6?"H1 ":"H2 ")+y);
+    if(f==="q") return bi("الربع "+["الأول","الثاني","الثالث","الرابع"][Math.floor(m/3)]+" "+y, "Q"+(Math.floor(m/3)+1)+" "+y);
+    if(f==="m") return bi(GX_AR_M[m]+" "+y, GX_EN_M[m]+" "+y);
+    return gxIso(t);
+  }
+  // why a card may have no period map at all — said plainly rather than guessed around
+  function gxPeriodPlan(k,S){
+    var f=k.cfreq;
+    if(!f || !GX_FREQ[f]) return {ok:false, why:["وتيرة جمع البيانات غير محددة في البطاقة","The card does not state a collection frequency"]};
+    var from = gxValidDate(k.baseDate) ? k.baseDate : (S&&gxValidDate(S.from) ? S.from : "");
+    if(!from) return {ok:false, why:["لا تاريخ بداية: لا خط أساس مؤرخ ولا بداية للهدف","No start date: neither a dated baseline nor an objective start"]};
+    var endRaw = gxValidDate(k.targetDate) ? Math.min(gxP(k.targetDate), gxP(PLATFORM_TODAY)) : gxP(PLATFORM_TODAY);
+    if(endRaw < gxP(from)) return {ok:false, why:["البداية بعد اليوم — لم تبدأ فترات القياس بعد","The start is later than today — no measured period has begun"]};
+    return {ok:true, f:f, from:gxP(from), end:endRaw};
+  }
+  function gxPeriods(k,S,fd){
+    var plan=gxPeriodPlan(k,S); if(!plan.ok) return plan;
+    var out=[], t=gxPerStart(plan.from, plan.f), guard=0;
+    while(t<=plan.end && guard++<800){
+      var nx=gxPerNext(t, plan.f);
+      out.push({from:t, to:nx-GXD, label:gxPerLabel(t, plan.f), rows:[]});
+      t=nx;
+    }
+    // each row is filed by the date written in it, never by when it was entered
+    var outside=[];
+    (fd.rows||[]).forEach(function(row,r){
+      var d=String(row[fd.dateCol]||"").trim();
+      if(!d) return;
+      if(!gxValidDate(d)){ outside.push({r:r, d:d, why:"bad-date"}); return; }
+      var tt=gxP(d), hit=null;
+      out.forEach(function(p){ if(tt>=p.from && tt<=p.to) hit=p; });
+      if(hit) hit.rows.push(r); else outside.push({r:r, d:d, why:"out-of-range"});
+    });
+    out.forEach(function(p){
+      var meta=fd.meta||[];
+      var vals=p.rows.map(function(r){ return gxCell(fd,r,fd.valCol); });
+      var numeric=vals.filter(function(v){ return typeof v==="number" && isFinite(v); });
+      var anyVer=p.rows.some(function(r){ return meta[r]&&meta[r].verified; });
+      var anyPen=p.rows.some(function(r){ return meta[r]&&meta[r].pending; });
+      p.state = !p.rows.length ? "none"
+              : numeric.length<p.rows.length ? "bad"
+              : p.rows.length>1 ? "many"
+              : anyVer ? "ok"
+              : anyPen ? "pend"
+              : "draft";
+      p.entered = p.rows.map(function(r){ var m=meta[r]||{}; return m.enteredAt||m.at||""; }).filter(Boolean);
+    });
+    return {ok:true, periods:out, outside:outside, f:plan.f, truncated:guard>=800};
+  }
+  var GX_WL={filter:"all", on:true};
+  var GX_WLS={none:["بانتظار قراءة","Needs a reading"], draft:["مُدخَلة ولم تُرسل للتوثيق","Entered, not yet sent"],
+              pend:["بانتظار التوثيق","Awaiting verification"], ok:["موثّقة","Verified"],
+              bad:["قيمة غير صالحة","Not a usable value"], many:["أكثر من صف في الفترة","More than one row in the period"]};
+  function gxWorklistHTML(k,S,fd){
+    var res=gxPeriods(k,S,fd);
+    if(!res.ok) return '<div class="gx-wl"><div class="gx-wlnote">'+
+      bi("<b>خريطة الفترات غير محددة.</b> "+res.why[0]+" — فلا تُفترض فترات ولا تُختلق.",
+         "<b>The period map is not settled.</b> "+res.why[1]+" — so no periods are assumed and none are invented.")+'</div></div>';
+    var counts={}; Object.keys(GX_WLS).forEach(function(x){ counts[x]=0; });
+    res.periods.forEach(function(p){ counts[p.state]++; });
+    var chips=[['all', bi("الكل","All"), res.periods.length]].concat(Object.keys(GX_WLS).map(function(x){
+      return [x, bi(GX_WLS[x][0],GX_WLS[x][1]), counts[x]]; })).filter(function(c,i){ return i===0||c[2]>0; });
+    var shown=res.periods.filter(function(p){ return GX_WL.filter==="all"||p.state===GX_WL.filter; });
+    var cards=shown.map(function(p){
+      var val=p.rows.length===1 ? gxCell(fd,p.rows[0],fd.valCol) : "";
+      var ent=p.entered.length ? '<span class="m">'+bi("أُدخلت في ","entered ")+p.entered.join("، ")+'</span>' : "";
+      return '<div class="gx-wlc '+p.state+'"><span class="p">'+p.label+'</span>'+
+        '<span class="s">'+bi(GX_WLS[p.state][0],GX_WLS[p.state][1])+
+          (p.state==="ok"||p.state==="pend"||p.state==="draft" ? (typeof val==="number"?' · <b>'+val+gxEsc(k.unit||"")+'</b>':"") : "")+'</span>'+ ent +'</div>';
+    }).join("");
+    var outHTML = res.outside.length ? '<div class="gx-wlout">'+
+      bi("<b>"+res.outside.length+" صفاً خارج خريطة الفترات:</b> ","<b>"+res.outside.length+" rows outside the period map:</b> ")+
+      res.outside.slice(0,6).map(function(o){ return (o.why==="bad-date"? bi("تاريخ غير صالح ","invalid date ") : bi("خارج المدى ","out of range "))+'«'+gxEsc(o.d)+'»'; }).join(" · ")+
+      (res.outside.length>6?" …":"")+" — "+bi("تُعرض ولا تُحذف ولا تُحسب في أي فترة.","shown, never deleted, and counted in no period.")+'</div>' : "";
+    return '<div class="gx-wl"><div class="gx-wlbar">'+chips.map(function(c){
+        return '<button type="button" data-gxwl="'+c[0]+'" class="'+(GX_WL.filter===c[0]?"on":"")+'">'+c[1]+'<span class="n">'+c[2]+'</span></button>'; }).join("")+
+      '</div><div class="gx-wlgrid">'+(cards||'<div class="gx-wlnote">'+bi("لا فترة بهذه الحالة.","No period in that state.")+'</div>')+'</div>'+
+      outHTML +
+      '<div class="gx-wlnote">'+bi(
+        "الفترة تُحسب بالتاريخ المكتوب <b>في القراءة</b>، لا بيوم إدخالها. فمن يُدخل في يوليو قراءةَ أبريل يُكمل أبريل فوراً، ولا تأخّر في ذلك — ويوم الإدخال يُسجَّل بجانبها للعلم لا للحكم. والفترة الخالية تبقى خالية: لا تُملأ صفراً ولا تُقرأ أداءً ضعيفاً.",
+        "A period is decided by the date written <b>in the reading</b>, not the day it was typed. Someone entering April's figure in July completes April at once, and nothing about it is late — the entry day is recorded beside it for provenance, not for judgement. An empty period stays empty: never filled with a zero, never read as poor performance.")+'</div></div>';
+  }
+
   function gxDrawFeed(){ var host=document.getElementById("gxFeed"); if(!host) return; var S=GX.cur; if(!S){ host.innerHTML=""; return; }
     if(S.status!=="approved"){ host.innerHTML='<div class="noresult">'+bi("المسودات لا تحمل قراءات — تُغذّى بعد الاعتماد.","Drafts carry no readings — feeding starts after approval.")+'</div>'; return; }
     if(GX.K===null && S.kpis.length){ GX.K=Math.max(0, S.kpis.map(function(k){return k.plan?1:0;}).indexOf(0)); GX.KD=JSON.parse(JSON.stringify(S.kpis[GX.K])); }
@@ -15235,7 +15374,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(k.plan){ host.innerHTML=steps+pick; return; }
     var html=gxTableHTML(fd,k,{lock:lockR, ro:lockR});
     document.querySelectorAll("#gxFeedMode button").forEach(function(b){b.classList.toggle("on",b.dataset.gfm===fd.mode);});
-    host.innerHTML=steps+pick+'<div class="gx-sec">'+bi("مصدر القراءات","Source of readings")+'</div><div id="gxFeedSrc"></div>'+html;
+    host.innerHTML=steps+pick+
+      '<div class="gx-sec">'+bi("فترات هذا المؤشر","This indicator's periods")+'</div>'+gxWorklistHTML(k,S,fd)+
+      '<div class="gx-sec">'+bi("مصدر القراءات","Source of readings")+'</div><div id="gxFeedSrc"></div>'+html;
     var seg=document.getElementById("gxFeedMode"); var slot=document.getElementById("gxFeedSrc"); if(seg&&slot){ slot.appendChild(seg); seg.style.margin="6px 0"; }
     var fz=document.getElementById("gxFz"); if(fz){ fz.addEventListener("dragover",function(e){e.preventDefault();fz.classList.add("over");}); fz.addEventListener("dragleave",function(){fz.classList.remove("over");}); fz.addEventListener("drop",function(e){e.preventDefault();fz.classList.remove("over"); var f=e.dataTransfer.files[0]; if(f) gxLoadFile(f,k);}); var ff=document.getElementById("gxFf"); if(ff) ff.addEventListener("change",function(){ if(ff.files[0]) gxLoadFile(ff.files[0],k); }); }
   }
@@ -15401,6 +15542,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       gxSave(); gxDrawFeeders();
       gxToast("أُسندت الإنابة للمدة المحددة — دون إذن، والتوثيق كما هو.","Cover assigned for the stated period — no authorisation needed, attestation unchanged.");
       return; }
+    var wl=e.target.closest("[data-gxwl]"); if(wl){ GX_WL.filter=wl.dataset.gxwl; gxDrawFeed(); return; }
     var ft=e.target.closest("[data-gxft]"); if(ft){
       var fk=gxToolK(); if(!fk) return; var fdt=fk.feed, act=ft.dataset.gxft;
       if(act==="undo"){ gxUnDo(true); return; }
@@ -15455,7 +15597,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var rb2=e.target.closest("[data-gxreturn]"); if(rb2){ var note=prompt(isAr()?"ملاحظة الإعادة إلى المُدخِل:":"Note to the feeder:"); if(note===null) return; var tr2=gxFind(rb2.dataset.gxreturn); tr2.pending=false; tr2.verified=false; tr2.returned=note||(isAr()?"أُعيدت":"returned"); tr2.st="todo"; gxSave(); gxDrawFeed(); gxDrawKSide(); gxDrawStrip(); gxToast("أُعيدت إلى "+(tr2.fedBy||tr2.owner)+".","Returned."); return; }
     var ob2=e.target.closest("[data-gxoverride]"); if(ob2){ var why=prompt(isAr()?"مبرر التجاوز (يُسجَّل):":"Reason for the override (recorded):"); if(!why) return; var to2=gxFind(ob2.dataset.gxoverride); var dd=prompt(isAr()?"تاريخ الإنجاز (YYYY-MM-DD):":"Completion date (YYYY-MM-DD):", PLATFORM_TODAY); if(!dd) return; to2.done=dd; to2.override=why; to2.fedBy=gxMe().name; to2.verified=true; to2.pending=false; to2.verifiedBy=(isAr()?"تجاوز المديرة العامة":"DG override"); to2.verifiedAt=PLATFORM_TODAY; to2.st="done"; gxSave(); gxDrawFeed(); gxDrawKSide(); gxDrawStrip(); gxToast("سُجّل التجاوز بمبرره.","Override recorded."); return; }
     if(e.target.closest("#gxQsend")){ var fk2=gxFeedK(); var fd4=fk2.feed; if(!fd4.meta) fd4.meta=[]; var me3=gxMe(); var ver2=gxVerifierOf(me3.name); var selfOk=gxIsMyPlan(S)||!ver2; var n=0; fd4.rows.forEach(function(row,r){ var m=fd4.meta[r]||(fd4.meta[r]={}); if(m.pending||m.verified||!String(row[fd4.dateCol]||"").trim()) return; n++; m.by=me3.name; m.at=PLATFORM_TODAY; if(selfOk){ m.verified=true; m.verifiedBy=isAr()?"ذاتي":"self"; } else m.pending=true; }); gxSave(); gxDrawFeed(); gxDrawKSide(); gxToast(selfOk?n+" قراءة اعتُمدت.":n+" قراءة أُرسلت إلى "+(ver2?ver2.who[0]:"")+" للتوثيق.", n+" readings sent."); return; }
-    if(e.target.closest("#gxQadd")){ var qd=document.getElementById("gxQd").value, qv=document.getElementById("gxQv").value; if(!qd||qv===""){ gxToast("التاريخ والقراءة مطلوبان.","Date and value required."); return; } var fk=gxFeedK(); if(!fk.feed) fk.feed=gxBlankFeed(); var fd3=fk.feed; if(fd3.cols.length<2){ fd3.cols=["التاريخ","القراءة"]; fd3.dateCol=0; fd3.valCol=1; } var row=fd3.cols.map(function(){return "";}); row[fd3.dateCol]=qd; row[fd3.valCol]=qv; fd3.rows.push(row); gxSave(); gxDrawFeed(); gxDrawKSide(); gxToast("أُضيفت القراءة.","Reading added."); return; }
+    if(e.target.closest("#gxQadd")){ var qd=document.getElementById("gxQd").value, qv=document.getElementById("gxQv").value; if(!qd||qv===""){ gxToast("التاريخ والقراءة مطلوبان.","Date and value required."); return; } var fk=gxFeedK(); if(!fk.feed) fk.feed=gxBlankFeed(); var fd3=fk.feed; if(fd3.cols.length<2){ fd3.cols=["التاريخ","القراءة"]; fd3.dateCol=0; fd3.valCol=1; } var row=fd3.cols.map(function(){return "";}); row[fd3.dateCol]=qd; row[fd3.valCol]=qv; fd3.rows.push(row);
+      if(!fd3.meta) fd3.meta=[]; fd3.meta[fd3.rows.length-1]={enteredAt:PLATFORM_TODAY, enteredBy:gxMe().name}; gxSave(); gxDrawFeed(); gxDrawKSide(); gxToast("أُضيفت القراءة.","Reading added."); return; }
     if(e.target.closest("#gxSheetLink")){ gxToast(gxFeedK().feed.sheet?"في المنصة: تُربط الورقة عبر الجسر وتُسحب قراءاتها تلقائياً.":"رابط الورقة مطلوب.", gxFeedK().feed.sheet?"Linked through the bridge.":"Sheet link required."); return; }
   });
   document.addEventListener("input",function(e){ var el=e.target; if(!el.closest||!el.closest("#gen")) return; var S=GX.cur; if(!S) return;
