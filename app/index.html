@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 75">
+<meta name="qagc-ver" content="beta 76">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -14193,13 +14193,62 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     a.order.forEach(function(g){ opts+='<optgroup label="'+gxEsc(g)+'">'+a.groups[g].map(function(p){ var nm=p.who[0]; if(nm===value) seen=true; return '<option value="'+gxEsc(nm)+'"'+(nm===value?" selected":"")+'>'+gxEsc(nm)+' — '+gxEsc(p.desig?p.desig[0]:"")+'</option>'; }).join("")+'</optgroup>'; });
     if(value&&!seen) opts+='<option value="'+gxEsc(value)+'" selected>'+gxEsc(value)+'</option>';
     return '<div class="f"><label>'+bi("الإسناد","Assign to")+'</label><select '+attrs+'>'+opts+'</select></div>'; }
-  function gxRoute(S){ var me=gxMe(), chain=[], dest=[];
-    var headOf=function(dep){ return STAFF.filter(function(p){return gxRole(p)==="head"&&p.dep[0]===dep;})[0]; }, dirOf=function(dir){ return STAFF.filter(function(p){return gxRole(p)==="dir"&&p.dir[0]===dir;})[0]; };
-    if(S.scope==="mine"){ var h=ROLE==="staff"?headOf(me.dep):null, d=(ROLE==="staff"||ROLE==="head")?dirOf(me.dir):null; if(h) chain.push((isAr()?"رئيس القسم: ":"Head: ")+h.who[0]); if(d) chain.push((isAr()?"مدير الدائرة: ":"Director: ")+d.who[0]); chain.push(isAr()?"المديرة العامة":"the DG"); dest=[me.dir, me.dep!==me.dir?me.dep:null, isAr()?"أهداف الموظفين":"staff objectives"]; }
-    else if(S.scope==="department"){ var dd=STAFF.filter(function(p){return p.dep[0]===S.unit;})[0]; var dr=dd?dirOf(dd.dir[0]):null; if(dr) chain.push((isAr()?"مدير الدائرة: ":"Director: ")+dr.who[0]); chain.push(isAr()?"المديرة العامة":"the DG"); dest=[isAr()?"مستوى القسم":"department level", S.unit]; }
-    else if(S.scope==="directorate"){ chain.push(isAr()?"المديرة العامة":"the DG"); dest=[isAr()?"مستوى الدائرة":"directorate level", S.unit]; }
-    else { chain.push(isAr()?"المديرة العامة (اعتماد مباشر)":"the DG (direct)"); dest=[isAr()?"مستوى المركز":"centre level"]; }
-    return {chain:chain, dest:dest.filter(Boolean)}; }
+  // ── who approves an objective ──
+  // The route starts from the person who wrote it, never from whoever is looking at it and
+  // never from the plan level it sits at. Scope describes where work belongs in the
+  // organisation; it is a destination, not an authority. Reading the chain off the viewer
+  // meant a director opening someone else's objective saw a route computed from himself,
+  // and reading it off the level meant centre-level work approved itself.
+  function gxHeadOfDep(dep){ return STAFF.filter(function(p){ return gxRole(p)==="head" && p.dep[0]===dep; })[0]||null; }
+  function gxDirOfDir(dir){ return STAFF.filter(function(p){ return gxRole(p)==="dir" && p.dir[0]===dir; })[0]||null; }
+  // The shared directory question, answered once. Its failure is named rather than folded
+  // into "top of chain": a person nobody manages is a configuration problem, not an approver.
+  function gxLineManager(p){
+    if(!p) return {state:"unresolved", reason:"person-unknown"};
+    var role=gxRole(p);
+    if(role==="dg") return {state:"top", reason:"dg"};
+    if(role==="staff"){ var h=gxHeadOfDep(p.dep[0]); if(h && h.id!==p.id) return {state:"manager", manager:h}; }
+    if(role==="staff"||role==="head"){ var d=gxDirOfDir(p.dir[0]); if(d && d.id!==p.id) return {state:"manager", manager:d}; }
+    if(role==="dir"||role==="coord"){ var dg=gxPersonById("dg0"); if(dg) return {state:"manager", manager:dg}; }
+    return {state:"unresolved", reason:"no-manager"};
+  }
+  // The stages above the first one, as the platform has always had them: a staff objective
+  // rises head → director → DG. Answer 1 of 2026-09-12 fixed where authority starts; it did
+  // not change how many stages there are.
+  function gxRoute(S){
+    var author = S && S.by ? gxPersonById(S.by) : null;
+    var chain=[], dest=[], state="unresolved";
+    if(!author){
+      chain.push(isAr()?"لم يُعرف كاتب الهدف — لا مسار اعتماد":"The author is unknown — no approval route");
+      return {chain:chain, dest:[], state:"unresolved", reason:"author-unknown"};
+    }
+    var role=gxRole(author);
+    if(role==="dg"){ state="top"; chain.push(isAr()?"المديرة العامة — رأس السلسلة":"the DG — top of chain"); }
+    else {
+      var lm=gxLineManager(author);
+      if(lm.state!=="manager"){
+        chain.push(isAr()?"لا مدير مباشر في الكشف لكاتب الهدف — يلزم ضبط التبعية":"No line manager on record for the author — the reporting line needs setting");
+        return {chain:chain, dest:[], state:"unresolved", reason:lm.reason||"no-manager", author:author};
+      }
+      state="manager";
+      if(role==="staff"){
+        var h=gxHeadOfDep(author.dep[0]);
+        if(h && h.id!==author.id) chain.push((isAr()?"رئيس القسم: ":"Head: ")+h.who[0]);
+        var d1=gxDirOfDir(author.dir[0]);
+        if(d1 && d1.id!==author.id) chain.push((isAr()?"مدير الدائرة: ":"Director: ")+d1.who[0]);
+      } else if(role==="head"){
+        var d2=gxDirOfDir(author.dir[0]);
+        if(d2 && d2.id!==author.id) chain.push((isAr()?"مدير الدائرة: ":"Director: ")+d2.who[0]);
+      }
+      chain.push(isAr()?"المديرة العامة":"the DG");
+    }
+    // where the work belongs is a separate question from who approves it
+    dest = S.scope==="centre" ? [isAr()?"مستوى المركز":"centre level"]
+         : S.scope==="directorate" ? [isAr()?"مستوى الدائرة":"directorate level", S.unit]
+         : S.scope==="department" ? [isAr()?"مستوى القسم":"department level", S.unit]
+         : [author.dir[0], author.dep[0]!==author.dir[0]?author.dep[0]:null];
+    return {chain:chain, dest:dest.filter(Boolean), state:state, author:author,
+            manager: state==="manager" ? gxLineManager(author).manager : null}; }
 
   // ── state ──
   var GX={list:[], cur:null, z:"quarters", V:null, tab:"tl", formFor:null, K:null, KD:null, drafts:[], embed:{}, pk:{}};
@@ -15514,8 +15563,19 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(e.target.closest(".gx-st")){ e.stopPropagation(); gxShowTab("feed"); return; }
     if(e.target.closest("#gxSaveDraft")){ if(!S.title){ gxToast("الهدف مطلوب أولاً.","Objective first."); return; } gxSave(); gxToast("حُفظ كمسودة.","Saved as a draft."); return; }
     if(e.target.closest("#gxSubmit")){ if(!S.title||!gxHasDates()){ gxToast("يلزم الهدف ومدته قبل الإرسال.","Objective and period required."); return; } if(!S.kpis.length){ gxToast("يلزم مؤشر واحد على الأقل من تبويب «المؤشرات».","At least one KPI is required."); return; }
-      var rt=gxRoute(S); if(S.scope==="centre"||ROLE==="dg"){ S.status="approved"; S.phases.forEach(function(ph){ ph.tasks.forEach(function(t){ if(!t.st) t.st="todo"; }); }); gxSave(); gxSelect(S.id); gxToast("اعتُمد وأُدرج — صار في قائمة المتابعة.","Approved — now in the tracking list."); }
-      else { S.status="submitted"; gxSave(); gxDraw(); gxToast("أُرسل إلى "+rt.chain[0]+" — يدخل دفتر الاعتمادات.","Sent to "+rt.chain[0]+"."); } return; }
+      var rt=gxRoute(S);
+      // only the top of the chain approves on submission, and only for their own work.
+      // Centre-level work used to approve itself whoever wrote it; an unresolved reporting
+      // line used to fall through to the same place. Neither is an approval.
+      if(rt.state==="unresolved"){ gxToast("لا مسار اعتماد: "+rt.chain[0],"No approval route: the reporting line is not set."); return; }
+      if(rt.state==="top"){ S.status="approved"; S.approvedBy=S.by; S.approvedAt=PLATFORM_TODAY;
+        S.phases.forEach(function(ph){ ph.tasks.forEach(function(t){ if(!t.st) t.st="todo"; }); });
+        gxSave(); gxSelect(S.id); gxToast("اعتُمد وأُدرج — صار في قائمة المتابعة.","Approved — now in the tracking list."); }
+      else { S.status="submitted";
+        // the route as it stood when it was sent, so a later change to the roster cannot
+        // rewrite where this went
+        S.routeAt=PLATFORM_TODAY; S.routeTo=rt.manager?rt.manager.id:""; S.routeChain=rt.chain.slice();
+        gxSave(); gxDraw(); gxToast("أُرسل إلى "+rt.chain[0]+" — يدخل دفتر الاعتمادات.","Sent to "+rt.chain[0]+"."); } return; }
     var b=e.target.closest("[data-gxaddt],[data-gxaddph],[data-gxdelt],[data-gxdelph],[data-gxsavet],[data-gxcancelt]");
     if(b){ if(gxRO()) return;
       if(b.dataset.gxaddph){ S.phases.push({name:"",from:"",to:"",tasks:[]}); GX.formFor=null; gxDraw(); return; }
