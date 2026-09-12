@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 76">
+<meta name="qagc-ver" content="beta 77">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -2171,6 +2171,40 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 .gx-prog i::after{content:"";position:absolute;inset:0;inset-inline-end:var(--rest,100%);background:var(--good)}
 @media (prefers-reduced-motion:reduce){.gx-scope .gx-toast,.gx-scope .gx-car{transition:none}}
 
+/* ── the plan register: deciding items and assigning them ── */
+.pl-warn{font-size:var(--t-sm);color:var(--warn-ink);background:var(--warn-bg);
+  border:1px solid var(--warn-rule);border-radius:var(--r-sm);padding:var(--sp-3);margin-bottom:var(--sp-4);line-height:1.75}
+.pl-bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:var(--sp-3)}
+.pl-bar button{border:1px solid var(--rule);background:var(--surface);border-radius:var(--r-pill);
+  padding:4px 13px;font:inherit;font-size:var(--t-xs);cursor:pointer;color:var(--ink-3)}
+.pl-bar button[aria-pressed="true"]{background:var(--brand-ink);border-color:var(--brand-ink);color:var(--brand-gold)}
+.pl-bar .n{font-variant-numeric:tabular-nums;opacity:.85;margin-inline-start:5px}
+.pl-item{border:1px solid var(--rule);border-radius:var(--r-sm);padding:var(--sp-3) var(--sp-4);
+  margin-bottom:8px;background:var(--surface)}
+.pl-item.lvl-center{border-inline-start:4px solid var(--brand-ink)}
+.pl-item.lvl-directorate{border-inline-start:4px solid var(--s1)}
+.pl-item.lvl-department{border-inline-start:4px solid var(--rule-strong)}
+.pl-ref{font-family:var(--latin);font-size:var(--t-xs);font-weight:700;color:var(--gold-ink);letter-spacing:.04em}
+.pl-t{font-size:var(--t-body);font-weight:650;line-height:1.45;margin:3px 0 5px}
+.pl-m{font-size:var(--t-xs);color:var(--ink-4);line-height:1.75}
+.pl-state{display:inline-block;border-radius:var(--r-pill);padding:1px 9px;font-size:var(--t-xs);font-weight:700;margin-inline-start:6px}
+.pl-state.seed{background:var(--surface-2);color:var(--ink-3)}
+.pl-state.draft{background:var(--warn-bg);color:var(--warn-ink)}
+.pl-state.decided{background:var(--good-bg);color:var(--good-ink)}
+.pl-state.withdrawn{background:var(--critical-bg);color:var(--critical-ink)}
+.pl-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.pl-chip{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--rule-strong);
+  border-radius:var(--r-pill);padding:2px 4px 2px 11px;font-size:var(--t-sm);background:var(--surface-2)}
+.pl-chip button{border:0;background:transparent;font:inherit;font-size:var(--t-xs);color:var(--ink-4);
+  cursor:pointer;padding:2px 6px;border-radius:var(--r-pill);line-height:1}
+.pl-chip button:hover{color:var(--critical-ink);background:var(--critical-bg)}
+.pl-chip.none{border-style:dashed;color:var(--ink-3);background:transparent;padding-inline:11px}
+.pl-acts{display:flex;gap:6px;flex-wrap:wrap;align-items:end;margin-top:9px}
+.pl-log{font-size:var(--t-xs);color:var(--ink-3);line-height:1.9}
+.pl-log b{color:var(--ink-2)}
+.pl-bad{font-size:var(--t-xs);color:var(--critical-ink);background:var(--critical-bg);
+  border:1px solid var(--critical-rule);border-radius:var(--r-sm);padding:5px 9px;margin-top:7px;line-height:1.7}
+
 /* a plan item with several objectives under it names each one */
 .gx-kidhead{font-size:var(--t-sm);font-weight:650;color:var(--ink-2);background:var(--surface-2);
   border:1px solid var(--rule);border-bottom:0;border-radius:var(--r-sm) var(--r-sm) 0 0;
@@ -2474,6 +2508,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       <button data-go="cc" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span lang="ar">مركز القيادة</span><span lang="en">Command centre</span><span class="count tnum">7</span></button>
       <button data-go="master"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v18H5.5A1.5 1.5 0 0 1 4 19.5z"/><path d="M8 8h7M8 12h7"/></svg><span lang="ar">الخطة المرجعية</span><span lang="en">Master plan</span></button>
       <button data-go="annual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="17" rx="2"/><path d="M8 2v4M16 2v4M8 12l2 2 4-4"/></svg><span lang="ar">الخطة السنوية</span><span lang="en">Annual plan</span><span class="count tnum">3</span></button>
+      <button data-go="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="17" r="3.2"/><path d="m20.3 19.3 1.7 1.7"/></svg><span lang="ar">تقرير الخطة والإسناد</span><span lang="en">Decide &amp; assign</span></button>
       <button data-go="gen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h6M7 13h10M7 17h4"/></svg><span lang="ar">مولّد الأهداف</span><span lang="en">Objective generator</span></button>
       <button data-go="kfld"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 11.5a1.6 1.6 0 1 1 1.6 1.6v1.2M13.6 17.5h.01"/></svg><span lang="ar">قرارات بطاقة المؤشر</span><span lang="en">KPI card decisions</span></button>
       <button data-go="dept"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-5h6v5"/><path d="M9 11h.01M15 11h.01"/></svg><span lang="ar">سجل الأقسام</span><span lang="en">Department register</span></button>
@@ -3463,6 +3498,48 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
            <span lang="en">The reporting line as the Director General set it. Every list in the platform is ordered by it.</span></p>
       </div>
       <div id="orgTree"></div>
+    </section>
+
+    <!-- ══════════ PLAN REGISTER ══════════ -->
+    <section class="screen" id="plan">
+      <div class="head">
+        <p class="eyebrow"><span lang="ar">الخطة السنوية</span><span lang="en">The annual plan</span></p>
+        <h1><span lang="ar">تقرير بنود الخطة وإسنادها</span><span lang="en">Deciding plan items and assigning them</span></h1>
+        <p><span lang="ar">الخطة تقرر ما يُبنى من عمل. البند يُقرَّر أولاً، ثم يُسند إلى موظف أو أكثر. وهذه الشاشة تسجّل القرار والإسناد وسحبه — ولا تمنع بعدُ إنشاء الأهداف خارجها.</span>
+           <span lang="en">The plan decides what work exists. An item is decided first, then assigned to one or more people. This screen records the decision, the assignment and its withdrawal — it does not yet prevent objectives being created outside it.</span></p>
+      </div>
+      <div class="pl-warn" id="plWarn"></div>
+      <div class="grid2">
+        <div class="stack">
+          <div class="card">
+            <div class="card-h"><div class="chrow"><div>
+              <span class="ceye"><span lang="ar">السجل</span><span lang="en">The register</span></span>
+              <h2><span lang="ar">بنود الخطة</span><span lang="en">Plan items</span></h2></div></div></div>
+            <div class="pl-bar" id="plBar" role="group" aria-label="تصفية البنود"></div>
+            <div id="plList"></div>
+          </div>
+        </div>
+        <div class="stack">
+          <div class="card">
+            <div class="card-h"><div class="chrow"><div>
+              <span class="ceye"><span lang="ar">بند جديد</span><span lang="en">A new item</span></span>
+              <h2><span lang="ar">كتابة بند وتقريره</span><span lang="en">Write an item, then decide it</span></h2></div></div></div>
+            <div id="plNew"></div>
+          </div>
+          <div class="card">
+            <div class="card-h"><div class="chrow"><div>
+              <span class="ceye"><span lang="ar">الصلاحيات</span><span lang="en">Permissions</span></span>
+              <h2><span lang="ar">من يقرر ومن يُسند</span><span lang="en">Who decides and who assigns</span></h2></div></div></div>
+            <div id="plPriv"></div>
+          </div>
+          <div class="card">
+            <div class="card-h"><div class="chrow"><div>
+              <span class="ceye"><span lang="ar">السجل الزمني</span><span lang="en">The record</span></span>
+              <h2><span lang="ar">ما حدث ومن فعله</span><span lang="en">What happened, and who did it</span></h2></div></div></div>
+            <div class="pl-log" id="plLog"></div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- ══════════ KPI CARD — DECISION PAPER ══════════ -->
@@ -13051,8 +13128,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
 
   // ══ role views: each persona sees only what its scope allows ══
   var ROLE_NAV={
-    dg:    ["cc","master","annual","gen","kfld","dept","people","mine","approvals","leave","cpd","ccal","coord","ai","prefs","own","org"],
-    dir:   ["dir","master","annual","gen","kfld","dept","people","mine","approvals","leave","cpd","ccal","prefs","org"],
+    dg:    ["cc","master","annual","plan","gen","kfld","dept","people","mine","approvals","leave","cpd","ccal","coord","ai","prefs","own","org"],
+    dir:   ["dir","master","annual","plan","gen","kfld","dept","people","mine","approvals","leave","cpd","ccal","prefs","org"],
     head:  ["head","master","annual","gen","people","mine","approvals","leave","cpd","ccal","prefs","org"],
     coord: ["coord","master","annual","gen","people","mine","approvals","leave","cpd","ccal","prefs","org"],
     staff: ["staffhome","master","annual","gen","mine","approvals","leave","cpd","ccal","prefs","org"]
@@ -15533,6 +15610,247 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   document.addEventListener("keydown", function(e){
     if(e.key==="Escape" && document.getElementById("gxDT") && document.getElementById("gxDT").classList.contains("on")){ gxDTClose(); e.stopPropagation(); }
   });
+
+
+  // ══ the annual plan as a register the Director General decides ══
+  // PLAN2027 is the demonstration seed and stays immutable. Loading it does not make it her
+  // decision: a seeded item starts as `seed` and must be decided deliberately before anyone
+  // can be assigned to it. Assignment is an event — withdrawing one appends a revocation
+  // rather than erasing who held it.
+  var PLREG=null, PLF="all", PLEDIT=null, PLERR="";
+  function plLevel(l){ return l==="center"?"center" : (l==="dir"||l==="directorate")?"directorate" : "department"; }
+  function plSeed(){
+    var src=(typeof PLAN2027!=="undefined" && PLAN2027.length) ? PLAN2027 : [];
+    PLREG={v:1, seq:src.length, priv:{author:["dg0"], assign:["dg0"]}, events:[],
+      items: src.map(function(o,i){
+        return {id:"pi"+(i+1), ref:o.r, parent:o.p, level:plLevel(o.l), year:String(o.s||"2027").slice(0,4),
+          title:o.t, smart:o.d, kpi:o.k, target:o.g, unit:o.u||"", owner:o.o,
+          from:o.s, to:o.e, budget:o.b||0, source:{kind:"annual"},
+          state:"seed", rev:0, decidedBy:"", decidedAt:"", assignees:[], history:[]};
+      })};
+  }
+  function plLoad(){
+    var raw=null; try{ raw=JSON.parse(localStorage.getItem("qagcPlan")||"null"); }catch(_){}
+    // an unrecognised store is a recovery case, not an instruction to regenerate examples
+    if(raw && raw.v===1 && raw.items && raw.items.length){ PLREG=raw; if(!PLREG.events) PLREG.events=[]; if(!PLREG.priv) PLREG.priv={author:["dg0"],assign:["dg0"]}; return true; }
+    if(raw){ PLERR = isAr()?"سجل الخطة المحفوظ غير مقروء — عُرض السجل الأصلي ولم يُمسح المحفوظ.":"The saved plan register could not be read — the seed is shown and nothing was erased."; }
+    plSeed(); return false;
+  }
+  function plSave(){
+    try{ localStorage.setItem("qagcPlan", JSON.stringify(PLREG)); PLERR=""; return true; }
+    catch(e){ PLERR = isAr()?"تعذّر الحفظ في هذا المتصفح — التغيير في الذاكرة فقط وسيضيع عند الإغلاق.":"Saving in this browser failed — the change is in memory only and will be lost."; return false; }
+  }
+  function plById(id){ return (PLREG.items||[]).filter(function(x){ return x.id===id; })[0]||null; }
+  function plMay(what){
+    var me=gxMe(); if(gxRole(me.p)==="dg") return true;      // her own authority is not a grant
+    return (PLREG.priv[what]||[]).indexOf(me.p.id)>=0;
+  }
+  function plEvent(what, it, to){
+    PLREG.events.push({at:PLATFORM_TODAY, by:gxMe().p.id, what:what,
+      item:it?it.id:"", ref:it?it.ref:"", rev:it?it.rev:0, to:to||""});
+  }
+  function plActive(it,pid){ return (it.assignees||[]).filter(function(a){ return a.id===pid; })[0]||null; }
+  // everything that must be true before a person can be put on an item
+  function plAssignBlock(it){
+    if(!it) return isAr()?"البند غير موجود":"No such item";
+    if(it.state!=="decided") return isAr()?"البند لم يُقرَّر بعد":"The item is not decided yet";
+    if(!String(it.title||"").trim()) return isAr()?"البند بلا عنوان":"The item has no title";
+    if(!gxValidDate(it.from)||!gxValidDate(it.to)) return isAr()?"تواريخ البند غير صحيحة":"The item's dates are not valid";
+    if(gxP(it.to)<gxP(it.from)) return isAr()?"تاريخ الانتهاء قبل البداية":"The end date precedes the start";
+    if(it.parent && !plById(it.parent)) return isAr()?"البند الأب غير موجود":"The parent item is missing";
+    var seen={}, walk=it, n=0;
+    while(walk && walk.parent && n++<40){ if(seen[walk.id]) return isAr()?"تسلسل دائري في الأبناء":"The hierarchy loops"; seen[walk.id]=1; walk=plById(walk.parent); }
+    var dup=(PLREG.items||[]).filter(function(x){ return x.ref===it.ref && x.year===it.year; });
+    if(dup.length>1) return isAr()?"المرجع مكرر في السنة نفسها":"The reference repeats within the year";
+    return "";
+  }
+  var PL_STATES={seed:["من البيانات التجريبية","Demonstration seed"], draft:["مسودة","Draft"],
+                 decided:["مُقرَّر","Decided"], withdrawn:["مسحوب","Withdrawn"]};
+  function plUnits(){
+    var out=[]; (typeof ORG!=="undefined"?ORG:[]).forEach(function(d){
+      out.push([d.ar, d.ar]); (d.deps||[]).forEach(function(x){ out.push([x.ar, "— "+x.ar]); }); });
+    return out;
+  }
+  function plPeople(){ return STAFF.filter(function(p){ return p.id!=="dg0"; }); }
+
+  function plDraw(){
+    var host=document.getElementById("plList"); if(!host||!PLREG) return;
+    var w=document.getElementById("plWarn");
+    if(w) w.innerHTML = (PLERR?'<b>'+gxEsc(PLERR)+'</b><br>':'')+
+      bi("هذا السجل محفوظ في هذا المتصفح وحده. الإسناد الذي يُسجَّل هنا لا يصل بعدُ إلى جهاز الموظف — إيصاله يحتاج قناة موثّقة لم تُبنَ.",
+         "This register is stored in this browser alone. An assignment recorded here does not yet reach the employee's device — delivering it needs an authenticated channel that has not been built.");
+    var counts={all:PLREG.items.length};
+    ["seed","draft","decided","withdrawn"].forEach(function(k){ counts[k]=PLREG.items.filter(function(x){return x.state===k;}).length; });
+    counts.assigned=PLREG.items.filter(function(x){ return (x.assignees||[]).length; }).length;
+    var chips=[["all",bi("الكل","All"),counts.all]]
+      .concat(["decided","draft","seed","withdrawn"].filter(function(k){ return counts[k]; })
+        .map(function(k){ return [k, bi(PL_STATES[k][0],PL_STATES[k][1]), counts[k]]; }))
+      .concat(counts.assigned?[["assigned",bi("مُسنَدة","Assigned"),counts.assigned]]:[]);
+    var bar=document.getElementById("plBar");
+    if(bar) bar.innerHTML=chips.map(function(c){
+      return '<button type="button" data-plf="'+c[0]+'" aria-pressed="'+(PLF===c[0]?"true":"false")+'">'+c[1]+'<span class="n">'+c[2]+'</span></button>'; }).join("");
+
+    var list=PLREG.items.filter(function(x){
+      return PLF==="all" ? true : PLF==="assigned" ? (x.assignees||[]).length : x.state===PLF; });
+    host.innerHTML = list.length ? list.map(function(it){
+      var chipsHTML=(it.assignees||[]).length
+        ? it.assignees.map(function(a){ var p=gxPersonById(a.id);
+            return '<span class="pl-chip">'+gxEsc(p?p.who[0]:a.id)+
+              (plMay("assign")?'<button data-plun="'+it.id+':'+a.id+'" aria-label="'+gxEsc(bi("سحب إسناد ","Withdraw assignment of ")+(p?p.who[0]:a.id))+'">✕</button>':'')+'</span>'; }).join("")
+        : '<span class="pl-chip none">'+bi("لم يُسند بعد","Not assigned")+'</span>';
+      var block=plAssignBlock(it);
+      var free=plPeople().filter(function(p){ return !plActive(it,p.id); });
+      var acts="";
+      if(plMay("author") && (it.state==="seed"||it.state==="draft"))
+        acts+='<button class="btn btn-p" data-pldecide="'+it.id+'">'+bi("تقرير هذا البند","Decide this item")+'</button>';
+      if(plMay("author") && it.state==="decided")
+        acts+='<button class="btn" data-plrev="'+it.id+'">'+bi("مراجعة","Revise")+'</button>';
+      if(plMay("assign") && it.state==="decided" && !block && free.length)
+        acts+='<label class="f" style="flex:1 1 190px"><span style="display:block;font-size:var(--t-xs);font-weight:700;color:var(--ink-4)">'+bi("إسناد إلى","Assign to")+'</span>'+
+          '<select data-plsel="'+it.id+'" style="width:100%">'+free.map(function(p){
+            return '<option value="'+p.id+'">'+gxEsc(p.who[0])+' — '+gxEsc(p.dep[0])+'</option>'; }).join("")+'</select></label>'+
+          '<button class="btn" data-plassign="'+it.id+'">'+bi("إسناد","Assign")+'</button>';
+      var edit = PLEDIT===it.id ? plFormHTML(it) : "";
+      return '<div class="pl-item lvl-'+it.level+'">'+
+        '<span class="pl-ref">'+gxEsc(it.ref)+'</span>'+
+        '<span class="pl-state '+it.state+'">'+bi(PL_STATES[it.state][0],PL_STATES[it.state][1])+'</span>'+
+        (it.rev?'<span class="pl-ref"> · '+bi("المراجعة ","rev ")+it.rev+'</span>':'')+
+        '<div class="pl-t">'+gxEsc(it.title)+'</div>'+
+        '<div class="pl-m">'+gxEsc(it.owner||"—")+' · '+gxEsc(it.from)+' ← '+gxEsc(it.to)+
+          (it.kpi?'<br>'+bi("المؤشر: ","KPI: ")+gxEsc(it.kpi)+(it.target?' · '+gxEsc(it.target):''):'')+
+          (it.decidedBy?'<br>'+bi("قرّرها ","decided by ")+gxEsc((gxPersonById(it.decidedBy)||{who:["—"]}).who[0])+' · '+gxEsc(it.decidedAt):'')+
+        '</div>'+
+        '<div class="pl-chips">'+chipsHTML+'</div>'+
+        (block && it.state!=="seed" ? '<div class="pl-bad">'+bi("لا يُسند: ","Cannot be assigned: ")+gxEsc(block)+'</div>' : '')+
+        (acts?'<div class="pl-acts">'+acts+'</div>':'')+ edit +'</div>';
+    }).join("") : '<div class="noresult">'+bi("لا بند بهذه الحالة.","No item in that state.")+'</div>';
+
+    plDrawNew(); plDrawPriv(); plDrawLog();
+  }
+  function plFormHTML(it){
+    return '<div class="gx-kgrid" style="margin-top:10px">'+
+      '<div class="f w6"><label>'+bi("العنوان","Title")+'</label><input data-plf-t value="'+gxEsc(it.title)+'"></div>'+
+      '<div class="f w6"><label>'+bi("الصياغة الذكية","The SMART statement")+'</label><input data-plf-d value="'+gxEsc(it.smart||"")+'"></div>'+
+      '<div class="f w3"><label>'+bi("المؤشر","KPI")+'</label><input data-plf-k value="'+gxEsc(it.kpi||"")+'"></div>'+
+      '<div class="f w1"><label>'+bi("المستهدف","Target")+'</label><input data-plf-g value="'+gxEsc(it.target||"")+'"></div>'+
+      '<div class="f w1"><label>'+bi("من","From")+'</label><input type="date" data-plf-s value="'+gxEsc(it.from)+'"></div>'+
+      '<div class="f w1"><label>'+bi("إلى","To")+'</label><input type="date" data-plf-e value="'+gxEsc(it.to)+'"></div>'+
+      '<div class="f w6" style="align-self:end"><button class="btn btn-p" data-plsaverev="'+it.id+'">'+bi("حفظ مراجعة جديدة","Save as a new revision")+'</button> '+
+      '<button class="btn" data-plcancel="1">'+bi("إلغاء","Cancel")+'</button>'+
+      '<div class="pl-m" style="margin-top:6px">'+bi("المراجعة لا تمحو سابقتها، وتُسجَّل باسم من أجراها. الأهداف المبنية تحت هذا البند: ","A revision does not erase the one before it and is recorded against whoever made it. Objectives built under this item: ")+
+        gxApprovedChildren(it.ref).length+'</div></div></div>';
+  }
+  function plDrawNew(){
+    var host=document.getElementById("plNew"); if(!host) return;
+    if(!plMay("author")){ host.innerHTML='<div class="noresult">'+bi("كتابة البنود صلاحية لا تملكها.","Writing plan items is a permission you do not hold.")+'</div>'; return; }
+    var parents=PLREG.items.filter(function(x){ return x.level!=="department"; });
+    host.innerHTML='<div class="gx-kgrid">'+
+      '<div class="f w6"><label>'+bi("عنوان البند","Item title")+'</label><input id="plnT" placeholder="'+gxEsc(bi("ما الذي يجب إنجازه","What must be achieved"))+'"></div>'+
+      '<div class="f w3"><label>'+bi("تحت البند","Under")+'</label><select id="plnP"><option value="">'+bi("— بند جذر —","— a root item —")+'</option>'+
+        parents.map(function(p){ return '<option value="'+p.id+'">'+gxEsc(p.ref)+' — '+gxEsc(p.title.slice(0,30))+'…</option>'; }).join("")+'</select></div>'+
+      '<div class="f w3"><label>'+bi("الجهة المسؤولة","Owning unit")+'</label><select id="plnU">'+
+        plUnits().map(function(u){ return '<option value="'+gxEsc(u[0])+'">'+gxEsc(u[1])+'</option>'; }).join("")+'</select></div>'+
+      '<div class="f w2"><label>'+bi("المرجع","Reference")+'</label><input id="plnR" placeholder="OP9.9" style="direction:ltr"></div>'+
+      '<div class="f w1"><label>'+bi("من","From")+'</label><input type="date" id="plnS" value="2027-01-01"></div>'+
+      '<div class="f w1"><label>'+bi("إلى","To")+'</label><input type="date" id="plnE" value="2027-12-31"></div>'+
+      '<div class="f w2" style="align-self:end"><button class="btn btn-p" id="plnGo">'+bi("إضافة كمسودة","Add as a draft")+'</button></div>'+
+      '</div><div class="pl-m" style="margin-top:8px">'+bi("البند يُضاف مسودةً. لا يُسند إلا بعد أن يُقرَّر عمداً، فالإضافة ليست قراراً.",
+        "An item is added as a draft. It cannot be assigned until it is deliberately decided — adding is not deciding.")+'</div>';
+  }
+  function plDrawPriv(){
+    var host=document.getElementById("plPriv"); if(!host) return;
+    var amDG=gxRole(gxMe().p)==="dg";
+    host.innerHTML=plPeople().map(function(p){
+      var row=function(w,lbl){
+        var has=(PLREG.priv[w]||[]).indexOf(p.id)>=0;
+        return '<span class="pl-chip'+(has?"":" none")+'">'+lbl+
+          (amDG?'<button data-plpriv="'+w+':'+p.id+'" aria-label="'+gxEsc((has?bi("سحب ","Withdraw "):bi("منح ","Grant "))+lbl)+'">'+(has?"✕":"＋")+'</button>':'')+'</span>'; };
+      return '<div class="pl-item"><div class="pl-t" style="margin:0">'+gxEsc(p.who[0])+'</div>'+
+        '<div class="pl-m">'+gxEsc(p.dep[0])+'</div>'+
+        '<div class="pl-chips">'+row("author",bi("تقرير الخطة","Decide the plan"))+row("assign",bi("الإسناد","Assign"))+'</div></div>';
+    }).join("")+'<div class="pl-m" style="margin-top:8px">'+bi(
+      "صلاحية المديرة العامة أصلية ولا تُمنح ولا تُسحب. وما عداها يُمنح منها — ولا ينتقل بالتسلسل الإداري وحده. وهذه الصلاحيات محفوظة في هذا المتصفح، فلا تصلح دليلاً على تفويض حقيقي.",
+      "The Director General's authority is original: neither granted nor withdrawn. Everything else is granted by her, and does not descend the hierarchy on its own. These grants live in this browser and are no evidence of a real delegation.")+'</div>';
+  }
+  function plDrawLog(){
+    var host=document.getElementById("plLog"); if(!host) return;
+    var ev=(PLREG.events||[]).slice(-14).reverse();
+    host.innerHTML = ev.length ? ev.map(function(l){
+      var who=gxPersonById(l.by), to=l.to?gxPersonById(l.to):null;
+      return '<div>'+gxEsc(l.at)+' — <b>'+gxEsc(who?who.who[0]:l.by)+'</b> '+gxEsc(l.what)+' '+gxEsc(l.ref||l.item)+
+        (to?' ← '+gxEsc(to.who[0]):'')+'</div>'; }).join("")
+      : '<div>'+bi("لا شيء بعد.","Nothing yet.")+'</div>';
+  }
+
+  document.addEventListener("click", function(e){
+    if(!e.target.closest || !PLREG) return;
+    var f=e.target.closest("[data-plf]");
+    if(f){ PLF=f.dataset.plf; plDraw(); return; }
+    var d=e.target.closest("[data-pldecide]");
+    if(d){ if(!plMay("author")) return; var it=plById(d.dataset.pldecide); if(!it) return;
+      it.state="decided"; it.rev=(it.rev||0)+1; it.decidedBy=gxMe().p.id; it.decidedAt=PLATFORM_TODAY;
+      plEvent(isAr()?"قرّر البند":"decided", it); plSave(); plDraw();
+      gxToast("قُرِّر البند — صار قابلاً للإسناد.","The item is decided and can now be assigned."); return; }
+    var rv=e.target.closest("[data-plrev]");
+    if(rv){ if(!plMay("author")) return; PLEDIT=rv.dataset.plrev; plDraw(); return; }
+    if(e.target.closest("[data-plcancel]")){ PLEDIT=null; plDraw(); return; }
+    var sv=e.target.closest("[data-plsaverev]");
+    if(sv){ if(!plMay("author")) return; var it2=plById(sv.dataset.plsaverev); if(!it2) return;
+      var box=sv.closest(".pl-item");
+      var g=function(sel){ var el=box.querySelector(sel); return el?el.value:""; };
+      var t=g("[data-plf-t]").trim(); if(!t){ gxToast("العنوان مطلوب.","A title is required."); return; }
+      var s1=g("[data-plf-s]"), e1=g("[data-plf-e]");
+      if(!gxValidDate(s1)||!gxValidDate(e1)||gxP(e1)<gxP(s1)){ gxToast("التواريخ غير صحيحة.","The dates are not valid."); return; }
+      it2.history.push({rev:it2.rev, title:it2.title, smart:it2.smart, kpi:it2.kpi, target:it2.target,
+        from:it2.from, to:it2.to, by:it2.decidedBy, at:it2.decidedAt});
+      it2.title=t; it2.smart=g("[data-plf-d]"); it2.kpi=g("[data-plf-k]"); it2.target=g("[data-plf-g]");
+      it2.from=s1; it2.to=e1; it2.rev=(it2.rev||0)+1; it2.decidedBy=gxMe().p.id; it2.decidedAt=PLATFORM_TODAY;
+      plEvent(isAr()?"راجع البند":"revised", it2); PLEDIT=null; plSave(); plDraw();
+      gxToast("حُفظت مراجعة جديدة — والسابقة محفوظة.","A new revision was saved; the previous one is kept."); return; }
+    var as=e.target.closest("[data-plassign]");
+    if(as){ if(!plMay("assign")) return; var it3=plById(as.dataset.plassign); if(!it3) return;
+      var blk=plAssignBlock(it3); if(blk){ gxToast(blk,blk); plDraw(); return; }
+      var sel=document.querySelector('[data-plsel="'+it3.id+'"]'); var who=sel?sel.value:"";
+      var p=gxPersonById(who); if(!p||plActive(it3,who)) return;
+      it3.assignees.push({aid:"as"+(++PLREG.seq), id:who, by:gxMe().p.id, at:PLATFORM_TODAY, rev:it3.rev});
+      plEvent(isAr()?"أسند":"assigned", it3, who); plSave(); plDraw();
+      gxToast("أُسند البند — والإسناد لا يعتمد الهدف الذي سيُبنى تحته.","Assigned — and an assignment does not approve what will be built under it."); return; }
+    var un=e.target.closest("[data-plun]");
+    if(un){ if(!plMay("assign")) return; var a=un.dataset.plun.split(":"), it4=plById(a[0]); if(!it4) return;
+      it4.assignees=it4.assignees.filter(function(x){ return x.id!==a[1]; });
+      plEvent(isAr()?"سحب الإسناد عن":"withdrew the assignment of", it4, a[1]); plSave(); plDraw();
+      gxToast("سُحب الإسناد — وما بُني تحت البند يبقى كما هو.","Withdrawn — and whatever was built under the item stays as it is."); return; }
+    var pv=e.target.closest("[data-plpriv]");
+    if(pv){ if(gxRole(gxMe().p)!=="dg") return;
+      var b=pv.dataset.plpriv.split(":"), w=b[0], who2=b[1];
+      if(who2==="dg0") return;
+      if(!PLREG.priv[w]) return;
+      var at=PLREG.priv[w].indexOf(who2);
+      if(at>=0) PLREG.priv[w].splice(at,1); else PLREG.priv[w].push(who2);
+      plEvent((at>=0?(isAr()?"سحب صلاحية ":"withdrew "):(isAr()?"منح صلاحية ":"granted "))+w, null, who2);
+      plSave(); plDraw(); return; }
+    if(e.target.closest("#plnGo")){ if(!plMay("author")) return;
+      var t2=(document.getElementById("plnT")||{}).value||"";
+      if(!t2.trim()){ gxToast("العنوان مطلوب.","A title is required."); return; }
+      var par=plById((document.getElementById("plnP")||{}).value||"");
+      var s2=(document.getElementById("plnS")||{}).value, e2=(document.getElementById("plnE")||{}).value;
+      if(!gxValidDate(s2)||!gxValidDate(e2)||gxP(e2)<gxP(s2)){ gxToast("التواريخ غير صحيحة.","The dates are not valid."); return; }
+      var ref=((document.getElementById("plnR")||{}).value||"").trim() || ("N"+(PLREG.seq+1));
+      var year=String(s2).slice(0,4);
+      if(PLREG.items.some(function(x){ return x.ref===ref && x.year===year; })){ gxToast("المرجع مستخدم في هذه السنة.","That reference is already used this year."); return; }
+      var it5={id:"pi"+(++PLREG.seq), ref:ref, parent:par?par.id:null,
+        level: par ? (par.level==="center"?"directorate":"department") : "center",
+        year:year, title:t2.trim(), smart:"", kpi:"", target:"", unit:"",
+        owner:(document.getElementById("plnU")||{}).value||"", from:s2, to:e2, budget:0,
+        source:{kind:"annual"}, state:"draft", rev:0, decidedBy:"", decidedAt:"", assignees:[], history:[]};
+      PLREG.items.push(it5); plEvent(isAr()?"أضاف مسودة بند":"added a draft item", it5);
+      document.getElementById("plnT").value="";
+      plSave(); plDraw(); gxToast("أُضيف كمسودة — يلزم تقريره قبل إسناده.","Added as a draft — it must be decided before it can be assigned."); return; }
+  });
+  document.addEventListener("click", function(e){
+    if(e.target.closest && e.target.closest('[data-go="plan"]')){ try{ plDraw(); }catch(err){ console.error("plan", err); } }
+  });
+  try{ plLoad(); }catch(err){ console.error("plan load", err); }
 
   function gxShowTab(tab){ GX.tab=tab; gxDTClose(); document.querySelectorAll("#gxTabs button").forEach(function(b){b.classList.toggle("on",b.dataset.gxtab===tab);}); document.querySelectorAll("#gen .gx-pane").forEach(function(p){p.classList.toggle("on",p.id==="gxp-"+tab);}); gxDrawStrip(); if(tab==="kpi") gxDrawK(); else if(tab==="feed") gxDrawFeed(); else gxDraw(); }
   function gxSelect(id){ var S=GX.list.filter(function(x){return x.id===id;})[0]; if(!S) return; GX.cur=S; GX.V=S.from||null; GX.formFor=null; GX.K=null; GX.KD=gxBlankK(); GX.drafts=[]; gxShowTab(GX.tab); }
