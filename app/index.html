@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 80">
+<meta name="qagc-ver" content="beta 81">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -2927,7 +2927,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
     <!-- ══════════ CPD — the year's development programme ══════════ -->
     <section class="screen" id="cpd">
       <div class="head">
-        <p class="eyebrow"><span lang="ar">الفعاليات والخطط، من الموظف إلى المركز</span><span lang="en">Events and plans, from the person to the centre</span></p>
+        <p class="eyebrow"><span lang="ar">أنشطة التدريب وخطط التطوير</span><span lang="en">Training activities and development plans</span></p>
         <h1><span lang="ar">التدريب والتطوير</span><span lang="en">Training &amp; development</span></h1>
         <p><span lang="ar">الفعاليات والأنشطة على لوحة السنة، وخطة تطوير شخصية لكل موظف يطلب منها دوراته، وخطط الدوائر والمركز حيث تُشرف المديرة العامة وتعلّق.</span>
            <span lang="en">Events on the year board, a personal plan per employee with course requests, and directorate and centre plans the DG oversees.</span></p>
@@ -2944,13 +2944,13 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       <div id="cpd-ev">
         <div class="card">
           <div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5z"/><path d="M6 10.5V15c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5"/></svg></span><div>
-            <span class="ceye"><span lang="ar">سنة كاملة في لوحة واحدة</span><span lang="en">The whole year on one board</span></span>
+            <span class="ceye"><span lang="ar">البرنامج السنوي</span><span lang="en">Annual programme</span></span>
             <h2><span lang="ar">برنامج التطوير المهني المستمر 2027</span><span lang="en">Continuing professional development 2027</span></h2></div></div>
             <span class="sub tnum" id="cpdCount"></span></div>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
             <span lang="ar">الأنشطة صفوفاً والأشهر أعمدة. النقر على أي نشاط يعرض تفاصيله، ومنها يُضاف إلى تقويم Google. الإضافة للمدير العام وقسم التنسيق والمتابعة، والاطلاع للجميع.</span>
             <span lang="en">Activities as rows, months as columns. Click any activity for its details, and add it to Google Calendar from there. Adding is for the Director General and Coordination; everyone may view.</span></p>
-          <button class="btn" id="cpdBack" hidden><span lang="ar">‹ عودة إلى السنة</span><span lang="en">‹ Back to the year</span></button>
+          <button class="btn" id="cpdBack" hidden><span lang="ar">‹ العرض السنوي</span><span lang="en">‹ Annual view</span></button>
           <div class="calwrap"><table class="cpd" id="cpdBoard"></table></div>
           <p class="hint" style="margin-top:var(--sp-2)">
             <span lang="ar">الذهبي موعد مبدئي قابل للتغيير؛ لون المنصة موعد مؤكد.</span>
@@ -2979,9 +2979,9 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
                 <option value="lecture">محاضرة</option><option value="workshop">ورشة</option>
                 <option value="webinar">ندوة عن بُعد</option><option value="forum">ملتقى</option>
                 <option value="course">دورة</option></select></span>
-            <span class="fld"><label><span lang="ar">من</span><span lang="en">From</span></label>
+            <span class="fld"><label><span lang="ar">تاريخ البداية</span><span lang="en">Start date</span></label>
               <input id="cpd-from" type="date" value="2027-03-10"></span>
-            <span class="fld"><label><span lang="ar">إلى (اختياري)</span><span lang="en">To (optional)</span></label>
+            <span class="fld"><label><span lang="ar">تاريخ النهاية (اختياري)</span><span lang="en">End date (optional)</span></label>
               <input id="cpd-to" type="date"></span>
             <span class="fld"><label><span lang="ar">المكان أو الرابط</span><span lang="en">Venue or link</span></label>
               <input id="cpd-venue" placeholder="قاعة الاجتماعات الكبرى"></span>
@@ -3006,7 +3006,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
           </div>
           <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
             <button class="btn btn-p" id="cpdAdd"><span lang="ar">إضافة إلى البرنامج</span><span lang="en">Add to the programme</span></button>
-            <span class="saved" id="cpdSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span lang="ar">أُضيف إلى البرنامج.</span><span lang="en">Added.</span></span>
+            <span class="saved" id="cpdSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span lang="ar">أُضيف إلى البرنامج.</span><span lang="en">Added to the programme.</span></span>
           </div>
         </div>
 
@@ -3070,10 +3070,9 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
     <!-- ══════════ LEAVE — the full app ══════════ -->
     <section class="screen" id="leave">
       <div class="head">
-        <p class="eyebrow"><span lang="ar">QALeave، مدمجاً بالكامل</span><span lang="en">QALeave, fully absorbed</span></p>
+        <p class="eyebrow"><span lang="ar">طلبات الإجازة والتقويم</span><span lang="en">Leave requests and calendar</span></p>
         <h1><span lang="ar">الإجازات</span><span lang="en">Leave</span></h1>
-        <p><span lang="ar">التبويبات والقواعد والتقويم كما في التطبيق المعتمد، على هوية واحدة وقاعدة بيانات واحدة مع الخطة.</span>
-           <span lang="en">The same tabs, rules and calendars as the approved app — on one identity and one database with the plan.</span></p>
+        <p><span lang="ar">طلبات الإجازة وحالاتها وتقويم الغياب.</span><span lang="en">Leave requests, their status and the absence calendar.</span></p>
       </div>
 
       <div class="subtabs" id="lvtabs">
@@ -3157,15 +3156,15 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
             <span class="ceye"><span lang="ar">تُفحص القواعد قبل الإرسال</span><span lang="en">The rules are checked before sending</span></span>
             <h2><span lang="ar">تقديم إجازة</span><span lang="en">Submit leave</span></h2></div></div></div>
           <div class="frow">
-            <div class="fld"><label><span lang="ar">من</span><span lang="en">From</span></label><input id="lr-from" type="date" value="2027-02-01"></div>
-            <div class="fld"><label><span lang="ar">إلى</span><span lang="en">To</span></label><input id="lr-to" type="date" value="2027-02-12"></div>
+            <div class="fld"><label><span lang="ar">تاريخ البداية</span><span lang="en">Start date</span></label><input id="lr-from" type="date" value="2027-02-01"></div>
+            <div class="fld"><label><span lang="ar">تاريخ النهاية</span><span lang="en">End date</span></label><input id="lr-to" type="date" value="2027-02-12"></div>
           </div>
           <div class="fld" style="margin-top:var(--sp-3)"><label><span lang="ar">النائب أثناء الغياب</span><span lang="en">Substitute while away</span></label>
             <select id="lr-sub"></select></div>
           <div id="lrCheck" style="margin-top:var(--sp-4)"></div>
           <div style="margin-top:var(--sp-4);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
             <button class="btn btn-p" id="lrSend"><span lang="ar">إرسال الطلب</span><span lang="en">Send the request</span></button>
-            <span class="saved" id="lrSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span lang="ar">أُرسل للاعتماد المبدئي.</span><span lang="en">Sent for initial approval.</span></span>
+            <span class="saved" id="lrSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span lang="ar">أُضيف طلب الإجازة إلى الطلبات قيد النظر.</span><span lang="en">Leave request added to pending requests.</span></span>
           </div>
         </div>
       </div>
@@ -3314,15 +3313,15 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
               <input id="dirc-title" placeholder="اجتماع مديري الدوائر"></span>
             <span class="fld"><label><span lang="ar">التاريخ</span><span lang="en">Date</span></label>
               <input id="dirc-date" type="date"></span>
-            <span class="fld"><label><span lang="ar">من</span><span lang="en">From</span></label>
+            <span class="fld"><label><span lang="ar">وقت البداية</span><span lang="en">Start time</span></label>
               <input id="dirc-from" type="time" value="10:00"></span>
-            <span class="fld"><label><span lang="ar">إلى</span><span lang="en">To</span></label>
+            <span class="fld"><label><span lang="ar">وقت النهاية</span><span lang="en">End time</span></label>
               <input id="dirc-to" type="time" value="11:00"></span>
             <span class="fld"><label><span lang="ar">المكان</span><span lang="en">Location</span></label>
               <input id="dirc-loc" placeholder="قاعة الاجتماعات"></span>
           </div>
           <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
-            <button class="btn btn-p" id="dirCalAdd"><span lang="ar">إدراج في تقويم المركز</span><span lang="en">Place it</span></button>
+            <button class="btn btn-p" id="dirCalAdd"><span lang="ar">إضافة الموعد إلى تقويم المركز</span><span lang="en">Add event to Centre calendar</span></button>
             <span class="kerr" id="dirCalErr"></span>
           </div>
         </div>
@@ -3428,7 +3427,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
         </div>
         <div style="margin-top:var(--sp-4);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
           <button class="btn btn-p" id="coordAddStaff"><span lang="ar">إضافة وبدء التهيئة</span><span lang="en">Add and start induction</span></button>
-          <span class="saved" id="coordSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span lang="ar">أُضيف وبدأت تهيئته.</span><span lang="en">Added, induction started.</span></span>
+          <span class="saved" id="coordSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span lang="ar">أُضيف السجل وبدأت التهيئة.</span><span lang="en">Record added and onboarding started.</span></span>
         </div>
       </div>
 
@@ -3564,9 +3563,8 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
     <section class="screen" id="kfld">
       <div class="head">
         <p class="eyebrow"><span lang="ar">ورقة قرار — مراجعة داخلية</span><span lang="en">Decision paper — internal review</span></p>
-        <h1><span lang="ar">بطاقة المؤشر: ما الذي تحتويه؟</span><span lang="en">The KPI card: what should it contain?</span></h1>
-        <p><span lang="ar">قُرئ الدليل كاملاً — تسع وعشرون صفحة — لا الملحق السادس وحده. ما يلي ستة أسئلة لا يحسمها الدليل نفسه، ويحسمها المركز. لم يُنفَّذ أي تغيير في المنصة حتى الآن.</span>
-           <span lang="en">The guideline was read in full — all twenty-nine pages — not Appendix 6 alone. What follows is six questions the guideline itself does not settle; the Centre settles them. Nothing has been changed in the platform yet.</span></p>
+        <h1><span lang="ar">مراجعة حقول بطاقة المؤشر</span><span lang="en">Review KPI-card fields</span></h1>
+        <p><span lang="ar">تعرض هذه الورقة ستة أسئلة حول حقول بطاقة المؤشر، مع خيارات وملاحظات للمراجعة. اختيار الإجابات هنا لا يغيّر حقول البطاقة.</span><span lang="en">This paper presents six questions about KPI-card fields, with options and notes for review. Selecting answers here does not change the card fields.</span></p>
       </div>
 
       <div class="rolebar">
@@ -3579,20 +3577,20 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
         <div class="card">
           <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg></span><div>
             <span class="ceye"><span lang="ar">الخلفية</span><span lang="en">Background</span></span>
-            <h2><span lang="ar">لماذا هذه المراجعة</span><span lang="en">Why this review</span></h2></div></div></div>
+            <h2><span lang="ar">خلفية المراجعة</span><span lang="en">Review background</span></h2></div></div></div>
 
           <div class="kf-why-row"><span class="kf-num">١</span><div>
-            <h3><span lang="ar">بُنيت البطاقة من ملحق واحد</span><span lang="en">The card was built from one appendix</span></h3>
+            <h3><span lang="ar">مصادر حقول البطاقة</span><span lang="en">Sources of the card fields</span></h3>
             <p><span lang="ar">حقول البطاقة الحالية مأخوذة من الملحق السادس وحده. الدليل تسع وعشرون صفحة، وفيها اشتراطات ومفاهيم لم تُفحص قط: مراحل سلسلة النتائج، ومصدر المستهدف، وقواعد العتبات، وخطة المراجعة.</span>
                <span lang="en">The present fields were taken from Appendix 6 alone. The guideline runs to twenty-nine pages, and requirements in the rest of it were never examined: the value-flow stages, the source of the target, the threshold rules, the review plan.</span></p></div></div>
 
           <div class="kf-why-row"><span class="kf-num">٢</span><div>
-            <h3><span lang="ar">الدليل يناقض نفسه، واختير نيابةً عن المركز</span><span lang="en">The guideline contradicts itself, and the choice was made for the Centre</span></h3>
+            <h3><span lang="ar">قوائم أبعاد الجودة في الدليل</span><span lang="en">Quality-dimension lists in the guideline</span></h3>
             <p><span lang="ar">الملحق الثاني يعرض سبعة أبعاد للجودة، والملحق السادس يطبع ستة مختلفة. ولا يقول الدليل إن أياً من القائمتين مغلقة، ولا يقول إنها أمثلة. وقد دُمجت «الإتاحة» في «العدالة» ونُقلت «النتائج» إلى حقل آخر — قرار اتُّخذ أثناء البرمجة، لا في اجتماع.</span>
                <span lang="en">Appendix 2 shows seven quality dimensions; Appendix 6 prints six different ones. The guideline says neither that either list is closed nor that they are examples. Access was folded into Equity and Outcome moved to another field — a decision taken while coding, not in a meeting.</span></p></div></div>
 
           <div class="kf-why-row"><span class="kf-num">٣</span><div>
-            <h3><span lang="ar">الدليل لوزارة الصحة، والمركز ليس مستشفى</span><span lang="en">It is a health ministry's guideline, and this is not a hospital</span></h3>
+            <h3><span lang="ar">ملاءمة الدليل لعمل المركز</span><span lang="en">Relevance of the guideline to the Centre</span></h3>
             <p><span lang="ar">المرجع كُتب لمستشفيات وزارة الصحة وخدماتها. أما المنصة فلمركز ضمان الجودة والحوكمة، قطاع الأشخاص ذوي الإعاقة، وزارة التنمية الاجتماعية: موضوعها المستفيدون وأسرهم، والمؤسسات، والخطط الفردية، ومتابعة الحالات. والتكييف يجب أن يكون مقصوداً وموثقاً، لا استبدال كلمة «مريض» بكلمة «مستفيد».</span>
                <span lang="en">The source document was written for the Ministry of Health's hospitals and services. This platform belongs to the Quality Assurance and Governance Centre, People with Disabilities Sector, Ministry of Social Development: its subjects are beneficiaries and their families, institutions, individual plans and case follow-up. The adaptation must be deliberate and recorded — not the word "patient" swapped for "beneficiary".</span></p></div></div>
         </div>
@@ -3601,11 +3599,11 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 
         <div class="card">
           <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg></span><div>
-            <span class="ceye"><span lang="ar">أثر القرار</span><span lang="en">What the decision changes</span></span>
-            <h2><span lang="ar">ما يعود، وما هو جديد، وما لن يمسّه شيء</span><span lang="en">Restored, new, and untouched</span></h2></div></div></div>
+            <span class="ceye"><span lang="ar">مقترحات للمراجعة</span><span lang="en">Proposals for review</span></span>
+            <h2><span lang="ar">مقترحات الحقول وحماية البيانات</span><span lang="en">Proposed fields and data safeguards</span></h2></div></div></div>
           <div class="kf-cols">
             <div>
-              <h3><span lang="ar">يعود</span><span lang="en">Restored</span></h3>
+              <h3><span lang="ar">حقول مقترح استعادتها</span><span lang="en">Fields proposed for restoration</span></h3>
               <ul>
                 <li><span lang="ar">صيغة القياس: نسبة، عدد، معدل، درجة، مدة</span><span lang="en">Calculation form: percentage, count, rate, score, duration</span></li>
                 <li><span lang="ar">وحدة النتيجة</span><span lang="en">The result unit</span></li>
@@ -3615,7 +3613,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
               </ul>
             </div>
             <div>
-              <h3><span lang="ar">جديد</span><span lang="en">New</span></h3>
+              <h3><span lang="ar">حقول مقترح إضافتها</span><span lang="en">Fields proposed for addition</span></h3>
               <ul>
                 <li><span lang="ar">وحدة العدّ: شخص، أسرة، مؤسسة، خطة، خدمة، حدث — المقام يتغير بتغيرها</span><span lang="en">The counting entity: person, family, institution, plan, service, event — the denominator changes with it</span></li>
                 <li><span lang="ar">معادلة الحساب: كيف تُجمَع الفترات، وحكم القيمة الناقصة والمقام الصفري</span><span lang="en">The calculation rule: how periods combine, what a missing value and a zero denominator mean</span></li>
@@ -3626,7 +3624,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
               </ul>
             </div>
             <div>
-              <h3><span lang="ar">لن يمسّه شيء</span><span lang="en">Untouched</span></h3>
+              <h3><span lang="ar">ضوابط حماية البيانات</span><span lang="en">Data safeguards</span></h3>
               <ul>
                 <li><span lang="ar">كل بطاقة محفوظة تبقى بقيمها كما هي</span><span lang="en">Every stored card keeps its values exactly</span></li>
                 <li><span lang="ar">«العدالة والإتاحة» تبقى كما كُتبت — لا تُقسَّم آلياً</span><span lang="en">«العدالة والإتاحة» stays as written — no automatic split</span></li>
@@ -3640,10 +3638,10 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 
         <div class="card">
           <div class="card-h"><div class="chrow"><span class="ib warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></span><div>
-            <span class="ceye"><span lang="ar">أمانة العرض</span><span lang="en">Honesty of this paper</span></span>
+            <span class="ceye"><span lang="ar">نطاق الورقة</span><span lang="en">Scope of this paper</span></span>
             <h2><span lang="ar">حدود هذه المراجعة</span><span lang="en">The limits of this review</span></h2></div></div></div>
           <ul style="margin:0;padding-inline-start:1.1em">
-            <li style="font-size:var(--t-sm);color:var(--ink-3);line-height:1.7;margin-bottom:8px"><span lang="ar">لم يُنفَّذ أي تعديل على المنصة. هذه ورقة قرار، لا إشعار بتغيير.</span><span lang="en">Nothing in the platform was changed. This is a decision paper, not a notice of change.</span></li>
+            <li style="font-size:var(--t-sm);color:var(--ink-3);line-height:1.7;margin-bottom:8px"><span lang="ar">تعرض هذه الورقة خيارات للمراجعة؛ اختيار الإجابات لا يطبّقها على المنصة.</span><span lang="en">This paper presents options for review; selecting answers does not apply them to the platform.</span></li>
             <li style="font-size:var(--t-sm);color:var(--ink-3);line-height:1.7;margin-bottom:8px"><span lang="ar">نسخة الدليل المتوفرة تحمل أرقام إصدار متضاربة على صفحاتها: رقم على الغلاف وآخر في المتن وثالث على نموذج الملحق السادس. لم تُحسم هذه الفروق ولم يُدَّعَ أن النسخة هي المعتمدة حالياً.</span><span lang="en">The available copy carries conflicting document numbers: one on the cover, another in the body, a third on the Appendix 6 form. Those differences were not resolved, and no claim is made that this copy is the current standard.</span></li>
             <li style="font-size:var(--t-sm);color:var(--ink-3);line-height:1.7;margin-bottom:8px"><span lang="ar">الدليل لا يقرر بنفسه انطباقه على هذا المركز؛ اعتماده قرار إداري، لا نتيجة تلقائية للقراءة.</span><span lang="en">The guideline does not itself establish that it governs this Centre; adopting it is an administrative decision, not an automatic consequence of reading it.</span></li>
             <li style="font-size:var(--t-sm);color:var(--ink-3);line-height:1.7;margin-bottom:8px"><span lang="ar">مجالات الخدمة المقترحة اجتهاد مبني على الدليل ووصف عمل المركز، لا على مراجع قطاعية معتمدة. ولا يتضمن هذا العرض حكماً قانونياً، ولا شروط ترخيص، ولا إجراءات حماية، ولا قواعد موافقة أو إنابة.</span><span lang="en">The proposed service topics are reasoned from the guideline and the Centre's described remit, not from approved sector sources. This paper makes no legal finding, and states no licensing criteria, safeguarding procedures, or consent and proxy rules.</span></li>
@@ -3654,7 +3652,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       </div>
 
       <div class="kf-bar">
-        <button class="btn btn-p" id="kfCopy"><span lang="ar">نسخ القرارات</span><span lang="en">Copy the decisions</span></button>
+        <button class="btn btn-p" id="kfCopy"><span lang="ar">نسخ الإجابات</span><span lang="en">Copy answers</span></button>
         <button class="btn" id="kfPrint"><span lang="ar">طباعة</span><span lang="en">Print</span></button>
         <span class="kf-saved" id="kfSaved"></span>
       </div>
@@ -6741,7 +6739,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             (st==="returned"?'<button class="btn btn-p" data-kpiresend="'+ref+':'+i+'" style="padding:4px 12px;font-size:var(--t-xs)">'+
               bi("إعادة الإرسال","Resubmit")+'</button>':"")+
           '</div>'+
-          (st==="returned"&&sub.note?'<div class="retnote"><b>'+bi("طلب التعديل: ","Amendment requested: ")+'</b>'+sub.note+'</div>':"")
+          (st==="returned"&&sub.note?'<div class="retnote"><b>'+bi("التعديل المطلوب: ","Requested amendment: ")+'</b>'+sub.note+'</div>':"")
         : "";
       var s2=kpiStats(k);
       var band = s2&&s2.band ? '<span class="pill '+BANDP[s2.band]+'">'+bi(BANDL[s2.band][0],BANDL[s2.band][1])+'</span>' : "";
@@ -7578,11 +7576,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var avg=Math.round(pool.reduce(function(a,p){return a+obOf(p).pct;},0)/pool.length);
     var needs=pool.filter(function(p){var v=sevOf(alerts(p));return v==="sev-critical"||v==="sev-warn";}).length;
     host.innerHTML=
-      '<div class="tile"><div class="th"><span class="tl">'+bi("التهيئة النشطة","Active onboarding")+'</span></div>'+
+      '<div class="tile"><div class="th"><span class="tl">'+bi("التهيئة غير المكتملة","Incomplete onboarding")+'</span></div>'+
         '<div class="tv">'+(pool.length-ready)+'</div><div class="ts">'+bi("من "+pool.length+" موظفاً","of "+pool.length+" staff")+'</div></div>'+
       '<div class="tile"><div class="th"><span class="tl">'+bi("متوسط الجاهزية","Average readiness")+'</span></div>'+
-        '<div class="tv">'+avg+'%</div><div class="ts">'+bi("عبر المركز","across the centre")+'</div></div>'+
-      '<div class="tile warn"><div class="th"><span class="tl">'+bi("يتطلبون انتباهاً","Need your attention")+'</span></div>'+
+        '<div class="tv">'+avg+'%</div><div class="ts">'+bi("ضمن النطاق المعروض","within the displayed scope")+'</div></div>'+
+      '<div class="tile warn"><div class="th"><span class="tl">'+bi("موظفون لديهم تنبيهات للمتابعة","Staff with follow-up alerts")+'</span></div>'+
         '<div class="tv">'+needs+'</div><div class="ts">'+bi("ميزانية أو تأخر أو تعارض إجازة","budget, delay or leave clash")+'</div></div>'+
       '<div class="tile"><div class="th"><span class="tl">'+bi("فجوات الكفاءات","Capability gaps")+'</span></div>'+
         '<div class="tv">9</div><div class="ts">'+bi("عبر خطط التطوير الوظيفي","across development plans")+'</div></div>';
@@ -8902,7 +8900,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         (r.state==="returned"&&r.note?'<div class="retnote"><b>'+bi("السبب: ","Reason: ")+'</b>'+r.note+'</div>':"")+
         '</td></tr>';
     }).join("") : '<tr><td colspan="5" style="color:var(--ink-3);font-size:var(--t-sm)">'+
-      bi("لا طلبات بعد.","No requests yet.")+'</td></tr>';
+      bi("لا توجد طلبات إجازة لهذا الحساب.","No leave requests for this account.")+'</td></tr>';
   }
   function drawLvAppr(){
     var host=document.getElementById("lvApprList"); if(!host) return;
@@ -8916,15 +8914,15 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         '<span class="sw2 tnum">'+r.when+'</span>'+
         '<span class="acts">'+
           '<button class="mini yes" data-lvdec="'+r.id+':v">'+bi("اعتماد نهائي","Approve")+'</button>'+
-          '<button class="mini ret" data-lvdec="'+r.id+':a">'+bi("إعادة","Return")+'</button></span>'+
+          '<button class="mini ret" data-lvdec="'+r.id+':a">'+bi("إعادة للتعديل","Return for amendment")+'</button></span>'+
         (LVRETURNING[r.id]
           ? '<span class="amendbox"><span class="al">'+bi("ما سبب الإعادة؟","Why is it returned?")+'</span>'+
             '<textarea id="lvnote-'+r.id+'"></textarea>'+
-            '<span class="arow"><button class="btn btn-p" data-lvsend="'+r.id+'">'+bi("إرسال","Send")+'</button>'+
+            '<span class="arow"><button class="btn btn-p" data-lvsend="'+r.id+'">'+bi("إعادة الطلب للتعديل","Return request for amendment")+'</button>'+
             '<button class="btn" data-lvcancel="'+r.id+'">'+bi("إلغاء","Cancel")+'</button></span></span>'
           : "")+
         '</div>';
-    }).join("") : '<div class="subempty">'+bi("لا طلبات معلّقة.","Nothing pending.")+'</div>';
+    }).join("") : '<div class="subempty">'+bi("لا توجد طلبات إجازة بانتظار القرار في هذه القائمة.","No leave requests await a decision in this list.")+'</div>';
   }
   function lvBadge(){
     var b=document.querySelector('[data-go="leave"] .count'); if(!b) return;
@@ -11260,7 +11258,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
                 (ev.loc?'<span class="sm">'+ev.loc+'</span>':"")+'</span></div>';
           }).join("");
       }).join("")
-      : '<div class="subempty">'+bi("لا مواعيد في المدى المعروض.","Nothing in the window.")+'</div>';
+      : '<div class="subempty">'+bi("لا مواعيد في المدى المعروض.","No events in the displayed range.")+'</div>';
     ["dirCalList","dirCalList2"].forEach(function(id){
       var host=document.getElementById(id); if(host) host.innerHTML=grid+agenda;
     });
@@ -11275,7 +11273,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   async function dirCalFetch(){
     var cfg=dgCalCfg();
     if(!cfg){ dirCalStatusMsg(bi("يُدخل المفتاح في شاشة الجسر الذكي أولاً.","The key goes in on the bridge screen first."),false); return; }
-    dirCalStatusMsg(bi("جارٍ القراءة…","Reading…"),true);
+    dirCalStatusMsg(bi("جارٍ تحميل المواعيد…","Loading events…"),true);
     try{
       var r=await fetch(cfg.url+"?key="+encodeURIComponent(cfg.key)+"&fn=calendar&which=dir&days=60");
       var j=await r.json();
@@ -11301,13 +11299,13 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var from=(document.getElementById("dirc-from")||{}).value||"";
       var to=(document.getElementById("dirc-to")||{}).value||"";
       if(!t.value.trim()){ t.focus(); return; }
-      if(!date||!from||!to||to<=from){ if(err) err.innerHTML=bi("يلزم التاريخ والوقت.","Complete the date and times."); return; }
+      if(!date||!from||!to||to<=from){ if(err) err.innerHTML=bi("يلزم التاريخ ووقتا البداية والنهاية؛ النهاية بعد البداية.","Enter a date and start and end times; the end must be after the start."); return; }
       if(!canEditDirCal()){ if(err) err.innerHTML=bi("الإضافة لمن حدّدتهم المالكة.","Adding is for those the owner chose."); return; }
       var cfg=dgCalCfg();
       if(!cfg){ if(err) err.innerHTML=bi("المفتاح أولاً من شاشة الجسر.","Key first, on the bridge screen."); return; }
       var acct=(typeof SESSION!=="undefined"&&SESSION&&typeof acctOf==="function")?acctOf(SESSION.u):null;
-      stepUp("submit", bi("إدراج في تقويم المركز: ","Adding to the centre calendar: ")+t.value.trim(), function(){
-        if(err) err.innerHTML=bi("جارٍ الإدراج…","Placing…");
+      stepUp("submit", bi("إضافة الموعد إلى تقويم المركز: ","Adding to the Centre calendar: ")+t.value.trim(), function(){
+        if(err) err.innerHTML=bi("جارٍ إضافة الموعد…","Adding event…");
         fetch(cfg.url+"?key="+encodeURIComponent(cfg.key), {method:"POST",
           body:JSON.stringify({fn:"addEvent", which:"dir", title:t.value.trim(), date:date, from:from, to:to,
             loc:(document.getElementById("dirc-loc")||{}).value||"",
@@ -11315,7 +11313,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           .then(function(r){return r.json();})
           .then(function(j){
             if(j.ok){ if(err) err.textContent=""; t.value="";
-              dirCalFetch().then(function(){ dirCalStatusMsg(bi("أُدرج الموعد.","Placed."),true); });
+              dirCalFetch().then(function(){ dirCalStatusMsg(bi("أُضيف الموعد.","Event added."),true); });
             } else if(err) err.innerHTML=bi("رفض: ","Refused: ")+(j.error||"");
           })
           .catch(function(){ if(err) err.innerHTML=bi("تعذّر الاتصال.","Could not connect."); });
@@ -12384,7 +12382,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         '<span class="kind '+cls+'"><i></i>'+bi(lab[0],lab[1])+'</span>'+
         '<span style="flex:1;min-width:220px"><span class="st2">'+c.title+'</span>'+
           (det.length?'<span class="sm">'+det.join(" · ")+'</span>':"")+stepLines+
-          (c.state==="returned"&&c.note?'<span class="retnote"><b>'+bi("طلب التعديل: ","Amendment requested: ")+'</b>'+c.note+'</span>':"")+
+          (c.state==="returned"&&c.note?'<span class="retnote"><b>'+bi("التعديل المطلوب: ","Requested amendment: ")+'</b>'+c.note+'</span>':"")+
         '</span><span class="acts">'+acts+'</span></div>'+
         (ret? '<span class="amendbox"><span class="al">'+bi("ما الذي يجب تعديله في هذا المكوّن؟","What needs amending in this component?")+'</span>'+
           '<textarea id="cdec-'+r.key+'-'+i+'"></textarea>'+
@@ -12510,7 +12508,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           bi(SUBKIND[x.kind].l[0],SUBKIND[x.kind].l[1])+'</span>'+
           '<span><span class="st2">'+bi(x.title[0],x.title[1])+'</span>'+
             '<span class="sm">'+metaLine(x.kind,x.meta)+'</span>'+
-            (x.state==="returned"&&x.note?'<span class="retnote"><b>'+bi("طلب التعديل: ","Amendment requested: ")+'</b>'+x.note+'</span>':"")+
+            (x.state==="returned"&&x.note?'<span class="retnote"><b>'+bi("التعديل المطلوب: ","Requested amendment: ")+'</b>'+x.note+'</span>':"")+
           '</span>'+
           '<span class="sw2">'+x.when+'</span>'+
           '<span class="acts">'+subChip(x)+'</span></div>';
@@ -13482,7 +13480,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var names=Object.keys(stray);
     host.innerHTML=ORG.map(function(d){ return orgUnitHtml(d,true); }).join("")+
       (names.length
-        ? '<div class="orgflag">'+bi("خارج الهيكل المعتمد: ","Outside the approved structure: ")+
+        ? '<div class="orgflag">'+bi("غير مطابق للهيكل المعروض: ","Not matched to the displayed structure: ")+
           names.join(" · ")+'</div>'
         : "");
   }
@@ -13588,11 +13586,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var bud=steps.filter(function(x){return x.budget;}).length;
     t.innerHTML=
       '<div class="tile"><div class="th"><span class="tl">'+bi("خطوات مسندة","Steps assigned")+'</span></div>'+
-        '<div class="tv">'+steps.length+'</div><div class="ts">'+bi(due+" قيد التنفيذ",due+" still open")+'</div></div>'+
+        '<div class="tv">'+steps.length+'</div><div class="ts">'+bi(due+" غير مكتملة",due+" not completed")+'</div></div>'+
       '<div class="tile warn"><div class="th"><span class="tl">'+bi("تعارض مع إجازتي","Clashing with my leave")+'</span></div>'+
         '<div class="tv">'+clash+'</div><div class="ts">'+bi("تحتاج إعادة جدولة","need rescheduling")+'</div></div>'+
       '<div class="tile"><div class="th"><span class="tl">'+bi("تقديرات ميزانية","Budget estimates")+'</span></div>'+
-        '<div class="tv">'+bud+'</div><div class="ts">'+bi("أدخلتها بنفسي","entered by me")+'</div></div>'+
+        '<div class="tv">'+bud+'</div><div class="ts">'+bi("ضمن الخطوات المسندة","in assigned steps")+'</div></div>'+
       '<div class="tile"><div class="th"><span class="tl">'+bi("رصيد إجازاتي","My leave balance")+'</span></div>'+
         '<div class="tv">'+me.balance+'</div><div class="ts">'+bi("يوماً","days")+'</div></div>';
     var b=document.getElementById("staffBody");
@@ -15678,7 +15676,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   // decision: a seeded item starts as `seed` and must be decided deliberately before anyone
   // can be assigned to it. Assignment is an event — withdrawing one appends a revocation
   // rather than erasing who held it.
-  var PLREG=null, PLF="all", PLEDIT=null, PLERR="";
+  var PLREG=null, PLF="all", PLEDIT=null, PLERR="", PLHOLD=false, PLNOTE="";
   function plLevel(l){ return l==="center"?"center" : (l==="dir"||l==="directorate")?"directorate" : "department"; }
   function plSeed(){
     var src=(typeof PLAN2027!=="undefined" && PLAN2027.length) ? PLAN2027 : [];
@@ -15691,11 +15689,20 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       })};
   }
   function plLoad(){
+    // Three outcomes are kept apart: the store could not be read at all; it was read but
+    // not parsed; and whether a copy of it was then written aside. Only a copy that was
+    // actually written is announced, and while the unreadable original is unprotected no
+    // save is allowed to overwrite it.
     var raw=null, txt=null;
-    try{ txt=localStorage.getItem("qagcPlan"); raw=JSON.parse(txt||"null"); }
+    try{ txt=localStorage.getItem("qagcPlan"); }
+    catch(_){ PLHOLD=true; PLERR=isAr()?"تعذّرت قراءة سجل الخطة من هذا المتصفح؛ الحفظ موقوف.":"The plan register could not be read from this browser; saving is paused."; plSeed(); return false; }
+    try{ raw=JSON.parse(txt||"null"); }
     catch(_){
-      try{ localStorage.setItem("qagcPlan.unreadable."+PLATFORM_TODAY, txt); }catch(__){}
-      PLERR = isAr()?"تعذّرت قراءة سجل الخطة المحفوظ؛ حُفظت نسخة منه جانباً وعُرض السجل الأصلي.":"The saved plan register could not be read; a copy was kept aside and the seed is shown.";
+      var key="", wrote=false;
+      try{ var n=1; while(localStorage.getItem("qagcPlan.unreadable."+n)!==null && n<999) n++;
+           key="qagcPlan.unreadable."+n; localStorage.setItem(key, txt); wrote=(localStorage.getItem(key)===txt); }catch(__){ wrote=false; }
+      if(wrote){ PLNOTE = isAr()?"تعذّرت قراءة سجل الخطة المحفوظ؛ حُفظت نسخة منه باسم "+key+".":"The saved plan register could not be read; a copy was kept as "+key+"."; }
+      else { PLHOLD=true; PLERR = isAr()?"تعذّرت قراءة سجل الخطة المحفوظ ولم يمكن حفظ نسخة منه؛ الحفظ موقوف كي لا يُستبدل.":"The saved plan register could not be read and no copy could be kept; saving is paused so it is not overwritten."; }
       plSeed(); return false; }
     // an unrecognised store is a recovery case, not an instruction to regenerate examples
     if(raw && raw.v===1 && raw.items && raw.items.length){ PLREG=raw; if(!PLREG.events) PLREG.events=[]; if(!PLREG.priv) PLREG.priv={author:["dg0"],assign:["dg0"]}; return true; }
@@ -15703,6 +15710,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     plSeed(); return false;
   }
   function plSave(){
+    if(PLHOLD) return false;
     try{ localStorage.setItem("qagcPlan", JSON.stringify(PLREG)); PLERR=""; return true; }
     catch(e){ PLERR = isAr()?"تعذّر الحفظ في هذا المتصفح — التغيير في الذاكرة فقط وسيضيع عند الإغلاق.":"Saving in this browser failed — the change is in memory only and will be lost."; return false; }
   }
@@ -15742,7 +15750,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function plDraw(){
     var host=document.getElementById("plList"); if(!host||!PLREG) return;
     var w=document.getElementById("plWarn");
-    if(w) w.innerHTML = (PLERR?'<b>'+gxEsc(PLERR)+'</b><br>':'')+
+    // a save error clears when a later save succeeds; the note that a copy was set aside does not
+    if(w) w.innerHTML = (PLERR?'<b>'+gxEsc(PLERR)+'</b><br>':'')+(PLNOTE?'<b>'+gxEsc(PLNOTE)+'</b><br>':'')+
       bi("السجل محلي في هذا المتصفح. الإسنادات المسجّلة هنا لا تصل إلى أجهزة الموظفين.",
          "This register is local to this browser. Assignments recorded here are not delivered to employees’ devices.");
     var counts={all:PLREG.items.length};
@@ -15872,7 +15881,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       it2.title=t; it2.smart=g("[data-plf-d]"); it2.kpi=g("[data-plf-k]"); it2.target=g("[data-plf-g]");
       it2.from=s1; it2.to=e1; it2.rev=(it2.rev||0)+1; it2.decidedBy=gxMe().p.id; it2.decidedAt=PLATFORM_TODAY;
       plEvent(isAr()?"راجع البند":"revised", it2); PLEDIT=null; var ok2=plSave(); plDraw();
-      if(ok2) gxToast("حُفظت مراجعة جديدة — والسابقة محفوظة.","A new revision was saved; the previous one is kept."); else gxToast("تعذّر الحفظ في هذا المتصفح.","Saving in this browser failed."); return; }
+      if(ok2) gxToast("حُفظت المراجعة الجديدة والسابقة في هذا المتصفح.","The new and previous revisions were saved in this browser."); else gxToast("تعذّر الحفظ في هذا المتصفح.","Saving in this browser failed."); return; }
     var as=e.target.closest("[data-plassign]");
     if(as){ if(!plMay("assign")) return; var it3=plById(as.dataset.plassign); if(!it3) return;
       var blk=plAssignBlock(it3); if(blk){ gxToast(blk,blk); plDraw(); return; }
@@ -16486,7 +16495,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           return lab+'<div class="kf-opts">'+p.opts.map(function(o){
             var on=KFA.a[p.id]===o[0];
             return '<label class="kf-opt'+(on?" on":"")+'"><input type="radio" name="kf_'+p.id+'" data-kfr="'+p.id+'" value="'+o[0]+'"'+(on?" checked":"")+'><span>'+
-              bi(o[1],o[2])+(o[3]?'<span class="kf-rec">'+bi("المقترح","proposed")+'</span>':"")+'</span></label>';
+              bi(o[1],o[2])+(o[3]?'<span class="kf-rec">'+bi("مقترح للمراجعة","Proposed for review")+'</span>':"")+'</span></label>';
           }).join("")+'</div>';
         }
         if(p.k==="yn"){
@@ -16514,13 +16523,16 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     }).join("");
     kfStamp();
   }
+  var KFERR=false;
   function kfSave(){
-    KFA.at=new Date().toISOString();
-    try{ localStorage.setItem(KF_K, JSON.stringify(KFA)); }catch(_){}
+    var at=new Date().toISOString(), snap=JSON.parse(JSON.stringify(KFA)); snap.at=at;
+    try{ localStorage.setItem(KF_K, JSON.stringify(snap)); KFA.at=at; KFERR=false; }
+    catch(_){ KFERR=true; }
     kfStamp();
   }
   function kfStamp(){
     var el=document.getElementById("kfSaved"); if(!el) return;
+    if(KFERR){ el.innerHTML=bi("تعذّر الحفظ في هذا الجهاز؛ آخر تغيير غير محفوظ.","Saving on this device failed; the latest change is not saved."); return; }
     if(!KFA.at){ el.innerHTML=bi("لم تُسجَّل إجابات بعد","No answers recorded yet"); return; }
     var d=new Date(KFA.at);
     var hh=("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);
@@ -16528,7 +16540,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   function kfSummary(){
     var L=[];
-    L.push("بطاقة المؤشر — قرارات المركز / KPI card — Centre decisions");
+    L.push("بطاقة المؤشر — إجابات المراجعة / KPI card — Review answers");
     L.push(KFA.at? ("آخر حفظ: "+KFA.at) : "");
     KF.forEach(function(d){
       L.push(""); L.push(d.ne+". "+d.q[0]);
@@ -16541,7 +16553,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           L.push("   "+p.t[0]+" → "+(v==="y"?"نعم":v==="n"?"لا":"— لم يُختَر —"));
         } else if(p.k==="tags"){
           var sel=(v||[]).map(function(i){ return p.items[i][0]; });
-          L.push("   المجالات المختارة: "+(sel.length?sel.join(" · "):"— لا شيء —"));
+          L.push("   المجالات المختارة: "+(sel.length?sel.join(" · "):"— لا توجد مجالات محددة —"));
         } else if(v){ L.push("   "+p.t[0]+": "+v); }
       });
       if(KFA.a["note_"+d.id]) L.push("   ملاحظة: "+KFA.a["note_"+d.id]);
@@ -16571,16 +16583,20 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(y){ KFA.a[y.dataset.kfy]=(KFA.a[y.dataset.kfy]===y.dataset.v)?"":y.dataset.v; kfSave(); kfDraw(); return; }
     if(e.target.closest&&e.target.closest("#kfPrint")){ window.print(); return; }
     if(e.target.closest&&e.target.closest("#kfCopy")){
-      var txt=kfSummary(), done=function(){ if(typeof rvToast==="function") rvToast(bi("نُسخت القرارات","The decisions were copied")); };
-      try{ navigator.clipboard.writeText(txt).then(done, function(){ kfFallback(txt); done(); }); }
-      catch(_){ kfFallback(txt); done(); }
+      var txt=kfSummary(),
+          done=function(){ if(typeof rvToast==="function") rvToast(bi("نُسخت الإجابات.","Answers copied.")); },
+          fail=function(){ if(typeof rvToast==="function") rvToast(bi("تعذّر النسخ.","Copy failed.")); },
+          fb=function(){ if(kfFallback(txt)) done(); else fail(); };
+      try{ navigator.clipboard.writeText(txt).then(done, fb); }
+      catch(_){ fb(); }
     }
   });
   function kfFallback(txt){
     var ta=document.createElement("textarea"); ta.value=txt;
     ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta);
-    ta.select(); try{ document.execCommand("copy"); }catch(_){}
+    var ok=false; ta.select(); try{ ok=!!document.execCommand("copy"); }catch(_){ ok=false; }
     document.body.removeChild(ta);
+    return ok;
   }
   try{ kfDraw(); }catch(err){ console.error("kfld", err); }
 
