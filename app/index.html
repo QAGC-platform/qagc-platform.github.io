@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 79">
+<meta name="qagc-ver" content="beta 80">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -2892,7 +2892,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       <div class="card">
         <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="8" r="3.5"/><path d="M3.5 20a6.5 6.5 0 0 1 11.4-4.3"/><path d="m15.5 18.5 2 2 4-4"/></svg></span><div>
           <span class="ceye" id="mineWho"></span>
-          <h2><span lang="ar">الخطوات المسندة</span><span lang="en">Assigned steps</span></h2></div></div></div>
+          <h2><span lang="ar">المهام</span><span lang="en">Tasks</span></h2></div></div></div>
         <div id="mineList"></div>
 
         <div class="asnform">
@@ -2916,7 +2916,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
               <input id="as-bud" type="number" min="0" placeholder="—"></span>
           </div>
           <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
-            <button class="btn btn-p" id="addAssign"><span lang="ar">إضافة المهمة</span><span lang="en">Add the assignment</span></button>
+            <button class="btn btn-p" id="addAssign"><span lang="ar">إضافة المهمة</span><span lang="en">Add task</span></button>
             <span class="saved" id="asnSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span id="asnSavedT"><span lang="ar">أُرسلت لاعتماد المدير العام.</span><span lang="en">Sent to the Director General.</span></span></span>
           </div>
         </div>
@@ -3023,14 +3023,14 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       <div class="tiles" id="apprTiles"></div>
       <div class="card">
         <div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v6M12 3 9.5 5.5M12 3l2.5 2.5"/><rect x="3" y="9" width="18" height="12" rx="2"/><path d="m8.5 15 2 2 4.5-4.5"/></svg></span><div>
-          <span class="ceye"><span lang="ar">لا شيء يسري قبل الاعتماد</span><span lang="en">Nothing takes effect before it is approved</span></span>
+          <span class="ceye"><span lang="ar">طلبات وقرارات</span><span lang="en">Submissions and decisions</span></span>
           <h2 id="apprH2"></h2></div></div>
           <span class="sub tnum" id="apprSub"></span></div>
         <div id="apprList"></div>
       </div>
       <div class="card">
         <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/></svg></span><div>
-          <span class="ceye"><span lang="ar">أثر موثّق</span><span lang="en">A recorded trail</span></span>
+          <span class="ceye"><span lang="ar">سجل الطلبات</span><span lang="en">Submission record</span></span>
           <h2 id="apprDoneH"><span lang="ar">القرارات السابقة</span><span lang="en">Decisions already taken</span></h2></div></div></div>
         <div id="apprDone"></div>
       </div>
@@ -3522,9 +3522,9 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
     <section class="screen" id="plan">
       <div class="head">
         <p class="eyebrow"><span lang="ar">الخطة السنوية</span><span lang="en">The annual plan</span></p>
-        <h1><span lang="ar">تقرير بنود الخطة وإسنادها</span><span lang="en">Deciding plan items and assigning them</span></h1>
-        <p><span lang="ar">الخطة تقرر ما يُبنى من عمل. البند يُقرَّر أولاً، ثم يُسند إلى موظف أو أكثر. وهذه الشاشة تسجّل القرار والإسناد وسحبه — ولا تمنع بعدُ إنشاء الأهداف خارجها.</span>
-           <span lang="en">The plan decides what work exists. An item is decided first, then assigned to one or more people. This screen records the decision, the assignment and its withdrawal — it does not yet prevent objectives being created outside it.</span></p>
+        <h1><span lang="ar">تقرير بنود الخطة وإسنادها</span><span lang="en">Plan-item decisions and assignments</span></h1>
+        <p><span lang="ar">يسجّل هذا السجل تقرير البنود وإسنادها وسحب إسنادها. لا يمنع إنشاء الأهداف خارجه.</span>
+           <span lang="en">This register records item decisions, assignments and assignment withdrawals. It does not prevent objectives being created outside it.</span></p>
       </div>
       <div class="pl-warn" id="plWarn"></div>
       <div class="grid2">
@@ -3541,7 +3541,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
           <div class="card">
             <div class="card-h"><div class="chrow"><div>
               <span class="ceye"><span lang="ar">بند جديد</span><span lang="en">A new item</span></span>
-              <h2><span lang="ar">كتابة بند وتقريره</span><span lang="en">Write an item, then decide it</span></h2></div></div></div>
+              <h2><span lang="ar">إضافة بند</span><span lang="en">Add an item</span></h2></div></div></div>
             <div id="plNew"></div>
           </div>
           <div class="card">
@@ -3553,7 +3553,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
           <div class="card">
             <div class="card-h"><div class="chrow"><div>
               <span class="ceye"><span lang="ar">السجل الزمني</span><span lang="en">The record</span></span>
-              <h2><span lang="ar">ما حدث ومن فعله</span><span lang="en">What happened, and who did it</span></h2></div></div></div>
+              <h2><span lang="ar">آخر ١٤ إجراءً</span><span lang="en">Latest 14 actions</span></h2></div></div></div>
             <div class="pl-log" id="plLog"></div>
           </div>
         </div>
@@ -7284,8 +7284,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     // so it starts empty and the owner adds one.
     var head = o.isAssignment
       ? ((EXTRA[ref]||[]).length ? "" :
-         '<div class="kpiempty">'+bi("لا مؤشر على هذه المهمة بعد. عرّف مؤشراً أدناه أو حمّل ورقة قراءاته.",
-                                     "No KPI on this assignment yet. Define one below, or load a sheet of readings.")+'</div>')
+         '<div class="kpiempty">'+bi("لا يوجد مؤشر لهذه المهمة.","This task has no KPI.")+'</div>')
       : kpiPanel(o);
     pane.innerHTML=head+extraCards(ref)+kpiAddForm(ref);
   }
@@ -10269,11 +10268,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(!hit){ w.hidden=true; w.innerHTML=""; return; }
     var subP=aiMatchStaff(hit.sub);
     w.hidden=false;
-    w.innerHTML='<div class="retnote" style="display:block"><b>'+bi("⚠ تنبيه التغطية: ","⚠ Coverage: ")+'</b>'+
+    w.innerHTML='<div class="retnote" style="display:block"><b>'+bi("⚠ إجازة عند الاستحقاق: ","⚠ Leave on the due date: ")+'</b>'+
       bi("الموظف في إجازة معتمدة من "+hit.from+" إلى "+hit.to+
          (hit.sub?" — البديل المسجَّل: "+hit.sub:""),
          "On approved leave "+hit.from+" → "+hit.to+(hit.sub?" — recorded substitute: "+hit.sub:""))+
-      (subP?' <button class="mini yes" data-asgswap="'+subP.id+'">'+bi("الإسناد إلى البديل","Assign the substitute")+'</button>':"")+'</div>';
+      (subP?' <button class="mini yes" data-asgswap="'+subP.id+'">'+bi("اختيار البديل","Select substitute")+'</button>':"")+'</div>';
   }
   document.addEventListener("change",function(e){
     if(e.target && (e.target.id==="asg-p"||e.target.id==="asg-due")) asgLeaveCheck();
@@ -12031,7 +12030,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var q=(typeof gxQueue==="function")?gxQueue():[]; var qh=document.getElementById("mineVerifyQ"); if(!qh){ qh=document.createElement("div"); qh.id="mineVerifyQ"; host.parentElement.insertBefore(qh, host); }
     qh.innerHTML = q.length ? '<div class="card" style="border-color:var(--warn-rule);background:var(--warn-bg);margin-bottom:var(--sp-3)"><div class="card-h"><div class="chrow"><span class="ib gold"></span><div><span class="ceye">'+bi("بانتظار توثيقي","Awaiting my verification")+'</span><h2>'+q.length+' '+bi("إدخالاً من فريقي","entries from my team")+'</h2></div></div></div>'+
         q.map(function(it){ return it.kind==="editreq" ? '<div class="prow2" style="cursor:default"><span class="ref">'+gxEsc(it.S.ref||"")+'</span><span class="pt"><b>'+bi("طلب تعديل هدف معتمد","Edit request on an approved objective")+'</b><span class="pm"> · '+gxEsc((it.S.title||"").slice(0,60))+' · '+bi("من","from")+' '+gxEsc(it.S.editReq.by)+' · '+gxEsc(it.S.editReq.at||"")+'</span></span><span class="pr"><button class="btn btn-p" style="padding:4px 10px" data-gxvq="'+it.S.id+'|editreq|approve">'+bi("موافقة","Approve")+'</button><button class="btn" style="padding:4px 10px" data-gxvq="'+it.S.id+'|editreq|reject">'+bi("رفض","Decline")+'</button></span></div>'
-          : it.kind==="step" ? '<div class="prow2" style="cursor:default"><span class="ref">'+gxEsc(it.S.ref||"")+'</span><span class="pt"><b>'+gxEsc(it.t.name)+'</b><span class="pm"> · '+gxEsc(it.S.title.slice(0,60))+' · '+bi("أُدخل بواسطة","fed by")+' '+gxEsc(it.t.fedBy||it.t.owner)+' · '+bi("تاريخ الإنجاز","completed")+' '+gxEsc(it.t.done||"")+(it.t.spent?' · '+gxMoney(it.t.spent):'')+'</span></span><span class="pr"><button class="btn btn-p" style="padding:4px 10px" data-gxvq="'+it.S.id+'|step|'+it.id+'|verify">'+bi("توثيق","Verify")+'</button><button class="btn" style="padding:4px 10px" data-gxvq="'+it.S.id+'|step|'+it.id+'|return">'+bi("إعادة","Return")+'</button></span></div>'
+          : it.kind==="step" ? '<div class="prow2" style="cursor:default"><span class="ref">'+gxEsc(it.S.ref||"")+'</span><span class="pt"><b>'+gxEsc(it.t.name)+'</b><span class="pm"> · '+gxEsc(it.S.title.slice(0,60))+' · '+bi("أُدخل بواسطة","Entered by")+' '+gxEsc(it.t.fedBy||it.t.owner)+' · '+bi("تاريخ الإنجاز","completed")+' '+gxEsc(it.t.done||"")+(it.t.spent?' · '+gxMoney(it.t.spent):'')+'</span></span><span class="pr"><button class="btn btn-p" style="padding:4px 10px" data-gxvq="'+it.S.id+'|step|'+it.id+'|verify">'+bi("توثيق","Verify")+'</button><button class="btn" style="padding:4px 10px" data-gxvq="'+it.S.id+'|step|'+it.id+'|return">'+bi("إعادة","Return")+'</button></span></div>'
           : '<div class="prow2" style="cursor:default"><span class="ref">'+gxEsc(it.S.ref||"")+'</span><span class="pt"><b>'+gxEsc(it.k.name)+'</b><span class="pm"> · '+bi("قراءة","reading")+' '+gxEsc(String(it.row[it.k.feed.dateCol]||""))+' = '+gxEsc(String(it.row[it.k.feed.valCol]||""))+gxEsc(it.k.unit)+' · '+bi("بواسطة","by")+' '+gxEsc(it.m.by||"")+'</span></span><span class="pr"><button class="btn btn-p" style="padding:4px 10px" data-gxvq="'+it.S.id+'|reading|'+it.ki+'|'+it.r+'|verify">'+bi("توثيق","Verify")+'</button><button class="btn" style="padding:4px 10px" data-gxvq="'+it.S.id+'|reading|'+it.ki+'|'+it.r+'|return">'+bi("إعادة","Return")+'</button></span></div>'; }).join("")+'</div>' : '';
     host.innerHTML = list.length ? list.map(function(o){ var pr=progOf(o), st=stOf(pr), tg=tagOf(o);
       return '<div class="prow2" data-goobj="'+o.r+'" role="listitem" tabindex="0" style="cursor:pointer">'+
@@ -12066,10 +12065,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var mine2=MYADDED.length;
       var bud=rows.filter(function(r){return r.budget;}).length;
       t.innerHTML=
-        '<div class="tile"><div class="th"><span class="tl">'+bi("مهام مسندة","Assigned")+'</span></div>'+
-          '<div class="tv">'+rows.length+'</div><div class="ts">'+bi(open+" قيد التنفيذ",open+" still open")+'</div></div>'+
-        '<div class="tile"><div class="th"><span class="tl">'+bi("أضفتها بنفسي","Added by me")+'</span></div>'+
-          '<div class="tv">'+mine2+'</div><div class="ts">'+bi("ضمن خطتي","within my plan")+'</div></div>'+
+        '<div class="tile"><div class="th"><span class="tl">'+bi("المهام","Tasks")+'</span></div>'+
+          '<div class="tv">'+rows.length+'</div><div class="ts">'+bi(open+" غير مكتملة",open+" not completed")+'</div></div>'+
+        '<div class="tile"><div class="th"><span class="tl">'+bi("أضفتها","Added by me")+'</span></div>'+
+          '<div class="tv">'+mine2+'</div><div class="ts">'+bi("في قائمة مهامي","in my task list")+'</div></div>'+
         '<div class="tile"><div class="th"><span class="tl">'+bi("تقديرات ميزانية","Budget estimates")+'</span></div>'+
           '<div class="tv">'+bud+'</div><div class="ts">'+bi("يعتمدها المدير العام","validated by the DG")+'</div></div>';
     }
@@ -12079,7 +12078,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var asObjInit=function(){ var os=document.getElementById("as-obj");
       if(os && !os.options.length){ os.innerHTML=PLAN2027.slice(0,10).map(function(o){
         return '<option value="'+o.r+'">'+o.r+' — '+o.t.slice(0,42)+'</option>'; }).join(""); } };
-    if(!rows.length){ host.innerHTML='<div class="noresult">'+bi("لا مهام مسندة الآن.","No tasks assigned right now.")+'</div>'; ASSIGN_INDEX={}; asObjInit(); return; }
+    if(!rows.length){ host.innerHTML='<div class="noresult">'+bi("لا توجد مهام في القائمة.","No tasks in the list.")+'</div>'; ASSIGN_INDEX={}; asObjInit(); return; }
     host.innerHTML=rows.map(function(r,i){
       var st=ST[r.st]||ST.not_started;
       var ref="AS"+(i+1);
@@ -12094,7 +12093,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         '<div class="asnhead" data-asntoggle="'+ref+'">'+
           '<span><span class="at2">'+bi(r.t[0],r.t[1])+'</span>'+
             '<span class="am">'+bi("ضمن: ","under: ")+bi(r.obj[0],r.obj[1])+
-            (r.own?' · '+bi("أضفتها بنفسي","added by me"):'')+'</span></span>'+
+            (r.own?' · '+bi("أضفتها","added by me"):'')+'</span></span>'+
           '<span class="aright">'+
             (planView()?'<span class="tag '+r.tag+'"><span class="dot"></span>'+
               bi(TAGL[r.tag][0],TAGL[r.tag][1])+'</span>':'')+
@@ -12135,15 +12134,14 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
                     ?'<button class="btn" data-asnwithdraw="'+(r.sub||"")+'" '+
                       'style="padding:4px 12px;font-size:var(--t-xs)">'+bi("سحب الطلب","Withdraw")+'</button>':"")+
                 '</div>'+
-                (ost==="returned"&&os.note?'<div class="retnote"><b>'+bi("طلب التعديل: ","Amendment requested: ")+'</b>'+os.note+'</div>':"")+
-                (bs&&bs.state==="returned"&&bs.note?'<div class="retnote"><b>'+bi("على الميزانية: ","On the budget: ")+'</b>'+bs.note+'</div>':"")
+                (ost==="returned"&&os.note?'<div class="retnote"><b>'+bi("التعديل المطلوب: ","Requested amendment: ")+'</b>'+os.note+'</div>':"")+
+                (bs&&bs.state==="returned"&&bs.note?'<div class="retnote"><b>'+bi("تعديل الميزانية المطلوب: ","Requested budget amendment: ")+'</b>'+bs.note+'</div>':"")
               : (bs&&bs.state==="returned"&&bs.note
-                 ? '<div class="retnote"><b>'+bi("على الميزانية: ","On the budget: ")+'</b>'+bs.note+'</div>' : ""))+
+                 ? '<div class="retnote"><b>'+bi("تعديل الميزانية المطلوب: ","Requested budget amendment: ")+'</b>'+bs.note+'</div>' : ""))+
           '</div>'+
           '<div class="dpane" id="dp-'+ref+'-kpi">'+
             ((EXTRA[ref]||[]).length?"":'<div class="kpiempty">'+
-              bi("لا مؤشر على هذه المهمة بعد. عرّف مؤشراً أدناه أو حمّل ورقة قراءاته.",
-                 "No KPI on this assignment yet. Define one below, or load a sheet of readings.")+'</div>')+
+              bi("لا يوجد مؤشر لهذه المهمة.","This task has no KPI.")+'</div>')+
             extraCards(ref)+kpiAddForm(ref)+
           '</div>'+
         '</div></div>';
@@ -12178,7 +12176,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       drawMine(); afterSubmit();
       var mt=document.getElementById("asnSavedT");
       if(mt) mt.innerHTML = sub.self
-        ? bi("أُضيفت إلى الخطة.","Added to the plan.")
+        ? bi("أُضيفت المهمة إلى القائمة.","Task added to the list.")
         : bi("أُرسلت لاعتماد المدير العام.","Sent to the Director General for approval.");
       var m=document.getElementById("asnSaved");
       if(m){ m.classList.add("on"); setTimeout(function(){m.classList.remove("on");},2600); }
@@ -12379,7 +12377,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var ret=RETURNING[r.key+"#"+i];
       var acts=c.state==="pending"
         ? '<button class="mini yes" data-cdec="'+r.key+'#'+i+'#v">'+bi("اعتماد","Approve")+'</button>'+
-          '<button class="mini ret" data-cdec="'+r.key+'#'+i+'#a">'+bi("إعادة للتعديل","Return")+'</button>'+
+          '<button class="mini ret" data-cdec="'+r.key+'#'+i+'#a">'+bi("إعادة للتعديل","Return for amendment")+'</button>'+
           '<button class="mini no" data-cdec="'+r.key+'#'+i+'#r">'+bi("رفض","Reject")+'</button>'
         : stateChip(c.state);
       return '<div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;padding:9px 0;border-top:1px solid var(--rule)">'+
@@ -12390,7 +12388,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         '</span><span class="acts">'+acts+'</span></div>'+
         (ret? '<span class="amendbox"><span class="al">'+bi("ما الذي يجب تعديله في هذا المكوّن؟","What needs amending in this component?")+'</span>'+
           '<textarea id="cdec-'+r.key+'-'+i+'"></textarea>'+
-          '<span class="arow"><button class="btn btn-p" data-cdecsend="'+r.key+'#'+i+'">'+bi("إرسال طلب التعديل","Send the request")+'</button>'+
+          '<span class="arow"><button class="btn btn-p" data-cdecsend="'+r.key+'#'+i+'">'+bi("إعادة للتعديل","Return for amendment")+'</button>'+
           '<button class="btn" data-cdeccancel="'+r.key+'#'+i+'">'+bi("إلغاء","Cancel")+'</button></span></span>' : "");
     }).join("");
     return '<div class="subrow" style="grid-template-columns:minmax(0,1fr)">'+
@@ -12403,12 +12401,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           ? '<span class="amendbox" style="background:var(--surface-2);border-color:var(--rule)">'+
             '<span class="al" style="color:var(--ink-2)">'+bi("عند اعتماد الهدف يُسند إلى:","On approving the objective, assign to:")+'</span>'+
             '<select class="fld-sel" data-asgsel="'+r.key+'" style="margin-top:6px">'+
-              '<option value="">'+(isAr()?"اختر المسؤول…":"Choose the owner…")+'</option>'+
+              '<option value="">'+(isAr()?"اختيار المسؤول…":"Select the owner…")+'</option>'+
               STAFF.map(function(p){return '<option value="'+p.id+'"'+
                 (s.meta&&s.meta.suggest===p.id?' selected':'')+'>'+(isAr()?p.who[0]:p.who[1])+' — '+(isAr()?p.dep[0]:p.dep[1])+'</option>';}).join("")+
             '</select>'+
             (s.meta&&s.meta.suggest?'<span class="al" style="color:var(--good-ink);margin-top:3px">'+
-              bi("تعرّفت المنصة على الاسم الوارد في الدفعة.","The platform recognised the name in the push.")+'</span>':"")+
+              bi("اختيار مقترح بناءً على الاسم الوارد.","Suggested selection based on the supplied name.")+'</span>':"")+
             (function(){
               var lc=s.meta&&s.meta.suggest?leaveCoverOn(s.meta.suggest, s.meta.due):null;
               return lc?'<span class="al" style="color:var(--critical-ink);margin-top:3px">'+
@@ -12417,8 +12415,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             })()+
             '</span>':"")+
         (pendN>1?'<span class="acts">'+
-          '<button class="mini yes" data-cdecall="'+r.key+'">'+bi("اعتماد كل المتبقي","Approve all remaining")+'</button>'+
-          '<button class="mini no" data-cdecrall="'+r.key+'">'+bi("رفض كل المتبقي","Reject all remaining")+'</button></span>':"")+
+          '<button class="mini yes" data-cdecall="'+r.key+'">'+bi("اعتماد جميع المكوّنات المعلّقة","Approve all pending components")+'</button>'+
+          '<button class="mini no" data-cdecrall="'+r.key+'">'+bi("رفض جميع المكوّنات المعلّقة","Reject all pending components")+'</button></span>':"")+
       '</div>'+rows+'</div>';
   }
   function subRow(r){
@@ -12435,21 +12433,21 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         ? '<span class="amendbox" style="background:var(--surface-2);border-color:var(--rule)">'+
           '<span class="al" style="color:var(--ink-2)">'+bi("عند الاعتماد يُسند إلى:","On approval, assign to:")+'</span>'+
           '<select class="fld-sel" data-asgsel="'+r.key+'" style="margin-top:6px">'+
-            '<option value="">'+(isAr()?"اختر المسؤول…":"Choose the owner…")+'</option>'+
+            '<option value="">'+(isAr()?"اختيار المسؤول…":"Select the owner…")+'</option>'+
             STAFF.map(function(p){return '<option value="'+p.id+'">'+(isAr()?p.who[0]:p.who[1])+' — '+(isAr()?p.dep[0]:p.dep[1])+'</option>';}).join("")+
           '</select></span>'
         : "")+
       '<span class="acts">'+
         '<button class="mini yes" data-dec="'+r.key+':v">'+
-          (r.endorse?bi("تزكية ورفعها","Endorse and pass up"):bi("اعتماد","Approve"))+'</button>'+
-        '<button class="mini ret" data-dec="'+r.key+':a">'+bi("إعادة للتعديل","Return")+'</button>'+
+          (r.endorse?bi("تزكية الطلب ورفعه","Endorse and forward"):bi("اعتماد","Approve"))+'</button>'+
+        '<button class="mini ret" data-dec="'+r.key+':a">'+bi("إعادة للتعديل","Return for amendment")+'</button>'+
         '<button class="mini no" data-dec="'+r.key+':r">'+bi("رفض","Reject")+'</button></span>'+
       (ret? '<span class="amendbox"><span class="al">'+bi("ما الذي يجب تعديله؟","What needs amending?")+'</span>'+
         '<textarea id="dec-'+r.key.replace(/:/g,"-")+'" placeholder="'+
-        (isAr()?"مثال: الفئة لا تطابق ما جاء في الخطة السنوية — يُرجى مراجعتها وإعادة الإرسال."
-               :"e.g. the category does not match the annual plan — please revise and resend.")+'"></textarea>'+
+        (isAr()?"وصف التعديل المطلوب وسببه."
+               :"Describe the requested amendment and its reason.")+'"></textarea>'+
         '<span class="arow"><button class="btn btn-p" data-decsend="'+r.key+'">'+
-          bi("إرسال طلب التعديل","Send the request")+'</button>'+
+          bi("إعادة للتعديل","Return for amendment")+'</button>'+
         '<button class="btn" data-deccancel="'+r.key+'">'+bi("إلغاء","Cancel")+'</button></span></span>' : "")+
       '</div>';
   }
@@ -12462,20 +12460,18 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var mineSubs=SUBS.filter(function(x){ return !x.self && x.byId===meId; });
     var mineOpen=mineSubs.filter(function(x){ return x.state==="pending"||x.state==="returned"; });
 
-    document.getElementById("apprEye").innerHTML=bi("بوابة واحدة","A single gate");
+    document.getElementById("apprEye").innerHTML=bi("الطلبات","Submissions");
     document.getElementById("apprTitle").innerHTML=
       dg?bi("الاعتمادات","Approvals"):dir?bi("التزكية والاعتمادات","Endorsements and approvals"):bi("طلباتي","My submissions");
     document.getElementById("apprLede").innerHTML=
-      dg? bi("كل هدف أو مهمة أو مؤشر أو تقدير ميزانية يُضيفه أي موظف يمر من هنا قبل أن يسري. القرار ثلاثة: اعتماد، أو إعادة بطلب تعديل، أو رفض.",
-             "Every objective, task, KPI and budget estimate added by anyone passes through here before it takes effect. There are three answers: approve, return for amendment, or refuse.")
+      dg? bi("الطلبات المعروضة وقراراتها: اعتماد، أو إعادة للتعديل، أو رفض.","Displayed submissions and their decisions: approve, return for amendment, or reject.")
         : isHead? bi("ما يضيفه موظفو قسمك يقف عندك أولاً حين يكون المسار كذلك. التزكية ترفعه إلى المدير العام، والإعادة أو الرفض ينهيانه هنا. وأسفل الصفحة طلباتك أنت — وهي ترتفع إلى مدير الدائرة.",
                   "What your department's staff add stops with you first when the route is set that way. Endorsing passes it up to the Director General; returning or refusing ends it here. Your own submissions are below — those rise to the directorate head.")
         : dir? bi("ما يضيفه موظفو الدائرة يقف عندك أولاً حين يكون المسار كذلك. التزكية ترفعه إلى المدير العام، والإعادة أو الرفض ينهيانه هنا. وأسفل الصفحة طلباتك أنت.",
                   "What the directorate's staff add stops with you first when the route is set that way. Endorsing passes it up to the Director General; returning or refusing ends it here. Your own submissions are below.")
-        : bi("ما أرسلته للاعتماد وأين وصل. المُعاد بطلب تعديل يمكن تصحيحه وإعادة إرساله من صفحة مهامي.",
-             "What has been sent for approval and where it stands. Anything returned can be corrected and resent from My assignments.");
+        : bi("طلباتي وحالتها وملاحظات التعديل.","My submissions, their status and amendment notes.");
     document.getElementById("apprH2").innerHTML=
-      decider?bi("بانتظار قرارك","Waiting on your decision"):bi("قيد النظر","Under consideration");
+      decider?bi("بانتظار إجراء","Awaiting action"):bi("قيد النظر","Under consideration");
     if(typeof czReapplyHead==="function") czReapplyHead("approvals");
     document.getElementById("apprSub").textContent = decider ? String(q.length) : "";
 
@@ -12502,9 +12498,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           '<div class="tile"><div class="th"><span class="tl">'+bi("قيد النظر","Pending")+'</span></div>'+
             '<div class="tv">'+pend+'</div><div class="ts">'+bi("لدى صاحب القرار","with the decision-maker")+'</div></div>'+
           '<div class="tile"><div class="th"><span class="tl">'+bi("أُعيد للتعديل","Returned")+'</span></div>'+
-            '<div class="tv">'+back+'</div><div class="ts">'+bi("يحتاج تصحيحاً","needs correcting")+'</div></div>'+
+            '<div class="tv">'+back+'</div><div class="ts">'+bi("بانتظار التعديل","awaiting amendment")+'</div></div>'+
           '<div class="tile"><div class="th"><span class="tl">'+bi("معتمد","Approved")+'</span></div>'+
-            '<div class="tv">'+okd+'</div><div class="ts">'+bi("سارٍ في الخطة","live in the plan")+'</div></div>';
+            '<div class="tv">'+okd+'</div><div class="ts">'+bi("طلبات معتمدة","approved submissions")+'</div></div>';
       }
     }
 
@@ -12518,14 +12514,14 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           '</span>'+
           '<span class="sw2">'+x.when+'</span>'+
           '<span class="acts">'+subChip(x)+'</span></div>';
-      }).join("") : '<div class="subempty">'+bi("لا طلبات معلّقة.","Nothing pending.")+'</div>';
+      }).join("") : '<div class="subempty">'+bi("لا توجد طلبات قيد النظر أو مُعادة للتعديل.","No pending submissions or submissions returned for amendment.")+'</div>';
     }
 
     if(decider){
       host.innerHTML = q.length ? q.map(subRow).join("")
         : '<div class="subempty">'+(dir
-            ? bi("لا شيء بانتظار تزكيتك.","Nothing is waiting on your endorsement.")
-            : bi("لا شيء بانتظار قرار. كل ما أُضيف جرى البتّ فيه.","Nothing is waiting. Everything added has been decided."))+'</div>';
+            ? bi("لا توجد طلبات بانتظار التزكية في هذه القائمة.","No submissions await endorsement in this list.")
+            : bi("لا توجد طلبات بانتظار إجراء في هذه القائمة.","No submissions await action in this list."))+'</div>';
     } else {
       host.innerHTML = mineRows(mineOpen);
     }
@@ -12536,7 +12532,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var done=document.getElementById("apprDone");
     if(done){
       if(dir){
-        if(doneH) doneH.innerHTML=bi("طلباتي أنا","My own submissions");
+        if(doneH) doneH.innerHTML=bi("طلباتي","My submissions");
         done.innerHTML=mineRows(mineOpen)+
           mineSubs.filter(function(x){return x.state!=="pending"&&x.state!=="returned";}).map(function(x){
             return '<div class="subrow"><span class="kind '+SUBKIND[x.kind].cls+'"><i></i>'+
@@ -12557,11 +12553,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
               '<span class="sm">'+bi(x.by[0],x.by[1])+' · '+metaLine(x.kind,x.meta)+
               (x.decidedBy?' · '+bi("قرار: ","decided by: ")+'<span class="au" style="display:inline">'+x.decidedBy+'</span>'+
                 (x.decidedAt?' · <span class="tnum">'+x.decidedAt+'</span>':""):"")+
-              (x.endorsedBy?' · '+bi("زكّاه: ","endorsed by: ")+'<span class="au" style="display:inline">'+x.endorsedBy+'</span>':"")+'</span>'+
+              (x.endorsedBy?' · '+bi("التزكية بواسطة: ","Endorsed by: ")+'<span class="au" style="display:inline">'+x.endorsedBy+'</span>':"")+'</span>'+
               (x.note?'<span class="retnote">'+x.note+'</span>':"")+'</span>'+
             '<span class="sw2">'+x.when+'</span>'+
             '<span class="acts">'+subChip(x)+'</span></div>';
-        }).join("") : '<div class="subempty">'+bi("لم يُتخذ قرار بعد.","No decisions yet.")+'</div>';
+        }).join("") : '<div class="subempty">'+bi("لا توجد قرارات في هذه القائمة.","No decisions in this list.")+'</div>';
       }
     }
   }
@@ -12636,7 +12632,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           sAll.meta.assignedName=pAA?(isAr()?pAA.who[0]:pAA.who[1]):"";
         }
       }
-      stepUp("approve", bi("اعتماد كل مكوّنات: ","Approving every component of: ")+bi(sAll.title[0],sAll.title[1]), function(){
+      stepUp("approve", bi("اعتماد المكوّنات المعلّقة في: ","Approving pending components of: ")+bi(sAll.title[0],sAll.title[1]), function(){
         sAll.meta.comps.forEach(function(c,i){ if(c.state==="pending") applyCompDecision(sidA, i, "approved",""); });
       });
       return;
@@ -12644,7 +12640,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var cRej=e.target.closest("[data-cdecrall]");
     if(cRej){
       var sidR=cRej.dataset.cdecrall, sRej=subOf(sidR); if(!sRej) return;
-      stepUp("reject", bi("رفض كل مكوّنات: ","Refusing every component of: ")+bi(sRej.title[0],sRej.title[1]), function(){
+      stepUp("reject", bi("رفض المكوّنات المعلّقة في: ","Rejecting pending components of: ")+bi(sRej.title[0],sRej.title[1]), function(){
         sRej.meta.comps.forEach(function(c,i){ if(c.state==="pending") applyCompDecision(sidR, i, "rejected",""); });
       });
       return;
@@ -15695,7 +15691,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       })};
   }
   function plLoad(){
-    var raw=null; try{ raw=JSON.parse(localStorage.getItem("qagcPlan")||"null"); }catch(_){}
+    var raw=null, txt=null;
+    try{ txt=localStorage.getItem("qagcPlan"); raw=JSON.parse(txt||"null"); }
+    catch(_){
+      try{ localStorage.setItem("qagcPlan.unreadable."+PLATFORM_TODAY, txt); }catch(__){}
+      PLERR = isAr()?"تعذّرت قراءة سجل الخطة المحفوظ؛ حُفظت نسخة منه جانباً وعُرض السجل الأصلي.":"The saved plan register could not be read; a copy was kept aside and the seed is shown.";
+      plSeed(); return false; }
     // an unrecognised store is a recovery case, not an instruction to regenerate examples
     if(raw && raw.v===1 && raw.items && raw.items.length){ PLREG=raw; if(!PLREG.events) PLREG.events=[]; if(!PLREG.priv) PLREG.priv={author:["dg0"],assign:["dg0"]}; return true; }
     if(raw){ PLERR = isAr()?"سجل الخطة المحفوظ غير مقروء — عُرض السجل الأصلي ولم يُمسح المحفوظ.":"The saved plan register could not be read — the seed is shown and nothing was erased."; }
@@ -15724,7 +15725,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(gxP(it.to)<gxP(it.from)) return isAr()?"تاريخ الانتهاء قبل البداية":"The end date precedes the start";
     if(it.parent && !plById(it.parent)) return isAr()?"البند الأب غير موجود":"The parent item is missing";
     var seen={}, walk=it, n=0;
-    while(walk && walk.parent && n++<40){ if(seen[walk.id]) return isAr()?"تسلسل دائري في الأبناء":"The hierarchy loops"; seen[walk.id]=1; walk=plById(walk.parent); }
+    while(walk && walk.parent && n++<40){ if(seen[walk.id]) return isAr()?"تسلسل البنود يحتوي على حلقة.":"The item hierarchy contains a loop."; seen[walk.id]=1; walk=plById(walk.parent); }
     var dup=(PLREG.items||[]).filter(function(x){ return x.ref===it.ref && x.year===it.year; });
     if(dup.length>1) return isAr()?"المرجع مكرر في السنة نفسها":"The reference repeats within the year";
     return "";
@@ -15742,8 +15743,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var host=document.getElementById("plList"); if(!host||!PLREG) return;
     var w=document.getElementById("plWarn");
     if(w) w.innerHTML = (PLERR?'<b>'+gxEsc(PLERR)+'</b><br>':'')+
-      bi("هذا السجل محفوظ في هذا المتصفح وحده. الإسناد الذي يُسجَّل هنا لا يصل بعدُ إلى جهاز الموظف — إيصاله يحتاج قناة موثّقة لم تُبنَ.",
-         "This register is stored in this browser alone. An assignment recorded here does not yet reach the employee's device — delivering it needs an authenticated channel that has not been built.");
+      bi("السجل محلي في هذا المتصفح. الإسنادات المسجّلة هنا لا تصل إلى أجهزة الموظفين.",
+         "This register is local to this browser. Assignments recorded here are not delivered to employees’ devices.");
     var counts={all:PLREG.items.length};
     ["seed","draft","decided","withdrawn"].forEach(function(k){ counts[k]=PLREG.items.filter(function(x){return x.state===k;}).length; });
     counts.assigned=PLREG.items.filter(function(x){ return (x.assignees||[]).length; }).length;
@@ -15761,8 +15762,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var chipsHTML=(it.assignees||[]).length
         ? it.assignees.map(function(a){ var p=gxPersonById(a.id);
             return '<span class="pl-chip">'+gxEsc(p?p.who[0]:a.id)+
-              (plMay("assign")?'<button data-plun="'+it.id+':'+a.id+'" aria-label="'+gxEsc(bi("سحب إسناد ","Withdraw assignment of ")+(p?p.who[0]:a.id))+'">✕</button>':'')+'</span>'; }).join("")
-        : '<span class="pl-chip none">'+bi("لم يُسند بعد","Not assigned")+'</span>';
+              (plMay("assign")?'<button data-plun="'+it.id+':'+a.id+'" aria-label="'+gxEsc((isAr()?"سحب إسناد ":"Withdraw assignment of ")+(p?p.who[0]:a.id))+'">✕</button>':'')+'</span>'; }).join("")
+        : '<span class="pl-chip none">'+bi("لا توجد إسنادات حالية","No current assignments")+'</span>';
       var block=plAssignBlock(it);
       var free=plPeople().filter(function(p){ return !plActive(it,p.id); });
       var acts="";
@@ -15783,12 +15784,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         '<div class="pl-t">'+gxEsc(it.title)+'</div>'+
         '<div class="pl-m">'+gxEsc(it.owner||"—")+' · '+gxEsc(it.from)+' ← '+gxEsc(it.to)+
           (it.kpi?'<br>'+bi("المؤشر: ","KPI: ")+gxEsc(it.kpi)+(it.target?' · '+gxEsc(it.target):''):'')+
-          (it.decidedBy?'<br>'+bi("قرّرها ","decided by ")+gxEsc((gxPersonById(it.decidedBy)||{who:["—"]}).who[0])+' · '+gxEsc(it.decidedAt):'')+
+          (it.decidedBy?'<br>'+bi("تقرير البند بواسطة: ","Item decided by: ")+gxEsc((gxPersonById(it.decidedBy)||{who:["—"]}).who[0])+' · '+gxEsc(it.decidedAt):'')+
         '</div>'+
         '<div class="pl-chips">'+chipsHTML+'</div>'+
-        (block && it.state!=="seed" ? '<div class="pl-bad">'+bi("لا يُسند: ","Cannot be assigned: ")+gxEsc(block)+'</div>' : '')+
+        (block && it.state!=="seed" ? '<div class="pl-bad">'+bi("الإسناد غير متاح: ","Assignment unavailable: ")+gxEsc(block)+'</div>' : '')+
         (acts?'<div class="pl-acts">'+acts+'</div>':'')+ edit +'</div>';
-    }).join("") : '<div class="noresult">'+bi("لا بند بهذه الحالة.","No item in that state.")+'</div>';
+    }).join("") : '<div class="noresult">'+bi("لا توجد بنود تطابق التصفية.","No items match this filter.")+'</div>';
 
     plDrawNew(); plDrawPriv(); plDrawLog();
   }
@@ -15798,41 +15799,41 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       '<div class="f w6"><label>'+bi("الصياغة الذكية","The SMART statement")+'</label><input data-plf-d value="'+gxEsc(it.smart||"")+'"></div>'+
       '<div class="f w3"><label>'+bi("المؤشر","KPI")+'</label><input data-plf-k value="'+gxEsc(it.kpi||"")+'"></div>'+
       '<div class="f w1"><label>'+bi("المستهدف","Target")+'</label><input data-plf-g value="'+gxEsc(it.target||"")+'"></div>'+
-      '<div class="f w1"><label>'+bi("من","From")+'</label><input type="date" data-plf-s value="'+gxEsc(it.from)+'"></div>'+
-      '<div class="f w1"><label>'+bi("إلى","To")+'</label><input type="date" data-plf-e value="'+gxEsc(it.to)+'"></div>'+
+      '<div class="f w1"><label>'+bi("تاريخ البداية","Start date")+'</label><input type="date" data-plf-s value="'+gxEsc(it.from)+'"></div>'+
+      '<div class="f w1"><label>'+bi("تاريخ النهاية","End date")+'</label><input type="date" data-plf-e value="'+gxEsc(it.to)+'"></div>'+
       '<div class="f w6" style="align-self:end"><button class="btn btn-p" data-plsaverev="'+it.id+'">'+bi("حفظ مراجعة جديدة","Save as a new revision")+'</button> '+
       '<button class="btn" data-plcancel="1">'+bi("إلغاء","Cancel")+'</button>'+
-      '<div class="pl-m" style="margin-top:6px">'+bi("المراجعة لا تمحو سابقتها، وتُسجَّل باسم من أجراها. الأهداف المبنية تحت هذا البند: ","A revision does not erase the one before it and is recorded against whoever made it. Objectives built under this item: ")+
+      '<div class="pl-m" style="margin-top:6px">'+bi("يُحتفظ بالمراجعة السابقة ويُسجَّل من أجرى التعديل. الأهداف المعتمدة المرتبطة بالمرجع: ","The previous revision is retained and the editor is recorded. Approved objectives linked to this reference: ")+
         gxApprovedChildren(it.ref).length+'</div></div></div>';
   }
   function plDrawNew(){
     var host=document.getElementById("plNew"); if(!host) return;
-    if(!plMay("author")){ host.innerHTML='<div class="noresult">'+bi("كتابة البنود صلاحية لا تملكها.","Writing plan items is a permission you do not hold.")+'</div>'; return; }
+    if(!plMay("author")){ host.innerHTML='<div class="noresult">'+bi("إضافة البنود غير متاحة لهذا الحساب.","Adding items is unavailable for this account.")+'</div>'; return; }
     var parents=PLREG.items.filter(function(x){ return x.level!=="department"; });
     host.innerHTML='<div class="gx-kgrid">'+
       '<div class="f w6"><label>'+bi("عنوان البند","Item title")+'</label><input id="plnT" placeholder="'+gxEsc(bi("ما الذي يجب إنجازه","What must be achieved"))+'"></div>'+
-      '<div class="f w3"><label>'+bi("تحت البند","Under")+'</label><select id="plnP"><option value="">'+bi("— بند جذر —","— a root item —")+'</option>'+
+      '<div class="f w3"><label>'+bi("البند الأب","Parent item")+'</label><select id="plnP"><option value="">'+bi("— بند جذر —","— a root item —")+'</option>'+
         parents.map(function(p){ return '<option value="'+p.id+'">'+gxEsc(p.ref)+' — '+gxEsc(p.title.slice(0,30))+'…</option>'; }).join("")+'</select></div>'+
       '<div class="f w3"><label>'+bi("الجهة المسؤولة","Owning unit")+'</label><select id="plnU">'+
         plUnits().map(function(u){ return '<option value="'+gxEsc(u[0])+'">'+gxEsc(u[1])+'</option>'; }).join("")+'</select></div>'+
       '<div class="f w2"><label>'+bi("المرجع","Reference")+'</label><input id="plnR" placeholder="OP9.9" style="direction:ltr"></div>'+
-      '<div class="f w1"><label>'+bi("من","From")+'</label><input type="date" id="plnS" value="2027-01-01"></div>'+
-      '<div class="f w1"><label>'+bi("إلى","To")+'</label><input type="date" id="plnE" value="2027-12-31"></div>'+
+      '<div class="f w1"><label>'+bi("تاريخ البداية","Start date")+'</label><input type="date" id="plnS" value="2027-01-01"></div>'+
+      '<div class="f w1"><label>'+bi("تاريخ النهاية","End date")+'</label><input type="date" id="plnE" value="2027-12-31"></div>'+
       '<div class="f w2" style="align-self:end"><button class="btn btn-p" id="plnGo">'+bi("إضافة كمسودة","Add as a draft")+'</button></div>'+
-      '</div><div class="pl-m" style="margin-top:8px">'+bi("البند يُضاف مسودةً. لا يُسند إلا بعد أن يُقرَّر عمداً، فالإضافة ليست قراراً.",
-        "An item is added as a draft. It cannot be assigned until it is deliberately decided — adding is not deciding.")+'</div>';
+      '</div><div class="pl-m" style="margin-top:8px">'+bi("يُضاف البند كمسودة؛ يلزم تقريره قبل إسناده.",
+        "The item is added as a draft; it must be decided before assignment.")+'</div>';
   }
   function plDrawPriv(){
     var host=document.getElementById("plPriv"); if(!host) return;
     var amDG=gxRole(gxMe().p)==="dg";
     host.innerHTML=plPeople().map(function(p){
-      var row=function(w,lbl){
+      var row=function(w,lbl,la,le){
         var has=(PLREG.priv[w]||[]).indexOf(p.id)>=0;
         return '<span class="pl-chip'+(has?"":" none")+'">'+lbl+
-          (amDG?'<button data-plpriv="'+w+':'+p.id+'" aria-label="'+gxEsc((has?bi("سحب ","Withdraw "):bi("منح ","Grant "))+lbl)+'">'+(has?"✕":"＋")+'</button>':'')+'</span>'; };
+          (amDG?'<button data-plpriv="'+w+':'+p.id+'" aria-label="'+gxEsc(isAr()?(has?"سحب ":"منح ")+la:(has?"Withdraw ":"Grant ")+le)+'">'+(has?"✕":"＋")+'</button>':'')+'</span>'; };
       return '<div class="pl-item"><div class="pl-t" style="margin:0">'+gxEsc(p.who[0])+'</div>'+
         '<div class="pl-m">'+gxEsc(p.dep[0])+'</div>'+
-        '<div class="pl-chips">'+row("author",bi("تقرير الخطة","Decide the plan"))+row("assign",bi("الإسناد","Assign"))+'</div></div>';
+        '<div class="pl-chips">'+row("author",bi("تقرير الخطة","Decide the plan"),"تقرير الخطة","Decide the plan")+row("assign",bi("الإسناد","Assign"),"الإسناد","Assign")+'</div></div>';
     }).join("")+'<div class="pl-m" style="margin-top:8px">'+bi(
       "صلاحية المديرة العامة أصلية ولا تُمنح ولا تُسحب. وما عداها يُمنح منها — ولا ينتقل بالتسلسل الإداري وحده. وهذه الصلاحيات محفوظة في هذا المتصفح، فلا تصلح دليلاً على تفويض حقيقي.",
       "The Director General's authority is original: neither granted nor withdrawn. Everything else is granted by her, and does not descend the hierarchy on its own. These grants live in this browser and are no evidence of a real delegation.")+'</div>';
@@ -15844,7 +15845,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var who=gxPersonById(l.by), to=l.to?gxPersonById(l.to):null;
       return '<div>'+gxEsc(l.at)+' — <b>'+gxEsc(who?who.who[0]:l.by)+'</b> '+gxEsc(l.what)+' '+gxEsc(l.ref||l.item)+
         (to?' ← '+gxEsc(to.who[0]):'')+'</div>'; }).join("")
-      : '<div>'+bi("لا شيء بعد.","Nothing yet.")+'</div>';
+      : '<div>'+bi("لا توجد إجراءات مسجّلة.","No recorded actions.")+'</div>';
   }
 
   document.addEventListener("click", function(e){
@@ -15854,8 +15855,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var d=e.target.closest("[data-pldecide]");
     if(d){ if(!plMay("author")) return; var it=plById(d.dataset.pldecide); if(!it) return;
       it.state="decided"; it.rev=(it.rev||0)+1; it.decidedBy=gxMe().p.id; it.decidedAt=PLATFORM_TODAY;
-      plEvent(isAr()?"قرّر البند":"decided", it); plSave(); plDraw();
-      gxToast("قُرِّر البند — صار قابلاً للإسناد.","The item is decided and can now be assigned."); return; }
+      plEvent(isAr()?"قرّر البند":"decided", it); var ok1=plSave(); plDraw();
+      if(ok1) gxToast("قُرِّر البند.","Item decided."); else gxToast("تعذّر الحفظ في هذا المتصفح.","Saving in this browser failed."); return; }
     var rv=e.target.closest("[data-plrev]");
     if(rv){ if(!plMay("author")) return; PLEDIT=rv.dataset.plrev; plDraw(); return; }
     if(e.target.closest("[data-plcancel]")){ PLEDIT=null; plDraw(); return; }
@@ -15865,25 +15866,27 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var g=function(sel){ var el=box.querySelector(sel); return el?el.value:""; };
       var t=g("[data-plf-t]").trim(); if(!t){ gxToast("العنوان مطلوب.","A title is required."); return; }
       var s1=g("[data-plf-s]"), e1=g("[data-plf-e]");
-      if(!gxValidDate(s1)||!gxValidDate(e1)||gxP(e1)<gxP(s1)){ gxToast("التواريخ غير صحيحة.","The dates are not valid."); return; }
+      if(!gxValidDate(s1)||!gxValidDate(e1)||gxP(e1)<gxP(s1)){ gxToast("يلزم تاريخا بداية ونهاية صالحان؛ النهاية لا تسبق البداية.","Valid start and end dates are required; the end must not precede the start."); return; }
       it2.history.push({rev:it2.rev, title:it2.title, smart:it2.smart, kpi:it2.kpi, target:it2.target,
         from:it2.from, to:it2.to, by:it2.decidedBy, at:it2.decidedAt});
       it2.title=t; it2.smart=g("[data-plf-d]"); it2.kpi=g("[data-plf-k]"); it2.target=g("[data-plf-g]");
       it2.from=s1; it2.to=e1; it2.rev=(it2.rev||0)+1; it2.decidedBy=gxMe().p.id; it2.decidedAt=PLATFORM_TODAY;
-      plEvent(isAr()?"راجع البند":"revised", it2); PLEDIT=null; plSave(); plDraw();
-      gxToast("حُفظت مراجعة جديدة — والسابقة محفوظة.","A new revision was saved; the previous one is kept."); return; }
+      plEvent(isAr()?"راجع البند":"revised", it2); PLEDIT=null; var ok2=plSave(); plDraw();
+      if(ok2) gxToast("حُفظت مراجعة جديدة — والسابقة محفوظة.","A new revision was saved; the previous one is kept."); else gxToast("تعذّر الحفظ في هذا المتصفح.","Saving in this browser failed."); return; }
     var as=e.target.closest("[data-plassign]");
     if(as){ if(!plMay("assign")) return; var it3=plById(as.dataset.plassign); if(!it3) return;
       var blk=plAssignBlock(it3); if(blk){ gxToast(blk,blk); plDraw(); return; }
       var sel=document.querySelector('[data-plsel="'+it3.id+'"]'); var who=sel?sel.value:"";
       var p=gxPersonById(who); if(!p||plActive(it3,who)) return;
       it3.assignees.push({aid:"as"+(++PLREG.seq), id:who, by:gxMe().p.id, at:PLATFORM_TODAY, rev:it3.rev});
-      plEvent(isAr()?"أسند":"assigned", it3, who); plSave(); plDraw();
+      plEvent(isAr()?"أسند":"assigned", it3, who); var ok3=plSave(); plDraw();
+      if(!ok3){ gxToast("تعذّر الحفظ في هذا المتصفح.","Saving in this browser failed."); return; }
       gxToast("أُسند البند — والإسناد لا يعتمد الهدف الذي سيُبنى تحته.","Assigned — and an assignment does not approve what will be built under it."); return; }
     var un=e.target.closest("[data-plun]");
     if(un){ if(!plMay("assign")) return; var a=un.dataset.plun.split(":"), it4=plById(a[0]); if(!it4) return;
       it4.assignees=it4.assignees.filter(function(x){ return x.id!==a[1]; });
-      plEvent(isAr()?"سحب الإسناد عن":"withdrew the assignment of", it4, a[1]); plSave(); plDraw();
+      plEvent(isAr()?"سحب الإسناد عن":"withdrew the assignment of", it4, a[1]); var ok4=plSave(); plDraw();
+      if(!ok4){ gxToast("تعذّر الحفظ في هذا المتصفح.","Saving in this browser failed."); return; }
       gxToast("سُحب الإسناد — وما بُني تحت البند يبقى كما هو.","Withdrawn — and whatever was built under the item stays as it is."); return; }
     var pv=e.target.closest("[data-plpriv]");
     if(pv){ if(gxRole(gxMe().p)!=="dg") return;
@@ -15899,7 +15902,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       if(!t2.trim()){ gxToast("العنوان مطلوب.","A title is required."); return; }
       var par=plById((document.getElementById("plnP")||{}).value||"");
       var s2=(document.getElementById("plnS")||{}).value, e2=(document.getElementById("plnE")||{}).value;
-      if(!gxValidDate(s2)||!gxValidDate(e2)||gxP(e2)<gxP(s2)){ gxToast("التواريخ غير صحيحة.","The dates are not valid."); return; }
+      if(!gxValidDate(s2)||!gxValidDate(e2)||gxP(e2)<gxP(s2)){ gxToast("يلزم تاريخا بداية ونهاية صالحان؛ النهاية لا تسبق البداية.","Valid start and end dates are required; the end must not precede the start."); return; }
       var ref=((document.getElementById("plnR")||{}).value||"").trim() || ("N"+(PLREG.seq+1));
       var year=String(s2).slice(0,4);
       if(PLREG.items.some(function(x){ return x.ref===ref && x.year===year; })){ gxToast("المرجع مستخدم في هذه السنة.","That reference is already used this year."); return; }
@@ -15910,7 +15913,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         source:{kind:"annual"}, state:"draft", rev:0, decidedBy:"", decidedAt:"", assignees:[], history:[]};
       PLREG.items.push(it5); plEvent(isAr()?"أضاف مسودة بند":"added a draft item", it5);
       document.getElementById("plnT").value="";
-      plSave(); plDraw(); gxToast("أُضيف كمسودة — يلزم تقريره قبل إسناده.","Added as a draft — it must be decided before it can be assigned."); return; }
+      var ok5=plSave(); plDraw();
+      if(ok5) gxToast("أُضيف البند كمسودة؛ يلزم تقريره قبل إسناده.","Item added as a draft; it must be decided before assignment."); else gxToast("تعذّر الحفظ في هذا المتصفح.","Saving in this browser failed."); return; }
   });
   document.addEventListener("click", function(e){
     if(e.target.closest && e.target.closest('[data-go="plan"]')){ try{ plDraw(); }catch(err){ console.error("plan", err); } }
