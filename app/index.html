@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 78">
+<meta name="qagc-ver" content="beta 79">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -2174,13 +2174,15 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 /* ── (i): function help on demand. A disclosure in the reading order, not a hover popup:
    hover alone is unreachable by touch and keyboard. ── */
 .q-help{display:inline;}
-.q-info{display:inline-grid;place-items:center;min-width:28px;min-height:28px;padding:0 6px;
-  margin-inline-start:6px;border:1px solid var(--rule-strong);border-radius:var(--r-pill);
-  background:var(--surface);color:var(--ink-3);font:inherit;font-size:var(--t-xs);font-weight:700;
-  line-height:1;cursor:pointer;vertical-align:middle}
-.q-info:hover{border-color:var(--brand-ink);color:var(--brand-ink)}
-.q-info:focus-visible{outline:3px solid var(--s1);outline-offset:2px}
-.q-info[aria-expanded="true"]{background:var(--brand-ink);border-color:var(--brand-ink);color:var(--brand-gold)}
+.q-info{display:inline-grid;place-items:center;width:44px;height:44px;margin-block:-11px;
+  margin-inline-start:-4px;padding:0;border:0;background:transparent;cursor:pointer;vertical-align:middle;
+  font:inherit;color:var(--ink-3)}
+.q-info .q-dot{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:var(--r-pill);
+  border:1px solid var(--rule-strong);background:var(--surface);font-size:var(--t-xs);font-weight:700;line-height:1}
+.q-info:hover .q-dot{border-color:var(--brand-ink);color:var(--brand-ink)}
+.q-info:focus-visible{outline:none}
+.q-info:focus-visible .q-dot{outline:3px solid var(--s1);outline-offset:2px}
+.q-info[aria-expanded="true"] .q-dot{background:var(--brand-ink);border-color:var(--brand-ink);color:var(--brand-gold)}
 .q-help-panel{display:block;margin:6px 0;padding:8px 11px;border-radius:var(--r-sm);
   background:var(--surface-2);border:1px solid var(--rule);color:var(--ink-2);
   font-size:var(--t-sm);font-weight:400;line-height:1.7;text-align:start;max-width:62ch}
@@ -2560,7 +2562,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       <button class="scoperow scopebtn rvbtn" id="rvToggle" aria-pressed="false">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4L3 21l1.1-3.6A8.4 8.4 0 1 1 21 11.5z"/><path d="M8.5 10.5h7M8.5 14h4"/></svg>
         <span id="rvToggleLbl"><span lang="ar">وضع المراجعة</span><span lang="en">Review mode</span></span>
-      </button><span class="q-help" data-qhelp><button type="button" class="q-info" aria-expanded="false" aria-controls="qhReview" aria-describedby="qhReview"><span aria-hidden="true">i</span><span class="q-sr"><span lang="ar">مساعدة: وضع المراجعة</span><span lang="en">Help: review mode</span></span></button><span class="q-help-panel" id="qhReview" role="note" hidden><span lang="ar">في وضع المراجعة، يُستخدم النقر لإضافة تعليق وتتوقف الأزرار عن تنفيذ إجراءاتها.</span><span lang="en">In review mode, clicking adds a comment and buttons do not perform their actions.</span></span></span>
+      </button><span class="q-help" data-qhelp><button type="button" class="q-info" aria-expanded="false" aria-controls="qhReview" aria-describedby="qhReview"><span class="q-dot" aria-hidden="true">i</span><span class="q-sr" data-ar="مساعدة: وضع المراجعة" data-en="Help: review mode"></span></button><span class="q-help-panel" id="qhReview" role="note" hidden data-ar="في وضع المراجعة، يُستخدم النقر لإضافة تعليق وتتوقف الأزرار عن تنفيذ إجراءاتها." data-en="In review mode, clicking adds a comment and buttons do not perform their actions."></span></span>
       <button class="scoperow scopebtn" id="allTabs" aria-pressed="false">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-2 8-2 8h16s-2-1-2-8"/><path d="M10.5 21a2 2 0 0 0 3 0"/></svg>
         <span id="allTabsLbl"><span lang="ar">صلاحيات الوصول حسب الدور مفعلة</span><span lang="en">Role-aware access active</span></span>
@@ -4697,7 +4699,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
             <div class="gx-kcol">
               <div class="gx-card auto">
                 <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-                  <div><h3 id="gxKObj">—</h3><p class="lede" style="margin:0"><span lang="ar">مقترحات للمراجعة</span><span lang="en">Proposals for review</span><span class="q-help" data-qhelp><button type="button" class="q-info" aria-expanded="false" aria-controls="qhKpiAuto" aria-describedby="qhKpiAuto"><span aria-hidden="true">i</span><span class="q-sr"><span lang="ar">مساعدة: اقتراح المؤشرات</span><span lang="en">Help: KPI proposals</span></span></button><span class="q-help-panel" id="qhKpiAuto" role="note" hidden><span lang="ar">يقترح النظام مسودات مؤشرات من الهدف وخطته: مؤشر إنجاز الخطوات الموثّق، ثم مؤشر نتيجة من صياغة الهدف.</span><span lang="en">The system proposes KPI drafts from the objective and its plan: attested step completion, then an outcome indicator based on the objective text.</span></span></span></p></div>
+                  <div><h3 id="gxKObj">—</h3><p class="lede" style="margin:0"><span lang="ar">مقترحات للمراجعة</span><span lang="en">Proposals for review</span><span class="q-help" data-qhelp><button type="button" class="q-info" aria-expanded="false" aria-controls="qhKpiAuto" aria-describedby="qhKpiAuto"><span class="q-dot" aria-hidden="true">i</span><span class="q-sr" data-ar="مساعدة: اقتراح المؤشرات" data-en="Help: KPI proposals"></span></button><span class="q-help-panel" id="qhKpiAuto" role="note" hidden data-ar="يقترح النظام مسودات مؤشرات من الهدف وخطته: مؤشر إنجاز الخطوات الموثّق، ثم مؤشر نتيجة من صياغة الهدف." data-en="The system proposes KPI drafts from the objective and its plan: attested step completion, then an outcome indicator based on the objective text."></span></span></p></div>
                   <button class="btn btn-p" id="gxAuto">✦ <span lang="ar">اقتراح مؤشرات من الخطة</span><span lang="en">Suggest KPIs from the plan</span></button>
                 </div>
                 <div id="gxDrafts"></div>
@@ -4718,7 +4720,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
               </div>
               <div class="gx-card" id="gxToolCard">
                 <h3><span lang="ar">أداة القراءات</span><span lang="en">Readings tool</span> <span class="sub" id="gxToolNote"></span></h3>
-                <p class="lede"><span lang="ar">القراءات بعد الاعتماد</span><span lang="en">Readings after approval</span><span class="q-help" data-qhelp><button type="button" class="q-info" aria-expanded="false" aria-controls="qhKpiTool" aria-describedby="qhKpiTool"><span aria-hidden="true">i</span><span class="q-sr"><span lang="ar">مساعدة: أداة القراءات</span><span lang="en">Help: the readings tool</span></span></button><span class="q-help-panel" id="qhKpiTool" role="note" hidden><span lang="ar">إعداد جدول داخل المنصة، أو قالب CSV/Excel، أو ربط Google Sheets عبر الجسر. إدخال القراءات بعد الاعتماد من تبويب «المغذّي».</span><span lang="en">Set up an in-platform table, a CSV/Excel template, or a Google Sheets connection through the bridge. Enter readings after approval in the Feeder tab.</span></span></span></p>
+                <p class="lede"><span lang="ar">القراءات بعد الاعتماد</span><span lang="en">Readings after approval</span><span class="q-help" data-qhelp><button type="button" class="q-info" aria-expanded="false" aria-controls="qhKpiTool" aria-describedby="qhKpiTool"><span class="q-dot" aria-hidden="true">i</span><span class="q-sr" data-ar="مساعدة: أداة القراءات" data-en="Help: the readings tool"></span></button><span class="q-help-panel" id="qhKpiTool" role="note" hidden data-ar="إعداد جدول داخل المنصة، أو قالب CSV/Excel، أو ربط Google Sheets عبر الجسر. إدخال القراءات بعد الاعتماد من تبويب «المغذّي»." data-en="Set up an in-platform table, a CSV/Excel template, or a Google Sheets connection through the bridge. Enter readings after approval in the Feeder tab."></span></span></p>
                 <div class="gx-seg" id="gxToolMode" style="max-width:520px"><button type="button" data-gfm="table"><span lang="ar">جدول داخل المنصة</span><span lang="en">On-site table</span></button><button type="button" data-gfm="file"><span lang="ar">ملف CSV / Excel</span><span lang="en">CSV / Excel file</span></button><button type="button" data-gfm="sheet"><span lang="ar">Google Sheets</span><span lang="en">Google Sheets</span></button></div>
                 <div id="gxImportBoxK" hidden style="margin-top:10px"></div>
                 <div id="gxTool" style="margin-top:8px"></div>
@@ -4811,11 +4813,20 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
   // focus. Its accessible name is written in both languages as lang spans, and the language
   // not in use is display:none, so a screen reader hears only the one on screen.
   var QH_SEQ=0;
+  function qEsc(x){ return String(x==null?"":x).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  function qAr(){ return document.documentElement.lang==="ar"; }
   function qHelp(topicAr, topicEn, ar, en){
-    var id="qh"+(++QH_SEQ);
+    var id="qh"+(++QH_SEQ), a=qAr();
     return '<span class="q-help" data-qhelp><button type="button" class="q-info" aria-expanded="false" aria-controls="'+id+'" aria-describedby="'+id+'">'+
-      '<span aria-hidden="true">i</span><span class="q-sr"><span lang="ar">مساعدة: '+topicAr+'</span><span lang="en">Help: '+topicEn+'</span></span></button>'+
-      '<span class="q-help-panel" id="'+id+'" role="note" hidden><span lang="ar">'+ar+'</span><span lang="en">'+en+'</span></span></span>';
+      '<span class="q-dot" aria-hidden="true">i</span><span class="q-sr" data-ar="'+qEsc("مساعدة: "+topicAr)+'" data-en="'+qEsc("Help: "+topicEn)+'">'+(a?"مساعدة: "+topicAr:"Help: "+topicEn)+'</span></button>'+
+      '<span class="q-help-panel" id="'+id+'" role="note" hidden data-ar="'+qEsc(ar)+'" data-en="'+qEsc(en)+'">'+(a?ar:en)+'</span></span>';
+  }
+  // the active language only, in the name and in the panel: a screen reader must not read
+  // both languages because one of them happens to be hidden by CSS
+  function qHelpLang(){
+    var a=qAr();
+    Array.prototype.forEach.call(document.querySelectorAll("[data-qhelp] [data-ar]"), function(el){
+      el.textContent = a ? el.getAttribute("data-ar") : el.getAttribute("data-en"); });
   }
   function qHelpClose(except){
     Array.prototype.forEach.call(document.querySelectorAll('.q-info[aria-expanded="true"]'), function(b){
@@ -4823,6 +4834,11 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       b.setAttribute("aria-expanded","false");
       var p=document.getElementById(b.getAttribute("aria-controls")); if(p) p.hidden=true; });
   }
+  // a panel left open does not survive a change of screen or tab
+  document.addEventListener("click", function(e){
+    if(e.target.closest && e.target.closest(".nav button,[data-gxtab],[data-gxkm]")) qHelpClose(null);
+    if(e.target.closest && e.target.closest("#lang")) setTimeout(qHelpLang, 0);
+  });
   document.addEventListener("click", function(e){
     var b=e.target.closest ? e.target.closest(".q-info") : null; if(!b) return;
     e.preventDefault();
@@ -8367,7 +8383,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(!dg) return "";        // the mark is the owner's note to herself, not a public label
     return '<button class="cbox'+(on?" on":"")+(dg?"":" fixed")+'"'+
       (dg?' data-canary="'+ref+'"':' disabled')+' title="'+tip.replace(/<[^>]*>/g,"")+'"'+
-      ' aria-label="'+(isAr()?"تثبيت على اللوحة":"Pin to the dashboard")+'"'+
+      ' aria-label="'+(on?(isAr()?"إلغاء التثبيت على اللوحة":"Unpin from dashboard"):(isAr()?"تثبيت على اللوحة":"Pin to the dashboard"))+'"'+
       ' aria-pressed="'+(on?"true":"false")+'">'+tick+'</button>';
   }
   // What this objective means for the person reading it — the part the
@@ -8415,7 +8431,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         '<span class="pill '+st[2]+'">'+bi(st[0],st[1])+'</span></div>';
     }).join("")
     : '<div class="subempty">'+bi("لا توجد أهداف مثبّتة.",
-        "No pinned objectives.")+qHelp("تثبيت الأهداف","pinning objectives","لتثبيت هدف: مربع المتابعة بجانب رقمه في الخطة السنوية.","To pin an objective, use the tracking box beside its number in the annual plan.")+'</div>';
+        "No pinned objectives.")+(ROLE!=="dg"?"":qHelp("تثبيت الأهداف","pinning objectives","لتثبيت هدف: مربع المتابعة بجانب رقمه في الخطة السنوية.","To pin an objective, use the tracking box beside its number in the annual plan."))+'</div>';
     return '<div class="card"><div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.6 5.6 6.1.8-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6L3.3 9.4l6.1-.8z"/></svg></span><div>'+
       '<span class="ceye">'+bi("مثبّتة من الخطة السنوية","Pinned from the annual plan")+'</span>'+
       '<h2>'+bi("الأهداف ذات الأولوية","Priority objectives")+'</h2></div>'+
@@ -14570,11 +14586,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       (S.title&&!oOpen&&ro?'<span class="gx-sum"><span class="gx-prog"><i style="--rest:'+(100-gxProgress(S))+'%"></i>'+gxProgress(S)+'%</span></span>':'')+'</span>'+
       (oOpen?'<div class="gx-det"><div class="f"><label>'+bi("نطاق الهدف","Objective scope")+'</label><select id="gx-scope">'+gxScopes().map(function(k){return '<option value="'+k+'"'+(S.scope===k?" selected":"")+'>'+(isAr()?GX_SCOPE[k][0]:GX_SCOPE[k][1])+'</option>';}).join("")+'</select></div>'+
         (gxUnits(S.scope).length?'<div class="f w"><label>'+(S.scope==="department"?bi("القسم","Department"):bi("الدائرة","Directorate"))+'</label><select id="gx-unit">'+gxUnits(S.scope).map(function(u){return '<option'+(S.unit===u?" selected":"")+'>'+gxEsc(u)+'</option>';}).join("")+'</select></div>':'')+
-        '<div class="f"><label>'+bi("تاريخ البداية","Start date")+'</label><input type="date" id="gx-from" value="'+S.from+'"></div><div class="f"><label>'+bi("تاريخ النهاية","End date")+'</label><input type="date" id="gx-to" value="'+S.to+'"></div>'+
+        '<div class="f"><label>'+bi("تاريخ البداية","Start date")+'</label>'+qHelp("مدة الهدف","objective dates","تحديد المدة بإدخال التاريخين هنا، أو بالسحب على صف الهدف في الجدول الزمني بعد كتابة عنوانه.","Enter both dates here, or drag on the objective's row in the timeline once it has a title.")+'<input type="date" id="gx-from" value="'+S.from+'"></div><div class="f"><label>'+bi("تاريخ النهاية","End date")+'</label><input type="date" id="gx-to" value="'+S.to+'"></div>'+
         (total?'<div class="f w" style="font-size:var(--t-xs);color:var(--ink-3)">'+bi("ميزانية مقترحة من الخطوات: ","Proposed from the steps: ")+gxMoney(total)+'</div>':'')+'</div>':'')+'</div>';
-    if(!S.title){ T+=track("obj",'<div class="gx-gh">'+bi("مدة الهدف غير محددة.","Objective dates not set.")+qHelp("مدة الهدف","objective dates","تحديد المدة بالسحب على صف الهدف أو بإدخال التاريخين في التفاصيل.","Set the period by dragging on the objective row or entering both dates in its details.")+'</div>'); stage=bi("عنوان الهدف مطلوب.","Objective title required."); }
+    if(!S.title){ T+=track("obj",'<div class="gx-gh">'+bi("مدة الهدف غير محددة.","Objective dates not set.")+'</div>'); stage=bi("عنوان الهدف مطلوب.","Objective title required."); }
     else {
-      T+=track("obj"+(oOpen?' open':''), (gxHasDates()?bar("obj",S.from,S.to,S.title):'<div class="gx-gh">'+bi("مدة الهدف غير محددة.","Objective dates not set.")+qHelp("مدة الهدف","objective dates","تحديد المدة بالسحب على صف الهدف أو بإدخال التاريخين في التفاصيل.","Set the period by dragging on the objective row or entering both dates in its details.")+'</div>')+kmarks(), 'data-gxobjrow="1"');
+      T+=track("obj"+(oOpen?' open':''), (gxHasDates()?bar("obj",S.from,S.to,S.title):'<div class="gx-gh">'+bi("مدة الهدف غير محددة.","Objective dates not set.")+'</div>')+kmarks(), 'data-gxobjrow="1"');
       S.phases.forEach(function(ph,pi){
         var sp=(ph.from&&ph.to)?{from:ph.from,to:ph.to}:null, pok=!sp||gxWithin(ph.from,ph.to,S.from,S.to); if(!pok) oob++;
         L+='<div class="gx-lr ph'+(ph.open?' open':'')+'"><span class="name">'+(ph.name?'<span class="gx-car" data-gxphtoggle="'+pi+'">▶</span>':'')+
@@ -14878,7 +14894,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
        p:["اسم المؤشر وما يقيسه ولمن، وبُعد الجودة الذي يخدمه، والسبب الذي يجعل قياسه يستحق العناء. إن لم يكن هناك قرار يتغيّر بالقراءة، فالمؤشر تقرير لا مؤشر.",
           "Its name, what it measures and for whom, the quality dimension it serves, and why measuring it is worth the effort. If no decision changes with the reading, this is a report, not an indicator."]},
     {n:2,t:["تعريف الحساب","Calculation definition"],
-       p:["البسط والمقام والاستثناءات وعناصر البيانات. هنا يقع أكثر الخلاف لاحقاً: من دخل العدّ ومن خرج منه ولماذا. «اختبار المقام» يجرّب التعريف برقمين قبل أن يُعتمد.",
+       h:["اختبار المقام يحسب النسبة من رقمين تجريبيين؛ لا يتحقق من صحة التعريف.","Test denominator calculates a percentage from two trial numbers; it does not validate the definition."],
+       p0:["البسط والمقام والاستثناءات وعناصر البيانات. هنا يقع أكثر الخلاف لاحقاً: من دخل العدّ ومن خرج منه ولماذا. «اختبار المقام» يجرّب التعريف برقمين قبل أن يُعتمد.",
           "Numerator, denominator, exclusions and data elements. This is where later disputes start: who was counted, who was not, and why. «Test the denominator» tries the definition on two numbers before it is adopted."]},
     {n:3,t:["مصادر البيانات وجمعها","Data sources and collection"],
        p:["المصدر ووتيرة الجمع ووتيرة الرصد. قائمة أسماء حقول لا تثبت أن الإمداد ممكن — إن لم يكن هناك من يجمعها بهذه الوتيرة، فالمؤشر لن يُقرأ.",
@@ -14890,7 +14907,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
        p:["جهة الرصد، ووتيرة التقرير وأين يُدرج، والمحددات التي تُقيّد تفسيره، والمؤشرات التي تُقرأ معه. المحددات ليست اعترافاً بالضعف — هي ما يمنع قراءة خاطئة.",
           "The monitoring role, the reporting frequency and destination, the limits on interpretation, and the indicators read alongside it. Stating limits is not an admission of weakness — it prevents a wrong reading."]},
     {n:6,t:["مراجعة البطاقة","Review card"],
-       p:["كل الحقول كما ستُقرأ، وما ينقص كل قسم. لا إجابات مخزّنة هنا: هذا هو النموذج الكامل نفسه.",
+       h:["يعرض هذا السؤال حقول النموذج الكامل نفسها.","This question displays the same fields as the full form."],
+       p0:["كل الحقول كما ستُقرأ، وما ينقص كل قسم. لا إجابات مخزّنة هنا: هذا هو النموذج الكامل نفسه.",
           "Every field as it will be read, and what each section still needs. Nothing is stored here separately: this is the full form itself."]}
   ];
   function gxFieldHTML(f,S,k,C){
@@ -14911,8 +14929,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var k=GX.KD; if(!k) return; GXDT=key;
     var box=document.getElementById("gxDT"); if(!box) return;
     var parts=[];
-    parts.push('<b>'+bi("المقام كما كُتب","The denominator as written")+':</b> '+(String(k[key]||"").trim()?gxEsc(k[key]):'<span style="color:var(--critical-ink)">'+bi("لم يُكتب بعد","not written yet")+'</span>'));
-    parts.push('<b>'+bi("الاستثناءات","Exclusions")+':</b> '+(String(k.excl||"").trim()?gxEsc(k.excl):bi("لم تُذكر","none stated")));
+    parts.push('<b>'+bi("المقام كما كُتب","The denominator as written")+':</b> '+(String(k[key]||"").trim()?gxEsc(k[key]):'<span style="color:var(--critical-ink)">'+bi("تعريف المقام غير مكتوب.","Denominator definition not entered.")+'</span>'));
+    parts.push('<b>'+bi("الاستثناءات","Exclusions")+':</b> '+(String(k.excl||"").trim()?gxEsc(k.excl):bi("الاستثناءات غير مذكورة.","Exclusions not stated.")));
     parts.push('<b>'+bi("وتيرة الجمع","Collection")+':</b> '+(k.cfreq&&GX_FREQ[k.cfreq]?gxEsc(isAr()?GX_FREQ[k.cfreq][0]:GX_FREQ[k.cfreq][1]):bi("لم تُحدد","not set")));
     document.getElementById("gxDTctx").innerHTML=parts.join("<br>");
     document.getElementById("gxDTn").value=""; document.getElementById("gxDTd").value="";
@@ -14927,21 +14945,21 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(String(nR).trim()===""||String(dR).trim()===""){ out.hidden=true; return; }
     var n=gxNum(nR), d=gxNum(dR);
     out.hidden=false;
-    if(typeof n!=="number"||typeof d!=="number"){ out.className="out bad"; out.innerHTML=bi("أحد الرقمين ليس عدداً.","One of the two is not a number."); return; }
-    if(d<0||n<0){ out.className="out bad"; out.innerHTML=bi("العدّ لا يكون سالباً.","A count is not negative."); return; }
+    if(typeof n!=="number"||typeof d!=="number"){ out.className="out bad"; out.innerHTML=bi("يلزم إدخال رقم في كل حقل.","Enter a number in each field."); return; }
+    if(d<0||n<0){ out.className="out bad"; out.innerHTML=bi("يلزم أن يكون البسط والمقام صفراً أو أكبر.","Numerator and denominator must be zero or greater."); return; }
     if(d===0){ out.className="out bad";
-      out.innerHTML=bi("مقام صفر: <b>لا نتيجة</b> — وليست صفراً بالمئة. الفترة التي لا أحد فيها مؤهل تُترك بلا قراءة، ولا تُقرأ كأداء سيئ.",
-                       "A zero denominator gives <b>no result</b> — not 0%. A period with nobody eligible is left unread, never read as poor performance."); return; }
+      out.innerHTML=bi("المقام صفر: لا يمكن حساب النسبة. لا تعني هذه الحالة ٠٪ أو أداءً ضعيفاً.",
+                       "Zero denominator: the percentage cannot be calculated. This does not mean 0% or poor performance."); return; }
     if(n>d){ out.className="out bad";
-      out.innerHTML=bi("البسط أكبر من المقام ("+n+"/"+d+"): مستحيل إن كان البسط جزءاً من المقام. إمّا أن التعريفين لا يصفان الفئة نفسها، أو أن العدّ يكرّر الشخص الواحد.",
-                       "Numerator exceeds denominator ("+n+"/"+d+"): impossible if the numerator is a subset. Either the two definitions describe different populations, or one person is counted more than once."); return; }
+      out.innerHTML=bi("البسط أكبر من المقام ("+n+"/"+d+"). إذا كان البسط جزءاً من المقام، يلزم مراجعة التعريف والعدّ.",
+                       "Numerator exceeds denominator ("+n+"/"+d+"). If the numerator is a subset of the denominator, review the definition and counts."); return; }
     var pct=Math.round(n/d*1000)/10;
     if(d<5){ out.className="out warn";
-      out.innerHTML=bi("النتيجة "+pct+"% — لكن المقام <b>"+d+"</b> فقط. عيّنة بهذا الصغر تتحرك بحالة واحدة؛ يُذكر العدد مع النسبة دائماً، أو تُجمع فترات أطول.",
-                       "Result "+pct+"% — but the denominator is only <b>"+d+"</b>. A sample this small moves with a single case; show the count beside the percentage, or aggregate longer periods."); return; }
+      out.innerHTML=bi("النتيجة "+pct+"% — المقام <b>"+d+"</b> فقط؛ تتأثر النسبة بتغيّر حالة واحدة.",
+                       "Result "+pct+"% — the denominator is only <b>"+d+"</b>; one case can substantially change the percentage."); return; }
     out.className="out ok";
-    out.innerHTML=bi("النتيجة "+pct+"% ("+n+" من "+d+"). التعريف يعطي قراءة صالحة على هذين الرقمين.",
-                     "Result "+pct+"% ("+n+" of "+d+"). The definition yields a valid reading on these two numbers.");
+    out.innerHTML=bi("النتيجة "+pct+"% ("+n+" من "+d+"). هذه نتيجة حسابية؛ لا تثبت صحة تعريف المؤشر.",
+                     "Result "+pct+"% ("+n+" of "+d+"). This is an arithmetic result; it does not validate the KPI definition.");
   }
   // ── the guided mode: the same registry, one question at a time ──
   function gxDrawGuide(){
@@ -14971,7 +14989,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       body='<div class="gx-kgrid">'+GX_FIELDS.filter(function(f){return f.q===q;}).map(function(f){ return gxFieldHTML(f,S,k,C); }).join("")+'</div>';
     }
     host.innerHTML='<div class="gx-qnav">'+nav+'</div>'+
-      '<h4 class="gx-qh">'+bi(Q.t[0],Q.t[1])+'</h4><p class="gx-qp">'+bi(Q.p[0],Q.p[1])+'</p>'+ body +
+      '<h4 class="gx-qh">'+bi(Q.t[0],Q.t[1])+(Q.h?qHelp(Q.t[0],Q.t[1],Q.h[0],Q.h[1]):"")+'</h4>'+(Q.p?'<p class="gx-qp">'+bi(Q.p[0],Q.p[1])+'</p>':"")+ body +
       '<div class="gx-qfoot">'+
         (q>1?'<button class="btn" type="button" data-gxkq="'+(q-1)+'">'+bi("السابق","Previous")+'</button>':'')+
         (q<6?'<button class="btn btn-p" type="button" data-gxkq="'+(q+1)+'">'+bi("التالي","Next")+'</button>':'')+
@@ -14985,10 +15003,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(gd) gd.hidden = m!=="guided";
     var h=document.getElementById("gxKModeHint");
     if(h) h.innerHTML = m==="guided"
-      ? bi("ستة أسئلة، حقولها هي حقول النموذج نفسها — لا نسخة مختصرة منها. السؤال السادس يعرض البطاقة كاملة.",
-           "Six questions whose fields are the form's own fields, not a shortened copy of them. The sixth shows the whole card.")
-      : bi("كل حقول الملحق السادس في أربعة أقسام. الإعداد خطوة بخطوة يعرض الحقول نفسها سؤالاً سؤالاً.",
-           "Every Appendix-6 field in four sections. The guided mode walks the same fields one question at a time.");
+      ? qHelp("الإعداد خطوة بخطوة","step-by-step setup","الإعداد خطوة بخطوة يستخدم حقول النموذج نفسها. السؤال السادس يعرض البطاقة كاملة.","Step-by-step setup uses the same fields. Question six shows the full card.")
+      : qHelp("النموذج الكامل","the full form","النموذج في أربعة أقسام. الإعداد خطوة بخطوة يعرض الحقول نفسها.","The form has four sections. Step-by-step setup displays the same fields.");
     gxDTClose();
     // the hidden renderer holds whatever it was drawn with, so the one coming into view is redrawn
     if(m==="guided") gxDrawGuide(); else { gxDrawKForm(); gxDrawSections(); }
@@ -15064,7 +15080,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var dgBox = (ROLE==="dg" && pend.length) ?
       '<div class="gx-frule" style="border:1px solid var(--warn-rule);background:var(--warn-bg);color:var(--warn-ink)">'+
       bi("بانتظار إذنك: ","Awaiting your authorisation: ")+pend.map(function(f){
-        return gxEsc(f.name)+' <button class="btn" style="padding:1px 8px;font-size:var(--t-xs)" data-gxfok="'+gxEsc(f.name)+'">'+bi("أذن","Authorise")+'</button>'; }).join(" · ")+'</div>' : '';
+        return gxEsc(f.name)+' <button class="btn" style="padding:1px 8px;font-size:var(--t-xs)" data-gxfok="'+gxEsc(f.name)+'">'+bi("منح الإذن","Authorise")+'</button>'; }).join(" · ")+'</div>' : '';
     host.innerHTML='<div class="gx-fchips">'+(chips||'<span style="color:var(--ink-3);font-size:var(--t-sm)">'+bi("لم تُسمَّ جهة الرصد بعد.","No monitoring role named yet.")+'</span>')+'</div>'+
       dgBox + add +
       '<div class="gx-frule">'+bi(
@@ -15486,11 +15502,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   // why a card may have no period map at all — said plainly rather than guessed around
   function gxPeriodPlan(k,S){
     var f=k.cfreq;
-    if(!f || !GX_FREQ[f]) return {ok:false, why:["وتيرة جمع البيانات غير محددة في البطاقة","The card does not state a collection frequency"]};
+    if(!f || !GX_FREQ[f]) return {ok:false, why:["وتيرة جمع البيانات غير محددة في البطاقة.","Collection frequency is not set on the card."]};
     var from = gxValidDate(k.baseDate) ? k.baseDate : (S&&gxValidDate(S.from) ? S.from : "");
-    if(!from) return {ok:false, why:["لا تاريخ بداية: لا خط أساس مؤرخ ولا بداية للهدف","No start date: neither a dated baseline nor an objective start"]};
+    if(!from) return {ok:false, why:["تاريخ البداية غير متاح: يلزم تاريخ خط الأساس أو بداية الهدف.","Start date unavailable: a baseline date or objective start date is needed."]};
     var endRaw = gxValidDate(k.targetDate) ? Math.min(gxP(k.targetDate), gxP(PLATFORM_TODAY)) : gxP(PLATFORM_TODAY);
-    if(endRaw < gxP(from)) return {ok:false, why:["البداية بعد اليوم — لم تبدأ فترات القياس بعد","The start is later than today — no measured period has begun"]};
+    if(endRaw < gxP(from)) return {ok:false, why:["بداية القياس بعد نهاية النطاق المعروض.","The measurement start is after the displayed range ends."]};
     return {ok:true, f:f, from:gxP(from), end:endRaw};
   }
   function gxPeriods(k,S,fd){
@@ -15534,8 +15550,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function gxWorklistHTML(k,S,fd){
     var res=gxPeriods(k,S,fd);
     if(!res.ok) return '<div class="gx-wl"><div class="gx-wlnote">'+
-      bi("<b>خريطة الفترات غير محددة.</b> "+res.why[0]+" — فلا تُفترض فترات ولا تُختلق.",
-         "<b>The period map is not settled.</b> "+res.why[1]+" — so no periods are assumed and none are invented.")+'</div></div>';
+      bi("خريطة الفترات غير متاحة: "+res.why[0],
+         "Period map unavailable: "+res.why[1])+'</div></div>';
     var counts={}; Object.keys(GX_WLS).forEach(function(x){ counts[x]=0; });
     res.periods.forEach(function(p){ counts[p.state]++; });
     var chips=[['all', bi("الكل","All"), res.periods.length]].concat(Object.keys(GX_WLS).map(function(x){
@@ -15551,27 +15567,25 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var outHTML = res.outside.length ? '<div class="gx-wlout">'+
       bi("<b>"+res.outside.length+" صفاً خارج خريطة الفترات:</b> ","<b>"+res.outside.length+" rows outside the period map:</b> ")+
       res.outside.slice(0,6).map(function(o){ return (o.why==="bad-date"? bi("تاريخ غير صالح ","invalid date ") : bi("خارج المدى ","out of range "))+'«'+gxEsc(o.d)+'»'; }).join(" · ")+
-      (res.outside.length>6?" …":"")+" — "+bi("تُعرض ولا تُحذف ولا تُحسب في أي فترة.","shown, never deleted, and counted in no period.")+'</div>' : "";
+      (res.outside.length>6?" …":"")+" — "+bi("الصفوف محفوظة، ولا تُحسب ضمن الفترات المعروضة.","Rows are retained and are not counted in the displayed periods.")+'</div>' : "";
     return '<div class="gx-wl"><div class="gx-wlbar">'+chips.map(function(c){
         return '<button type="button" data-gxwl="'+c[0]+'" class="'+(GX_WL.filter===c[0]?"on":"")+'">'+c[1]+'<span class="n">'+c[2]+'</span></button>'; }).join("")+
-      '</div><div class="gx-wlgrid">'+(cards||'<div class="gx-wlnote">'+bi("لا فترة بهذه الحالة.","No period in that state.")+'</div>')+'</div>'+
+      '</div><div class="gx-wlgrid">'+(cards||'<div class="gx-wlnote">'+bi("لا توجد فترات بهذه الحالة.","No periods have this status.")+'</div>')+'</div>'+
       outHTML +
-      '<div class="gx-wlnote">'+bi(
-        "الفترة تُحسب بالتاريخ المكتوب <b>في القراءة</b>، لا بيوم إدخالها. فمن يُدخل في يوليو قراءةَ أبريل يُكمل أبريل فوراً، ولا تأخّر في ذلك — ويوم الإدخال يُسجَّل بجانبها للعلم لا للحكم. والفترة الخالية تبقى خالية: لا تُملأ صفراً ولا تُقرأ أداءً ضعيفاً.",
-        "A period is decided by the date written <b>in the reading</b>, not the day it was typed. Someone entering April's figure in July completes April at once, and nothing about it is late — the entry day is recorded beside it for provenance, not for judgement. An empty period stays empty: never filled with a zero, never read as poor performance.")+'</div></div>';
+      '<div class="gx-wlnote">'+bi("تحديد الفترات","How periods are set")+qHelp("تحديد الفترات","how periods are set","تُحدَّد الفترة بتاريخ القراءة. تاريخ الإدخال للمعلومية ولا يحدد التأخر. الفترة بلا قراءة لا تُحسب صفراً أو أداءً ضعيفاً.","The reading date determines its period. The entry date records provenance and does not determine lateness. A period without a reading is not treated as zero or poor performance.")+'</div></div>';
   }
 
   function gxDrawFeed(){ var host=document.getElementById("gxFeed"); if(!host) return; var S=GX.cur; if(!S){ host.innerHTML=""; return; }
-    if(S.status!=="approved"){ host.innerHTML='<div class="noresult">'+bi("المسودات لا تحمل قراءات — تُغذّى بعد الاعتماد.","Drafts carry no readings — feeding starts after approval.")+'</div>'; return; }
+    if(S.status!=="approved"){ host.innerHTML='<div class="noresult">'+bi("القراءات متاحة بعد اعتماد الهدف.","Readings are available after objective approval.")+'</div>'; return; }
     if(GX.K===null && S.kpis.length){ GX.K=Math.max(0, S.kpis.map(function(k){return k.plan?1:0;}).indexOf(0)); GX.KD=JSON.parse(JSON.stringify(S.kpis[GX.K])); }
     var k=GX.K!==null?S.kpis[GX.K]:null; var steps=gxStepsFeed();
-    if(!k){ host.innerHTML=steps+'<div class="noresult" style="margin-top:10px">'+bi("لا مؤشرات لهذا الهدف بعد.","No KPIs for this objective yet.")+'</div>'; return; } if(!k.feed) k.feed=gxBlankFeed(); var fd=k.feed;
+    if(!k){ host.innerHTML=steps+'<div class="noresult" style="margin-top:10px">'+bi("لا توجد مؤشرات لهذا الهدف.","This objective has no KPIs.")+'</div>'; return; } if(!k.feed) k.feed=gxBlankFeed(); var fd=k.feed;
     document.getElementById("gxFeedFor").innerHTML=gxEsc(S.title);
     var me=gxMe(); var canRead = gxCanFeedK(k,S); var lockR = !canRead && ROLE!=="dg";
     if(!fd.meta) fd.meta=[]; var unsent=fd.rows.filter(function(row,r){ var m=fd.meta[r]; return !(m&&(m.pending||m.verified)) && String(row[fd.dateCol]||"").trim(); }).length;
     var pick='<div class="gx-sec">'+bi("قراءات المؤشر","KPI readings")+' <span style="font-weight:400;letter-spacing:0;color:var(--ink-3)">— '+(fd.mode==="sheet"?bi("من ورقة Google Sheets: مصدر نظامي لا يحتاج توثيقاً","from a Google Sheet: system-sourced, no verification"):bi("يُدخلها «جهة الرصد» ثم تُرسل لتوثيق مديرها المباشر","entered by the monitor, then sent to their line manager"))+'</span></div><div class="gx-kgrid" style="align-items:end"><div class="f w3"><label>'+bi("المؤشر الذي تُغذَّى قراءاته","KPI being fed")+'</label><select id="gxFeedPick">'+S.kpis.map(function(x,i){return '<option value="'+i+'"'+(i===GX.K?" selected":"")+'>'+gxEsc(x.name)+(x.plan?' — '+(isAr()?"يُحسب من الخطوات تلقائياً":"computed from the steps"):'')+'</option>';}).join("")+'</select></div>'+
-      (k.plan?'<div class="f w3" style="font-size:var(--t-xs);color:var(--ink-3)">'+bi("هذا المؤشر يُقرأ من إنجاز الخطوات الموثّقة أعلاه ولا يحتاج إدخالاً.","This KPI reads itself from the verified steps above.")+'</div>'
-       : lockR ? '<div class="f w3" style="font-size:var(--t-xs);color:var(--ink-3)">'+bi("جهة الرصد لهذا المؤشر: ","Monitored by: ")+gxEsc(k.reader||"—")+' — '+bi("القراءة هنا للاطلاع.","read-only here.")+'</div>'
+      (k.plan?'<div class="f w3" style="font-size:var(--t-xs);color:var(--ink-3)">'+bi("يُحسب المؤشر من إنجاز الخطوات الموثّقة؛ لا يتطلب إدخال قراءة.","The KPI is calculated from attested step completion; no reading entry is needed.")+'</div>'
+       : lockR ? '<div class="f w3" style="font-size:var(--t-xs);color:var(--ink-3)">'+bi("جهة الرصد لهذا المؤشر: ","Monitored by: ")+gxEsc(k.reader||"—")+' — '+bi("للاطلاع فقط.","Read-only.")+'</div>'
        : '<div class="f"><label>'+bi("التاريخ","Date")+'</label><input type="date" id="gxQd" value="'+PLATFORM_TODAY+'"></div><div class="f"><label>'+bi("القراءة","Value")+'</label><input type="number" step="any" id="gxQv" placeholder="'+gxEsc(k.unit)+'"></div><div class="f" style="align-self:end"><button class="btn btn-p" id="gxQadd">'+bi("إضافة قراءة","Add reading")+'</button> '+(unsent&&fd.mode!=="sheet"?'<button class="btn" id="gxQsend">'+bi("إرسال "+unsent+" للتوثيق","Send "+unsent+" for verification")+'</button>':'')+'</div>')+'</div>';
     if(k.plan){ host.innerHTML=steps+pick; return; }
     var html=gxTableHTML(fd,k,{lock:lockR, ro:lockR});
@@ -15604,19 +15618,24 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       '<p class="lede">'+bi(sc.ok.length+" صفاً صالحاً للقراءة من "+sc.rows.length,sc.ok.length+" usable of "+sc.rows.length+" rows")+
       (sc.dupN?' · '+bi(sc.dupN+" تاريخاً مكرراً",sc.dupN+" duplicate dates"):'')+
       (sc.held?' · <b class="gx-warn">'+bi(sc.held+" قراءة موثّقة أو معلّقة في الجدول الحالي",sc.held+" verified or pending readings already stored")+'</b>':'')+'</p>'+
-      (sc.bad.length?'<div class="gx-sm">'+bi("صفوف لم تُقرأ:","Rows not read:")+'<ul style="margin:4px 18px 0">'+
+      (sc.bad.length?'<div class="gx-sm">'+bi("صفوف لن تُدرج:","Rows that will not be imported:")+'<ul style="margin:4px 18px 0">'+
         sc.bad.slice(0,8).map(function(b){ return '<li>'+bi("السطر ","line ")+b.line+' — '+gxEsc(b.why)+': <span dir="ltr">'+gxEsc(b.raw)+'</span></li>'; }).join("")+
         (sc.bad.length>8?'<li>'+bi("و"+(sc.bad.length-8)+" غيرها","and "+(sc.bad.length-8)+" more")+'</li>':'')+'</ul></div>':'')+
       '<div class="gx-acts" style="margin-top:10px">'+
         '<button class="btn btn-p" data-gximp="append">'+bi("إضافة إلى الموجود","Append to existing")+'</button>'+
         '<button class="btn" data-gximp="replace">'+bi("استبدال الكل","Replace all")+'</button>'+
-        '<button class="btn" data-gximp="cancel">'+bi("إلغاء","Cancel")+'</button></div></div>';
+        '<button class="btn" data-gximp="cancel">'+bi("إلغاء","Cancel")+'</button></div>'+
+      // what each operation keeps and removes stays visible at the operation, not in help
+      '<div class="gx-sm" style="margin-top:8px">'+(GXIMP&&GXIMP.lock
+        ? bi("يُحفظ قالب الأعمدة فقط وتُزال صفوف القراءات.","Only the column template is saved; reading rows are cleared.")
+        : bi("الإضافة تحتفظ بالتاريخ والقيمة فقط وتتخطى التواريخ الموجودة.","Append keeps only date and value and skips dates already present.")+'<br>'+
+          bi("الاستبدال يزيل الصفوف الحالية ويُدرج الصفوف الصالحة فقط.","Replace removes current rows and imports only usable rows."))+'</div></div>';
   }
   function gxLoadFile(f,k,lock){ var fd=k.feed; if(/\.csv$|\.txt$/i.test(f.name)){ var rdr=new FileReader(); rdr.onload=function(){ var t=gxParseCSV(String(rdr.result));
       if(t.length){ GXIMP={rows:t, k:k, lock:lock, file:f.name, scan:gxImportScan(t,fd)};
         var box=document.getElementById("gxImportBox"); if(box){ box.innerHTML=gxImportHTML(GXIMP.scan,f.name); box.hidden=false; }
         return; }
-      gxSave(); gxDrawFeed(); gxDrawTool(); gxDrawKSide(); gxToast(lock?"أُخذت أعمدة الملف كقالب — القراءات بعد الاعتماد.":"قُرئ الملف: "+fd.rows.length+" صفاً.", lock?"Columns taken as a template — readings after approval.":"File read: "+fd.rows.length+" rows."); }; rdr.readAsText(f); } else { gxSave(); gxDrawFeed(); gxDrawTool(); gxToast("ملف Excel — يُقرأ بأداة تحليل المؤشرات عبر الجسر؛ سُجّل اسمه.","Excel — read through the bridge tool; name recorded."); } }
+      gxSave(); gxDrawFeed(); gxDrawTool(); gxDrawKSide(); gxToast("لم يُقرأ محتوى قابل للاستيراد من الملف.","No importable content was read from the file."); }; rdr.readAsText(f); } else { gxSave(); gxDrawFeed(); gxDrawTool(); gxToast("لم يُستورد الملف هنا. هذه الأداة تقرأ CSV وTXT.","The file was not imported here. This tool reads CSV and TXT."); } }
   function gxFeedK(){ var S=GX.cur; return GX.K!==null?S.kpis[GX.K]:GX.KD; }
   function gxEmbedDraw(cid){ var S=gxChildById(cid); var host=document.getElementById("gxE-"+cid); if(!S||!host) return; var st=GX.embed[cid]||(GX.embed[cid]={z:"year",V:S.from});
     var keep={cur:GX.cur,z:GX.z,V:GX.V}; GX.cur=S; GX.z=st.z; GX.V=st.V; try{ gxDraw(host,{embed:true}); }finally{ st.V=GX.V; GX.cur=keep.cur; GX.z=keep.z; GX.V=keep.V; }
@@ -15925,7 +15944,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(e.target.closest("[data-gxeditlock]")){ S.editGrant=false; S.editGrantBy=""; gxSave(); gxDraw(); gxToast("أُقفل التعديل.","Relocked."); return; }
     if(e.target.closest("[data-gxaddt],[data-gxaddph],#gx-nf-name")&&S.objOpen!==false&&document.querySelector("#gxG .gx-lr.obj.open")){ S.objOpen=false; }
     if(e.target.closest(".gx-st")){ e.stopPropagation(); gxShowTab("feed"); return; }
-    if(e.target.closest("#gxSaveDraft")){ if(!S.title){ gxToast("الهدف مطلوب أولاً.","Objective first."); return; } gxSave(); gxToast("حُفظ كمسودة.","Saved as a draft."); return; }
+    if(e.target.closest("#gxSaveDraft")){ if(!S.title){ gxToast("عنوان الهدف مطلوب.","Objective title required."); return; } gxSave(); gxToast("حُفظ كمسودة.","Saved as a draft."); return; }
     if(e.target.closest("#gxSubmit")){ if(!S.title||!gxHasDates()){ gxToast("يلزم الهدف ومدته قبل الإرسال.","Objective and period required."); return; } if(!S.kpis.length){ gxToast("يلزم مؤشر واحد على الأقل من تبويب «المؤشرات».","At least one KPI is required."); return; }
       var rt=gxRoute(S);
       // only the top of the chain approves on submission, and only for their own work.
@@ -15945,7 +15964,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       if(b.dataset.gxaddph){ S.phases.push({name:"",from:"",to:"",tasks:[]}); GX.formFor=null; gxDraw(); return; }
       if(b.dataset.gxaddt!==undefined){ GX.formFor=+b.dataset.gxaddt; gxDraw(); var nn=document.getElementById("gx-nf-name"); if(nn) nn.focus(); return; }
       if(b.dataset.gxcancelt){ GX.formFor=null; gxDraw(); return; }
-      if(b.dataset.gxsavet!==undefined){ var name=document.getElementById("gx-nf-name").value.trim(); if(!name){ gxToast("اسم الخطوة مطلوب أولاً.","Step name first."); return; } var ow=document.getElementById("gx-nf-owner"); var t2={name:name, owner:S.scope==="mine"?gxMe().name:(ow?ow.value.trim():""), from:document.getElementById("gx-nf-from").value, to:document.getElementById("gx-nf-to").value, budget:+document.getElementById("gx-nf-budget").value||0, note:"", st:"todo", done:"", open:false};
+      if(b.dataset.gxsavet!==undefined){ var name=document.getElementById("gx-nf-name").value.trim(); if(!name){ gxToast("اسم الخطوة مطلوب.","Step name required."); return; } var ow=document.getElementById("gx-nf-owner"); var t2={name:name, owner:S.scope==="mine"?gxMe().name:(ow?ow.value.trim():""), from:document.getElementById("gx-nf-from").value, to:document.getElementById("gx-nf-to").value, budget:+document.getElementById("gx-nf-budget").value||0, note:"", st:"todo", done:"", open:false};
         if(!t2.from||!t2.to){ gxToast("مدة الخطوة مطلوبة — بالتاريخين أو بالسحب.","Step period required."); return; } if(gxP(t2.from)>gxP(t2.to)) t2.to=t2.from; var phx=S.phases[+b.dataset.gxsavet]; var c=gxClamp(t2.from,t2.to,phx.from,phx.to); if(!c){ gxToast("الخطوة خارج مدة المرحلة كلياً.","Step entirely outside the phase."); return; } t2.from=c[0]; t2.to=c[1]; phx.tasks.push(t2); GX.formFor=null; gxSave(); gxDraw(); gxToast("أُضيفت الخطوة.","Step added."); return; }
       if(b.dataset.gxdelt){ var a=b.dataset.gxdelt.split(":"); S.phases[+a[0]].tasks.splice(+a[1],1); gxSave(); gxDraw(); return; }
       if(b.dataset.gxdelph){ S.phases.splice(+b.dataset.gxdelph,1); gxSave(); gxDraw(); return; } }
@@ -15955,9 +15974,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var km=e.target.closest("[data-gxkm]"); if(km){ gxSetKMode(km.dataset.gxkm); return; }
     var qb=e.target.closest("[data-gxkq]"); if(qb){ GX.kq=+qb.dataset.gxkq; gxUiSave(); gxDTClose(); gxDrawGuide(); var g=document.getElementById("gxGuide"); if(g) g.scrollIntoView({block:"nearest"}); return; }
     var dt=e.target.closest("[data-gxdt]"); if(dt){ gxDTOpen(dt.dataset.gxdt); return; }
-    if(e.target.closest("#gxAuto")){ if(!S.title){ gxToast("الهدف مطلوب أولاً.","Objective first."); return; } GX.drafts=gxAutoDraft(S); gxDrawDrafts(); gxToast(GX.drafts.length+" مسودة مؤشر مقترحة — للمراجعة.",GX.drafts.length+" KPI drafts proposed."); return; }
-    var da=e.target.closest("[data-gxdacc],[data-gxdedit],[data-gxdskip]"); if(da){ var di=+(da.dataset.gxdacc||da.dataset.gxdedit||da.dataset.gxdskip); var dk=GX.drafts[di]; if(da.dataset.gxdskip!==undefined){ GX.drafts.splice(di,1); gxDrawDrafts(); return; } if(da.dataset.gxdedit!==undefined||dk.base===""||dk.target===""){ GX.K=null; GX.KD=JSON.parse(JSON.stringify(dk)); GX.drafts.splice(di,1); gxDrawK(); return; } S.kpis.push(JSON.parse(JSON.stringify(dk))); GX.drafts.splice(di,1); gxSave(); gxDrawK(); gxToast("اعتُمد المؤشر.","KPI adopted."); return; }
-    if(e.target.closest("#gxKSave")){ var KD=GX.KD; if(!KD.name.trim()){ gxToast("اسم المؤشر مطلوب.","KPI name required."); return; } if(KD.base===""||KD.target===""){ gxToast("الرقم الحالي والمستهدف مطلوبان.","Current and target figures required."); return; } var copy=JSON.parse(JSON.stringify(KD)); if(GX.K===null) S.kpis.push(copy); else S.kpis[GX.K]=copy; GX.K=null; GX.KD=gxBlankK(); gxSave(); gxDrawK(); gxToast("حُفظ المؤشر.","KPI saved."); return; }
+    if(e.target.closest("#gxAuto")){ if(!S.title){ gxToast("عنوان الهدف مطلوب.","Objective title required."); return; } GX.drafts=gxAutoDraft(S); gxDrawDrafts(); gxToast(GX.drafts.length+" مسودة مؤشر مقترحة — للمراجعة.",GX.drafts.length+" KPI drafts proposed."); return; }
+    var da=e.target.closest("[data-gxdacc],[data-gxdedit],[data-gxdskip]"); if(da){ var di=+(da.dataset.gxdacc||da.dataset.gxdedit||da.dataset.gxdskip); var dk=GX.drafts[di]; if(da.dataset.gxdskip!==undefined){ GX.drafts.splice(di,1); gxDrawDrafts(); return; } if(da.dataset.gxdedit!==undefined||dk.base===""||dk.target===""){ GX.K=null; GX.KD=JSON.parse(JSON.stringify(dk)); GX.drafts.splice(di,1); gxDrawK(); return; } S.kpis.push(JSON.parse(JSON.stringify(dk))); GX.drafts.splice(di,1); gxSave(); gxDrawK(); gxToast("أُضيف المؤشر إلى الهدف.","KPI added to the objective."); return; }
+    if(e.target.closest("#gxKSave")){ var KD=GX.KD; if(!KD.name.trim()){ gxToast("اسم المؤشر مطلوب.","KPI name required."); return; } if(KD.base===""||KD.target===""){ gxToast("خط الأساس والمستهدف مطلوبان.","Baseline and target are required."); return; } var copy=JSON.parse(JSON.stringify(KD)); if(GX.K===null) S.kpis.push(copy); else S.kpis[GX.K]=copy; GX.K=null; GX.KD=gxBlankK(); gxSave(); gxDrawK(); gxToast("حُفظ المؤشر.","KPI saved."); return; }
     if(e.target.closest("#gxKNew")){ GX.K=null; GX.KD=gxBlankK(); gxDrawK(); return; }
     var dk2=e.target.closest("[data-gxdelk]"); if(dk2){ S.kpis.splice(+dk2.dataset.gxdelk,1); if(GX.K!==null){ GX.K=null; GX.KD=gxBlankK(); } gxSave(); gxDrawK(); return; }
     var ki=e.target.closest("[data-gxki]"); if(ki){ GX.K=+ki.dataset.gxki; GX.KD=JSON.parse(JSON.stringify(S.kpis[GX.K])); gxDrawK(); return; }
@@ -15988,8 +16007,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(e.target.closest("#gxSubGo")){ var sf=document.getElementById("gxSubFor"), sw=document.getElementById("gxSubWho"),
         s1=document.getElementById("gxSubFrom"), s2=document.getElementById("gxSubTo");
       var who=sw?sw.value:"", forW=sf?sf.value:"", f1=s1?s1.value:"", f2=s2?s2.value:"";
-      if(!who||!forW){ gxToast("الإنابة تحتاج اسمين.","Cover needs both names."); return; }
-      if(!gxValidDate(f1)||!gxValidDate(f2)||gxP(f2)<gxP(f1)){ gxToast("مدة الإنابة غير صحيحة.","The cover period is not valid."); return; }
+      if(!who||!forW){ gxToast("يلزم تحديد البديل ومن ينوب عنه.","Select the substitute and the person being covered."); return; }
+      if(!gxValidDate(f1)||!gxValidDate(f2)||gxP(f2)<gxP(f1)){ gxToast("يلزم تاريخا بداية ونهاية صالحان؛ النهاية لا تسبق البداية.","Valid start and end dates are required; the end must not precede the start."); return; }
       var kk4=GX.KD;
       gxSubs(kk4).push({who:who, forWhom:forW, from:f1, to:f2, by:gxMe().name, at:PLATFORM_TODAY});
       if(GX.K!==null && S.kpis[GX.K]) S.kpis[GX.K].subs=kk4.subs;
@@ -16002,9 +16021,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       if(act==="undo"){ gxUnDo(true); return; }
       if(act==="redo"){ gxUnDo(false); return; }
       if(act==="sort"){
-        if(gxHasFormula(fdt)){ gxToast("الجدول يحوي صيغاً تشير إلى خلايا بمواقعها؛ إعادة الترتيب تغيّر ما تقرأه — والصف الموثّق يبقى موثّقاً على معنى جديد. الترتيب موقوف حتى تتبع المراجعُ صفوفَها.",
-                                       "This table holds formulas that reference cells by position; reordering changes what they read, and a verified row would keep its attestation on a new meaning. Sorting is withheld until references follow their rows."); return; }
-        gxSnap(fdt); gxSortByDate(fdt); gxSave(); gxToolRedraw(); gxToast("رُتّبت الصفوف بالتاريخ — والتوثيق انتقل مع صفه.","Sorted by date — each attestation moved with its row."); return; }
+        if(gxHasFormula(fdt)){ gxToast("الترتيب غير متاح: قد يغيّر مراجع الصيغ ومعنى القراءات الموثّقة.",
+                                       "Sorting is unavailable: it may change formula references and the meaning of attested readings."); return; }
+        gxSnap(fdt); gxSortByDate(fdt); gxSave(); gxToolRedraw(); gxToast("رُتّبت الصفوف بالتاريخ مع الاحتفاظ بتوثيق كل صف.","Rows sorted by date, retaining each row’s attestation."); return; }
       if(act==="dups"){ var dd=gxDupDates(fdt);
         if(!dd.length) gxToast("لا تواريخ مكررة.","No duplicate dates.");
         else gxToast("تواريخ مكررة: "+dd.map(function(x){return x.date+" ×"+x.n;}).join("، "), "Duplicate dates: "+dd.map(function(x){return x.date+" ×"+x.n;}).join(", "));
@@ -16012,16 +16031,16 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       if(act==="eq"){ GXEQ=!GXEQ; GXPASTE=false; gxToolRedraw(); return; }
       if(act==="eqx"){ GXEQ=false; gxToolRedraw(); return; }
       if(act==="eqgo"){ gxSnap(fdt); var r=gxEqApply(fdt);
-        if(r===true){ GXEQ=false; gxSave(); gxToolRedraw(); gxToast("أُدرجت الصيغة — وتبقى نصاً قابلاً للتحرير.","Formula inserted — it stays editable text."); }
-        else { GXUN.u.pop(); gxToast(r==="locked"?"بنية الجدول مقفلة: لا عمود جديد.":r==="same"?"البسط والمقام العمود نفسه.":r==="empty"?"لا صفوف بعد.":"تعذّر إدراج الصيغة.",
-                                     r==="locked"?"The table structure is locked: no new column.":r==="same"?"Numerator and denominator are the same column.":r==="empty"?"No rows yet.":"Could not insert."); }
+        if(r===true){ GXEQ=false; gxSave(); gxToolRedraw(); gxToast("أُدرجت الصيغة.","Formula inserted."); }
+        else { GXUN.u.pop(); gxToast(r==="locked"?"بنية الجدول مقفلة؛ لا يمكن إضافة عمود.":r==="same"?"يلزم عمودان مختلفان للبسط والمقام.":r==="empty"?"لا توجد صفوف للحساب.":"تعذّر إدراج الصيغة.",
+                                     r==="locked"?"Table structure is locked; a column cannot be added.":r==="same"?"Choose different columns for numerator and denominator.":r==="empty"?"No rows are available for calculation.":"Could not insert."); }
         return; }
       if(act==="paste"){ GXPASTE=!GXPASTE; GXEQ=false; gxToolRedraw(); return; }
       if(act==="pastex"){ GXPASTE=false; gxToolRedraw(); return; }
       if(act==="pastego"){ var ta=document.getElementById("gxPasteTa"); var txt=ta?ta.value:"";
-        if(!String(txt).trim()){ gxToast("لا شيء ملصوق.","Nothing pasted."); return; }
+        if(!String(txt).trim()){ gxToast("لا يوجد نص للفحص.","No text to check."); return; }
         var t2=gxParseCSV(txt);
-        if(!t2.length){ gxToast("تعذّرت قراءة الملصوق.","The paste could not be read."); return; }
+        if(!t2.length){ gxToast("تعذّرت قراءة النص الملصوق. يلزم التحقق من تنسيقه.","The pasted text could not be read. Check its format."); return; }
         // the scanner reads its first row as headings, which is right for a file a program
         // wrote and wrong for two rows a person copied out of a sheet
         var hdrEl=document.getElementById("gxPasteHdr");
@@ -16036,8 +16055,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         var Sk=GX.cur, stored=(Sk&&GX.K!==null)?Sk.kpis[GX.K]:null;
         if(stored){ if(!stored.feed) stored.feed=gxBlankFeed(); stored.feed.lock=fdt.lock; }
         gxSave(); gxToolRedraw();
-        gxToast(fdt.lock?"قُفل شكل الجدول: الأعمدة والصيغ ثابتة، والقراءات تستمر.":"فُتح شكل الجدول — تغيير الأعمدة يغيّر معنى ما جُمع سابقاً.",
-                fdt.lock?"Shape locked: columns and formulas fixed, readings continue.":"Shape unlocked — changing columns changes what earlier readings meant.");
+        gxToast(fdt.lock?"قُفلت بنية الجدول؛ يمكن متابعة إدخال القراءات.":"فُتحت بنية الجدول؛ تغيير الأعمدة قد يغيّر معنى القراءات السابقة.",
+                fdt.lock?"Table structure locked; reading entry remains available.":"Table structure unlocked; column changes may change the meaning of earlier readings.");
         return; }
       return; }
     var fa=e.target.closest("[data-gxfadd]"); if(fa){ var fd=gxFeedK().feed; if(fd.lock&&fa.dataset.gxfadd==="col"){ gxToast("بنية الجدول مقفلة.","The table structure is locked."); return; } gxSnap(fd); if(fa.dataset.gxfadd==="row") fd.rows.push(fd.cols.map(function(){return "";})); else { fd.cols.push((isAr()?"عمود ":"Column ")+(fd.cols.length+1)); fd.rows.forEach(function(r){r.push("");}); } gxSave(); gxDrawFeed(); gxDrawTool(); return; }
@@ -16102,14 +16121,14 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var ib=e.target.closest&&e.target.closest("[data-gximp]"); if(!ib||!GXIMP) return;
     var act=ib.dataset.gximp, fd=GXIMP.k.feed, sc=GXIMP.scan;
     var box=document.getElementById("gxImportBox"); if(box){ box.hidden=true; box.innerHTML=""; }
-    if(act==="cancel"){ GXIMP=null; gxToast("أُلغي الاستيراد — لم يتغيّر شيء.","Import cancelled — nothing changed."); return; }
+    if(act==="cancel"){ GXIMP=null; gxToast("أُلغي الاستيراد دون إدراج بيانات.","Import cancelled without adding data."); return; }
     var held=(fd.meta||[]).filter(function(m){ return m&&(m.verified||m.pending); }).length;
-    if(!sc.ok.length && act==="replace"){ GXIMP=null; gxToast("لا صفوف صالحة — لم يُستبدل شيء.","No usable rows — nothing replaced."); return; }
+    if(!sc.ok.length && act==="replace"){ GXIMP=null; gxToast("لا توجد صفوف صالحة للاستيراد؛ لم يُستبدل الجدول.","No usable rows to import; the table was not replaced."); return; }
     // any path that would discard stored rows is refused while attested readings exist,
     // including the template/locked path, which used to clear them regardless of the action
     if(held && (act==="replace" || GXIMP.lock)){ GXIMP=null;
-      gxToast("يوجد "+held+" قراءة موثّقة أو معلّقة — لا يمكن استبدال الجدول؛ استخدم الإضافة أو مسار التصحيح المعتمد.",
-              "Protected readings present — the table cannot be replaced; append, or use the approved correction route."); return; }
+      gxToast("يوجد "+held+" قراءة موثّقة أو بانتظار التوثيق؛ العملية غير متاحة لأنها تستبدل الجدول.",
+              held+" attested readings or readings awaiting attestation; this operation is unavailable because it replaces the table."); return; }
     fd.file=GXIMP.file;
     if(GXIMP.lock){ fd.cols=sc.head.slice(); fd.dateCol=sc.dateCol; fd.valCol=sc.valCol; fd.rows=[]; fd.meta=[]; }
     else if(act==="replace"){ fd.cols=sc.head.slice(); fd.dateCol=sc.dateCol; fd.valCol=sc.valCol;
@@ -16132,8 +16151,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       GXIMP=null; return;
     }
     gxSave(); gxDrawFeed(); gxDrawTool(); gxDrawKSide();
-    gxToast(GXIMP.lock?"أُخذت الأعمدة كقالب — القراءات بعد الاعتماد.":(act==="replace"?"استُبدلت القراءات.":"أُضيفت "+newRows.length+" قراءة."),
-            GXIMP.lock?"Columns taken as a template.":(act==="replace"?"Readings replaced.":newRows.length+" readings appended."));
+    gxToast(GXIMP.lock?"حُفظت الأعمدة كقالب؛ القراءات بعد الاعتماد.":(act==="replace"?"استُبدلت القراءات بالصفوف الصالحة للاستيراد.":"أُضيفت "+newRows.length+" قراءة."),
+            GXIMP.lock?"Columns saved as a template; readings become available after approval.":(act==="replace"?"Readings replaced with usable import rows.":newRows.length+" readings appended."));
     GXIMP=null; return;
   });
   document.addEventListener("click",function(e){ if(!e.target.closest||typeof GX==="undefined"||!GX) return; var S=GX.cur;
@@ -16561,6 +16580,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   try{ kfDraw(); }catch(err){ console.error("kfld", err); }
 
+  try{ qHelpLang(); }catch(err){ console.error("qhelp", err); }
   try{ gxLoad(); var dl=document.createElement("datalist"); dl.id="gxPeople"; dl.innerHTML=STAFF.map(function(p){return '<option value="'+gxEsc(p.who[0])+'">';}).join(""); document.body.appendChild(dl); if(typeof drawPlan==="function") drawPlan(); }catch(err){ console.error("gen init", err); }   // the plan was drawn before the generator loaded — redraw so tracking tabs appear
 
 })();
