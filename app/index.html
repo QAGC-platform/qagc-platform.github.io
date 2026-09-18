@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>منصة ضمان الجودة</title>
-<meta name="qagc-ver" content="beta 84">
+<meta name="qagc-ver" content="beta 85">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -3936,7 +3936,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
               <div class="hint2" id="routeHint"></div></div>
             <div class="fld"><label><span lang="ar">الميزانية</span><span lang="en">Budget</span></label>
               <input value="اعتماد المدير العام دائماً — always the Director General" readonly>
-              <div class="hint2"><span lang="ar">قرار مالي — يبقى عندكِ دائماً.</span>
+              <div class="hint2"><span lang="ar">قرار مالي — يبقى عندك دائماً.</span>
                 <span lang="en">A financial decision — always yours.</span></div></div>
             <div class="fld"><label><span lang="ar">إسناد خطة العمل</span><span lang="en">Assigning the action plan</span></label>
               <select class="fld-sel" id="setAsgPriv">
@@ -4411,12 +4411,12 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
           </div>
           <span class="kerr" id="dgcalSetErr"></span>
           <p style="font-size:var(--t-sm);color:var(--ink-3);margin-top:var(--sp-3)">
-            <span lang="ar">من يستطيع الجدولة في تقويمها — المديرة دائماً، ومن تعلِّمين عليهم:</span>
+            <span lang="ar">من يستطيع الجدولة في تقويمها — المديرة دائماً، ومن يُحدَّد أدناه:</span>
             <span lang="en">Who may schedule into it — the DG always, plus whoever is ticked:</span></p>
           <div id="dgCalEds" style="display:flex;gap:12px;flex-wrap:wrap"></div>
           <p class="subh" style="margin-top:var(--sp-4)"><span lang="ar">تقويم المركز</span><span lang="en">The centre calendar</span></p>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">الجميع يشاهده. المديرة والتنسيق يضيفان دائماً، ومن تعلِّمين عليهم أيضاً:</span>
+            <span lang="ar">الجميع يشاهده. المديرة والتنسيق يضيفان دائماً، وكذلك من يُحدَّد أدناه:</span>
             <span lang="en">Everyone views it. The DG and Coordination always add; so may whoever is ticked:</span></p>
           <div id="dirCalEds" style="display:flex;gap:12px;flex-wrap:wrap"></div>
         </div>
@@ -4442,7 +4442,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
             <span class="ceye"><span lang="ar">أثناء غيابك</span><span lang="en">While you are away</span></span>
             <h2><span lang="ar">تفويض الصلاحية</span><span lang="en">Delegation</span></h2></div></div></div>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">من ينوب عنكِ، وفي أي صلاحية.</span>
+            <span lang="ar">من ينوب عنك، وفي أي صلاحية.</span>
             <span lang="en">Who deputises for you, and for what.</span></p>
           <div class="frow">
             <div class="fld"><label><span lang="ar">النائب</span><span lang="en">Deputy</span></label>
@@ -4451,7 +4451,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
               <input type="date" value="2026-12-20"></div>
           </div>
           <div style="margin-top:var(--sp-3)">
-            <div class="toggle"><span><span class="tl2"><span lang="ar">اعتماد الإجازات نيابةً عنكِ</span><span lang="en">Approve leave on your behalf</span></span></span>
+            <div class="toggle"><span><span class="tl2"><span lang="ar">اعتماد الإجازات نيابةً عنك</span><span lang="en">Approve leave on your behalf</span></span></span>
               <button class="sw-btn on"><i></i></button></div>
             <div class="toggle"><span><span class="tl2"><span lang="ar">اعتماد تقديرات الميزانية</span><span lang="en">Validate budget estimates</span></span>
               <span class="ts2"><span lang="ar">يبقى مغلقاً افتراضياً — صلاحية مالية.</span><span lang="en">Off by default — this one is financial.</span></span></span>
@@ -8156,7 +8156,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   window._redrawLeave=function(){ if(_r3) _r3(); drawPerms(); drawAssign(); };
 
   // ── adjustable dashboard: a registry, a placed list, and an edit mode ──
-  var WHTML={ prio:"", tiles:"", queue:"", cats:"        <div class=\"card\">\n          <div class=\"card-h\"><div class=\"chrow\"><span class=\"ib gold\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M3 6h18M7 12h10M10 18h4\"/></svg></span><div>\n            <span class=\"ceye\"><span lang=\"ar\">تصنيف العمل</span><span lang=\"en\">Work classification</span></span>\n            <h2><span lang=\"ar\">الفئات الثلاث</span><span lang=\"en\">The three categories</span></h2></div></div></div>\n          <p style=\"font-size:var(--t-sm);color:var(--ink-3)\">\n            <span lang=\"ar\">كل هدف أو مهمة يُضاف — منكِ أو من الموظف — يقع في واحدة من ثلاث.</span>\n            <span lang=\"en\">Every objective or task added, by you or by staff, falls into one of three.</span></p>\n          <div class=\"tagbar\">\n            <i class=\"t-min\" style=\"width:33%\"></i><i class=\"t-dir\" style=\"width:45%\"></i>\n            <i class=\"t-third\" style=\"width:15%\"></i><i class=\"t-none\" style=\"width:7%\"></i>\n          </div>\n          <div class=\"tagrow\">\n            <span class=\"tag t-min\"><span class=\"dot\"></span><span lang=\"ar\">الخطة الخمسية</span><span lang=\"en\">Five-year plan</span></span>\n            <span class=\"lbl\"><span lang=\"ar\">متوافق مع الخطة الخمسية للوزارة</span><span lang=\"en\">In line with the Ministry five-year plan</span></span>\n            <span class=\"n\">14</span>\n          </div>\n          <div class=\"tagrow\">\n            <span class=\"tag t-dir\"><span class=\"dot\"></span><span lang=\"ar\">خطة الدائرة</span><span lang=\"en\">Directorate plan</span></span>\n            <span class=\"lbl\"><span lang=\"ar\">لتحقيق الخطة السنوية للدائرة</span><span lang=\"en\">To achieve the directorate annual plan</span></span>\n            <span class=\"n\">19</span>\n          </div>\n          <div class=\"tagrow\">\n            <span class=\"tag t-third\"><span class=\"dot\"></span><span lang=\"ar\">الفئة الثالثة</span><span lang=\"en\">Third</span></span>\n            <span class=\"lbl\"><span lang=\"ar\">فئة ثالثة — تُحدَّد لاحقاً</span><span lang=\"en\">A third category — you define it later</span></span>\n            <span class=\"n\">6</span>\n          </div>\n          <div class=\"tagrow\">\n            <span class=\"tag t-none\"><span class=\"dot\"></span><span lang=\"ar\">بلا تصنيف</span><span lang=\"en\">Untagged</span></span>\n            <span class=\"lbl\"><span lang=\"ar\">أُضيفت دون فئة — تحتاج تصنيفاً</span><span lang=\"en\">Added with no category — needs one</span></span>\n            <span class=\"n\">3</span>\n          </div>\n        </div>", leave:"", ready:"", audit:"" };
+  var WHTML={ prio:"", tiles:"", queue:"", cats:"        <div class=\"card\">\n          <div class=\"card-h\"><div class=\"chrow\"><span class=\"ib gold\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M3 6h18M7 12h10M10 18h4\"/></svg></span><div>\n            <span class=\"ceye\"><span lang=\"ar\">تصنيف العمل</span><span lang=\"en\">Work classification</span></span>\n            <h2><span lang=\"ar\">الفئات الثلاث</span><span lang=\"en\">The three categories</span></h2></div></div></div>\n          <p style=\"font-size:var(--t-sm);color:var(--ink-3)\">\n            <span lang=\"ar\">كل هدف أو مهمة يُضاف — منك أو من الموظف — يقع في واحدة من ثلاث.</span>\n            <span lang=\"en\">Every objective or task added, by you or by staff, falls into one of three.</span></p>\n          <div class=\"tagbar\">\n            <i class=\"t-min\" style=\"width:33%\"></i><i class=\"t-dir\" style=\"width:45%\"></i>\n            <i class=\"t-third\" style=\"width:15%\"></i><i class=\"t-none\" style=\"width:7%\"></i>\n          </div>\n          <div class=\"tagrow\">\n            <span class=\"tag t-min\"><span class=\"dot\"></span><span lang=\"ar\">الخطة الخمسية</span><span lang=\"en\">Five-year plan</span></span>\n            <span class=\"lbl\"><span lang=\"ar\">متوافق مع الخطة الخمسية للوزارة</span><span lang=\"en\">In line with the Ministry five-year plan</span></span>\n            <span class=\"n\">14</span>\n          </div>\n          <div class=\"tagrow\">\n            <span class=\"tag t-dir\"><span class=\"dot\"></span><span lang=\"ar\">خطة الدائرة</span><span lang=\"en\">Directorate plan</span></span>\n            <span class=\"lbl\"><span lang=\"ar\">لتحقيق الخطة السنوية للدائرة</span><span lang=\"en\">To achieve the directorate annual plan</span></span>\n            <span class=\"n\">19</span>\n          </div>\n          <div class=\"tagrow\">\n            <span class=\"tag t-third\"><span class=\"dot\"></span><span lang=\"ar\">الفئة الثالثة</span><span lang=\"en\">Third</span></span>\n            <span class=\"lbl\"><span lang=\"ar\">فئة ثالثة — تُحدَّد لاحقاً</span><span lang=\"en\">A third category — you define it later</span></span>\n            <span class=\"n\">6</span>\n          </div>\n          <div class=\"tagrow\">\n            <span class=\"tag t-none\"><span class=\"dot\"></span><span lang=\"ar\">بلا تصنيف</span><span lang=\"en\">Untagged</span></span>\n            <span class=\"lbl\"><span lang=\"ar\">أُضيفت دون فئة — تحتاج تصنيفاً</span><span lang=\"en\">Added with no category — needs one</span></span>\n            <span class=\"n\">3</span>\n          </div>\n        </div>", leave:"", ready:"", audit:"" };
 
   var WMETA=[
     {id:"prio", full:true,  n:["الأهداف ذات الأولوية","Priority objectives"], d:["ما ثُبِّت من الخطة السنوية","Whatever is pinned in the annual plan"]},
