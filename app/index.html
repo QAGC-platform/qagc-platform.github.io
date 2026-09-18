@@ -1,6 +1,6 @@
 <meta charset="utf-8">
-<title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 83">
+<title>منصة ضمان الجودة</title>
+<meta name="qagc-ver" content="beta 84">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -2394,9 +2394,9 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
     <div id="gateMsg" role="status" aria-live="polite"></div>
     <div id="gateForm">
       <div class="fld"><label><span lang="ar">اسم المستخدم</span><span lang="en">Username</span></label>
-        <input id="gi-user" aria-label="اسم المستخدم · Username" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" style="direction:ltr;text-align:start"></div>
+        <input id="gi-user" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" style="direction:ltr;text-align:start"></div>
       <div class="fld"><label><span lang="ar">كلمة المرور</span><span lang="en">Password</span></label>
-        <input id="gi-pass" aria-label="كلمة المرور · Password" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" style="direction:ltr;text-align:start"></div>
+        <input id="gi-pass" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" style="direction:ltr;text-align:start"></div>
       <button class="btn btn-p" id="gi-go"><span lang="ar">تسجيل الدخول</span><span lang="en">Sign in</span></button>
     </div>
     <div id="gateInvite" hidden>
@@ -2933,7 +2933,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
            <span lang="en">Events on the year board, a personal plan per employee with course requests, and directorate and centre plans the DG oversees.</span></p>
       </div>
       <div class="subtabs" id="cpdTabs">
-        <button class="on" data-cpdtab="ev"><span lang="ar">CPD — فعاليات وأنشطة</span><span lang="en">CPD — events</span></button>
+        <button class="on" data-cpdtab="ev"><span lang="ar">التطوير المهني المستمر — فعاليات وأنشطة</span><span lang="en">CPD — events</span></button>
         <button data-cpdtab="me"><span lang="ar">خطتي التطويرية</span><span lang="en">My development plan</span></button>
         <button data-cpdtab="dir" hidden><span lang="ar">خطة تطوير الدائرة</span><span lang="en">Directorate plan</span></button>
         <button data-cpdtab="org" hidden><span lang="ar">خطة تطوير المركز</span><span lang="en">QAGC plan</span></button>
@@ -3094,9 +3094,9 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
             <h2><span lang="ar">تقويم الإجازات</span><span lang="en">Leave calendar</span></h2></div></div></div>
           <div class="calbar">
             <div class="calnav">
-              <button class="btn" id="calPrev">‹</button>
+              <button class="btn" id="calPrev" data-aria-ar="الفترة السابقة" data-aria-en="Previous period">‹</button>
               <span class="ttl" id="calTitle"></span>
-              <button class="btn" id="calNext">›</button>
+              <button class="btn" id="calNext" data-aria-ar="الفترة التالية" data-aria-en="Next period">›</button>
             </div>
             <div class="seg">
               <button class="on" id="modeMonth"><span lang="ar">شهري</span><span lang="en">Monthly</span></button>
@@ -3189,12 +3189,12 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
             <span class="sub" id="tlTitle"></span></div></div>
           <div class="calbar">
             <div class="calnav">
-              <button class="btn" id="tlPrev">‹</button>
+              <button class="btn" id="tlPrev" data-aria-ar="الشهر السابق" data-aria-en="Previous month">‹</button>
               <span class="ttl" id="tlLabel"></span>
-              <button class="btn" id="tlNext">›</button>
+              <button class="btn" id="tlNext" data-aria-ar="الشهر التالي" data-aria-en="Next month">›</button>
             </div>
           </div>
-          <p class="hint"><span lang="ar">الموظفون مرتّبون حسب القسم. اضغط أي يوم لعرض التغطية.</span>
+          <p class="hint"><span lang="ar">الموظفون مرتّبون حسب القسم. اختيار يوم لعرض التغطية.</span>
              <span lang="en">Staff grouped by department. Click any day for its coverage.</span></p>
           <div class="calwrap"><table class="cal" id="timeline"></table></div>
           <div class="legend">
@@ -3568,8 +3568,8 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       </div>
 
       <div class="rolebar">
-        <span lang="ar">للإجابة: اختيار البديل وكتابة الملاحظة تحته. وللتعليق على أي عبارة أخرى في الصفحة: تفعيل «وضع المراجعة» — عندها تصبح النقرة تعليقاً وتتعطل الأزرار عمداً. تُحاول الصفحة حفظ الإجابات تلقائياً في هذا الجهاز؛ يُحفظ النص بعد توقف الكتابة لحظة. راجع حالة الحفظ أدناه.</span>
-        <span lang="en">To answer: choose an option and write the note beneath it. To comment on any other sentence: turn on review mode — there a click becomes a comment and the controls are deliberately inert. The page attempts to save answers automatically on this device; text is saved after a brief pause in typing. Check the save status below.</span>
+        <span lang="ar">للإجابة: اختيار البديل وكتابة الملاحظة تحته. وللتعليق على أي عبارة أخرى في الصفحة: تفعيل «وضع المراجعة» — عندها تصبح النقرة تعليقاً وتتعطل الأزرار عمداً. تُحاول الصفحة حفظ الإجابات تلقائياً في هذا الجهاز؛ يُحفظ النص بعد توقف الكتابة لحظة. حالة الحفظ موضّحة أدناه.</span>
+        <span lang="en">To answer: choose an option and write the note beneath it. To comment on any other sentence: turn on review mode — there a click becomes a comment and the controls are deliberately inert. The page attempts to save answers automatically on this device; text is saved after a brief pause in typing. The save status is shown below.</span>
       </div>
 
       <div class="stack">
@@ -4511,9 +4511,9 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
             <button class="fchip" data-ccv="month"><span lang="ar">شهراً بشهر</span><span lang="en">Month by month</span></button>
             <button class="fchip" data-ccv="mine"><span lang="ar">تقويمي</span><span lang="en">My calendar</span></button>
           </span>
-          <span class="ccal-year"><button class="dcm-nav" data-ccy="-1">‹</button>
+          <span class="ccal-year"><button class="dcm-nav" data-ccy="-1" data-aria-ar="السنة السابقة" data-aria-en="Previous year">‹</button>
             <b id="ccalYear" class="tnum">2026</b>
-            <button class="dcm-nav" data-ccy="1">›</button></span>
+            <button class="dcm-nav" data-ccy="1" data-aria-ar="السنة التالية" data-aria-en="Next year">›</button></span>
           <span class="ccal-filters" id="ccalFilters"></span>
         </div>
         <div class="asnform" id="ccalMeet" hidden style="margin-bottom:14px">
@@ -4626,7 +4626,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
           </p>
         </div>
         <div class="never">
-          <h3><span lang="ar">ما تفرضه الواجهة مهما طلب ChatGPT</span><span lang="en">What the API enforces regardless of what ChatGPT sends</span></h3>
+          <h3><span lang="ar">ضوابط واجهة الربط</span><span lang="en">API controls</span></h3>
           <ul>
             <li><span lang="ar">كل وارد يحمل فئة، وإلا رُفض.</span><span lang="en">Everything arriving carries a category, or it is refused.</span></li>
             <li><span lang="ar">مكتب المدير العام وقسم التنسيق لا يملكان أهدافاً.</span><span lang="en">DGO and the Coordination Section can never own objectives.</span></li>
@@ -4653,7 +4653,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 
     <section class="screen gx-scope" id="gen">
       <div class="head">
-        <p class="eyebrow"><span lang="ar">الخطة السنوية · إنشاء ومتابعة</span><span lang="en">Annual plan · create and track</span> <button id="gxHelp" class="gx-info" title="كيف أستخدم المولّد؟ · How the generator works" aria-label="كيف أستخدم المولّد؟ · How the generator works">i</button></p>
+        <p class="eyebrow"><span lang="ar">الخطة السنوية · إنشاء ومتابعة</span><span lang="en">Annual plan · create and track</span> <button id="gxHelp" class="gx-info"  data-aria-ar="كيف أستخدم المولّد؟" data-aria-en="How the generator works">i</button></p>
         <div id="gxHelpPanel" hidden>
           <h3><span lang="ar">كيف يعمل مولّد الأهداف؟</span><span lang="en">How the generator works</span></h3>
           <ol>
@@ -4685,7 +4685,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
             <div class="gx-foot">
               <span id="gxOob"></span>
               <div class="gx-nav">
-                <button id="gxPrev" title="›">›</button><button id="gxNext" title="‹">‹</button>
+                <button id="gxPrev" data-aria-ar="الفترة السابقة" data-aria-en="Previous period">›</button><button id="gxNext" data-aria-ar="الفترة التالية" data-aria-en="Next period">‹</button>
                 <button id="gxHome"><span lang="ar">بداية الهدف</span><span lang="en">Start</span></button>
                 <span class="gx-zoom" id="gxZoom"><button data-gz="quarter" class="on"><span lang="ar">ربع</span><span lang="en">Quarter</span></button><button data-gz="month"><span lang="ar">شهر</span><span lang="en">Month</span></button><button data-gz="week"><span lang="ar">أسبوع</span><span lang="en">Week</span></button></span>
               </div>
@@ -4824,7 +4824,8 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
   function qHelpLang(){
     var a=qAr();
     Array.prototype.forEach.call(document.querySelectorAll("[data-qhelp] [data-ar]"), function(el){
-      el.textContent = a ? el.getAttribute("data-ar") : el.getAttribute("data-en"); });
+      var v = a ? el.getAttribute("data-ar") : el.getAttribute("data-en");
+      if(el.textContent!==v) el.textContent = v; });     // unchanged text is not rewritten: the render observer would loop
   }
   function qHelpClose(except){
     Array.prototype.forEach.call(document.querySelectorAll('.q-info[aria-expanded="true"]'), function(b){
@@ -5284,12 +5285,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       return '<div style="border:1px solid var(--rule);border-radius:10px;padding:10px;margin-top:8px">'+
         '<div style="display:flex;gap:8px;align-items:center"><b style="font-size:var(--t-sm)">'+
           bi("المرحلة "+(pi+1)+": ","Phase "+(pi+1)+": ")+p.ph+'</b>'+
-          '<button class="mini no" data-phdel="'+pi+'" style="margin-inline-start:auto">×</button></div>'+
+          '<button class="mini no" data-phdel="'+pi+'" data-aria-ar="حذف المرحلة '+(pi+1)+'" data-aria-en="Delete phase '+(pi+1)+'" style="margin-inline-start:auto">×</button></div>'+
         (p.steps.length?p.steps.map(function(st,si){
           return '<div class="sm" style="display:flex;gap:8px;align-items:center;padding:3px 0">'+
             '<span>'+(si+1)+'. '+st.t+(st.due?' · <span class="tnum">'+st.due+'</span>':"")+
             (st.asgName?' · ← '+st.asgName:"")+'</span>'+
-            '<button class="mini no" data-stdel="'+pi+':'+si+'" style="padding:0 6px">×</button></div>';
+            '<button class="mini no" data-stdel="'+pi+':'+si+'" data-aria-ar="حذف الخطوة '+(si+1)+'" data-aria-en="Delete step '+(si+1)+'" style="padding:0 6px">×</button></div>';
         }).join(""):"")+
         '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:end;margin-top:6px">'+
           '<input id="no-st-t-'+pi+'" placeholder="'+(isAr()?"خطوة…":"a step…")+'" style="flex:2;min-width:150px">'+
@@ -5307,7 +5308,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     h.innerHTML=NO_KPIS.map(function(k,i){
       return '<span class="pill p-neutral" style="gap:6px">'+k.name+
         (k.ktype?' · '+k.ktype:'')+(k.base?' · '+(isAr()?"الحالي ":"now ")+k.base:'')+(k.target?' ← '+k.target:'')+
-        ' <button class="mini no" data-nokdel="'+i+'" style="padding:0 6px">×</button></span>';
+        ' <button class="mini no" data-nokdel="'+i+'" data-aria-ar="حذف" data-aria-en="Delete" style="padding:0 6px">×</button></span>';
     }).join("");
   }
   document.addEventListener("click",function(e){
@@ -5514,7 +5515,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     return '<div class="kpihead">'+
         '<span class="kpistat"><span class="kk">'+bi("المؤشر","Indicator")+'</span>'+
           '<span class="ku" style="font-size:var(--t-sm);color:var(--ink-1);font-weight:600;max-width:34ch">'+o.k+'</span></span>'+
-        '<span class="kpistat"><span class="kk">'+bi("الأساس","Baseline")+'</span>'+
+        '<span class="kpistat"><span class="kk">'+bi("خط الأساس","Baseline")+'</span>'+
           '<span class="kv" style="color:var(--ink-4)">'+vals[0]+'</span></span>'+
         '<span class="kpistat cur '+(st==="ok"?"":st)+'"><span class="kk">'+bi("القراءة الأخيرة","Latest reading")+'</span>'+
           '<span class="kv">'+cur+'</span>'+
@@ -6666,8 +6667,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(!d){
       h+='<div class="drop" data-drop="'+ref+'">'+
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 16V4m0 0 4 4m-4-4L8 8M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/></svg>'+
-        '<div class="dh">'+bi("اسحب ملف Excel أو CSV هنا","Drop an Excel or CSV file here")+'</div>'+
-        '<div class="ds">'+bi("أو اضغط للاختيار · xlsx و csv","or click to choose · xlsx and csv")+'</div>'+
+        '<div class="dh">'+bi("إسقاط ملف Excel أو CSV هنا","Drop an Excel or CSV file here")+'</div>'+
+        '<div class="ds">'+bi("أو النقر لاختيار ملف · xlsx و csv","or click to choose · xlsx and csv")+'</div>'+
         '<input type="file" accept=".xlsx,.csv" hidden id="kf-file-'+ref+'"></div>';
     } else if(d.error){
       h+='<div class="drop bad" data-drop="'+ref+'"><div class="dh">'+bi("تعذّرت قراءة الملف","Could not read that file")+'</div>'+
@@ -6687,13 +6688,13 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       h+='<div class="drop loaded" data-drop="'+ref+'"><div class="dh">'+d.name+'</div>'+
         '<div class="ds">'+bi(d.rows.length-1+" صفاً · "+d.head.length+" أعمدة",
                               (d.rows.length-1)+" rows · "+d.head.length+" columns")+' — '+
-        bi("اضغط لاستبداله","click to replace")+'</div>'+
+        bi("النقر لاستبدال الملف","Click to replace the file")+'</div>'+
         '<input type="file" accept=".xlsx,.csv" hidden id="kf-file-'+ref+'"></div>';
       if(!d.tpl) h+='<div class="kform" style="margin-top:var(--sp-3)">'+
         '<span class="fld"><label>'+bi("عمود الفترة","Period column")+'</label><select data-map="'+ref+':label">'+
           d.head.map(function(hd,i){return '<option value="'+i+'"'+(i===d.label?" selected":"")+'>'+(hd||("#"+(i+1)))+'</option>';}).join("")+
           '</select></span>'+
-        '<span class="fld"><label>'+bi("عمود القيمة","Value column")+'</label><select data-map="'+ref+':series">'+
+        '<span class="fld"><label>'+bi("عمود القراءة","Reading column")+'</label><select data-map="'+ref+':series">'+
           d.numeric.map(function(i){return '<option value="'+i+'"'+(i===d.series?" selected":"")+'>'+(d.head[i]||("#"+(i+1)))+'</option>';}).join("")+
           '</select></span></div>';
       var prevRows=d.rows.slice(0,5);
@@ -6775,11 +6776,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           var v=k.values[j], d=(s2&&s2.target!==null&&s2.target!==undefined)?+(v-s2.target).toFixed(2):null;
           return '<div class="ktrow"><span>'+lb+'</span>'+
             '<span class="tnum kv" contenteditable="true" data-kedit="'+ref+':'+i+':'+j+'" '+
-            'title="'+(isAr()?"انقر لتصحيح القيمة":"click to correct the value")+'">'+v+'</span>'+
+            'title="'+(isAr()?"النقر لتصحيح القيمة":"click to correct the value")+'">'+v+'</span>'+
             '<span class="tnum">'+(d===null?"—":(d>0?"+":"")+d)+'</span>'+
             '<span class="knote">'+((k.notes&&k.notes[j])||"—")+'</span></div>';
         }).join("")+'</div>';
-      return '<div class="kcard'+cls+'"><button class="kx" data-kpidel="'+ref+':'+i+'">✕</button>'+
+      return '<div class="kcard'+cls+'"><button class="kx" data-kpidel="'+ref+':'+i+'" data-aria-ar="حذف المؤشر: '+gxEsc(k.title)+'" data-aria-en="Delete KPI: '+gxEsc(k.title)+'">✕</button>'+
         '<div class="kh">'+k.title+' '+band+'</div>'+
         '<div class="kmeta2">'+k.period+' · '+k.unit+' · '+
           bi("من ","from ")+k.src+' · '+k.values.length+' '+bi("قراءة","readings")+
@@ -6880,7 +6881,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         '<input data-kgc="'+key+':'+j+':l" value="'+String(lb).replace(/"/g,"&quot;")+'" style="flex:2;min-width:90px">'+
         '<input data-kgc="'+key+':'+j+':v" type="number" step="any" value="'+k.values[j]+'" style="flex:1;min-width:80px" class="tnum">'+
         '<input data-kgc="'+key+':'+j+':n" value="'+String((k.notes&&k.notes[j])||"").replace(/"/g,"&quot;")+'" placeholder="'+(isAr()?"ملاحظة":"note")+'" style="flex:2;min-width:90px">'+
-        '<button class="mini no" data-kgdel="'+key+':'+j+'" style="padding:0 7px">✕</button></div>';
+        '<button class="mini no" data-kgdel="'+key+':'+j+'" data-aria-ar="حذف" data-aria-en="Delete" style="padding:0 7px">✕</button></div>';
     }).join("");
     return '<div style="border:1px solid var(--rule);border-radius:10px;padding:12px;margin-top:10px" data-kgridbox="'+key+'">'+
       '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+
@@ -8155,7 +8156,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   window._redrawLeave=function(){ if(_r3) _r3(); drawPerms(); drawAssign(); };
 
   // ── adjustable dashboard: a registry, a placed list, and an edit mode ──
-  var WHTML={ prio:"", tiles:"", queue:"", cats:"        <div class=\"card\">\n          <div class=\"card-h\"><div class=\"chrow\"><span class=\"ib gold\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M3 6h18M7 12h10M10 18h4\"/></svg></span><div>\n            <span class=\"ceye\"><span lang=\"ar\">تصنيف العمل</span><span lang=\"en\">How the work is tagged</span></span>\n            <h2><span lang=\"ar\">الفئات الثلاث</span><span lang=\"en\">The three categories</span></h2></div></div></div>\n          <p style=\"font-size:var(--t-sm);color:var(--ink-3)\">\n            <span lang=\"ar\">كل هدف أو مهمة يُضاف — منكِ أو من الموظف — يقع في واحدة من ثلاث.</span>\n            <span lang=\"en\">Every objective or task added, by you or by staff, falls into one of three.</span></p>\n          <div class=\"tagbar\">\n            <i class=\"t-min\" style=\"width:33%\"></i><i class=\"t-dir\" style=\"width:45%\"></i>\n            <i class=\"t-third\" style=\"width:15%\"></i><i class=\"t-none\" style=\"width:7%\"></i>\n          </div>\n          <div class=\"tagrow\">\n            <span class=\"tag t-min\"><span class=\"dot\"></span><span lang=\"ar\">الخطة الخمسية</span><span lang=\"en\">Five-year plan</span></span>\n            <span class=\"lbl\"><span lang=\"ar\">متوافق مع الخطة الخمسية للوزارة</span><span lang=\"en\">In line with the Ministry five-year plan</span></span>\n            <span class=\"n\">14</span>\n          </div>\n          <div class=\"tagrow\">\n            <span class=\"tag t-dir\"><span class=\"dot\"></span><span lang=\"ar\">خطة الدائرة</span><span lang=\"en\">Directorate plan</span></span>\n            <span class=\"lbl\"><span lang=\"ar\">لتحقيق الخطة السنوية للدائرة</span><span lang=\"en\">To achieve the directorate annual plan</span></span>\n            <span class=\"n\">19</span>\n          </div>\n          <div class=\"tagrow\">\n            <span class=\"tag t-third\"><span class=\"dot\"></span><span lang=\"ar\">الفئة الثالثة</span><span lang=\"en\">Third</span></span>\n            <span class=\"lbl\"><span lang=\"ar\">فئة ثالثة — تُحدَّد لاحقاً</span><span lang=\"en\">A third category — you define it later</span></span>\n            <span class=\"n\">6</span>\n          </div>\n          <div class=\"tagrow\">\n            <span class=\"tag t-none\"><span class=\"dot\"></span><span lang=\"ar\">بلا تصنيف</span><span lang=\"en\">Untagged</span></span>\n            <span class=\"lbl\"><span lang=\"ar\">أُضيفت دون فئة — تحتاج تصنيفاً</span><span lang=\"en\">Added with no category — needs one</span></span>\n            <span class=\"n\">3</span>\n          </div>\n        </div>", leave:"", ready:"", audit:"" };
+  var WHTML={ prio:"", tiles:"", queue:"", cats:"        <div class=\"card\">\n          <div class=\"card-h\"><div class=\"chrow\"><span class=\"ib gold\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M3 6h18M7 12h10M10 18h4\"/></svg></span><div>\n            <span class=\"ceye\"><span lang=\"ar\">تصنيف العمل</span><span lang=\"en\">Work classification</span></span>\n            <h2><span lang=\"ar\">الفئات الثلاث</span><span lang=\"en\">The three categories</span></h2></div></div></div>\n          <p style=\"font-size:var(--t-sm);color:var(--ink-3)\">\n            <span lang=\"ar\">كل هدف أو مهمة يُضاف — منكِ أو من الموظف — يقع في واحدة من ثلاث.</span>\n            <span lang=\"en\">Every objective or task added, by you or by staff, falls into one of three.</span></p>\n          <div class=\"tagbar\">\n            <i class=\"t-min\" style=\"width:33%\"></i><i class=\"t-dir\" style=\"width:45%\"></i>\n            <i class=\"t-third\" style=\"width:15%\"></i><i class=\"t-none\" style=\"width:7%\"></i>\n          </div>\n          <div class=\"tagrow\">\n            <span class=\"tag t-min\"><span class=\"dot\"></span><span lang=\"ar\">الخطة الخمسية</span><span lang=\"en\">Five-year plan</span></span>\n            <span class=\"lbl\"><span lang=\"ar\">متوافق مع الخطة الخمسية للوزارة</span><span lang=\"en\">In line with the Ministry five-year plan</span></span>\n            <span class=\"n\">14</span>\n          </div>\n          <div class=\"tagrow\">\n            <span class=\"tag t-dir\"><span class=\"dot\"></span><span lang=\"ar\">خطة الدائرة</span><span lang=\"en\">Directorate plan</span></span>\n            <span class=\"lbl\"><span lang=\"ar\">لتحقيق الخطة السنوية للدائرة</span><span lang=\"en\">To achieve the directorate annual plan</span></span>\n            <span class=\"n\">19</span>\n          </div>\n          <div class=\"tagrow\">\n            <span class=\"tag t-third\"><span class=\"dot\"></span><span lang=\"ar\">الفئة الثالثة</span><span lang=\"en\">Third</span></span>\n            <span class=\"lbl\"><span lang=\"ar\">فئة ثالثة — تُحدَّد لاحقاً</span><span lang=\"en\">A third category — you define it later</span></span>\n            <span class=\"n\">6</span>\n          </div>\n          <div class=\"tagrow\">\n            <span class=\"tag t-none\"><span class=\"dot\"></span><span lang=\"ar\">بلا تصنيف</span><span lang=\"en\">Untagged</span></span>\n            <span class=\"lbl\"><span lang=\"ar\">أُضيفت دون فئة — تحتاج تصنيفاً</span><span lang=\"en\">Added with no category — needs one</span></span>\n            <span class=\"n\">3</span>\n          </div>\n        </div>", leave:"", ready:"", audit:"" };
 
   var WMETA=[
     {id:"prio", full:true,  n:["الأهداف ذات الأولوية","Priority objectives"], d:["ما ثُبِّت من الخطة السنوية","Whatever is pinned in the annual plan"]},
@@ -9251,7 +9252,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       return '<div class="subrow" style="grid-template-columns:minmax(0,1fr) auto auto">'+
         '<span class="st2">'+l.t+'</span>'+
         '<span class="sw2">'+(p?bi(p.who[0],p.who[1]):"—")+'</span>'+
-        '<span class="acts"><button class="mini no" data-logdel="'+i+'">✕</button></span></div>';
+        '<span class="acts"><button class="mini no" data-logdel="'+i+'" data-aria-ar="حذف السطر" data-aria-en="Delete entry">✕</button></span></div>';
     }).join("");
   }
   function whoName(pid){
@@ -9618,7 +9619,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             return head+q.opts.map(function(o,i){
               var on=arr.indexOf(i)>=0;
               return '<button class="pollopt'+(on?" mine":"")+'" data-vm="'+qi+':'+i+'">'+o+(on?' ✓':'')+'</button>'; }).join("")+
-              '<div class="hint2">'+bi("اختر كل ما ينطبق.","Choose all that apply.")+'</div>';
+              '<div class="hint2">'+bi("تحديد جميع الخيارات المنطبقة.","Choose all that apply.")+'</div>';
           }
           if(q.type==="order"){
             var seq=Array.isArray(da)?da:[];
@@ -9626,7 +9627,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
               var pos=seq.indexOf(i);
               return '<button class="pollopt'+(pos>=0?" mine":"")+'" data-vo="'+qi+':'+i+'">'+
                 (pos>=0?'<b class="tnum" style="margin-inline-end:6px">'+(pos+1)+'</b>':'')+o+'</button>'; }).join("")+
-              '<div class="hint2">'+bi("انقر الخيارات بترتيب أفضليتك. ","Click the options in your order of preference. ")+
+              '<div class="hint2">'+bi("اختيار الخيارات حسب ترتيب الأفضلية. ","Click the options in your order of preference. ")+
               (seq.length?'<button class="mini no" data-vor="'+qi+'" style="font-size:10px">'+bi("إعادة الترتيب","Start over")+'</button>':'')+'</div>';
           }
           return head+q.opts.map(function(o,i){
@@ -9874,7 +9875,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   async function aiFetchInbox(){
     var url=(document.getElementById("aiCfgUrl")||{}).value||"";
     var key=(document.getElementById("aiCfgKey")||{}).value||"";
-    if(!url||!key){ aiStatus(bi("أدخل العنوان والمفتاح أولاً.","Enter the endpoint and key first."),false); return; }
+    if(!url||!key){ aiStatus(bi("يلزم إدخال العنوان والمفتاح أولاً.","Enter the endpoint and key first."),false); return; }
     aiStatus(bi("جارٍ الاتصال…","Connecting…"),true);
     try{
       var r=await fetch(url+"?key="+encodeURIComponent(key)+"&fn=inbox");
@@ -10083,8 +10084,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       return '<div class="czrow" draggable="true" data-czid="'+id+'" style="display:flex;gap:8px;align-items:center;border:1px solid var(--rule);border-radius:8px;padding:5px 10px;cursor:grab;background:var(--surface)">'+
         '<span style="color:var(--ink-4)">⠿</span>'+
         '<span style="flex:1;font-size:var(--t-sm)">'+bi(lab[0],lab[1])+'</span>'+
-        '<button class="mini" data-czup="'+id+'"'+(i===0?' disabled style="opacity:.3"':'')+'>↑</button>'+
-        '<button class="mini" data-czdn="'+id+'"'+(i===arr.length-1?' disabled style="opacity:.3"':'')+'>↓</button></div>';
+        '<button class="mini" data-czup="'+id+'" data-aria-ar="نقل إلى أعلى" data-aria-en="Move up"'+(i===0?' disabled style="opacity:.3"':'')+'>↑</button>'+
+        '<button class="mini" data-czdn="'+id+'" data-aria-ar="نقل إلى أسفل" data-aria-en="Move down"'+(i===arr.length-1?' disabled style="opacity:.3"':'')+'>↓</button></div>';
     }).join("");
   }
   document.addEventListener("click",function(e){
@@ -10964,11 +10965,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           '<div style="font-size:var(--t-xs);color:var(--ink-3)">'+bi("١ ضعيف — ٥ ممتاز. تُعرض متوسطات الإجابات والملاحظات دون أسماء في لوحة النتائج؛ هذا لا يضمن سرّية الإجابات أو إخفاء هوية أصحابها.","1 poor — 5 excellent. The results panel shows response averages and comments without names; this does not guarantee confidentiality or anonymity.")+'</div>'+
           c.criteria.map(function(cr,i){
             return '<div style="display:flex;gap:10px;align-items:center;padding:5px 0;border-bottom:1px solid var(--rule)">'+
-              '<span style="flex:1;font-size:var(--t-sm)">'+cr+'</span>'+
-              '<select class="fld-sel" data-evs="'+c.id+':'+i+'" style="width:70px">'+
+              '<span style="flex:1;font-size:var(--t-sm)" id="evcr-'+gxEsc(c.id)+'-'+i+'">'+cr+'</span>'+
+              '<select class="fld-sel" data-evs="'+c.id+':'+i+'" aria-labelledby="evcr-'+gxEsc(c.id)+'-'+i+'" style="width:70px">'+
               [1,2,3,4,5].map(function(n){return '<option value="'+n+'"'+(n===3?' selected':'')+'>'+n+'</option>';}).join("")+'</select></div>';
           }).join("")+
-          '<input data-evc="'+c.id+'" placeholder="'+(isAr()?"ملاحظة اختيارية…":"optional comment…")+'" style="margin-top:8px;width:100%">'+
+          '<input data-evc="'+c.id+'" data-aria-ar="ملاحظة اختيارية" data-aria-en="Optional comment" placeholder="'+(isAr()?"ملاحظة اختيارية…":"optional comment…")+'" style="margin-top:8px;width:100%">'+
           '<div style="margin-top:var(--sp-2)"><button class="btn btn-p" data-evsend="'+c.id+'">'+bi("إرسال التقييم","Submit")+'</button></div></div>';
       });
     }
@@ -11507,7 +11508,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var done=AI_IMPORTED[it.when];
       var kind=aiKindOf(it);
       var hideBtn=(ROLE==="dg"||ROLE==="coord")
-        ? '<button class="mini no" data-aihide="'+encodeURIComponent(it.when)+'" title="'+
+        ? '<button class="mini no" data-aihide="'+encodeURIComponent(it.when)+'" data-aria-ar="إخفاء من هذه القائمة" data-aria-en="Hide from this list" title="'+
           (isAr()?"إخفاء من هذه القائمة":"Hide from this list")+'">✕</button>' : "";
       var editBtn=(!done && (ROLE==="dg"||ROLE==="coord"))
         ? '<button class="mini" data-aieditbtn="'+encodeURIComponent(it.when)+'">'+bi("تعديل","Edit")+'</button>' : "";
@@ -11539,7 +11540,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           '<span class="acts">'+(done
             ? '<span class="pill p-good">'+bi("على اللوحة","On the board")+'</span>'
             : (ROLE==="dg"||ROLE==="coord"
-               ? '<button class="mini yes" data-aicpd="'+encodeURIComponent(JSON.stringify(it))+'">'+bi("إدراج في برنامج CPD","Place on the CPD board")+'</button>'
+               ? '<button class="mini yes" data-aicpd="'+encodeURIComponent(JSON.stringify(it))+'">'+bi("إدراج في برنامج التطوير المهني المستمر","Place on the CPD board")+'</button>'
                : '<span class="pill p-warn">'+bi("بانتظار الإدراج","Pending")+'</span>'))+editBtn+hideBtn+'</span>'+
         editForm+'</div>';
       }
@@ -11629,7 +11630,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
                (kind==="task"
                  ? '<button class="mini" data-aicpd="'+encodeURIComponent(JSON.stringify(it))+'" title="'+
                    (isAr()?"إن كان نشاط تطوير مهني وصل مصنَّفاً كمهمة":"If this is a CPD activity classified as a task")+'">'+
-                   bi("بل على لوحة CPD","To the CPD board instead")+'</button>' : "")
+                   bi("إدراج في لوحة التطوير المهني المستمر","To the CPD board instead")+'</button>' : "")
              : '<span class="pill p-warn">'+bi("بانتظار القرار","Pending")+'</span>'))+editBtn+hideBtn+'</span>'+
       editForm+'</div>';
     }).join("");
@@ -12474,7 +12475,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           '<div class="tile"><div class="th"><span class="tl">'+bi("أهداف ومهام","Objectives and tasks")+'</span></div>'+
             '<div class="tv">'+cnt("obj")+'</div><div class="ts">'+
             (dir?bi("بانتظار تزكيتك","awaiting your endorsement"):bi("بانتظار الاعتماد","awaiting approval"))+'</div></div>'+
-          '<div class="tile"><div class="th"><span class="tl">'+bi("مؤشرات أداء","KPIs")+'</span></div>'+
+          '<div class="tile"><div class="th"><span class="tl">'+bi("مؤشرات الأداء","KPIs")+'</span></div>'+
             '<div class="tv">'+cnt("kpi")+'</div><div class="ts">'+
             (dir?bi("بانتظار تزكيتك","awaiting your endorsement"):bi("بانتظار الاعتماد","awaiting approval"))+'</div></div>'+
           '<div class="tile"><div class="th"><span class="tl">'+bi("تقديرات ميزانية","Budget estimates")+'</span></div>'+
@@ -14138,16 +14139,31 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
 
   // ── keyboard layer: the mouse-only interactions gain focus + Enter/Space ──
   var KBD_SEL=".card > .card-h,.ohead[data-toggle],.asnhead,[data-asntoggle],.gx-car,[data-gxmo],[data-gxun],.qb,[data-gxq],[data-gxkq],.rperson,[data-ccd],.ccal-chip,[data-cpd],[data-cpdmo],[data-gxtk].gx-lr,[data-minemode]";
+  var FLDL_N=0;
   function kbdPass(root){
     (root||document).querySelectorAll(KBD_SEL).forEach(function(el){
       if(el.tagName==="BUTTON"||el.tagName==="A"||el.hasAttribute("tabindex")) return;
       if(el.querySelector&&el.querySelector(".gx-car,[tabindex='0']")) return;   // the inner control owns the stop
       el.setAttribute("tabindex","0");
     });
+    var L=isAr()?"ar":"en";
     (root||document).querySelectorAll(".sw-btn").forEach(function(swb){
       swb.setAttribute("role","switch"); swb.setAttribute("aria-checked", swb.classList.contains("on")?"true":"false");
-      if(!swb.getAttribute("aria-label")){ var row=swb.closest(".toggle"); var lbl=row?row.querySelector(".tl2,span"):null; if(lbl) swb.setAttribute("aria-label", lbl.textContent.replace(/\s+/g," ").trim().slice(0,80)); }
+      if(!swb.getAttribute("aria-label")||swb.hasAttribute("data-kbdname")){ var row=swb.closest(".toggle"); var lbl=row?row.querySelector(".tl2,span"):null;
+        if(lbl){ var pick=lbl.querySelector('[lang="'+L+'"]')||(lbl.getAttribute("lang")&&lbl.getAttribute("lang")!==L&&lbl.parentNode.querySelector('[lang="'+L+'"]'))||lbl;
+          swb.setAttribute("aria-label", pick.textContent.replace(/\s+/g," ").trim().slice(0,80)); swb.setAttribute("data-kbdname","1"); } }
     });
+    (root||document).querySelectorAll("[data-aria-ar]").forEach(function(el){
+      var v=el.getAttribute(L==="ar"?"data-aria-ar":"data-aria-en"); if(v!==null && el.getAttribute("aria-label")!==v) el.setAttribute("aria-label", v); });
+    (root||document).querySelectorAll(".fld").forEach(function(f){
+      var ls=f.querySelectorAll("label"), cs=f.querySelectorAll("input,select,textarea");
+      if(ls.length!==1||cs.length!==1) return;
+      var l=ls[0], c=cs[0];
+      if(l.htmlFor||l.contains(c)||c.hasAttribute("aria-labelledby")||c.hasAttribute("aria-label")) return;
+      if(c.id) l.htmlFor=c.id;
+      else { if(!l.id) l.id="fldl-"+(++FLDL_N); c.setAttribute("aria-labelledby", l.id); }
+    });
+    try{ qHelpLang(); }catch(_){}
   }
   document.addEventListener("keydown",function(e){
     if(e.key!=="Enter"&&e.key!==" ") return;
@@ -14581,7 +14597,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         var sp=(ph.from&&ph.to)?{from:ph.from,to:ph.to}:null, pok=!sp||gxWithin(ph.from,ph.to,S.from,S.to); if(!pok) oob++;
         L+='<div class="gx-lr ph'+(ph.open?' open':'')+'"><span class="name">'+(ph.name?'<span class="gx-car" data-gxphtoggle="'+pi+'">▶</span>':'')+
           (ro?'<span>'+gxEsc(ph.name)+'</span>':'<input data-gxph="'+pi+'" data-f="name" value="'+gxEsc(ph.name)+'" placeholder="'+(isAr()?"المرحلة "+(pi+1)+" — اسمها هنا":"Phase "+(pi+1)+" — its name")+'"'+(ph.name?'':' data-gxfocus="1"')+'>')+
-          (!ro&&(ph.tasks.length||pi>0)?'<button class="gx-del" data-gxdelph="'+pi+'">✕</button>':'')+'</span>'+
+          (!ro&&(ph.tasks.length||pi>0)?'<button class="gx-del" data-gxdelph="'+pi+'" data-aria-ar="حذف المرحلة: '+gxEsc(ph.name||String(pi+1))+'" data-aria-en="Delete phase: '+gxEsc(ph.name||String(pi+1))+'">✕</button>':'')+'</span>'+
           (ph.open&&ph.name?'<div class="gx-det">'+(ro
             ?'<div class="f"><label>'+bi("من","From")+'</label><input type="date" value="'+gxEsc(ph.from)+'" readonly></div><div class="f"><label>'+bi("إلى","To")+'</label><input type="date" value="'+gxEsc(ph.to)+'" readonly></div>'
             :'<div class="f"><label>'+bi("من","From")+'</label><input type="date" data-gxph="'+pi+'" data-f="from" value="'+gxEsc(ph.from)+'"'+(S.from?' min="'+S.from+'" max="'+S.to+'"':'')+'></div><div class="f"><label>'+bi("إلى","To")+'</label><input type="date" data-gxph="'+pi+'" data-f="to" value="'+gxEsc(ph.to)+'"'+(S.from?' min="'+S.from+'" max="'+S.to+'"':'')+'></div>')+'</div>':'')+'</div>';
@@ -15628,7 +15644,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var wrap=host.closest("[data-gxembed]"); if(wrap){ wrap.querySelectorAll("[data-gxez]").forEach(function(b){ b.classList.toggle("on", b.dataset.gxez===st.z||(b.dataset.gxez==="quarter"&&(st.z==="quarters"||st.z==="quarter"))); }); var pg=wrap.querySelector(".gx-eprog"); if(pg) pg.innerHTML='<span class="gx-prog"><i style="--rest:'+(100-gxProgress(S))+'%;--rest2:'+(100-gxProgress(S)-gxPending(S))+'%"></i>'+gxProgress(S)+'%'+(gxPending(S)?' <small>+'+gxPending(S)+'% '+(isAr()?"بانتظار التوثيق":"awaiting")+'</small>':'')+'</span>'; } }
   function gxEmbedHTML(S){ var Z=[["year","سنة","Year"],["quarter","ربع","Quarter"],["month","شهر","Month"],["week","أسبوع","Week"]];
     return '<div class="gx-scope gx-embed" data-gxembed="'+gxEsc(S.id)+'"><div class="gx-mhead"><span class="gx-eprog"></span><span class="gx-mleg"><i class="done"></i>'+bi("موثّقة","verified")+' <i class="fed"></i>'+bi("بانتظار التوثيق","awaiting")+' <i class="late"></i>'+bi("متأخرة","late")+' <i style="background:var(--brand-gold)"></i>'+bi("مرحلة","phase")+'</span><button class="gx-ex" data-gxopen="'+gxEsc(S.id)+'">↗ '+bi("فتح في مولّد الأهداف","Open in the generator")+'</button></div>'+
-      '<div class="gx-gwrap"><div class="gx-g" id="gxE-'+gxEsc(S.id)+'"></div><div class="gx-foot"><span>'+bi("الجدول الزمني المعتمد نفسه — القراءة فقط هنا؛ التغذية في المولّد","The approved timeline itself — read here, fed in the generator")+'</span><div class="gx-nav"><button data-gxen="-1">›</button><span class="win"></span><button data-gxen="1">‹</button><span class="gx-zoom">'+Z.map(function(z){return '<button data-gxez="'+z[0]+'">'+bi(z[1],z[2])+'</button>';}).join("")+'</span></div></div></div></div>'; }
+      '<div class="gx-gwrap"><div class="gx-g" id="gxE-'+gxEsc(S.id)+'"></div><div class="gx-foot"><span>'+bi("الجدول الزمني المعتمد نفسه — القراءة فقط هنا؛ التغذية في المولّد","The approved timeline itself — read here, fed in the generator")+'</span><div class="gx-nav"><button data-gxen="-1" data-aria-ar="الفترة السابقة" data-aria-en="Previous period">›</button><span class="win"></span><button data-gxen="1" data-aria-ar="الفترة التالية" data-aria-en="Next period">‹</button><span class="gx-zoom">'+Z.map(function(z){return '<button data-gxez="'+z[0]+'">'+bi(z[1],z[2])+'</button>';}).join("")+'</span></div></div></div></div>'; }
   // the KPI panel of a tracked objective, as shown in the generator, rendered for the annual plan
   function gxKParts(S,k){ var keep={cur:GX.cur,KD:GX.KD,K:GX.K}; GX.cur=S; GX.KD=k; GX.K=null; var parts; try{ gxDrawKSide(); parts={spark:document.getElementById("gxSpark").innerHTML, thr:document.getElementById("gxThr").innerHTML, smart:document.getElementById("gxSmart").innerHTML, list:document.getElementById("gxKList").innerHTML}; } finally { GX.cur=keep.cur; GX.KD=keep.KD; GX.K=keep.K; } if(GX.cur&&GX.KD) gxDrawKSide(); return parts; }
   function gxKPlanHTML(cid){ var S=gxChildById(cid); if(!S||!S.kpis.length) return ""; var idx=GX.pk[cid]; if(idx===undefined||!S.kpis[idx]){ idx=Math.max(0,S.kpis.map(function(k){return k.plan?1:0;}).indexOf(0)); GX.pk[cid]=idx; } var k=S.kpis[idx]; var parts=gxKParts(S,k);
@@ -15700,9 +15716,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     // an unrecognised store is a recovery case, not an instruction to regenerate examples
     var shapeOk = raw && typeof raw==="object" && raw.v===1 && Array.isArray(raw.items) && raw.items.length &&
                   raw.items.every(function(x){ return x && typeof x==="object" && typeof x.id==="string" && typeof x.ref==="string" &&
-                    Array.isArray(x.assignees) && Array.isArray(x.history); }) &&
-                  (raw.events===undefined || Array.isArray(raw.events)) &&
-                  (raw.priv===undefined || (raw.priv && typeof raw.priv==="object" && !Array.isArray(raw.priv)));
+                    Array.isArray(x.assignees) && x.assignees.every(function(a){ return a && typeof a==="object" && typeof a.id==="string"; }) &&
+                    Array.isArray(x.history) && x.history.every(function(h){ return h && typeof h==="object"; }); }) &&
+                  (raw.events===undefined || (Array.isArray(raw.events) && raw.events.every(function(v){ return v && typeof v==="object"; }))) &&
+                  (raw.priv===undefined || (raw.priv && typeof raw.priv==="object" && !Array.isArray(raw.priv) &&
+                    Object.keys(raw.priv).every(function(w){ return Array.isArray(raw.priv[w]) && raw.priv[w].every(function(p){ return typeof p==="string"; }); })));
     if(shapeOk){ PLREG=raw; if(!PLREG.events) PLREG.events=[]; if(!PLREG.priv) PLREG.priv={author:["dg0"],assign:["dg0"]}; return true; }
     if(txt!==null){
       var key2="", wrote2=false;
