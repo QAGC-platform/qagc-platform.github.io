@@ -59,8 +59,10 @@ before touching anything — it replaces a long build history you cannot see.
    noun. Nominal or passive phrasing («يلزم المفتاح أولاً») remains fine.
    The DG's title is «المدير العام» (not «المديرة العامة»), with verbs and
    pronouns agreeing; English refers to "the DG", never "her"/"she".
-   Approved terms: «المغذّي»/«التغذية» and «مولّد الأهداف». Still held:
-   attestation vs approval wording, and the other role labels.
+   Approved terms: «المغذّي»/«التغذية», «مولّد الأهداف», «التوثيق» for
+   attestation and «الاعتماد» for approval (kept distinct). Generic role
+   labels: «المدير العام»، «مدير دائرة»، «رئيس قسم»، «موظف». A named
+   person's own designation (public record) keeps its own form.
 7. **Persistence pattern**: device-level stores in localStorage —
    `qagcSession`, `qagcAiCfg` (bridge key — sensitive), `qagcCustom`
    (wording/order), `qagcPrivs`, `qagcAwards`, `qagcOwnerCfg` (rules,

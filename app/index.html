@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>منصة ضمان الجودة</title>
-<meta name="qagc-ver" content="beta 86">
+<meta name="qagc-ver" content="beta 87">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -3359,7 +3359,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
           <div id="dgcClash" hidden style="margin-top:var(--sp-2)"></div>
           <label style="display:inline-flex;gap:7px;align-items:center;font-size:var(--t-sm);margin-top:var(--sp-2);cursor:pointer">
             <input type="checkbox" id="dgc-priv">
-            <span><span lang="ar">🔒 خاص — تفاصيله للمديرة العامة وحدها، والآخرون يرون «مشغول»</span><span lang="en">🔒 Private — details for the DG alone; others see "busy"</span></span></label>
+            <span><span lang="ar">🔒 خاص — تفاصيله للمدير العام وحده، والآخرون يرون «مشغول»</span><span lang="en">🔒 Private — details for the DG alone; others see "busy"</span></span></label>
           <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
             <button class="btn btn-p" id="dgCalAdd"><span lang="ar">إضافة الموعد</span><span lang="en">Add appointment</span></button>
             <span class="kerr" id="dgCalErr"></span>
@@ -11453,7 +11453,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var acct=(typeof SESSION!=="undefined"&&SESSION&&typeof acctOf==="function")?acctOf(SESSION.u):null;
       var who=acct?(isAr()?acct.who[0]:acct.who[1]):"";
       // placing something in the DG's own calendar deserves the second step
-      stepUp("submit", bi("جدولة موعد للمديرة العامة: ","Scheduling for the Director General: ")+t.value.trim(), function(){
+      stepUp("submit", bi("جدولة موعد للمدير العام: ","Scheduling for the Director General: ")+t.value.trim(), function(){
         if(err) err.innerHTML=bi("جارٍ الإدراج…","Placing…");
         var privT=((document.getElementById("dgc-priv")||{}).checked?"🔒 ":"")+t.value.trim();
         fetch(cfg.url+"?key="+encodeURIComponent(cfg.key), {method:"POST",
@@ -12207,7 +12207,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(r) r.value=PRIO_CFG.route;
     var h=document.getElementById("routeHint");
     if(h) h.innerHTML = PRIO_CFG.route==="superior"
-      ? bi("يقف الطلب عند رئيس الدائرة؛ تزكيته ترفعه إلى المدير العام، وإعادته أو رفضه ينهيه عنده.",
+      ? bi("يقف الطلب عند مدير الدائرة؛ تزكيته ترفعه إلى المدير العام، وإعادته أو رفضه ينهيه عنده.",
            "The request stops with the directorate head; endorsing passes it up to the Director General, returning or refusing ends it there.")
       : bi("يصل الطلب إلى المدير العام دون وسيط.",
            "The request reaches the Director General with nobody in between.");
@@ -16034,7 +16034,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       gxToast(needs?"ضُمّ من دائرة أخرى — بانتظار إذن المدير العام.":"ضُمّ للتغذية. إدخاله يوثّقه رئيسه المباشر.",
               needs?"Added from another directorate — awaiting the Director General.":"Added. Their entries are verified by their own line manager.");
       return; }
-    var fok=e.target.closest("[data-gxfok]"); if(fok){ if(ROLE!=="dg"){ gxToast("الإذن للمديرة العامة وحدها.","Only the Director General authorises this."); return; }
+    var fok=e.target.closest("[data-gxfok]"); if(fok){ if(ROLE!=="dg"){ gxToast("الإذن للمدير العام وحده.","Only the Director General authorises this."); return; }
       var nm3=fok.dataset.gxfok, kk3=GX.KD;
       gxFeeders(kk3).forEach(function(f){ if(f.name===nm3){ f.pending=false; f.dgBy=gxMe().name; f.dgAt=PLATFORM_TODAY; } });
       if(GX.K!==null && S.kpis[GX.K]) S.kpis[GX.K].feeders=kk3.feeders;
