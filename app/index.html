@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 81">
+<meta name="qagc-ver" content="beta 82">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -2465,12 +2465,12 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
   <div class="modal">
     <h3><span lang="ar">ملف التقويم</span><span lang="en">Calendar file</span></h3>
     <p style="font-size:var(--t-sm);color:var(--ink-3)">
-      <span lang="ar">حفظ الملف غير متاح في هذا العرض. انسخ النص أدناه واحفظه بامتداد ics، أو استورده مباشرة في Google Calendar من «استيراد».</span>
-      <span lang="en">Saving a file is not available in this view. Copy the text below and save it with an .ics extension, or import it directly in Google Calendar.</span></p>
+      <span lang="ar">تعذّر حفظ ملف التقويم من هذا العرض. يمكن نسخ النص أدناه وحفظه في ملف بامتداد .ics.</span>
+           <span lang="en">The calendar file could not be saved from this view. You can copy the text below and save it in a file with the .ics extension.</span></p>
     <textarea id="icsText" rows="10" style="width:100%;font-family:var(--latin);direction:ltr;font-size:var(--t-xs);
       border:1px solid var(--rule-strong);border-radius:var(--r-sm);padding:var(--sp-2);margin-top:var(--sp-3)"></textarea>
     <div style="display:flex;gap:var(--sp-2);margin-top:var(--sp-3);flex-wrap:wrap">
-      <button class="btn btn-p" id="icsCopy"><span lang="ar">نسخ</span><span lang="en">Copy</span></button>
+      <button class="btn btn-p" id="icsCopy"><span lang="ar">نسخ نص التقويم</span><span lang="en">Copy calendar text</span></button>
       <button class="btn" id="icsClose"><span lang="ar">إغلاق</span><span lang="en">Close</span></button>
     </div>
   </div>
@@ -3103,8 +3103,8 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
               <button id="modeYear"><span lang="ar">سنوي</span><span lang="en">Yearly</span></button>
             </div>
           </div>
-          <p class="hint"><span lang="ar">اضغط على أي يوم لعرض إحصائيات اليوم والأسبوع والشهر.</span>
-             <span lang="en">Click any day for its day, week and month statistics.</span></p>
+          <p class="hint"><span lang="ar">اختيار يوم لعرض إحصاءات اليوم والأسبوع والشهر.</span>
+           <span lang="en">Select a day to view day, week and month statistics.</span></p>
           <div id="calBody"></div>
         </div>
 
@@ -3133,13 +3133,13 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       <div class="pane" id="lv-mine">
         <div class="card">
           <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><div>
-            <span class="ceye"><span lang="ar">رصيدي 16 يوماً</span><span lang="en">My balance: 16 days</span></span>
+            <span class="ceye"><span lang="ar">طلبات الإجازة المسجّلة</span><span lang="en">Recorded leave requests</span></span>
             <h2><span lang="ar">طلباتي</span><span lang="en">My requests</span></h2></div></div></div>
           <div class="tw"><table>
             <thead><tr>
               <th><span lang="ar">من</span><span lang="en">From</span></th>
               <th><span lang="ar">إلى</span><span lang="en">To</span></th>
-              <th><span lang="ar">المدة</span><span lang="en">Length</span></th>
+              <th><span lang="ar">المدة بالأيام التقويمية</span><span lang="en">Duration in calendar days</span></th>
               <th><span lang="ar">النائب</span><span lang="en">Substitute</span></th>
               <th><span lang="ar">الحالة</span><span lang="en">Status</span></th>
             </tr></thead>
@@ -3153,7 +3153,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       <div class="pane" id="lv-submit">
         <div class="card">
           <div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span><div>
-            <span class="ceye"><span lang="ar">تُفحص القواعد قبل الإرسال</span><span lang="en">The rules are checked before sending</span></span>
+            <span class="ceye"><span lang="ar">إدخال بيانات طلب الإجازة</span><span lang="en">Enter leave-request details</span></span>
             <h2><span lang="ar">تقديم إجازة</span><span lang="en">Submit leave</span></h2></div></div></div>
           <div class="frow">
             <div class="fld"><label><span lang="ar">تاريخ البداية</span><span lang="en">Start date</span></label><input id="lr-from" type="date" value="2027-02-01"></div>
@@ -3173,7 +3173,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       <div class="pane" id="lv-appr">
         <div class="card">
           <div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 4v5c0 5-3 7.5-7 9-4-1.5-7-4-7-9V7z"/><path d="m9.5 12 2 2 3.5-4"/></svg></span><div>
-            <span class="ceye"><span lang="ar">تُفحص القواعد قبل أن تصل إليك</span><span lang="en">Rule-checked before it reaches you</span></span>
+            <span class="ceye"><span lang="ar">طلبات تحتاج إلى المراجعة</span><span lang="en">Requests requiring review</span></span>
             <h2><span lang="ar">طلبات بانتظار القرار</span><span lang="en">Requests awaiting a decision</span></h2></div></div>
             <span class="sub tnum" id="lvApprSub"></span></div>
           <div id="lvApprList"></div>
@@ -3185,7 +3185,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
         <div class="card">
           <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><div>
             <span class="ceye"><span lang="ar">الغياب حسب القسم</span><span lang="en">Absence by department</span></span>
-            <h2><span lang="ar">المخطط الزمني السنوي</span><span lang="en">Annual timeline</span></h2></div>
+            <h2><span lang="ar">المخطط الزمني للإجازات</span><span lang="en">Leave timeline</span></h2></div>
             <span class="sub" id="tlTitle"></span></div></div>
           <div class="calbar">
             <div class="calnav">
@@ -3332,8 +3332,8 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
           <span class="ceye"><span lang="ar">جسر مباشر إلى Google Calendar</span><span lang="en">A live bridge to Google Calendar</span></span>
           <h2><span lang="ar">تقويم المديرة العامة</span><span lang="en">The Director General's calendar</span></h2></div></div></div>
         <p style="font-size:var(--t-sm);color:var(--ink-3)">
-          <span lang="ar">تقويمها من Google عبر الجسر. ما يُنشأ هنا يصل هاتفها فوراً.</span>
-          <span lang="en">Her Google calendar through the bridge. What is created here reaches her phone at once.</span></p>
+          <span lang="ar">يعرض الجدول المواعيد التي تُجلب من Google Calendar عبر الجسر.</span>
+           <span lang="en">The schedule shows appointments fetched from Google Calendar through the bridge.</span></p>
         <div style="display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center">
           <button class="btn btn-p" id="dgCalRefresh"><span lang="ar">تحديث الجدول</span><span lang="en">Refresh</span></button>
           <span id="dgCalStatus" style="font-size:var(--t-sm)"></span>
@@ -3347,9 +3347,9 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
               <input id="dgc-title" placeholder="اجتماع لجنة الحوكمة"></span>
             <span class="fld"><label><span lang="ar">التاريخ</span><span lang="en">Date</span></label>
               <input id="dgc-date" type="date"></span>
-            <span class="fld"><label><span lang="ar">من</span><span lang="en">From</span></label>
+            <span class="fld"><label><span lang="ar">وقت البداية</span><span lang="en">Start time</span></label>
               <input id="dgc-from" type="time" value="10:00"></span>
-            <span class="fld"><label><span lang="ar">إلى</span><span lang="en">To</span></label>
+            <span class="fld"><label><span lang="ar">وقت النهاية</span><span lang="en">End time</span></label>
               <input id="dgc-to" type="time" value="11:00"></span>
             <span class="fld"><label><span lang="ar">المكان</span><span lang="en">Location</span></label>
               <input id="dgc-loc" placeholder="مكتب المديرة العامة"></span>
@@ -3361,7 +3361,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
             <input type="checkbox" id="dgc-priv">
             <span><span lang="ar">🔒 خاص — تفاصيله للمديرة العامة وحدها، والآخرون يرون «مشغول»</span><span lang="en">🔒 Private — details for the DG alone; others see "busy"</span></span></label>
           <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
-            <button class="btn btn-p" id="dgCalAdd"><span lang="ar">إدراج في تقويمها</span><span lang="en">Place in her calendar</span></button>
+            <button class="btn btn-p" id="dgCalAdd"><span lang="ar">إضافة الموعد</span><span lang="en">Add appointment</span></button>
             <span class="kerr" id="dgCalErr"></span>
           </div>
         </div>
@@ -3372,15 +3372,15 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
           <span class="ceye"><span lang="ar">التقويم حيث يستخدمه الفريق</span><span lang="en">The calendar where the team already is</span></span>
           <h2><span lang="ar">التقويم ومواعيد الخطة</span><span lang="en">Calendar and plan dates</span></h2></div></div></div>
         <p style="font-size:var(--t-sm);color:var(--ink-3)">
-          <span lang="ar">تُصدَّر المواعيد إلى أي تقويم، في تقويم منفصل.</span>
-          <span lang="en">Dates export to any calendar, into a separate one.</span></p>
+          <span lang="ar">تنزيل المواعيد في ملف ICS لاستيراده في تطبيق تقويم يدعم هذا النوع من الملفات.</span>
+           <span lang="en">Download dates as an ICS file for import into a calendar app that supports this format.</span></p>
         <div style="display:flex;gap:var(--sp-2);margin-top:var(--sp-3);flex-wrap:wrap;align-items:center">
-          <button class="btn btn-p" id="calAll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 19h16"/></svg><span lang="ar">تنزيل تقويم الخطة</span><span lang="en">Download the plan calendar</span></button>
+          <button class="btn btn-p" id="calAll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 19h16"/></svg><span lang="ar">تنزيل المواعيد المجمّعة</span><span lang="en">Download combined dates</span></button>
           <span class="kerr" id="calErr"></span>
         </div>
         <p class="hint2" style="margin-top:var(--sp-3)">
-          <span lang="ar">الاشتراك المباشر يحتاج عنواناً ثابتاً — بعد النشر.</span>
-          <span lang="en">A live subscription needs a fixed address — after publishing.</span></p>
+          <span lang="ar">هذا تنزيل لنسخة من المواعيد، وليس اشتراكاً يتحدّث تلقائياً.</span>
+           <span lang="en">This downloads a copy of the dates; it is not an automatically updated subscription.</span></p>
       </div>
         <div class="card">
           <div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><div>
@@ -3568,8 +3568,8 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       </div>
 
       <div class="rolebar">
-        <span lang="ar">للإجابة: اختيار البديل وكتابة الملاحظة تحته. وللتعليق على أي عبارة أخرى في الصفحة: تفعيل «وضع المراجعة» — عندها تصبح النقرة تعليقاً وتتعطل الأزرار عمداً. تُحفَظ الإجابات في هذا الجهاز فور كتابتها.</span>
-        <span lang="en">To answer: choose an option and write the note beneath it. To comment on any other sentence: turn on review mode — there a click becomes a comment and the controls are deliberately inert. Answers are saved on this device as they are typed.</span>
+        <span lang="ar">للإجابة: اختيار البديل وكتابة الملاحظة تحته. وللتعليق على أي عبارة أخرى في الصفحة: تفعيل «وضع المراجعة» — عندها تصبح النقرة تعليقاً وتتعطل الأزرار عمداً. تُحاول الصفحة حفظ الإجابات تلقائياً في هذا الجهاز؛ يُحفظ النص بعد توقف الكتابة لحظة. راجع حالة الحفظ أدناه.</span>
+        <span lang="en">To answer: choose an option and write the note beneath it. To comment on any other sentence: turn on review mode — there a click becomes a comment and the controls are deliberately inert. The page attempts to save answers automatically on this device; text is saved after a brief pause in typing. Check the save status below.</span>
       </div>
 
       <div class="stack">
@@ -3998,7 +3998,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
           </div>
           <div style="margin-top:var(--sp-4);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
             <button class="btn btn-p" id="addStaff"><span lang="ar">إضافة وبدء التهيئة</span><span lang="en">Add and start induction</span></button>
-            <span class="saved" id="staffSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span lang="ar">أُضيف وبدأت تهيئته.</span><span lang="en">Added, induction started.</span></span>
+            <span class="saved" id="staffSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span lang="ar">أُضيف السجل وبدأت التهيئة.</span><span lang="en">Record added and onboarding started.</span></span>
           </div>
           <div class="stafflist" id="staffAdmin"></div>
         </div>
@@ -4008,8 +4008,8 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
             <span class="ceye"><span lang="ar">يُطبَّق على كل موظف جديد</span><span lang="en">Applied to every new joiner</span></span>
             <h2><span lang="ar">نموذج التهيئة</span><span lang="en">Induction template</span></h2></div></div></div>
           <p style="font-size:var(--t-sm);color:var(--ink-3)">
-            <span lang="ar">البند ومهلته بالأيام.</span>
-            <span lang="en">The item and its days.</span></p>
+            <span lang="ar">لكل بند، تُحدَّد المهلة بالأيام من تاريخ المباشرة.</span>
+           <span lang="en">Set each item's deadline in days from the start date.</span></p>
           <div id="indTemplate"></div>
           <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-2);flex-wrap:wrap">
             <button class="btn" id="addInd"><span lang="ar">إضافة بند</span><span lang="en">Add an item</span></button>
@@ -4040,7 +4040,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
             <span lang="ar">معيار في كل سطر.</span>
             <span lang="en">One criterion per line.</span></p>
           <textarea id="evCritTa" rows="6" style="width:100%"></textarea>
-          <div style="margin-top:var(--sp-2)"><button class="btn btn-p" id="evCritSave"><span lang="ar">حفظ المعايير</span><span lang="en">Save</span></button>
+          <div style="margin-top:var(--sp-2)"><button class="btn btn-p" id="evCritSave"><span lang="ar">حفظ المعايير</span><span lang="en">Save criteria</span></button>
             <span class="saved" id="evCritSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span lang="ar">حُفظت.</span><span lang="en">Saved.</span></span></div>
         </div>
         <div class="card">
@@ -4048,7 +4048,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
             <span class="ceye"><span lang="ar">وزنها بيدها، والمعادلة معلنة للجميع</span><span lang="en">She sets the weights; everyone sees the formula</span></span>
             <h2><span lang="ar">معادلة مؤشر الأداء</span><span lang="en">The performance formula</span></h2></div></div></div>
           <div class="frow">
-            <div class="fld"><label><span lang="ar">المهام في موعدها</span><span lang="en">On-time tasks</span></label>
+            <div class="fld"><label><span lang="ar">المهام غير المصنّفة متأخرة</span><span lang="en">Tasks not marked overdue</span></label>
               <input id="pw-task" type="number" min="0" max="100" value="50"></div>
             <div class="fld"><label><span lang="ar">تقييم 360°</span><span lang="en">360°</span></label>
               <input id="pw-ev" type="number" min="0" max="100" value="30"></div>
@@ -4057,7 +4057,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
           </div>
           <p class="hint2"><span lang="ar">تُعاير إلى 100 تلقائياً.</span>
             <span lang="en">Normalised to 100 automatically.</span></p>
-          <div style="margin-top:var(--sp-2)"><button class="btn btn-p" id="pwSave"><span lang="ar">حفظ الأوزان</span><span lang="en">Save</span></button>
+          <div style="margin-top:var(--sp-2)"><button class="btn btn-p" id="pwSave"><span lang="ar">حفظ الأوزان</span><span lang="en">Save weights</span></button>
             <span class="saved" id="pwSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span lang="ar">حُفظت.</span><span lang="en">Saved.</span></span></div>
         </div>
         <div class="card">
@@ -4075,7 +4075,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
           <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
             <button class="btn btn-p" id="awSave"><span lang="ar">إعلان التكريم</span><span lang="en">Announce</span></button>
             <span id="awPerfHint" style="font-size:var(--t-sm)"></span>
-            <button class="btn" id="awClear"><span lang="ar">إزالة الشريط</span><span lang="en">Take the ribbon down</span></button>
+            <button class="btn" id="awClear"><span lang="ar">إزالة الشريط</span><span lang="en">Remove banner</span></button>
             <span class="saved" id="awSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span lang="ar">أُعلن التكريم.</span><span lang="en">Announced.</span></span>
           </div>
         </div>
@@ -5212,7 +5212,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
          f.mgrsOut+" of "+f.mgrsTotal+" — the limit is "+LVCFG.mgrs+"."],
         f.mgrsOut>LVCFG.mgrs?"block":(f.mgrsOut===LVCFG.mgrs?"warn":"ok")]
     ];
-    host.innerHTML = rows.map(function(r){
+    host.innerHTML ='<p style="font-size:var(--t-sm);color:var(--ink-3);margin:0 0 8px">'+bi("عرض توضيحي يعتمد على بيانات مثال، وليس فحصاً لطلب إجازة.","Illustration using example data, not a check of a leave request.")+'</p>'+ rows.map(function(r){
       var v=verdict(r[3]);
       return '<div class="rule-row"><span class="rc">'+r[0]+'</span><div class="rb">'+
         '<div class="rt">'+bi(r[1][0],r[1][1])+'</div>'+
@@ -6525,10 +6525,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function calButtons(ev, small){
     var cls=small?"mini no":"btn";
     return '<a class="'+cls+'" target="_blank" rel="noopener noreferrer" href="'+gcalLink(ev)+'" title="'+
-        (isAr()?"يضاف إلى تقويم من ينقر عليه هو":"Adds to the clicker's own calendar")+'">'+
-        bi("إلى تقويمي أنا","To my calendar")+'</a>'+
+        (isAr()?"فتح نموذج إضافة الموعد في Google Calendar":"Open the add-event form in Google Calendar")+'">'+
+        bi("فتح في Google Calendar","Open in Google Calendar")+'</a>'+
       '<button class="'+cls+'" data-ics="'+encodeURIComponent(JSON.stringify(ev))+'">'+
-        bi("ملف تقويم","Calendar file")+'</button>'+
+        bi("تنزيل ملف تقويم","Download calendar file")+'</button>'+
       ((ROLE==="dg"||ROLE==="coord")
         ? '<button class="'+cls+'" data-dgcalev="'+encodeURIComponent(JSON.stringify(ev))+'">'+
           bi("إلى تقويم المديرة العامة","To the DG's calendar")+'</button>'+
@@ -9272,25 +9272,25 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       '</div>'+
       (ev.desc[0]?'<p style="font-size:var(--t-sm);color:var(--ink-2);margin-top:var(--sp-3)">'+bi(ev.desc[0],ev.desc[1])+'</p>':"")+
       (ev.pdf?'<div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-2);flex-wrap:wrap">'+
-        '<button class="btn btn-p" data-pdf="'+i+'">'+bi("عرض البروشور","View the brochure")+'</button>'+
-        (canEditCpd()?'<button class="btn" data-pdfdel="'+i+'">'+bi("إزالة البروشور","Remove the brochure")+'</button>':"")+
+        '<button class="btn btn-p" data-pdf="'+i+'">'+bi("عرض ملف النشاط","View activity file")+'</button>'+
+        (canEditCpd()?'<button class="btn" data-pdfdel="'+i+'">'+bi("إزالة ملف النشاط","Remove activity file")+'</button>':"")+
         '</div>':"")+
       (canEditCpd()
         ? '<div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center">'+
             '<button class="btn'+(ev.confirmed?"":" btn-p")+'" data-ckconf="'+i+'">'+
-              (ev.confirmed?bi("إلغاء التأكيد","Unconfirm"):bi("تأكيد الموعد","Confirm the date"))+'</button>'+
+              (ev.confirmed?bi("إلغاء تأكيد الموعد","Remove date confirmation"):bi("تأكيد الموعد","Confirm the date"))+'</button>'+
             '<select class="fld-sel" id="cpdAssignSel">'+
               '<option value="">'+(isAr()?"إسناد التنظيم إلى…":"Assign organising to…")+'</option>'+
               (function(){ var dirs=[]; STAFF.forEach(function(x){ if(x.dir&&dirs.indexOf(x.dir[0])<0) dirs.push(x.dir[0]); });
                 return dirs.map(function(d){return '<option value="dir:'+d+'">'+(isAr()?"دائرة ":"Directorate: ")+d+'</option>';}).join(""); })()+
               STAFF.map(function(p){return '<option value="staff:'+p.id+'">'+(isAr()?p.who[0]:p.who[1])+'</option>';}).join("")+
             '</select>'+
-            '<button class="btn" data-ckassign="'+i+'">'+bi("إسناد","Assign")+'</button>'+
+            '<button class="btn" data-ckassign="'+i+'">'+bi("إسناد التنظيم","Assign organising")+'</button>'+
           '</div>'+
           '<div style="margin-top:var(--sp-2);display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:end">'+
-            '<span class="fld" style="margin:0"><label style="font-size:var(--t-xs)">'+bi("من","From")+'</label>'+
+            '<span class="fld" style="margin:0"><label style="font-size:var(--t-xs)">'+bi("تاريخ البداية","Start date")+'</label>'+
               '<input type="date" id="cpdEdFrom" value="'+ev.from+'"></span>'+
-            '<span class="fld" style="margin:0"><label style="font-size:var(--t-xs)">'+bi("إلى","To")+'</label>'+
+            '<span class="fld" style="margin:0"><label style="font-size:var(--t-xs)">'+bi("تاريخ النهاية","End date")+'</label>'+
               '<input type="date" id="cpdEdTo" value="'+(ev.to||"")+'"></span>'+
             '<button class="btn" data-ckdates="'+i+'">'+bi("حفظ الموعد","Save the dates")+'</button>'+
           '</div>'+
@@ -9315,7 +9315,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
               '<span></span></div>';
           }).join("")
         : "")+
-      '<p class="hint2" style="margin-top:var(--sp-3)">'+bi("المواعيد مبدئية وقابلة للتغيير.","Dates are tentative and subject to change.")+'</p>';
+      '<p class="hint2" style="margin-top:var(--sp-3)">'+bi("يمكن تعديل مواعيد النشاط.","Activity dates can be changed.")+'</p>';
     document.getElementById("cpdMActs").innerHTML=
       calButtons({title:(isAr()?ev.t[0]:ev.t[1]), start:ev.from, end:ev.to||ev.from,
                   desc:(isAr()?CPD_TYPES[ev.type][0]:CPD_TYPES[ev.type][1])+" · "+(isAr()?ev.venue[0]:ev.venue[1])})+
@@ -9349,7 +9349,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         pd.dataset.armed="1";
         pd.innerHTML=bi("تأكيد الإزالة؟","Confirm removal?");
         setTimeout(function(){ if(pd.isConnected){ pd.dataset.armed="";
-          pd.innerHTML=bi("إزالة البروشور","Remove the brochure"); } },4000);
+          pd.innerHTML=bi("إزالة ملف النشاط","Remove activity file"); } },4000);
         return;
       }
       if(evd.pdf.url){ try{ URL.revokeObjectURL(evd.pdf.url); }catch(_){} }
@@ -9882,8 +9882,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     try{
       var r=await fetch(url+"?key="+encodeURIComponent(key)+"&fn=inbox");
       var j=await r.json();
-      if(!j.ok){ aiStatus(bi("المفتاح مرفوض.","The key was refused."),false); return; }
-      aiStatus(bi("متصل — آخر تحديث الآن.","Connected — just refreshed."),true);
+      if(!j.ok){ aiStatus(bi("لم يكتمل تحميل الوارد.","Inbox loading did not complete."),false); return; }
+      aiStatus(bi("اكتمل تحميل الوارد.","Inbox loaded."),true);
       aiSaveCfg(url,key);
       renderAiInbox(j.items||[]);
       try{ aiPushSnapshot(url,key); }catch(_){}
@@ -9893,8 +9893,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         if(ja.ok) renderAiAnalyses(ja.items||[]);
       }catch(_){}
     }catch(err){
-      aiStatus(bi("تعذّر الاتصال من هذه النسخة — جرّب النسخة المنشورة على github.io.",
-                  "Could not connect from this copy — try the published github.io version."),false);
+      aiStatus(bi("تعذّر تحميل الوارد. يمكن إعادة المحاولة.","The inbox could not be loaded. Try again."),false);
     }
   }
   function renderAiAnalyses(items){
@@ -10350,7 +10349,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         '<span class="tnum" style="width:36px;font-weight:700;color:'+col+'">'+r.s+'</span>'+
         (i===0?'<span class="awstar" title="'+(isAr()?"مرشح تكريم الشهر":"Month honour candidate")+'">🏆</span>':"")+
       '</div>';
-    }).join("") : '<div class="subempty">'+bi("لا نتائج بعد — المؤشر يُحسب مما يُنجز فعلاً.","No scores yet — the index counts real work only.")+'</div>')+
+    }).join("") : '<div class="subempty">'+bi("لا تتوفر بيانات لحساب المؤشر في هذه القائمة.","No data is available to calculate the index in this list.")+'</div>')+
     (unscored?'<div class="sm" style="margin-top:6px"><span class="pill p-neutral">'+
       bi(unscored+" موظفاً: بيانات غير كافية بعد", unscored+" staff: not enough data yet")+'</span></div>':"")+
     '<p class="hint2" style="margin-top:var(--sp-2)">'+
@@ -10429,7 +10428,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       '<span class="acts">'+
       (opts.decide && it.status==="requested"
         ? '<button class="mini yes" data-pdpdec="'+pid+':'+it.id+':v">'+bi("اعتماد","Approve")+'</button>'+
-          '<button class="mini ret" data-pdpdec="'+pid+':'+it.id+':r">'+bi("إعادة بملاحظة","Return")+'</button>'
+          '<button class="mini ret" data-pdpdec="'+pid+':'+it.id+':r">'+bi("إعادة بملاحظة","Return with a note")+'</button>'
         : '<span class="pill '+st.p+'">'+bi(st.l[0],st.l[1])+'</span>')+
       (opts.comment?'<button class="mini" data-pdpcmt="'+pid+':'+it.id+'">'+bi("تعليق","Comment")+'</button>':"")+
       '</span></div>';
@@ -10440,12 +10439,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       '<div class="kform">'+
         '<span class="fld"><label>'+bi("الموظف","Employee")+'</label><select id="pdpm-p" class="fld-sel">'+
           team.map(function(p){return '<option value="'+p.id+'">'+bi(p.who[0],p.who[1])+'</option>';}).join("")+'</select></span>'+
-        '<span class="fld" style="grid-column:span 2"><label>'+bi("العنصر","Item")+'</label><input id="pdpm-t" placeholder="دورة، ورشة، مهمة تعلّم…"></span>'+
+        '<span class="fld" style="grid-column:span 2"><label>'+bi("نشاط التطوير","Development activity")+'</label><input id="pdpm-t" placeholder="دورة، ورشة، مهمة تعلّم…"></span>'+
         '<span class="fld"><label>'+bi("النوع","Kind")+'</label><select id="pdpm-k" class="fld-sel"><option>دورة</option><option>ورشة</option><option>مؤتمر</option><option>شهادة مهنية</option><option>تكليف تطويري</option></select></span>'+
         '<span class="fld"><label>'+bi("التوقيت","Timing")+'</label><input id="pdpm-w" placeholder="2027-06"></span>'+
         '<span class="fld"><label>'+bi("ملاحظة","Note")+'</label><input id="pdpm-n"></span>'+
       '</div>'+
-      '<div style="margin-top:var(--sp-2)"><button class="btn btn-p" id="pdpMgrAdd">'+bi("إضافة إلى خطته","Add to their plan")+'</button>'+
+      '<div style="margin-top:var(--sp-2)"><button class="btn btn-p" id="pdpMgrAdd">'+bi("إضافة إلى خطة الموظف المحدد","Add to the selected employee's plan")+'</button>'+
       '<span class="kerr" id="pdpmErr"></span></div></div>';
   }
   function pdpTeamSection(decider){
@@ -10456,7 +10455,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       (withItems.length? withItems.map(function(p){
         return '<p class="subh" style="font-size:var(--t-xs)">'+bi(p.who[0],p.who[1])+'</p>'+
           PDP[p.id].map(function(it){return pdpItemRow(p.id,it,{decide:true,comment:true});}).join("");
-      }).join("") : '<div class="subempty">'+bi("لا خطط ولا طلبات من الفريق بعد.","Nothing from the team yet.")+'</div>')+
+      }).join("") : '<div class="subempty">'+bi("لا توجد عناصر تطوير أو طلبات في قائمة الفريق.","No development items or requests in the team list.")+'</div>')+
       pdpMgrForm(team, bi("إنشاء عنصر في خطة موظف","Create an item in an employee's plan"));
   }
   function drawPdp(){
@@ -10948,7 +10947,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         '<div class="kform">'+
         '<span class="fld"><label>'+bi("المُقيَّم","Subject")+'</label><select class="fld-sel" id="ev-subj">'+
           STAFF.map(function(x){return '<option value="'+x.id+'">'+(isAr()?x.who[0]:x.who[1])+'</option>';}).join("")+'</select></span>'+
-        '<span class="fld" style="grid-column:1/-1"><label>'+bi("المُقيِّمون — علّمي على كل من يشارك","Raters — tick everyone taking part")+'</label>'+
+        '<span class="fld" style="grid-column:1/-1"><label>'+bi("المشاركون في التقييم — تحديد الأسماء","Raters — select names")+'</label>'+
           '<span style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">'+
           STAFF.map(function(x){return '<label style="display:inline-flex;gap:5px;align-items:center;font-size:var(--t-xs);cursor:pointer">'+
             '<input type="checkbox" data-evr="'+x.id+'">'+(isAr()?x.who[0]:x.who[1])+'</label>';}).join("")+'</span></span>'+
@@ -10960,12 +10959,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     // forms waiting on the signed-in person
     var mineDue=EV360.filter(function(c){ return c.open && me && c.raters.indexOf(me.id)>=0 && !c.resp[me.id]; });
     if(mineDue.length){
-      h+='<p class="subh" style="margin-top:var(--sp-4)">'+bi("استمارات مطلوبة منك","Forms waiting on you")+' <span class="cnt">'+mineDue.length+'</span></p>';
+      h+='<p class="subh" style="margin-top:var(--sp-4)">'+bi("استمارات بانتظار إجابتك","Forms awaiting your response")+' <span class="cnt">'+mineDue.length+'</span></p>';
       mineDue.forEach(function(c){
         var subj=STAFF.filter(function(x){return x.id===c.subject;})[0];
         h+='<div class="asnform" style="margin-top:var(--sp-2)"><div style="font-size:var(--t-sm);font-weight:700">'+
           bi("تقييم: ","Evaluating: ")+(subj?bi(subj.who[0],subj.who[1]):"")+'</div>'+
-          '<div style="font-size:var(--t-xs);color:var(--ink-3)">'+bi("١ ضعيف — ٥ ممتاز. الإجابات سرّية: تظهر النتيجة مجمّعة بلا أسماء.","1 poor — 5 excellent. Confidential: results show aggregated, unnamed.")+'</div>'+
+          '<div style="font-size:var(--t-xs);color:var(--ink-3)">'+bi("١ ضعيف — ٥ ممتاز. تُعرض متوسطات الإجابات والملاحظات دون أسماء في لوحة النتائج؛ هذا لا يضمن سرّية الإجابات أو إخفاء هوية أصحابها.","1 poor — 5 excellent. The results panel shows response averages and comments without names; this does not guarantee confidentiality or anonymity.")+'</div>'+
           c.criteria.map(function(cr,i){
             return '<div style="display:flex;gap:10px;align-items:center;padding:5px 0;border-bottom:1px solid var(--rule)">'+
               '<span style="flex:1;font-size:var(--t-sm)">'+cr+'</span>'+
@@ -11003,7 +11002,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         '</div>';
       });
     }
-    if(!h) h='<div class="subempty">'+bi("لا دورات تقييم مفتوحة تخصّك.","No evaluation cycles concern you right now.")+'</div>';
+    if(!h) h='<div class="subempty">'+bi("لا توجد استمارات أو نتائج لعرضها هنا.","No forms or results to display here.")+'</div>';
     host.innerHTML=h;
   }
   document.addEventListener("click",function(e){
@@ -11351,7 +11350,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     });
     if(!hits.length){ w.hidden=true; w.innerHTML=""; return; }
     w.hidden=false;
-    w.innerHTML='<div class="retnote" style="display:block"><b>'+bi("⚠ تعارض في جدولها: ","⚠ Clash in her schedule: ")+'</b>'+
+    w.innerHTML='<div class="retnote" style="display:block"><b>'+bi("⚠ تداخل مع موعد محمّل: ","⚠ Overlap with a loaded appointment: ")+'</b>'+
       hits.map(function(ev){ return String(ev.title)+(ev.allday?"":" ("+String(ev.start).slice(11,16)+"–"+String(ev.end).slice(11,16)+")"); }).join(" · ")+
       '</div>';
   }
@@ -11375,7 +11374,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       }
     }
     host.innerHTML=slots.length
-      ? '<span class="sm" style="align-self:center">'+bi("أقرب أوقات فارغة:","Nearest free hours:")+'</span>'+
+      ? '<span class="sm" style="align-self:center">'+bi("أوقات مقترحة بحسب المواعيد المحمّلة:","Suggested times based on loaded appointments:")+'</span>'+
         slots.map(function(sl){
           return '<button class="fchip" data-dgslot="'+sl.d+':'+sl.f+':'+sl.t+'">'+
             bi(DAY_AR[sl.dow],DAY_EN[sl.dow].slice(0,3))+' <span class="tnum">'+sl.d.slice(5)+' · '+sl.f+'</span></button>';
@@ -11404,7 +11403,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var host=document.getElementById("dgCalList"); if(!host) return;
     var items=j.items||[];
     if(!items.length){
-      host.innerHTML='<div class="subempty">'+bi("لا مواعيد في الأيام الأربعة عشر القادمة.","Nothing in the next fourteen days.")+'</div>';
+      host.innerHTML='<div class="subempty">'+bi("لم تُرجع القراءة مواعيد للفترة المطلوبة.","No appointments were returned for the requested period.")+'</div>';
       return;
     }
     var byDay={};
@@ -11426,18 +11425,17 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   async function dgCalFetch(){
     var cfg=dgCalCfg();
     if(!cfg){ dgCalStatus(bi("يلزم إدخال المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."),false); return; }
-    dgCalStatus(bi("جارٍ القراءة…","Reading…"),true);
+    dgCalStatus(bi("جارٍ تحميل المواعيد…","Loading appointments…"),true);
     try{
       var r=await fetch(cfg.url+"?key="+encodeURIComponent(cfg.key)+"&fn=calendar&days=14"+(ROLE==="dg"?"&full=1":""));
       var j=await r.json();
       if(!j.ok){ dgCalStatus(bi("تعذّر: ","Failed: ")+(j.error||bi("المفتاح مرفوض","key refused")),false); return; }
       DGCAL_FETCHED=true;
-      dgCalStatus(bi("تقويم: ","Calendar: ")+(j.cal||"")+" — "+bi("مُحدَّث الآن.","just refreshed."),true);
+      dgCalStatus(bi("تقويم: ","Calendar: ")+(j.cal||"")+" — "+bi("اكتمل تحميل المواعيد.","appointments loaded."),true);
       renderDgCal(j);
       syncCalForms();
     }catch(_){
-      dgCalStatus(bi("تعذّر الاتصال من هذه النسخة — تُستخدم النسخة المنشورة على github.io.",
-                     "Could not connect from this copy — use the github.io version."),false);
+      dgCalStatus(bi("تعذّر تحميل المواعيد. يمكن إعادة المحاولة.","Appointments could not be loaded. Try again."),false);
     }
   }
   document.addEventListener("click",function(e){
@@ -11450,7 +11448,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var from=(document.getElementById("dgc-from")||{}).value||"";
       var to=(document.getElementById("dgc-to")||{}).value||"";
       if(!t.value.trim()){ t.focus(); return; }
-      if(!date||!from||!to||to<=from){ if(err) err.innerHTML=bi("يلزم التاريخ والوقت — النهاية بعد البداية.","Complete the date and times — the end after the start."); return; }
+      if(!date||!from||!to||to<=from){ if(err) err.innerHTML=bi("يلزم تحديد التاريخ ووقتَي البداية والنهاية، وأن تكون النهاية بعد البداية.","Enter a date, start time and end time; the end must be after the start."); return; }
       var cfg=dgCalCfg();
       if(!cfg){ if(err) err.innerHTML=bi("يلزم إدخال المفتاح في شاشة الجسر الذكي أولاً.","Enter the key on the bridge screen first."); return; }
       // the signature is the signed-in account, not the roster stand-in
@@ -11505,7 +11503,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     items=items.filter(function(it){ return !AI_HIDDEN[it.when]; });
     var cnt=document.getElementById("aiInbCount"); if(cnt) cnt.textContent=String(items.length);
     if(!items.length){
-      host.innerHTML='<div class="subempty">'+bi("الوارد فارغ — لم تدفع المساعِدة شيئاً بعد.","The inbox is empty — nothing pushed yet.")+'</div>';
+      host.innerHTML='<div class="subempty">'+bi("لا توجد عناصر لعرضها في الوارد.","No inbox items to display.")+'</div>';
       return;
     }
     host.innerHTML=items.slice().reverse().map(function(it){
@@ -11513,7 +11511,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var kind=aiKindOf(it);
       var hideBtn=(ROLE==="dg"||ROLE==="coord")
         ? '<button class="mini no" data-aihide="'+encodeURIComponent(it.when)+'" title="'+
-          (isAr()?"إزالة من الوارد":"Remove from the inbox")+'">✕</button>' : "";
+          (isAr()?"إخفاء من هذه القائمة":"Hide from this list")+'">✕</button>' : "";
       var editBtn=(!done && (ROLE==="dg"||ROLE==="coord"))
         ? '<button class="mini" data-aieditbtn="'+encodeURIComponent(it.when)+'">'+bi("تعديل","Edit")+'</button>' : "";
       var editForm=AI_EDITING[it.when]
@@ -11960,24 +11958,21 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   });
 
   function drawLeaveCheck(){
+    // These four rules are listed, not evaluated: nothing here reads the dates entered, so the
+    // panel must not show a result. Their configured values are untouched.
     var h=document.getElementById("lrCheck"); if(!h) return;
-    h.innerHTML='<p class="subh" style="margin-top:0">'+bi("فحص القواعد","Rule check")+'</p>'+
-      '<div class="rule-row"><span class="rc">R1</span><div class="rb">'+
-        '<div class="rt">'+bi("مدة الإجازة","Duration")+'</div>'+
-        '<div class="rd">'+bi("أسبوعان من أصل "+LVCFG.weeks+".", "2 weeks of the "+LVCFG.weeks+" allowed.")+'</div></div>'+
-        '<span class="pill p-good">'+bi("مطابق","Pass")+'</span></div>'+
-      '<div class="rule-row"><span class="rc">R2</span><div class="rb">'+
-        '<div class="rt">'+bi("نسبة غياب القسم","Department cap")+'</div>'+
-        '<div class="rd">'+bi("25% في أسبوع 1 فبراير — الحد "+LVCFG.cap+"%.","25% in the week of 1 Feb — cap "+LVCFG.cap+"%.")+'</div></div>'+
-        '<span class="pill p-good">'+bi("مطابق","Pass")+'</span></div>'+
-      '<div class="rule-row"><span class="rc">R3</span><div class="rb">'+
-        '<div class="rt">'+bi("تغطية الإشراف","Supervision cover")+'</div>'+
-        '<div class="rd">'+bi("النائب من القسم نفسه.","The substitute is in the same department.")+'</div></div>'+
-        '<span class="pill p-good">'+bi("مطابق","Pass")+'</span></div>'+
-      '<div class="rule-row"><span class="rc">R4</span><div class="rb">'+
-        '<div class="rt">'+bi("رؤساء الأقسام المتغيبون","Concurrent department heads")+'</div>'+
-        '<div class="rd">'+bi("1 من 6 — الحد "+LVCFG.heads+".","1 of 6 — limit "+LVCFG.heads+".")+'</div></div>'+
-        '<span class="pill p-good">'+bi("مطابق","Pass")+'</span></div>';
+    var row=function(code, ar, en){
+      return '<div class="rule-row"><span class="rc">'+code+'</span><div class="rb">'+
+        '<div class="rt">'+bi(ar,en)+'</div>'+
+        '<div class="rd">'+bi("لم يُجرَ فحص لهذا البند على الطلب المدخل.","This item has not been checked against the entered request.")+'</div></div>'+
+        '<span class="pill">'+bi("غير مفحوص","Not checked")+'</span></div>';
+    };
+    h.innerHTML='<p class="subh" style="margin-top:0">'+bi("بنود لمراجعة طلب الإجازة","Leave-request review items")+'</p>'+
+      '<p style="font-size:var(--t-sm);color:var(--ink-3);margin:0 0 8px">'+bi("لا تتحقق هذه اللوحة من الطلب المدخل. إرسال الطلب لا يعني استيفاء قواعد الإجازة.","This panel does not validate the entered request. Submitting it does not mean the leave rules have been met.")+'</p>'+
+      row("R1","مدة الإجازة","Duration")+
+      row("R2","نسبة غياب القسم","Department cap")+
+      row("R3","تغطية الإشراف","Supervision cover")+
+      row("R4","رؤساء الأقسام المتغيبون","Concurrent department heads");
   }
   document.addEventListener("click",function(e){
     if(!e.target.closest("#lrSend")) return;
@@ -12881,7 +12876,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function setNewPassword(){
     var a=PENDING_NEW; if(!a) return;
     var x=document.getElementById("gn-a").value||"", y=document.getElementById("gn-b").value||"";
-    if(x.length<8){ gateMsg("bad", bi("كلمة المرور ثمانية أحرف على الأقل.","At least eight characters.")); return; }
+    if(x.length<8){ gateMsg("bad", bi("يلزم أن تتكوّن كلمة المرور من ثمانية أحرف على الأقل.","The password must contain at least eight characters.")); return; }
     if(x!==y){ gateMsg("bad", bi("تأكيد كلمة المرور غير مطابق.","Password confirmation does not match.")); return; }
     a.p=x; a.must=false; PENDING_NEW=null;
     document.getElementById("gn-a").value=""; document.getElementById("gn-b").value="";
@@ -13028,7 +13023,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       return;
     }
     var p1=document.getElementById("gv-p1").value||"", p2=document.getElementById("gv-p2").value||"";
-    if(p1.length<8){ gateMsg("bad", bi("كلمة المرور ثمانية أحرف على الأقل.","At least eight characters.")); return; }
+    if(p1.length<8){ gateMsg("bad", bi("يلزم أن تتكوّن كلمة المرور من ثمانية أحرف على الأقل.","The password must contain at least eight characters.")); return; }
     if(p1!==p2){ gateMsg("bad", bi("الكلمتان غير متطابقتان.","The two do not match.")); return; }
     var u=staffno.toLowerCase();
     if(acctOf(u)){ gateMsg("bad", bi("الرقم الوظيفي مسجَّل بالفعل.","That staff number is already registered.")); return; }
@@ -13116,12 +13111,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             '<span><b>'+bi(a.who[0],a.who[1])+'</b><span class="au">'+a.u+'</span></span>'+
             '<span>'+bi(roleLbl(a.role)[0],roleLbl(a.role)[1])+'</span>'+
             '<span>'+(a.must
-              ? '<span class="pill p-warn">'+bi("مؤقتة","Temporary")+'</span>'
+              ? '<span class="pill p-warn">'+bi("كلمة مرور مؤقتة","Temporary password")+'</span>'
               : a.active ? '<span class="pill p-good">'+bi("نشط","Active")+'</span>'
                          : '<span class="pill p-neutral">'+bi("موقوف","Suspended")+'</span>')+
               (a.twofa?' <span class="pill p-neutral">'+bi("خطوتان","2-step")+'</span>':"")+'</span>'+
             '<span class="acts">'+(may?
-              '<button class="mini no" data-acreset="'+i+'">'+bi("إعادة تعيين","Reset")+'</button>'+
+              '<button class="mini no" data-acreset="'+i+'">'+bi("إعادة تعيين كلمة المرور","Reset password")+'</button>'+
               '<button class="mini '+(a.active?"no":"yes")+'" data-actoggle="'+i+'">'+
                 (a.active?bi("إيقاف","Suspend"):bi("تفعيل","Enable"))+'</button>'+
               '<button class="mini '+(a.twofa?"no":"yes")+'" data-ac2fa="'+i+'">'+
@@ -15699,14 +15694,23 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     try{ raw=JSON.parse(txt||"null"); }
     catch(_){
       var key="", wrote=false;
-      try{ var n=1; while(localStorage.getItem("qagcPlan.unreadable."+n)!==null && n<999) n++;
-           key="qagcPlan.unreadable."+n; localStorage.setItem(key, txt); wrote=(localStorage.getItem(key)===txt); }catch(__){ wrote=false; }
+      // the first free slot or none: a full set of copies is never overwritten
+      try{ var n=1; while(n<=999 && localStorage.getItem("qagcPlan.unreadable."+n)!==null) n++;
+           if(n<=999){ key="qagcPlan.unreadable."+n; localStorage.setItem(key, txt); wrote=(localStorage.getItem(key)===txt); } }catch(__){ wrote=false; }
       if(wrote){ PLNOTE = isAr()?"تعذّرت قراءة سجل الخطة المحفوظ؛ حُفظت نسخة منه باسم "+key+".":"The saved plan register could not be read; a copy was kept as "+key+"."; }
       else { PLHOLD=true; PLERR = isAr()?"تعذّرت قراءة سجل الخطة المحفوظ ولم يمكن حفظ نسخة منه؛ الحفظ موقوف كي لا يُستبدل.":"The saved plan register could not be read and no copy could be kept; saving is paused so it is not overwritten."; }
       plSeed(); return false; }
     // an unrecognised store is a recovery case, not an instruction to regenerate examples
-    if(raw && raw.v===1 && raw.items && raw.items.length){ PLREG=raw; if(!PLREG.events) PLREG.events=[]; if(!PLREG.priv) PLREG.priv={author:["dg0"],assign:["dg0"]}; return true; }
-    if(raw){ PLERR = isAr()?"سجل الخطة المحفوظ غير مقروء — عُرض السجل الأصلي ولم يُمسح المحفوظ.":"The saved plan register could not be read — the seed is shown and nothing was erased."; }
+    var shapeOk = raw && typeof raw==="object" && raw.v===1 && Array.isArray(raw.items) && raw.items.length &&
+                  raw.items.every(function(x){ return x && typeof x==="object" && typeof x.id==="string" && typeof x.ref==="string"; });
+    if(shapeOk){ PLREG=raw; if(!PLREG.events) PLREG.events=[]; if(!PLREG.priv) PLREG.priv={author:["dg0"],assign:["dg0"]}; return true; }
+    if(raw!==null){
+      var key2="", wrote2=false;
+      try{ var n2=1; while(n2<=999 && localStorage.getItem("qagcPlan.unreadable."+n2)!==null) n2++;
+           if(n2<=999){ key2="qagcPlan.unreadable."+n2; localStorage.setItem(key2, txt); wrote2=(localStorage.getItem(key2)===txt); } }catch(__){ wrote2=false; }
+      if(wrote2){ PLNOTE = isAr()?"سجل الخطة المحفوظ بصيغة غير معروفة؛ حُفظت نسخة منه باسم "+key2+".":"The saved plan register is in an unrecognised format; a copy was kept as "+key2+"."; }
+      else { PLHOLD=true; PLERR = isAr()?"سجل الخطة المحفوظ بصيغة غير معروفة ولم يمكن حفظ نسخة منه؛ الحفظ موقوف كي لا يُستبدل.":"The saved plan register is in an unrecognised format and no copy could be kept; saving is paused so it is not overwritten."; }
+    }
     plSeed(); return false;
   }
   function plSave(){
@@ -16542,6 +16546,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var L=[];
     L.push("بطاقة المؤشر — إجابات المراجعة / KPI card — Review answers");
     L.push(KFA.at? ("آخر حفظ: "+KFA.at) : "");
+    L.push("قد تتضمن هذه النسخة تغييرات لم تُحفظ بعد. / This copy may include changes that have not been saved yet.");
     KF.forEach(function(d){
       L.push(""); L.push(d.ne+". "+d.q[0]);
       d.parts.forEach(function(p){
