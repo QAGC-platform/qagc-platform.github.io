@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>QAGC Plan Spine</title>
-<meta name="qagc-ver" content="beta 82">
+<meta name="qagc-ver" content="beta 83">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -3111,8 +3111,8 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
         <div class="grid2">
           <div class="card">
             <div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/></svg></span><div>
-              <span class="ceye"><span lang="ar">تقاطع الإجازة والتنفيذ</span><span lang="en">Leave meets delivery</span></span>
-              <h2><span lang="ar">أثر الإجازات على الخطة</span><span lang="en">What leave does to the plan</span></h2></div></div></div>
+              <span class="ceye"><span lang="ar">تقاطع الإجازة والتنفيذ · مثال توضيحي</span><span lang="en">Leave and delivery · illustrative example</span></span>
+              <h2><span lang="ar">أثر الإجازات على الخطة</span><span lang="en">Leave impact on the plan</span></h2></div></div></div>
             <div class="leave-warn">
               <span><b><span lang="ar">ورشة تعريفية لمراكز المحافظات</span><span lang="en">Orientation workshop for governorate centres</span></b>
                 <span lang="ar"> — الاستحقاق 30 نوفمبر، داخل إجازة معتمدة. أول يوم عمل بعد العودة: 9 ديسمبر 2026.</span>
@@ -3653,7 +3653,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 
       <div class="kf-bar">
         <button class="btn btn-p" id="kfCopy"><span lang="ar">نسخ الإجابات</span><span lang="en">Copy answers</span></button>
-        <button class="btn" id="kfPrint"><span lang="ar">طباعة</span><span lang="en">Print</span></button>
+        <button class="btn" id="kfPrint"><span lang="ar">طباعة إجابات المراجعة</span><span lang="en">Print review answers</span></button>
         <span class="kf-saved" id="kfSaved"></span>
       </div>
     </section>
@@ -4338,7 +4338,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
             <button class="btn" data-dataexp="1"><span lang="ar">تصدير</span><span lang="en">Export</span></button></div>
           <div class="dl"><span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span>
             <span class="dt"><span class="n2"><span lang="ar">سجل التدقيق</span><span lang="en">Audit trail</span></span>
-              <span class="m2"><span lang="ar">كامل السجل ضمن مدة الاحتفاظ · CSV</span><span lang="en">The full log within the retention window · CSV</span></span></span>
+              <span class="m2"><span lang="ar">الطلبات وطلبات الإجازة المحمّلة · CSV</span><span lang="en">Loaded submissions and leave requests · CSV</span></span></span>
             <button class="btn" data-dataexp="2"><span lang="ar">تصدير</span><span lang="en">Export</span></button></div>
           <div class="toggle" style="margin-top:var(--sp-4)"><span><span class="tl2"><span lang="ar">نسخة احتياطية أسبوعية</span><span lang="en">Weekly backup</span></span>
             <span class="ts2"><span lang="ar">آخر نسخة: 16 أغسطس 2026 · 4.2 ميغابايت</span><span lang="en">Last backup 16 Aug 2026 · 4.2 MB</span></span></span>
@@ -6351,29 +6351,29 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var body=docHead(o.r+" · "+(isAr()?"الخطة السنوية 2027":"Annual plan 2027"), o.t,
                        isAr()?"تقرير الهدف":"Objective report");
       body+=dPara(dRun(o.d,{sz:21}),{space:[0,200]});
-      body+=dPara(dRun(isAr()?"البطاقة":"The card",{b:true,sz:24}),{space:[120,80]});
+      body+=dPara(dRun(isAr()?"بيانات الهدف":"Objective details",{b:true,sz:24}),{space:[120,80]});
       body+=dTable([
         [isAr()?"البند":"Field", isAr()?"القيمة":"Value"],
         [isAr()?"مؤشر الأداء":"KPI", o.k],
         [isAr()?"المستهدف":"Target", String(o.g)+" "+(o.u||"")],
         [isAr()?"المسؤول":"Owner", o.o],
-        [isAr()?"الجدول":"Schedule", o.s+" → "+o.e],
+        [isAr()?"الفترة الزمنية":"Date range", o.s+" → "+o.e],
         [isAr()?"التصنيف":"Category", isAr()?TAGW[tg][0]:TAGW[tg][1]],
         [isAr()?"الإنجاز":"Progress", pr+"% — "+(isAr()?st[0]:st[1])]
       ],[2600,6000]);
       if(acts.length){
         body+=dPara(dRun(isAr()?"الخطة التشغيلية":"Operational plan",{b:true,sz:24}),{space:[160,80]});
-        body+=dTable([[isAr()?"النشاط":"Activity", isAr()?"من":"From", isAr()?"إلى":"To", isAr()?"الإنجاز":"Progress"]]
+        body+=dTable([[isAr()?"النشاط":"Activity", isAr()?"تاريخ البداية":"Start date", isAr()?"تاريخ النهاية":"End date", isAr()?"الإنجاز":"Progress"]]
           .concat(acts.map(function(a){ return [isAr()?a.t[0]:a.t[1], a.s, a.e, a.pr+"%"]; })),
           [4200,1700,1700,1000]);
       }
       var images=[], k=(EXTRA[ref]||[]);
       if(k.length){
-        body+=dPara(dRun(isAr()?"مؤشرات الأداء":"Indicators",{b:true,sz:24}),{space:[160,80]});
+        body+=dPara(dRun(isAr()?"مؤشرات الأداء":"KPIs",{b:true,sz:24}),{space:[160,80]});
         for(var i=0;i<k.length;i++){
           var kk=k[i], s2=kpiStats(kk);
           body+=dPara(dRun(kk.title,{b:true,sz:22}),{space:[80,40]});
-          var line=[kk.period, kk.unit, (isAr()?"من ":"from ")+kk.src];
+          var line=[kk.period, kk.unit, (isAr()?"المصدر: ":"Source: ")+kk.src];
           if(s2&&s2.target!==null&&s2.target!==undefined){
             line.push((isAr()?"المستهدف ":"target ")+s2.target);
             line.push((isAr()?"الفارق ":"variance ")+(s2.varAbs>0?"+":"")+s2.varAbs);
@@ -6431,7 +6431,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   function flashDocErr(err){
     var el=document.getElementById("docErr");
-    if(el) el.textContent=(isAr()?"تعذّر بناء الملف: ":"Could not build the file: ")+((err&&err.message)||err);
+    if(el) el.textContent=(isAr()?"تعذّر تجهيز الملف: ":"Could not prepare the file: ")+((err&&err.message)||err);
   }
   // one way out for every generated file: the viewer's save dialog, or a plain link
   async function handOver(blob, name, btn){
@@ -6441,8 +6441,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       catch(e){
         if(e && e.code==="declined") return;
         var el=document.getElementById("docErr");
-        if(el) el.textContent=(isAr()?"تعذّر الحفظ هنا (":"Could not save here (")+((e&&e.code)||"")+
-          isAr()?"). التصدير يعمل في النسخة المنصّبة.":"). The export works in the installed build.";
+        if(el){ el.textContent=isAr()?"تعذّر حفظ الملف.":"The file could not be saved."; el.title=(e&&e.code)||""; }
         return;
       }
     }
@@ -6463,11 +6462,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var TAGW={"t-min":"الخطة الخمسية","t-dir":"خطة الدائرة","t-third":"الفئة الثالثة","t-none":"بلا تصنيف"};
       var rows=[[isAr()?"الرمز":"Ref", isAr()?"المستوى":"Level", isAr()?"الهدف":"Objective",
                  isAr()?"مؤشر الأداء":"KPI", isAr()?"المستهدف":"Target", isAr()?"المسؤول":"Owner",
-                 isAr()?"من":"From", isAr()?"إلى":"To", isAr()?"التصنيف":"Category", isAr()?"الإنجاز %":"Progress %"]];
+                 isAr()?"تاريخ البداية":"Start date", isAr()?"تاريخ النهاية":"End date", isAr()?"التصنيف":"Category", isAr()?"الإنجاز %":"Progress %"]];
       PLAN2027.forEach(function(o){
         rows.push([o.r, o.l, o.t, o.k, o.g, o.o, o.s, o.e, TAGW[tagOf(o)], progOf(o)]);
       });
-      var blob=await makeXlsx(rows, "Plan 2027");
+      var blob=await makeXlsx(rows, isAr()?"خطة 2027":"Plan 2027");
       await handOver(blob, "annual-plan-2027.xlsx", btn);
     }catch(err){ flashDocErr(err); }
     if(btn) btn.disabled=false;
@@ -7230,7 +7229,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       project:(s2&&s2.projected!==undefined)?{to:s2.projectTo, span:s2.projectTo, value:s2.projected}:null});
     var stats=[];
     if(s2){
-      stats.push((isAr()?"القراءة الأخيرة: ":"Latest: ")+s2.last+" "+(k.unit||""));
+      stats.push((isAr()?"القراءة الأخيرة: ":"Latest reading: ")+s2.last+" "+(k.unit||""));
       if(s2.target!==null&&s2.target!==undefined){
         stats.push((isAr()?"المستهدف: ":"Target: ")+s2.target);
         stats.push((isAr()?"الفارق: ":"Variance: ")+(s2.varAbs>0?"+":"")+s2.varAbs+" ("+(s2.varPct>0?"+":"")+s2.varPct+"%)");
@@ -7259,9 +7258,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         catch(e2){
           if(e2 && e2.code==="declined"){ if(btn) btn.disabled=false; return; }
           // pptx is not always a permitted type in this viewer — say so plainly
-          if(err) err.textContent=(isAr()
-            ? "تعذّر حفظ الملف هنا ("+(e2&&e2.code||"")+"). التصدير يعمل في النسخة المنصّبة."
-            : "Could not save here ("+(e2&&e2.code||"")+"). The export works in the installed build.");
+          if(err){ err.textContent=isAr()?"تعذّر حفظ ملف الشريحة.":"The slide file could not be saved."; err.title=(e2&&e2.code)||""; }
         }
       } else {
         var a=document.createElement("a");
@@ -7270,7 +7267,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         setTimeout(function(){URL.revokeObjectURL(a.href);},4000);
       }
     }catch(e3){
-      if(err) err.textContent=(isAr()?"تعذّر بناء الشريحة: ":"Could not build the slide: ")+(e3.message||e3);
+      if(err) err.textContent=(isAr()?"تعذّر تجهيز ملف الشريحة: ":"Could not prepare the slide file: ")+(e3.message||e3);
     }
     if(btn) btn.disabled=false;
   }
@@ -8325,21 +8322,21 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var avg=Math.round(STAFF.reduce(function(a,x){return a+obOf(x).pct;},0)/STAFF.length);
     var below=STAFF.filter(function(x){return obOf(x).pct<100;}).length;
     WHTML.leave='<div class="card"><div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><div>'+
-      '<span class="ceye">'+bi("تقاطع الإجازة والتنفيذ","Leave meets delivery")+'</span>'+
-      '<h2>'+bi("أثر الإجازات على الخطة","What leave does to the plan")+'</h2></div></div></div>'+
+      '<span class="ceye">'+bi("تقاطع الإجازة والتنفيذ · مثال توضيحي","Leave and delivery · illustrative example")+'</span>'+
+      '<h2>'+bi("أثر الإجازات على الخطة","Leave impact on the plan")+'</h2></div></div></div>'+
       '<div class="leave-warn"><span><b>'+bi("ورشة تعريفية لمراكز المحافظات","Orientation workshop for governorate centres")+'</b>'+
       bi(" — الاستحقاق 30 نوفمبر، داخل إجازة معتمدة."," — due 30 Nov, inside approved leave.")+'</span>'+
       '<button data-lvmove="1">'+bi("نقل إلى 9 ديسمبر","Move to 9 Dec")+'</button></div></div>';
     WHTML.ready='<div class="card"><div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M17 11a3 3 0 1 0 0-6"/></svg></span><div>'+
       '<span class="ceye">'+bi("التهيئة","Onboarding")+'</span><h2>'+bi("جاهزية الموظفين","Staff readiness")+'</h2></div></div></div>'+
       '<div class="obhead"><span class="pc">'+avg+'%</span><span class="obbar"><i style="width:'+avg+'%"></i></span>'+
-      '<span style="font-size:var(--t-sm);color:var(--ink-3)">'+bi(below+" دون الاكتمال من "+STAFF.length, below+" of "+STAFF.length+" below full")+'</span></div>'+
+      '<span style="font-size:var(--t-sm);color:var(--ink-3)">'+bi("لم تكتمل التهيئة لـ "+below+" من أصل "+STAFF.length, "Onboarding incomplete for "+below+" of "+STAFF.length)+'</span></div>'+
       STAFF.filter(function(x){return obOf(x).pct<100;}).slice(0,4).map(function(x){
         return '<div class="rule-row"><span class="rc">·</span><div class="rb"><div class="rt">'+bi(x.who[0],x.who[1])+'</div>'+
           '<div class="rd">'+bi(x.dep[0],x.dep[1])+'</div></div><span class="pill p-warn">'+obOf(x).pct+'%</span></div>';
       }).join("")+'</div>';
     WHTML.audit='<div class="card"><div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span><div>'+
-      '<span class="ceye">'+bi("سجل التدقيق","Audit trail")+'</span><h2>'+bi("آخر التغييرات","Recent changes")+'</h2></div></div></div>'+
+      '<span class="ceye">'+bi("سجل التدقيق · مثال توضيحي","Audit trail · illustrative example")+'</span><h2>'+bi("آخر التغييرات","Recent changes")+'</h2></div></div></div>'+
       '<div class="rule-row"><span class="rc">·</span><div class="rb"><div class="rt">'+bi("اعتماد تقدير 3,400 ر.ع","Validated a 3,400 OMR estimate")+'</div>'+
         '<div class="rd">'+bi("المدير العام · 17:42","Director General · 17:42")+'</div></div></div>'+
       '<div class="rule-row"><span class="rc">·</span><div class="rb"><div class="rt">'+bi("هدف أُضيف بلا فئة","An objective added with no category")+'</div>'+
@@ -8417,9 +8414,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var canOrder=(ROLE==="dg");
       return '<div class="prow2" data-goobj="'+ref+'" data-pi="'+i+'" role="listitem" tabindex="0"'+
         (canOrder?' draggable="true" aria-label="'+(isAr()?"الترتيب ":"rank ")+(i+1)+
-          ' — '+(isAr()?"اسحب أو استخدم الأسهم لإعادة الترتيب":"drag, or use the arrow keys to reorder")+'"':'')+'>'+
+          ' — '+(isAr()?"تغيير الترتيب بالسحب أو بمفاتيح الأسهم":"reorder by dragging or using the arrow keys")+'"':'')+'>'+
         (canOrder
-          ? '<span class="grip" title="'+(isAr()?"اسحب لإعادة الترتيب":"drag to reorder")+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6h.01M9 12h.01M9 18h.01M15 6h.01M15 12h.01M15 18h.01"/></svg></span>'
+          ? '<span class="grip" title="'+(isAr()?"تغيير الترتيب بالسحب":"Drag to reorder")+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6h.01M9 12h.01M9 18h.01M15 6h.01M15 12h.01M15 18h.01"/></svg></span>'
           : '<span></span>')+
         '<span class="rank">'+(i+1)+'</span>'+
         '<span><span class="ttl2">'+o.t+'</span>'+
@@ -11574,7 +11571,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             '<button class="mini" data-airview="'+encodeURIComponent(it.when)+'">'+
               (AI_RVIEW[it.when]?bi("إخفاء","Hide"):bi("عرض","View"))+'</button>'+
             '<button class="mini yes" data-airdoc="'+rk+'">'+bi("ملف Word شامل","Full Word file")+'</button>'+
-            '<button class="mini" data-airprint="'+rk+'">'+bi("طباعة / PDF","Print / PDF")+'</button>'+
+            '<button class="mini" data-airprint="'+rk+'">'+bi("طباعة أو حفظ PDF","Print or save as PDF")+'</button>'+
             '<span class="kerr" data-airerr="'+encodeURIComponent(it.when)+'"></span>'+
             editBtn+hideBtn+'</span>'+
         editForm+'</div>';
@@ -11665,7 +11662,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       h.innerHTML='<div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M8 8h8M8 12h6"/></svg></span><div>'+
         '<span class="ceye">'+bi("أعدّه المساعد الذكي ونشرته المديرة العامة","Prepared by the assistant, published by the DG")+'</span>'+
         '<h2>'+String(DIGEST.title)+'</h2></div></div></div>'+
-        '<div style="display:flex;gap:8px;margin-bottom:6px"><button class="mini yes" data-digdoc>'+bi("تنزيل الموجز الشامل (Word)","Full digest (Word)")+'</button></div>'+
+        '<div style="display:flex;gap:8px;margin-bottom:6px"><button class="mini yes" data-digdoc>'+bi("تنزيل التقرير المجمّع (Word)","Download compiled report (Word)")+'</button></div>'+
         aiKindSections(DIGEST.body).map(function(sc){
           return (sc.h?'<p class="subh" dir="auto">'+sc.h+'</p>':"")+
             sc.lines.map(function(l){return '<div class="sm" dir="auto" style="padding:2px 0">• '+l+'</div>';}).join("");
@@ -11698,32 +11695,32 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       todo+=li(T("بانتظار قرار: ","Awaiting decision: ")+(ar?x.title[0]:x.title[1])+" — "+(ar?x.by[0]:x.by[1])); });
     LVREQ.filter(function(l){return l.state==="pending";}).forEach(function(l){
       todo+=li(T("طلب إجازة معلّق: ","Pending leave: ")+(ar?l.who[0]:l.who[1])+" ("+l.from+" → "+l.to+")"); });
-    if(!todo) todo=li(T("لا متأخرات ولا قرارات معلّقة.","Nothing overdue, nothing pending."));
+    if(!todo) todo=li(T("لا توجد بنود متابعة ضمن البيانات المجمّعة هنا.","No follow-up items in the data compiled here."));
     var up="";
     CPD.filter(function(ev){return ev.from>=today;}).slice(0,6).forEach(function(ev){
       up+=li(ev.from+" — "+(ar?ev.t[0]:ev.t[1])+(ev.confirmed?T(" (مؤكد)"," (confirmed)"):T(" (مبدئي)"," (provisional)"))); });
     AGENDAS.filter(function(a){return a.date&&a.date>=today;}).forEach(function(a){
       up+=li(a.date+" — "+T("اجتماع: ","Meeting: ")+a.title); });
-    if(!up) up=li(T("لا مواعيد قادمة مسجّلة.","Nothing upcoming."));
+    if(!up) up=li(T("لا توجد مواعيد قادمة في البيانات المجمّعة هنا.","No upcoming dates in the data compiled here."));
     var body='<div dir="'+DIR+'" style="font-family:Arial;color:#26251F">'+
       '<h1 dir="auto" style="color:#14522E;font-size:22pt;margin:0 0 4pt">'+esc(title)+'</h1>'+
       '<p style="color:#6D6754;margin:0 0 14pt">'+
         T("مركز ضمان الجودة والحوكمة · ","Quality Assurance & Governance Centre · ")+today+
-        T(" · مُجمَّع من بيانات المنصة الحية"," · compiled from the platform's live data")+'</p>'+
-      h2(T("الأداء مستوىً بمستوى","Performance, level by level"))+
+        T(" · مُجمَّع من البيانات المحمّلة في الصفحة"," · compiled from data loaded in the page")+'</p>'+
+      h2(T("تقدم الأهداف حسب المستوى","Objective progress by level"))+
       '<table dir="'+DIR+'" style="border-collapse:collapse;width:100%"><tr>'+
         '<th style="border:1pt solid #C9C1A8;background:#E7EFE6;padding:4pt 8pt">'+T("المستوى","Level")+'</th>'+
-        '<th style="border:1pt solid #C9C1A8;background:#E7EFE6;padding:4pt 8pt">'+T("الأهداف","Objectives")+'</th>'+
-        '<th style="border:1pt solid #C9C1A8;background:#E7EFE6;padding:4pt 8pt">'+T("متوسط التقدم","Avg progress")+'</th>'+
-        '<th style="border:1pt solid #C9C1A8;background:#E7EFE6;padding:4pt 8pt">'+T("تحت 40%","Under 40%")+'</th></tr>'+lvRows+'</table>'+
-      h2(T("مطلوب إنجازه","Things to do"))+todo+
-      h2(T("القادم في التقويم","Upcoming"))+up;
+        '<th style="border:1pt solid #C9C1A8;background:#E7EFE6;padding:4pt 8pt">'+T("عدد الأهداف","Objective count")+'</th>'+
+        '<th style="border:1pt solid #C9C1A8;background:#E7EFE6;padding:4pt 8pt">'+T("متوسط تقدم الأهداف","Average objective progress")+'</th>'+
+        '<th style="border:1pt solid #C9C1A8;background:#E7EFE6;padding:4pt 8pt">'+T("أهداف يقل تقدمها عن 40%","Objectives below 40% progress")+'</th></tr>'+lvRows+'</table>'+
+      h2(T("بنود للمتابعة","Follow-up items"))+todo+
+      h2(T("المواعيد القادمة المسجّلة","Recorded upcoming dates"))+up;
     (gptSecs||[]).forEach(function(sc){
       body+=h2(sc.h||T("من المساعد الذكي","From the assistant"));
       sc.lines.forEach(function(l){ body+=li(l); });
     });
     body+='<p style="color:#6D6754;margin-top:18pt;font-size:9pt">'+
-      T("أُنشئ من المنصة — الأرقام لحظة التوليد.","Generated by the platform — figures as of generation.")+'</p></div>';
+      T("أُنشئ من البيانات المحمّلة في الصفحة.","Generated from data loaded in the page.")+'</p></div>';
     return '<html dir="'+DIR+'" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">'+
       '<head><meta charset="utf-8"><title>'+esc(title)+'</title></head><body>'+body+'</body></html>';
   }
@@ -11776,11 +11773,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     }
     files["ppt/slides/slide1.xml"]=slide(
       txt(914400,2200000,10363200,1400000,para(title,4000,true,"14522E"))+
-      txt(914400,3700000,10363200,700000,para("مركز ضمان الجودة والحوكمة — أعدّه المساعد الذكي",1800,false,"6D6754")));
+      txt(914400,3700000,10363200,700000,para(isAr()?"مركز ضمان الجودة والحوكمة — تقرير مُصدَّر من المنصة":"Quality Assurance & Governance Centre — report exported from the platform",1800,false,"6D6754")));
     secs.forEach(function(sc,i){
       var runs=sc.lines.map(function(l){return para("• "+l,1600,false,"26251F");}).join("");
       files["ppt/slides/slide"+(i+2)+".xml"]=slide(
-        txt(914400,457200,10363200,900000,para(sc.h||("قسم "+(i+1)),2600,true,"14522E"))+
+        txt(914400,457200,10363200,900000,para(sc.h||((isAr()?"جزء ":"Part ")+(i+1)),2600,true,"14522E"))+
         txt(914400,1500000,10363200,4900000,runs||para("—",1600,false,"6D6754")));
     });
     for(var i=1;i<=N;i++) files["ppt/slides/_rels/slide"+i+".xml.rels"]='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rL" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/></Relationships>';
@@ -11795,7 +11792,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         '<w:r><w:rPr><w:rtl/>'+(bold?'<w:b/><w:bCs/>':'')+'<w:sz w:val="'+size+'"/><w:szCs w:val="'+size+'"/><w:color w:val="'+color+'"/><w:rFonts w:cs="Arial"/></w:rPr>'+
         '<w:t xml:space="preserve">'+xmlEsc(t)+'</w:t></w:r></w:p>';
     }
-    var body=wp(title,40,true,"14522E")+wp("مركز ضمان الجودة والحوكمة — أعدّه المساعد الذكي وأقرّه العرض من المنصة",20,false,"6D6754");
+    var body=wp(title,40,true,"14522E")+wp(isAr()?"مركز ضمان الجودة والحوكمة — تقرير مُصدَّر من المنصة":"Quality Assurance & Governance Centre — report exported from the platform",20,false,"6D6754");
     secs.forEach(function(sc){
       body+=wp(sc.h||"",28,true,"14522E");
       sc.lines.forEach(function(l){ body+=wp("• "+l,22,false,"26251F"); });
@@ -13986,7 +13983,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     }
     if(e.target.closest("#rvSend")){
       var unsent=RVNOTES.filter(function(nt){return !nt.fid;});
-      if(!unsent.length){ rvToast(bi("لا ملاحظات جديدة لإرسالها.","Nothing new to send.")); return; }
+      if(!unsent.length){ rvToast(bi("لا توجد ملاحظات جديدة للإرسال.","No new notes to send.")); return; }
       var cfg=(typeof dgCalCfg==="function")?dgCalCfg():null;
       if(cfg){
         // the platform DOES have an authenticated door: the bridge. Notes sent
@@ -14050,7 +14047,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     }
     if(e.target.closest("#rvCopy")){
       var rep=rvReport();
-      if(!rep){ rvToast(bi("لا ملاحظات لنسخها.","Nothing to copy.")); return; }
+      if(!rep){ rvToast(bi("لا توجد ملاحظات للنسخ.","No notes to copy.")); return; }
       var done=function(){ rvToast(bi("نُسخت — تُلصق في محادثة Claude.","Copied — paste it into your Claude chat.")); };
       if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(rep).then(done,function(){
         var ta2=document.getElementById("rvPopTa"); ta2.value=rep; done();
@@ -14059,7 +14056,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       return;
     }
     if(e.target.closest("#rvDl")){
-      var rep2=rvReport(); if(!rep2){ rvToast(bi("لا ملاحظات.","Nothing to download.")); return; }
+      var rep2=rvReport(); if(!rep2){ rvToast(bi("لا توجد ملاحظات للتنزيل.","No notes to download.")); return; }
       dlBlob("qagc-review-notes.md", new Blob([rep2],{type:"text/markdown"}));
       return;
     }
@@ -15688,7 +15685,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     // not parsed; and whether a copy of it was then written aside. Only a copy that was
     // actually written is announced, and while the unreadable original is unprotected no
     // save is allowed to overwrite it.
-    var raw=null, txt=null;
+    var raw=null, txt=null; PLHOLD=false; PLERR=""; PLNOTE="";
     try{ txt=localStorage.getItem("qagcPlan"); }
     catch(_){ PLHOLD=true; PLERR=isAr()?"تعذّرت قراءة سجل الخطة من هذا المتصفح؛ الحفظ موقوف.":"The plan register could not be read from this browser; saving is paused."; plSeed(); return false; }
     try{ raw=JSON.parse(txt||"null"); }
@@ -15702,9 +15699,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       plSeed(); return false; }
     // an unrecognised store is a recovery case, not an instruction to regenerate examples
     var shapeOk = raw && typeof raw==="object" && raw.v===1 && Array.isArray(raw.items) && raw.items.length &&
-                  raw.items.every(function(x){ return x && typeof x==="object" && typeof x.id==="string" && typeof x.ref==="string"; });
+                  raw.items.every(function(x){ return x && typeof x==="object" && typeof x.id==="string" && typeof x.ref==="string" &&
+                    Array.isArray(x.assignees) && Array.isArray(x.history); }) &&
+                  (raw.events===undefined || Array.isArray(raw.events)) &&
+                  (raw.priv===undefined || (raw.priv && typeof raw.priv==="object" && !Array.isArray(raw.priv)));
     if(shapeOk){ PLREG=raw; if(!PLREG.events) PLREG.events=[]; if(!PLREG.priv) PLREG.priv={author:["dg0"],assign:["dg0"]}; return true; }
-    if(raw!==null){
+    if(txt!==null){
       var key2="", wrote2=false;
       try{ var n2=1; while(n2<=999 && localStorage.getItem("qagcPlan.unreadable."+n2)!==null) n2++;
            if(n2<=999){ key2="qagcPlan.unreadable."+n2; localStorage.setItem(key2, txt); wrote2=(localStorage.getItem(key2)===txt); } }catch(__){ wrote2=false; }
@@ -16267,11 +16267,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   function gxPptxFor(S,k,svgEl){ return (svgEl?gxChartPng(svgEl,1280,368):Promise.resolve(null)).then(function(png){ return gxPptxBuild(S,k,png); }); }
   function gxDownload(u8,name){ var blob=new Blob([u8],{type:"application/vnd.openxmlformats-officedocument.presentationml.presentation"}); var a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500); }
-  function gxPptxExport(S,k,svgEl){ var keep={cur:GX.cur}; GX.cur=S; gxPptxFor(S,k,svgEl).then(function(u8){ GX.cur=keep.cur; gxDownload(u8, "KPI-"+(S.ref||"objective")+"-"+(k.name||"kpi").slice(0,30).replace(/[\\/:*?"<>|]/g,"")+".pptx"); gxToast("صُدّرت شريحة PowerPoint للمؤشر.","KPI slide exported."); }).catch(function(err){ GX.cur=keep.cur; console.error(err); gxToast("تعذّر التصدير.","Export failed."); }); }
+  function gxPptxExport(S,k,svgEl){ var keep={cur:GX.cur}; GX.cur=S; gxPptxFor(S,k,svgEl).then(function(u8){ GX.cur=keep.cur; gxDownload(u8, "KPI-"+(S.ref||"objective")+"-"+(k.name||"kpi").slice(0,30).replace(/[\\/:*?"<>|]/g,"")+".pptx"); gxToast("جُهّز ملف شريحة المؤشر وطُلب تنزيله.","The KPI slide file was prepared and its download requested."); }).catch(function(err){ GX.cur=keep.cur; console.error(err); gxToast("تعذّر تجهيز ملف الشريحة أو طلب تنزيله.","Could not prepare the slide file or request its download."); }); }
   window.gxPptxB64=function(ref,i,withSvg){ var S=GX.list.filter(function(x){return x.ref===ref||x.id===ref;})[0]; var k=S.kpis[i||0]; var keep={cur:GX.cur}; GX.cur=S; return gxPptxFor(S,k,withSvg?document.getElementById("gxSpark"):null).then(function(u8){ GX.cur=keep.cur; var s2=""; for(var j=0;j<u8.length;j++) s2+=String.fromCharCode(u8[j]); return btoa(s2); }); };
   document.addEventListener("click",function(e){
     var b=e.target.closest&&e.target.closest("[data-gxpptx]"); if(b){ var a=b.dataset.gxpptx.split(":"); var S=gxChildById(a[0]); if(!S) return; var k=S.kpis[+a[1]]||S.kpis[0]; var box=b.closest("[data-gxkplan]"); gxPptxExport(S,k, box?box.querySelector("svg"):document.getElementById("gxSpark")); return; }
-    if(e.target.closest&&e.target.closest("#gxPptx")){ var S2=GX.cur; if(!S2||!GX.KD||!GX.KD.name){ gxToast("اختيار مؤشر أولاً.","Pick a KPI first."); return; } gxPptxExport(S2, GX.K!==null?S2.kpis[GX.K]:GX.KD, document.getElementById("gxSpark")); }
+    if(e.target.closest&&e.target.closest("#gxPptx")){ var S2=GX.cur; if(!S2||!GX.KD||!GX.KD.name){ gxToast("يلزم اختيار مؤشر أولاً.","Select a KPI first."); return; } gxPptxExport(S2, GX.K!==null?S2.kpis[GX.K]:GX.KD, document.getElementById("gxSpark")); }
   });
 
   window.gxState=function(){ return {accts:ACCOUNTS.map(function(a){return a.u;}), role:ROLE, me:gxMe().p.id, list:GX.list.map(function(S){ return {ref:S.ref||S.id, by:S.by, status:S.status, access:gxAccess(S), kpis:S.kpis.map(function(k){return [k.name.slice(0,20), (k.feed&&k.feed.rows||[]).length];}), unit:S.unit, owners:gxOwners(S)}; })}; };
