@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>منصة ضمان الجودة</title>
-<meta name="qagc-ver" content="beta 87">
+<meta name="qagc-ver" content="beta 88">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -2382,6 +2382,11 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 @media (max-width:900px){.kf-cols{grid-template-columns:1fr}}
 @media print{.nav,.rail,.kf-bar,#rvPanel,#rvToggle{display:none!important}}
 
+.modframe{display:block;width:100%;border:0;min-height:320px;background:transparent}
+.modtools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 var(--sp-3);padding:8px 12px;border:1px dashed var(--rule-strong);border-radius:var(--r);font-size:var(--t-sm);color:var(--ink-3)}
+.modtools.draft{border-color:var(--warn-ink);background:var(--warn-bg);color:var(--warn-ink)}
+.modtools .mt-l{flex:1;min-width:200px}.modtools .mt-err{flex-basis:100%;color:var(--critical-ink)}
+.moddraft.bad{padding:10px 14px;border-radius:var(--r);background:var(--critical-bg);color:var(--critical-ink);margin-bottom:var(--sp-3)}
 </style>
 
 <div class="gate" id="gate">
@@ -2492,6 +2497,17 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
   </div>
 </div>
 
+<div class="ovl" id="modAskOvl">
+  <div class="modal" style="max-width:440px" role="dialog" aria-modal="true" aria-labelledby="modAskT">
+    <h3 id="modAskT"><span lang="ar">تأكيد من المنصة</span><span lang="en">Confirm on the platform</span></h3>
+    <p style="font-size:var(--t-sm);color:var(--ink-3)" id="modAskFrom"></p>
+    <p id="modAskWhat" style="font-weight:600"></p>
+    <div style="display:flex;gap:var(--sp-2);margin-top:var(--sp-4);flex-wrap:wrap">
+      <button class="btn btn-p" id="modAskYes"><span lang="ar">موافق</span><span lang="en">Confirm</span></button>
+      <button class="btn" id="modAskNo"><span lang="ar">إلغاء</span><span lang="en">Cancel</span></button>
+    </div>
+  </div>
+</div>
 <div class="ovl" id="stepOvl">
   <div class="modal" style="max-width:420px">
     <h3 id="stepTitle"></h3>
@@ -3069,188 +3085,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 
     <!-- ══════════ LEAVE — the full app ══════════ -->
     <section class="screen" id="leave">
-      <div class="head">
-        <p class="eyebrow"><span lang="ar">طلبات الإجازة والتقويم</span><span lang="en">Leave requests and calendar</span></p>
-        <h1><span lang="ar">الإجازات</span><span lang="en">Leave</span></h1>
-        <p><span lang="ar">طلبات الإجازة وحالاتها وتقويم الغياب.</span><span lang="en">Leave requests, their status and the absence calendar.</span></p>
-      </div>
-
-      <div class="subtabs" id="lvtabs">
-        <button class="on" data-pane="lv-over"><span lang="ar">لوحة المتابعة</span><span lang="en">Overview</span></button>
-        <button data-pane="lv-mine"><span lang="ar">طلباتي</span><span lang="en">My requests</span></button>
-        <button data-pane="lv-submit"><span lang="ar">تقديم إجازة</span><span lang="en">Submit leave</span></button>
-        <button data-pane="lv-appr"><span lang="ar">الاعتمادات</span><span lang="en">Approvals</span><span class="badge">2</span></button>
-        <button data-pane="lv-cal"><span lang="ar">التقويم</span><span lang="en">Calendar</span></button>
-        <button data-pane="lv-marks"><span lang="ar">العطل والمناسبات</span><span lang="en">Holidays &amp; events</span></button>
-        <button data-pane="lv-staff"><span lang="ar">الموظفون</span><span lang="en">Staff</span></button>
-
-      </div>
-
-      <!-- overview -->
-      <div class="pane on" id="lv-over">
-        <div class="card">
-          <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><div>
-            <span class="ceye"><span lang="ar">التقويم المؤسسي</span><span lang="en">Institutional calendar</span></span>
-            <h2><span lang="ar">تقويم الإجازات</span><span lang="en">Leave calendar</span></h2></div></div></div>
-          <div class="calbar">
-            <div class="calnav">
-              <button class="btn" id="calPrev" data-aria-ar="الفترة السابقة" data-aria-en="Previous period">‹</button>
-              <span class="ttl" id="calTitle"></span>
-              <button class="btn" id="calNext" data-aria-ar="الفترة التالية" data-aria-en="Next period">›</button>
-            </div>
-            <div class="seg">
-              <button class="on" id="modeMonth"><span lang="ar">شهري</span><span lang="en">Monthly</span></button>
-              <button id="modeYear"><span lang="ar">سنوي</span><span lang="en">Yearly</span></button>
-            </div>
-          </div>
-          <p class="hint"><span lang="ar">اختيار يوم لعرض إحصاءات اليوم والأسبوع والشهر.</span>
-           <span lang="en">Select a day to view day, week and month statistics.</span></p>
-          <div id="calBody"></div>
-        </div>
-
-        <div class="grid2">
-          <div class="card">
-            <div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/></svg></span><div>
-              <span class="ceye"><span lang="ar">تقاطع الإجازة والتنفيذ · مثال توضيحي</span><span lang="en">Leave and delivery · illustrative example</span></span>
-              <h2><span lang="ar">أثر الإجازات على الخطة</span><span lang="en">Leave impact on the plan</span></h2></div></div></div>
-            <div class="leave-warn">
-              <span><b><span lang="ar">ورشة تعريفية لمراكز المحافظات</span><span lang="en">Orientation workshop for governorate centres</span></b>
-                <span lang="ar"> — الاستحقاق 30 نوفمبر، داخل إجازة معتمدة. أول يوم عمل بعد العودة: 9 ديسمبر 2026.</span>
-                <span lang="en"> — due 30 Nov, inside approved leave. First working day after return: 9 Dec 2026.</span></span>
-              <button data-lvmove="1"><span lang="ar">نقل إلى 9 ديسمبر</span><span lang="en">Move to 9 Dec</span></button>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M17 11a3 3 0 1 0 0-6M18 20a6 6 0 0 0-3-5.2"/></svg></span><div>
-              <span class="ceye"><span lang="ar">التغطية التشغيلية</span><span lang="en">Operational cover</span></span>
-              <h2><span lang="ar">الغياب هذا الأسبوع</span><span lang="en">Out this week</span></h2></div></div></div>
-            <div id="outThisWeek"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- my requests -->
-      <div class="pane" id="lv-mine">
-        <div class="card">
-          <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><div>
-            <span class="ceye"><span lang="ar">طلبات الإجازة المسجّلة</span><span lang="en">Recorded leave requests</span></span>
-            <h2><span lang="ar">طلباتي</span><span lang="en">My requests</span></h2></div></div></div>
-          <div class="tw"><table>
-            <thead><tr>
-              <th><span lang="ar">من</span><span lang="en">From</span></th>
-              <th><span lang="ar">إلى</span><span lang="en">To</span></th>
-              <th><span lang="ar">المدة بالأيام التقويمية</span><span lang="en">Duration in calendar days</span></th>
-              <th><span lang="ar">النائب</span><span lang="en">Substitute</span></th>
-              <th><span lang="ar">الحالة</span><span lang="en">Status</span></th>
-            </tr></thead>
-            <tbody id="lvMineRows">
-            </tbody>
-          </table></div>
-        </div>
-      </div>
-
-      <!-- submit -->
-      <div class="pane" id="lv-submit">
-        <div class="card">
-          <div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span><div>
-            <span class="ceye"><span lang="ar">إدخال بيانات طلب الإجازة</span><span lang="en">Enter leave-request details</span></span>
-            <h2><span lang="ar">تقديم إجازة</span><span lang="en">Submit leave</span></h2></div></div></div>
-          <div class="frow">
-            <div class="fld"><label><span lang="ar">تاريخ البداية</span><span lang="en">Start date</span></label><input id="lr-from" type="date" value="2027-02-01"></div>
-            <div class="fld"><label><span lang="ar">تاريخ النهاية</span><span lang="en">End date</span></label><input id="lr-to" type="date" value="2027-02-12"></div>
-          </div>
-          <div class="fld" style="margin-top:var(--sp-3)"><label><span lang="ar">النائب أثناء الغياب</span><span lang="en">Substitute while away</span></label>
-            <select id="lr-sub"></select></div>
-          <div id="lrCheck" style="margin-top:var(--sp-4)"></div>
-          <div style="margin-top:var(--sp-4);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
-            <button class="btn btn-p" id="lrSend"><span lang="ar">إرسال الطلب</span><span lang="en">Send the request</span></button>
-            <span class="saved" id="lrSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span lang="ar">أُضيف طلب الإجازة إلى الطلبات قيد النظر.</span><span lang="en">Leave request added to pending requests.</span></span>
-          </div>
-        </div>
-      </div>
-
-      <!-- approvals -->
-      <div class="pane" id="lv-appr">
-        <div class="card">
-          <div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 4v5c0 5-3 7.5-7 9-4-1.5-7-4-7-9V7z"/><path d="m9.5 12 2 2 3.5-4"/></svg></span><div>
-            <span class="ceye"><span lang="ar">طلبات تحتاج إلى المراجعة</span><span lang="en">Requests requiring review</span></span>
-            <h2><span lang="ar">طلبات بانتظار القرار</span><span lang="en">Requests awaiting a decision</span></h2></div></div>
-            <span class="sub tnum" id="lvApprSub"></span></div>
-          <div id="lvApprList"></div>
-        </div>
-      </div>
-
-      <!-- calendar / timeline -->
-      <div class="pane" id="lv-cal">
-        <div class="card">
-          <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><div>
-            <span class="ceye"><span lang="ar">الغياب حسب القسم</span><span lang="en">Absence by department</span></span>
-            <h2><span lang="ar">المخطط الزمني للإجازات</span><span lang="en">Leave timeline</span></h2></div>
-            <span class="sub" id="tlTitle"></span></div></div>
-          <div class="calbar">
-            <div class="calnav">
-              <button class="btn" id="tlPrev" data-aria-ar="الشهر السابق" data-aria-en="Previous month">‹</button>
-              <span class="ttl" id="tlLabel"></span>
-              <button class="btn" id="tlNext" data-aria-ar="الشهر التالي" data-aria-en="Next month">›</button>
-            </div>
-          </div>
-          <p class="hint"><span lang="ar">الموظفون مرتّبون حسب القسم. اضغط أي يوم لعرض التغطية.</span>
-             <span lang="en">Staff grouped by department. Click any day for its coverage.</span></p>
-          <div class="calwrap"><table class="cal" id="timeline"></table></div>
-          <div class="legend">
-            <span><i class="sw appr"></i><span lang="ar">إجازة معتمدة</span><span lang="en">Approved</span></span>
-            <span><i class="sw pend"></i><span lang="ar">قيد الاعتماد</span><span lang="en">Pending</span></span>
-            <span><i class="sw we"></i><span lang="ar">عطلة أسبوعية</span><span lang="en">Weekend</span></span>
-            <span><i class="sw hol"></i><span lang="ar">عطلة رسمية</span><span lang="en">Public holiday</span></span>
-          </div>
-        </div>
-      </div>
-
-      <!-- marks -->
-      <div class="pane" id="lv-marks">
-        <div class="card">
-          <div class="card-h">
-            <span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><span class="ceye"><span lang="ar">يحدّدها قسم التنسيق</span><span lang="en">Set by Coordination</span></span><h2><span lang="ar">العطل والمناسبات</span><span lang="en">Holidays &amp; events</span></h2>
-            <span class="sub"><span lang="ar">يحدّدها قسم التنسيق والمتابعة</span><span lang="en">Maintained by Coordination &amp; Follow-up</span></span>
-          </div>
-          <div class="tw"><table>
-            <thead><tr>
-              <th><span lang="ar">البيان</span><span lang="en">Item</span></th>
-              <th><span lang="ar">النوع</span><span lang="en">Type</span></th>
-              <th><span lang="ar">من</span><span lang="en">From</span></th>
-              <th><span lang="ar">إلى</span><span lang="en">To</span></th>
-            </tr></thead>
-            <tbody>
-              <tr><td><span lang="ar">اليوم الوطني</span><span lang="en">National Day</span></td>
-                <td><span class="pill p-neutral"><span lang="ar">عطلة</span><span lang="en">Holiday</span></span></td>
-                <td class="tnum">2026-11-18</td><td class="tnum">2026-11-19</td></tr>
-              <tr><td><span lang="ar">ملتقى الجودة السنوي</span><span lang="en">Annual quality forum</span></td>
-                <td><span class="pill p-warn"><span lang="ar">مناسبة</span><span lang="en">Event</span></span></td>
-                <td class="tnum">2026-12-14</td><td class="tnum">2026-12-14</td></tr>
-              <tr><td><span lang="ar">ورشة معايير الاعتماد</span><span lang="en">Accreditation standards workshop</span></td>
-                <td><span class="pill p-warn"><span lang="ar">مناسبة</span><span lang="en">Event</span></span></td>
-                <td class="tnum">2026-11-11</td><td class="tnum">2026-11-12</td></tr>
-            </tbody>
-          </table></div>
-        </div>
-      </div>
-
-      <!-- staff -->
-      <div class="pane" id="lv-staff">
-        <div class="card">
-          <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M17 11a3 3 0 1 0 0-6M18 20a6 6 0 0 0-3-5.2"/></svg></span><h2><span lang="ar">الموظفون</span><span lang="en">Staff</span></h2></div></div>
-          <div class="tw"><table>
-            <thead><tr>
-              <th><span lang="ar">الموظف</span><span lang="en">Person</span></th>
-              <th><span lang="ar">القسم</span><span lang="en">Department</span></th>
-              <th><span lang="ar">الدور</span><span lang="en">Role</span></th>
-              <th class="num"><span lang="ar">أيام مستهلكة</span><span lang="en">Days taken</span></th>
-            </tr></thead>
-            <tbody id="staffRows"></tbody>
-          </table></div>
-        </div>
-      </div>
-
+      <div class="modhost" data-mod="leave"></div>
     </section>
 
 
@@ -3816,6 +3651,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
         <button data-opane="ow-custom"><span lang="ar">التخصيص</span><span lang="en">Customise</span></button>
         <button data-opane="ow-data"><span lang="ar">البيانات</span><span lang="en">Data</span></button>
         <button data-opane="ow-more"><span lang="ar">مقترحات</span><span lang="en">Proposed</span></button>
+        <button data-opane="ow-cust"><span lang="ar">أمناء النوافذ</span><span lang="en">Window custodians</span></button>
       </div>
 
       <!-- customisation: the owner's words, in the owner's order -->
@@ -4478,6 +4314,21 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       </div>
 
       <!-- proposed -->
+      <div class="pane" id="ow-cust">
+        <div class="card">
+          <div class="card-h"><div class="chrow"><div>
+            <span class="ceye"><span lang="ar">توزيع العمل على النوافذ</span><span lang="en">Dividing the work by window</span></span>
+            <h2><span lang="ar">أمناء النوافذ</span><span lang="en">Window custodians</span></h2></div></div></div>
+          <p style="font-size:var(--t-sm);color:var(--ink-3)"><span lang="ar">لكل نافذة أمين واحد. النافذة الداخلة في الحد يعدّلها أمينها مباشرة بمسودة تُعرض في متصفحه وحده، ولا تُعتمد إلا بعد فحصها. النوافذ الأخرى تُطوَّر بملاحظات وضع المراجعة.</span><span lang="en">One custodian per window. A fenced window is edited directly by its custodian through a draft shown in their browser only, and installed only after it passes the check. Other windows are developed through review-mode notes.</span></p>
+          <div class="tw"><table>
+            <thead><tr><th><span lang="ar">النافذة</span><span lang="en">Window</span></th><th><span lang="ar">الأمين</span><span lang="en">Custodian</span></th><th><span lang="ar">طريقة العمل</span><span lang="en">How it is worked on</span></th></tr></thead>
+            <tbody id="custRows"></tbody>
+          </table></div>
+          <p class="subh" style="margin-top:var(--sp-4)"><span lang="ar">النوافذ لكل أمين</span><span lang="en">Windows per custodian</span></p>
+          <div id="custByPerson"></div>
+        </div>
+      </div>
+
       <div class="pane" id="ow-more">
         <div class="card">
           <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></span><div>
@@ -4795,6 +4646,193 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
   </div>
 </div>
 
+
+
+<!-- ══ FENCE leave · BEGIN ══ the leave window. Everything between this line and FENCE leave · END
+     belongs to the window's custodian; everything else in this file is the platform's. ══ -->
+<template id="mod-leave">
+      <div class="head">
+        <p class="eyebrow"><span lang="ar">طلبات الإجازة والتقويم</span><span lang="en">Leave requests and calendar</span></p>
+        <h1><span lang="ar">الإجازات</span><span lang="en">Leave</span></h1>
+        <p><span lang="ar">طلبات الإجازة وحالاتها وتقويم الغياب.</span><span lang="en">Leave requests, their status and the absence calendar.</span></p>
+      </div>
+
+      <div class="subtabs" id="lvtabs">
+        <button class="on" data-pane="lv-over"><span lang="ar">لوحة المتابعة</span><span lang="en">Overview</span></button>
+        <button data-pane="lv-mine"><span lang="ar">طلباتي</span><span lang="en">My requests</span></button>
+        <button data-pane="lv-submit"><span lang="ar">تقديم إجازة</span><span lang="en">Submit leave</span></button>
+        <button data-pane="lv-appr"><span lang="ar">الاعتمادات</span><span lang="en">Approvals</span><span class="badge">2</span></button>
+        <button data-pane="lv-cal"><span lang="ar">التقويم</span><span lang="en">Calendar</span></button>
+        <button data-pane="lv-marks"><span lang="ar">العطل والمناسبات</span><span lang="en">Holidays &amp; events</span></button>
+        <button data-pane="lv-staff"><span lang="ar">الموظفون</span><span lang="en">Staff</span></button>
+
+      </div>
+
+      <!-- overview -->
+      <div class="pane on" id="lv-over">
+        <div class="card">
+          <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><div>
+            <span class="ceye"><span lang="ar">التقويم المؤسسي</span><span lang="en">Institutional calendar</span></span>
+            <h2><span lang="ar">تقويم الإجازات</span><span lang="en">Leave calendar</span></h2></div></div></div>
+          <div class="calbar">
+            <div class="calnav">
+              <button class="btn" id="calPrev" data-aria-ar="الفترة السابقة" data-aria-en="Previous period">‹</button>
+              <span class="ttl" id="calTitle"></span>
+              <button class="btn" id="calNext" data-aria-ar="الفترة التالية" data-aria-en="Next period">›</button>
+            </div>
+            <div class="seg">
+              <button class="on" id="modeMonth"><span lang="ar">شهري</span><span lang="en">Monthly</span></button>
+              <button id="modeYear"><span lang="ar">سنوي</span><span lang="en">Yearly</span></button>
+            </div>
+          </div>
+          <p class="hint"><span lang="ar">اختيار يوم لعرض إحصاءات اليوم والأسبوع والشهر.</span>
+           <span lang="en">Select a day to view day, week and month statistics.</span></p>
+          <div id="calBody"></div>
+        </div>
+
+        <div class="grid2">
+          <div class="card">
+            <div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/></svg></span><div>
+              <span class="ceye"><span lang="ar">تقاطع الإجازة والتنفيذ · مثال توضيحي</span><span lang="en">Leave and delivery · illustrative example</span></span>
+              <h2><span lang="ar">أثر الإجازات على الخطة</span><span lang="en">Leave impact on the plan</span></h2></div></div></div>
+            <div class="leave-warn">
+              <span><b><span lang="ar">ورشة تعريفية لمراكز المحافظات</span><span lang="en">Orientation workshop for governorate centres</span></b>
+                <span lang="ar"> — الاستحقاق 30 نوفمبر، داخل إجازة معتمدة. أول يوم عمل بعد العودة: 9 ديسمبر 2026.</span>
+                <span lang="en"> — due 30 Nov, inside approved leave. First working day after return: 9 Dec 2026.</span></span>
+              <button data-lvmove="1"><span lang="ar">نقل إلى 9 ديسمبر</span><span lang="en">Move to 9 Dec</span></button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M17 11a3 3 0 1 0 0-6M18 20a6 6 0 0 0-3-5.2"/></svg></span><div>
+              <span class="ceye"><span lang="ar">التغطية التشغيلية</span><span lang="en">Operational cover</span></span>
+              <h2><span lang="ar">الغياب هذا الأسبوع</span><span lang="en">Out this week</span></h2></div></div></div>
+            <div id="outThisWeek"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- my requests -->
+      <div class="pane" id="lv-mine">
+        <div class="card">
+          <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><div>
+            <span class="ceye"><span lang="ar">طلبات الإجازة المسجّلة</span><span lang="en">Recorded leave requests</span></span>
+            <h2><span lang="ar">طلباتي</span><span lang="en">My requests</span></h2></div></div></div>
+          <div class="tw"><table>
+            <thead><tr>
+              <th><span lang="ar">من</span><span lang="en">From</span></th>
+              <th><span lang="ar">إلى</span><span lang="en">To</span></th>
+              <th><span lang="ar">المدة بالأيام التقويمية</span><span lang="en">Duration in calendar days</span></th>
+              <th><span lang="ar">النائب</span><span lang="en">Substitute</span></th>
+              <th><span lang="ar">الحالة</span><span lang="en">Status</span></th>
+            </tr></thead>
+            <tbody id="lvMineRows">
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- submit -->
+      <div class="pane" id="lv-submit">
+        <div class="card">
+          <div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span><div>
+            <span class="ceye"><span lang="ar">إدخال بيانات طلب الإجازة</span><span lang="en">Enter leave-request details</span></span>
+            <h2><span lang="ar">تقديم إجازة</span><span lang="en">Submit leave</span></h2></div></div></div>
+          <div class="frow">
+            <div class="fld"><label><span lang="ar">تاريخ البداية</span><span lang="en">Start date</span></label><input id="lr-from" type="date" value="2027-02-01"></div>
+            <div class="fld"><label><span lang="ar">تاريخ النهاية</span><span lang="en">End date</span></label><input id="lr-to" type="date" value="2027-02-12"></div>
+          </div>
+          <div class="fld" style="margin-top:var(--sp-3)"><label><span lang="ar">النائب أثناء الغياب</span><span lang="en">Substitute while away</span></label>
+            <select id="lr-sub"></select></div>
+          <div id="lrCheck" style="margin-top:var(--sp-4)"></div>
+          <div style="margin-top:var(--sp-4);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap">
+            <button class="btn btn-p" id="lrSend"><span lang="ar">إرسال الطلب</span><span lang="en">Send the request</span></button>
+            <span class="saved" id="lrSaved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg><span lang="ar">أُضيف طلب الإجازة إلى الطلبات قيد النظر.</span><span lang="en">Leave request added to pending requests.</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- approvals -->
+      <div class="pane" id="lv-appr">
+        <div class="card">
+          <div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 4v5c0 5-3 7.5-7 9-4-1.5-7-4-7-9V7z"/><path d="m9.5 12 2 2 3.5-4"/></svg></span><div>
+            <span class="ceye"><span lang="ar">طلبات تحتاج إلى المراجعة</span><span lang="en">Requests requiring review</span></span>
+            <h2><span lang="ar">طلبات بانتظار القرار</span><span lang="en">Requests awaiting a decision</span></h2></div></div>
+            <span class="sub tnum" id="lvApprSub"></span></div>
+          <div id="lvApprList"></div>
+        </div>
+      </div>
+
+      <!-- calendar / timeline -->
+      <div class="pane" id="lv-cal">
+        <div class="card">
+          <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><div>
+            <span class="ceye"><span lang="ar">الغياب حسب القسم</span><span lang="en">Absence by department</span></span>
+            <h2><span lang="ar">المخطط الزمني للإجازات</span><span lang="en">Leave timeline</span></h2></div>
+            <span class="sub" id="tlTitle"></span></div></div>
+          <div class="calbar">
+            <div class="calnav">
+              <button class="btn" id="tlPrev" data-aria-ar="الشهر السابق" data-aria-en="Previous month">‹</button>
+              <span class="ttl" id="tlLabel"></span>
+              <button class="btn" id="tlNext" data-aria-ar="الشهر التالي" data-aria-en="Next month">›</button>
+            </div>
+          </div>
+          <p class="hint"><span lang="ar">الموظفون مرتّبون حسب القسم. اضغط أي يوم لعرض التغطية.</span>
+             <span lang="en">Staff grouped by department. Click any day for its coverage.</span></p>
+          <div class="calwrap"><table class="cal" id="timeline"></table></div>
+          <div class="legend">
+            <span><i class="sw appr"></i><span lang="ar">إجازة معتمدة</span><span lang="en">Approved</span></span>
+            <span><i class="sw pend"></i><span lang="ar">قيد الاعتماد</span><span lang="en">Pending</span></span>
+            <span><i class="sw we"></i><span lang="ar">عطلة أسبوعية</span><span lang="en">Weekend</span></span>
+            <span><i class="sw hol"></i><span lang="ar">عطلة رسمية</span><span lang="en">Public holiday</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- marks -->
+      <div class="pane" id="lv-marks">
+        <div class="card">
+          <div class="card-h">
+            <span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><span class="ceye"><span lang="ar">يحدّدها قسم التنسيق</span><span lang="en">Set by Coordination</span></span><h2><span lang="ar">العطل والمناسبات</span><span lang="en">Holidays &amp; events</span></h2>
+            <span class="sub"><span lang="ar">يحدّدها قسم التنسيق والمتابعة</span><span lang="en">Maintained by Coordination &amp; Follow-up</span></span>
+          </div>
+          <div class="tw"><table>
+            <thead><tr>
+              <th><span lang="ar">البيان</span><span lang="en">Item</span></th>
+              <th><span lang="ar">النوع</span><span lang="en">Type</span></th>
+              <th><span lang="ar">من</span><span lang="en">From</span></th>
+              <th><span lang="ar">إلى</span><span lang="en">To</span></th>
+            </tr></thead>
+            <tbody>
+              <tr><td><span lang="ar">اليوم الوطني</span><span lang="en">National Day</span></td>
+                <td><span class="pill p-neutral"><span lang="ar">عطلة</span><span lang="en">Holiday</span></span></td>
+                <td class="tnum">2026-11-18</td><td class="tnum">2026-11-19</td></tr>
+              <tr><td><span lang="ar">ملتقى الجودة السنوي</span><span lang="en">Annual quality forum</span></td>
+                <td><span class="pill p-warn"><span lang="ar">مناسبة</span><span lang="en">Event</span></span></td>
+                <td class="tnum">2026-12-14</td><td class="tnum">2026-12-14</td></tr>
+              <tr><td><span lang="ar">ورشة معايير الاعتماد</span><span lang="en">Accreditation standards workshop</span></td>
+                <td><span class="pill p-warn"><span lang="ar">مناسبة</span><span lang="en">Event</span></span></td>
+                <td class="tnum">2026-11-11</td><td class="tnum">2026-11-12</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- staff -->
+      <div class="pane" id="lv-staff">
+        <div class="card">
+          <div class="card-h"><div class="chrow"><span class="ib"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M17 11a3 3 0 1 0 0-6M18 20a6 6 0 0 0-3-5.2"/></svg></span><h2><span lang="ar">الموظفون</span><span lang="en">Staff</span></h2></div></div>
+          <div class="tw"><table>
+            <thead><tr>
+              <th><span lang="ar">الموظف</span><span lang="en">Person</span></th>
+              <th><span lang="ar">القسم</span><span lang="en">Department</span></th>
+              <th><span lang="ar">الدور</span><span lang="en">Role</span></th>
+              <th class="num"><span lang="ar">أيام مستهلكة</span><span lang="en">Days taken</span></th>
+            </tr></thead>
+            <tbody id="staffRows"></tbody>
+          </table></div>
+        </div>
+      </div>
+
 <div class="ovl" id="statsOvl">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="statsTitle">
     <h3 id="statsTitle"></h3>
@@ -4802,6 +4840,316 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
     <button class="btn close" id="statsClose"><span lang="ar">إغلاق</span><span lang="en">Close</span></button>
   </div>
 </div>
+
+<script>
+(function(){
+  "use strict";
+  // ══ The leave window ══
+  // This window runs inside a sealed frame. It sees only the state the platform sends it
+  // (QAGC.on("state")) and acts only through QAGC.call(...). Who may approve, the two-step
+  // confirmation, and the leave record itself stay with the platform. CONTRACT.md lists
+  // every field and request.
+  var S=null;
+  var V={calY:2026, calM:10, mode:"month", tlY:2026, tlM:10, returning:{}, pane:null};
+  var AR_MONTHS=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+  var EN_MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  var DOW_AR=["ح","ن","ث","ر","خ","ج","س"], DOW_EN=["S","M","T","W","T","F","S"];
+  var STATE_PILL={
+    pending: ["p-warn","بانتظار الاعتماد النهائي","Awaiting final approval"],
+    approved:["p-good","معتمدة","Approved"],
+    returned:["p-serious","أُعيدت بطلب تعديل","Returned for amendment"]
+  };
+  var bi=QAGC.t, esc=QAGC.esc;
+  function isAr(){ return QAGC.isAr(); }
+  function $(id){ return document.getElementById(id); }
+
+  // ── dates ──
+  function iso(y,m,d){ return y+"-"+String(m+1).padStart(2,"0")+"-"+String(d).padStart(2,"0"); }
+  function isoOf(dt){ return iso(dt.getFullYear(),dt.getMonth(),dt.getDate()); }
+  function holOn(i){ var h=S.hol.filter(function(x){return x.d===i;}); return h.length?h[0].l:null; }
+  function evOn(i){ var e=S.events.filter(function(x){return x.d===i;}); return e.length?e.map(function(x){return x.l;}):null; }
+  function isWE(y,m,d){ var w=new Date(y,m,d).getDay(); return w===5||w===6; }
+  function onDay(i){ return S.leave.filter(function(l){ return i>=l.start && i<=l.end; }); }
+  function fmtDate(i){ var d=new Date(i); return d.getDate()+" "+(isAr()?AR_MONTHS:EN_MONTHS)[d.getMonth()]+" "+d.getFullYear(); }
+  function shiftISO(i,n){ var d=new Date(i); d.setDate(d.getDate()+n); return isoOf(d); }
+  function lvDays(r){ return Math.round((new Date(r.to)-new Date(r.from))/86400000)+1; }
+  function cpdOn(i){ return S.cpdDates.indexOf(i)>=0; }
+
+  // ── person × day grid, grouped by department ──
+  function gridRows(y,m,nd){
+    var body="";
+    S.depOrder.forEach(function(dep){
+      var people=S.staff.filter(function(p){return p.dep[0]===dep;});
+      if(!people.length) return;
+      body+='<tr class="sec-row"><td class="name-col">'+bi(dep,people[0].dep[1])+'</td><td colspan="'+nd+'"></td></tr>';
+      people.forEach(function(p){
+        body+='<tr><td class="name-col">'+bi(p.who[0],p.who[1])+'</td>';
+        for(var d=1;d<=nd;d++){
+          var i=iso(y,m,d), cls="day";
+          if(isWE(y,m,d)||holOn(i)) cls+=holOn(i)?" hol":" we";
+          S.leave.forEach(function(l){
+            if(l.who[0]===p.who[0] && i>=l.start && i<=l.end)
+              cls="day "+(l.status==="approved"?"leave-approved":"leave-pending");
+          });
+          body+='<td class="'+cls+'" data-day="'+i+'"></td>';
+        }
+        body+='</tr>';
+      });
+    });
+    return body;
+  }
+  function drawMonth(){
+    var nd=new Date(V.calY,V.calM+1,0).getDate();
+    var head='<tr><th class="name-col">'+bi("القسم / الموظف","Department / person")+'</th>';
+    for(var d=1;d<=nd;d++){
+      var i=iso(V.calY,V.calM,d), h=holOn(i), e=evOn(i);
+      head+='<th class="'+((isWE(V.calY,V.calM,d)||h)?"we":"")+(e?" evh":"")+'" data-day="'+i+'">'+d+'</th>';
+    }
+    head+='</tr>';
+    $("calBody").innerHTML='<div class="calwrap"><table class="cal">'+head+gridRows(V.calY,V.calM,nd)+'</table></div>';
+    $("calTitle").textContent=(isAr()?AR_MONTHS:EN_MONTHS)[V.calM]+" "+V.calY;
+  }
+  function drawYear(){
+    var out='<div class="yeargrid">';
+    for(var m=0;m<12;m++){
+      var nd=new Date(V.calY,m+1,0).getDate(), lead=new Date(V.calY,m,1).getDay(), cells="";
+      for(var b=0;b<lead;b++) cells+="<td></td>";
+      for(var d=1;d<=nd;d++){
+        var i=iso(V.calY,m,d), n=onDay(i).length, pct=Math.round(n/S.scopeStaff*100);
+        var h=holOn(i), e=evOn(i), st;
+        if(n<=0 && h) st="background:var(--rule-strong)";
+        else if(pct<=0) st="background:var(--surface-2)";
+        else { var al = pct>=75?.9:pct>=50?.65:pct>=25?.4:.2;
+               st="background:rgba(23,63,69,"+al+")"+(al>=.5?";color:#fff":""); }
+        if(e) st+=";box-shadow:inset 0 0 0 2px var(--brand-gold)";
+        cells+='<td class="yd" style="'+st+'" data-day="'+i+'">'+d+'</td>';
+        if((lead+d)%7===0) cells+="</tr><tr>";
+      }
+      out+='<div class="ymonth"><div class="ymon-h">'+bi(AR_MONTHS[m],EN_MONTHS[m])+'</div><table class="ycal"><tr>'+
+        DOW_AR.map(function(x,k){return "<th>"+bi(x,DOW_EN[k])+"</th>";}).join("")+'</tr><tr>'+cells+'</tr></table></div>';
+    }
+    out+='</div><div class="legend">'+
+      '<span><i class="sw" style="background:var(--surface-2)"></i>0%</span>'+
+      '<span><i class="sw" style="background:rgba(23,63,69,.2)"></i>&lt;25%</span>'+
+      '<span><i class="sw" style="background:rgba(23,63,69,.4)"></i>25–50%</span>'+
+      '<span><i class="sw" style="background:rgba(23,63,69,.65)"></i>50–75%</span>'+
+      '<span><i class="sw" style="background:rgba(23,63,69,.9)"></i>≥75%</span>'+
+      '<span><i class="sw" style="background:var(--rule-strong)"></i>'+bi("عطلة رسمية","Holiday")+'</span>'+
+      '<span><i class="sw" style="background:#fff;box-shadow:inset 0 0 0 2px var(--brand-gold)"></i>'+bi("مناسبة","Event")+'</span></div>';
+    $("calBody").innerHTML=out;
+    $("calTitle").textContent=V.calY;
+  }
+  function drawCal(){ V.mode==="year" ? drawYear() : drawMonth(); }
+  function drawTimeline(){
+    var nd=new Date(V.tlY,V.tlM+1,0).getDate();
+    var head='<tr><th class="name-col">'+bi("القسم / الموظف","Department / person")+'</th>';
+    for(var d=1;d<=nd;d++){
+      var i=iso(V.tlY,V.tlM,d), h=holOn(i), c=cpdOn(i);
+      head+='<th class="'+((isWE(V.tlY,V.tlM,d)||h)?"we":"")+(evOn(i)?" evh":"")+(c?" cpdd":"")+
+        '" data-day="'+i+'"'+(c?' title="'+(isAr()?"نشاط تطوير مهني":"CPD activity")+'"':'')+'>'+d+'</th>';
+    }
+    head+='</tr>';
+    $("timeline").innerHTML=head+gridRows(V.tlY,V.tlM,nd);
+    $("tlLabel").textContent=(isAr()?AR_MONTHS:EN_MONTHS)[V.tlM]+" "+V.tlY;
+  }
+
+  // ── one day, its week and its month ──
+  function openDayStats(i){
+    var items=onDay(i), N=S.scopeStaff, dayPct=Math.round(items.length/N*100);
+    var wkStart=shiftISO(i,-(new Date(i).getDay())), peak=0, wkPeople={};
+    for(var k=0;k<7;k++){ var m=onDay(shiftISO(wkStart,k));
+      peak=Math.max(peak,m.length); m.forEach(function(l){wkPeople[l.who[0]]=1;}); }
+    var d0=new Date(i), mPeak=0, mPeople={};
+    var last=new Date(d0.getFullYear(),d0.getMonth()+1,0).getDate();
+    for(var d=1;d<=last;d++){ var mm=onDay(iso(d0.getFullYear(),d0.getMonth(),d));
+      mPeak=Math.max(mPeak,mm.length); mm.forEach(function(l){mPeople[l.who[0]]=1;}); }
+    var h=holOn(i), e=evOn(i), html="";
+    if(h) html+='<div class="alert hol">'+bi("عطلة رسمية: "+h[0],"Public holiday: "+h[1])+'</div>';
+    if(e) html+='<div class="alert info">'+bi("مناسبة: "+e.map(function(x){return x[0];}).join(" · "),
+                                              "Event: "+e.map(function(x){return x[1];}).join(" · "))+'</div>';
+    html+='<div class="alert '+(dayPct>=75?"block":(dayPct>0?"info":"ok"))+'">'+
+      bi("في إجازة اليوم: "+items.length+" ("+dayPct+"%)","On leave today: "+items.length+" ("+dayPct+"%)")+'</div>';
+    if(items.length) html+='<div class="who-list">'+items.map(function(l){
+        return '<div>• '+bi(l.who[0],l.who[1])+' — '+
+          (l.sub?bi("يغطّيه: "+l.sub[0],"covered by "+l.sub[1]):bi("بدون نائب","no substitute"))+
+          (l.status!=="approved"?bi(" (قيد الاعتماد)"," (pending)"):"")+'</div>'; }).join("")+'</div>';
+    html+='<div class="tw"><table><thead><tr><th>'+bi("النطاق","Scope")+'</th><th class="num">'+
+      bi("أقصى تزامن","Peak")+'</th><th class="num">'+bi("النسبة","Share")+'</th><th class="num">'+
+      bi("عدد الأشخاص","People")+'</th></tr></thead><tbody>'+
+      '<tr><td>'+bi("الأسبوع","Week")+'</td><td class="num tnum">'+peak+'</td><td class="num tnum">'+
+        Math.round(peak/N*100)+'%</td><td class="num tnum">'+Object.keys(wkPeople).length+'</td></tr>'+
+      '<tr><td>'+bi("الشهر","Month")+'</td><td class="num tnum">'+mPeak+'</td><td class="num tnum">'+
+        Math.round(mPeak/N*100)+'%</td><td class="num tnum">'+Object.keys(mPeople).length+'</td></tr>'+
+      '</tbody></table></div>'+
+      '<p style="font-size:var(--t-sm);color:var(--ink-3);margin-top:var(--sp-3)">'+
+      bi("إجمالي الموظفين في النطاق: "+N,"Total staff in scope: "+N)+'</p>';
+    $("statsTitle").innerHTML=bi("إحصائيات "+fmtDate(i),"Statistics for "+fmtDate(i));
+    $("statsBody").innerHTML=html;
+    $("statsOvl").classList.add("open");
+    var c=$("statsClose"); if(c) c.focus();
+  }
+  function closeStats(){ $("statsOvl").classList.remove("open"); }
+
+  // ── who is out this week ──
+  function drawOut(){
+    var box=$("outThisWeek"); if(!box) return;
+    box.innerHTML=S.leave.filter(function(l){ return l.start<="2026-11-30" && l.end>="2026-11-16"; })
+      .map(function(l){
+        return '<div class="rule-row"><span class="rc">·</span><div class="rb">'+
+          '<div class="rt">'+bi(l.who[0],l.who[1])+'</div>'+
+          '<div class="rd tnum">'+l.start+' → '+l.end+'</div></div>'+
+          '<span class="pill '+(l.status==="approved"?"p-good":"p-warn")+'">'+
+          (l.status==="approved"?bi("معتمدة","Approved"):bi("مبدئية","Initial"))+'</span></div>';
+      }).join("");
+  }
+
+  // ── my requests ──
+  function drawMine(){
+    var host=$("lvMineRows"); if(!host) return;
+    var mine=S.requests.mine;
+    host.innerHTML = mine.length ? mine.map(function(r){
+      var st=STATE_PILL[r.state]||STATE_PILL.pending;
+      return '<tr><td class="tnum">'+r.from+'</td><td class="tnum">'+r.to+'</td>'+
+        '<td class="tnum">'+lvDays(r)+' '+bi("يوماً","days")+'</td>'+
+        '<td>'+bi(r.sub[0],r.sub[1])+'</td>'+
+        '<td><span class="pill '+st[0]+'">'+bi(st[1],st[2])+'</span>'+
+        (r.state==="returned"&&r.note?'<div class="retnote"><b>'+bi("السبب: ","Reason: ")+'</b>'+esc(r.note)+'</div>':"")+
+        '</td></tr>';
+    }).join("") : '<tr><td colspan="5" style="color:var(--ink-3);font-size:var(--t-sm)">'+
+      bi("لا توجد طلبات إجازة لهذا الحساب.","No leave requests for this account.")+'</td></tr>';
+  }
+
+  // ── requests waiting at this desk ──
+  function drawAppr(){
+    var host=$("lvApprList"); if(!host) return;
+    var q=S.requests.queue;
+    var sub=$("lvApprSub"); if(sub) sub.textContent=String(q.length);
+    var bd=document.querySelector('#lvtabs [data-pane="lv-appr"] .badge'); if(bd) bd.textContent=String(q.length);
+    host.innerHTML = q.length ? q.map(function(r){
+      return '<div class="subrow"><span class="kind k-obj"><i></i>'+bi("إجازة","Leave")+'</span>'+
+        '<span><span class="st2">'+bi(r.who[0],r.who[1])+'</span>'+
+          '<span class="sm">'+bi(r.dep[0],r.dep[1])+' · <span class="tnum">'+r.from+' → '+r.to+'</span> · '+
+          lvDays(r)+' '+bi("يوماً","days")+' · '+bi("النائب: ","substitute: ")+bi(r.sub[0],r.sub[1])+'</span></span>'+
+        '<span class="sw2 tnum">'+r.when+'</span>'+
+        '<span class="acts">'+
+          '<button class="mini yes" data-lvdec="'+r.id+':v">'+bi("اعتماد نهائي","Approve")+'</button>'+
+          '<button class="mini ret" data-lvdec="'+r.id+':a">'+bi("إعادة للتعديل","Return for amendment")+'</button></span>'+
+        (V.returning[r.id]
+          ? '<span class="amendbox"><span class="al">'+bi("ما سبب الإعادة؟","Why is it returned?")+'</span>'+
+            '<textarea id="lvnote-'+r.id+'"></textarea>'+
+            '<span class="arow"><button class="btn btn-p" data-lvsend="'+r.id+'">'+bi("إعادة الطلب للتعديل","Return request for amendment")+'</button>'+
+            '<button class="btn" data-lvcancel="'+r.id+'">'+bi("إلغاء","Cancel")+'</button></span></span>'
+          : "")+
+        '</div>';
+    }).join("") : '<div class="subempty">'+bi("لا توجد طلبات إجازة بانتظار القرار في هذه القائمة.","No leave requests await a decision in this list.")+'</div>';
+  }
+
+  // ── the submit form ──
+  function fillSubs(){
+    var sel=$("lr-sub"); if(!sel) return;
+    var keep=sel.value;
+    sel.innerHTML=S.subs.map(function(p){
+      return '<option value="'+esc(p.id)+'">'+esc(isAr()?p.who[0]:p.who[1])+'</option>'; }).join("");
+    if(keep) sel.value=keep;
+  }
+  function drawCheck(){
+    // These four rules are listed, not evaluated: nothing here reads the dates entered, so the
+    // panel must not show a result.
+    var h=$("lrCheck"); if(!h) return;
+    var row=function(code, ar, en){
+      return '<div class="rule-row"><span class="rc">'+code+'</span><div class="rb">'+
+        '<div class="rt">'+bi(ar,en)+'</div>'+
+        '<div class="rd">'+bi("لم يُجرَ فحص لهذا البند على الطلب المدخل.","This item has not been checked against the entered request.")+'</div></div>'+
+        '<span class="pill">'+bi("غير مفحوص","Not checked")+'</span></div>';
+    };
+    h.innerHTML='<p class="subh" style="margin-top:0">'+bi("بنود لمراجعة طلب الإجازة","Leave-request review items")+'</p>'+
+      '<p style="font-size:var(--t-sm);color:var(--ink-3);margin:0 0 8px">'+bi("لا تتحقق هذه اللوحة من الطلب المدخل. إرسال الطلب لا يعني استيفاء قواعد الإجازة.","This panel does not validate the entered request. Submitting it does not mean the leave rules have been met.")+'</p>'+
+      row("R1","مدة الإجازة","Duration")+
+      row("R2","نسبة غياب القسم","Department cap")+
+      row("R3","تغطية الإشراف","Supervision cover")+
+      row("R4","رؤساء الأقسام المتغيبون","Concurrent department heads");
+  }
+  function flash(id){ var m=$(id); if(!m) return; m.classList.add("on"); setTimeout(function(){m.classList.remove("on");},2600); }
+
+  // ── staff and days taken ──
+  function drawStaff(){
+    var sr=$("staffRows"); if(!sr) return;
+    var RT={dept_head:["رئيس قسم","Department head"],staff:["موظف","Staff"]};
+    sr.innerHTML=S.staff.map(function(p){
+      var t=RT[p.role]||RT.staff;
+      return '<tr><td>'+bi(p.who[0],p.who[1])+'</td><td>'+bi(p.dep[0],p.dep[1])+'</td><td>'+
+        bi(t[0],t[1])+'</td><td class="num tnum">'+p.taken+'</td></tr>';
+    }).join("");
+  }
+
+  // ── tabs: which ones a role sees is the platform's decision (S.tabs) ──
+  function showPane(id){
+    if(S.tabs.indexOf(id)<0) return;
+    V.pane=id;
+    document.querySelectorAll("#lvtabs button").forEach(function(b){ b.classList.toggle("on", b.dataset.pane===id); });
+    document.querySelectorAll(".mod-root .pane").forEach(function(p){ p.classList.toggle("on", p.id===id); });
+  }
+  function applyTabs(){
+    document.querySelectorAll("#lvtabs button").forEach(function(b){ b.hidden = S.tabs.indexOf(b.dataset.pane)<0; });
+    showPane(V.pane && S.tabs.indexOf(V.pane)>=0 ? V.pane : S.tabs[0]);
+  }
+
+  function renderAll(){
+    if(!S) return;
+    applyTabs(); drawCal(); drawTimeline(); drawOut(); drawMine(); drawAppr(); fillSubs(); drawCheck(); drawStaff();
+  }
+
+  // ── clicks ──
+  document.addEventListener("click",function(e){
+    var t=e.target;
+    var tab=t.closest("#lvtabs button"); if(tab){ showPane(tab.dataset.pane); return; }
+    if(t.closest("#calPrev")){ if(V.mode==="year") V.calY--; else { V.calM--; if(V.calM<0){V.calM=11;V.calY--;} } drawCal(); return; }
+    if(t.closest("#calNext")){ if(V.mode==="year") V.calY++; else { V.calM++; if(V.calM>11){V.calM=0;V.calY++;} } drawCal(); return; }
+    if(t.closest("#modeMonth")||t.closest("#modeYear")){
+      V.mode=t.closest("#modeYear")?"year":"month";
+      $("modeMonth").classList.toggle("on",V.mode==="month"); $("modeYear").classList.toggle("on",V.mode==="year");
+      drawCal(); return; }
+    if(t.closest("#tlPrev")){ if(V.tlM===0){V.tlM=11;V.tlY--;} else V.tlM--; drawTimeline(); return; }
+    if(t.closest("#tlNext")){ if(V.tlM===11){V.tlM=0;V.tlY++;} else V.tlM++; drawTimeline(); return; }
+    var day=t.closest("[data-day]"); if(day){ openDayStats(day.dataset.day); return; }
+    if(t.id==="statsClose"||t.closest("#statsClose")||t.id==="statsOvl"){ closeStats(); return; }
+    // an illustration only: it changes this card, nothing in the plan
+    var mv=t.closest("[data-lvmove]");
+    if(mv){ mv.outerHTML='<span class="pill p-good">'+bi("نُقلت إلى 9 ديسمبر","Moved to 9 Dec")+'</span>'; return; }
+    if(t.closest("#lrSend")){
+      var from=$("lr-from").value, to=$("lr-to").value, sub=$("lr-sub").value;
+      if(!from||!to||to<from) return;
+      QAGC.call("leave.submit",{from:from,to:to,subId:sub}).then(function(){ flash("lrSaved"); })
+        .catch(function(err){ QAGC.call("toast",{ar:"تعذّر إرسال الطلب.",en:"The request could not be sent."}); console.warn(err); });
+      return;
+    }
+    var dec=t.closest("[data-lvdec]");
+    if(dec){
+      var q=dec.dataset.lvdec.split(":");
+      if(q[1]==="a"){ V.returning[q[0]]=true; drawAppr(); return; }
+      QAGC.call("leave.decide",{id:q[0],decision:"approved"}).catch(function(err){ console.warn(err); });
+      return;
+    }
+    var ls=t.closest("[data-lvsend]");
+    if(ls){
+      var id=ls.dataset.lvsend, ta=$("lvnote-"+id);
+      var note=(ta&&ta.value.trim())||(isAr()?"يُرجى اختيار موعد آخر.":"Please choose different dates.");
+      QAGC.call("leave.decide",{id:id,decision:"returned",note:note})
+        .then(function(){ delete V.returning[id]; }).catch(function(err){ console.warn(err); });
+      return;
+    }
+    var lc=t.closest("[data-lvcancel]");
+    if(lc){ delete V.returning[lc.dataset.lvcancel]; drawAppr(); return; }
+  });
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape") closeStats(); });
+
+  QAGC.on("state", function(st){ S=st; renderAll(); });
+  QAGC.on("lang", function(){ renderAll(); });
+  QAGC.on("open", function(d){ if(S && d && d.pane) showPane(d.pane); });
+})();
+</script>
+</template>
+<!-- ══ FENCE leave · END ══ -->
 
 <script>
 (function(){
@@ -4865,16 +5213,6 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       var t = document.getElementById(b.dataset.go);
       if (t) t.classList.add("on");
       window.scrollTo({top:0,behavior:"instant"});
-    });
-  });
-  // ── leave sub-tabs ──
-  var lvt = document.querySelectorAll("#lvtabs button");
-  lvt.forEach(function(b){
-    b.addEventListener("click", function(){
-      lvt.forEach(function(x){ x.classList.remove("on"); });
-      b.classList.add("on");
-      document.querySelectorAll("#leave .pane").forEach(function(p){ p.classList.remove("on"); });
-      document.getElementById(b.dataset.pane).classList.add("on");
     });
   });
 
@@ -5016,174 +5354,6 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
   function pctOn(i){ return Math.round(onDay(i).length / SCOPE_STAFF * 100); }
   function fmtDate(i){ var d=new Date(i); return d.getDate()+" "+(isAr()?AR_MONTHS:EN_MONTHS)[d.getMonth()]+" "+d.getFullYear(); }
 
-  // ── month view: person × day, grouped by department (the app's shape) ──
-  var calY=2026, calM=10, CAL_MODE="month";
-  function drawMonth(){
-    var nd=new Date(calY,calM+1,0).getDate();
-    var head='<tr><th class="name-col">'+bi("القسم / الموظف","Department / person")+'</th>';
-    for(var d=1;d<=nd;d++){
-      var i=iso(calY,calM,d), we=isWE(calY,calM,d), h=holOn(i), e=evOn(i);
-      head+='<th class="'+((we||h)?"we":"")+(e?" evh":"")+'" data-day="'+i+'">'+d+'</th>';
-    }
-    head+='</tr>';
-    var body='';
-    DEP_ORDER.forEach(function(dep){
-      var people = STAFF.filter(function(p){ return p.dep[0]===dep; });
-      if(!people.length) return;
-      var en = people[0].dep[1];
-      body+='<tr class="sec-row"><td class="name-col">'+bi(dep,en)+'</td><td colspan="'+nd+'"></td></tr>';
-      people.forEach(function(p){
-        body+='<tr><td class="name-col">'+bi(p.who[0],p.who[1])+'</td>';
-        for(var d=1;d<=nd;d++){
-          var i=iso(calY,calM,d), cls="day";
-          if(isWE(calY,calM,d)||holOn(i)) cls+=holOn(i)?" hol":" we";
-          LEAVE.forEach(function(l){
-            if(l.who[0]!==p.who[0]) return;
-            if(i>=l.start&&i<=l.end) cls="day "+(l.status==="approved"?"leave-approved":"leave-pending");
-          });
-          body+='<td class="'+cls+'" data-day="'+i+'"></td>';
-        }
-        body+='</tr>';
-      });
-    });
-    document.getElementById("calBody").innerHTML='<div class="calwrap"><table class="cal">'+head+body+'</table></div>';
-    document.getElementById("calTitle").textContent=(isAr()?AR_MONTHS:EN_MONTHS)[calM]+" "+calY;
-  }
-  // ── year view: 12 mini months tinted by density ──
-  function drawYear(){
-    var out='<div class="yeargrid">';
-    for(var m=0;m<12;m++){
-      var nd=new Date(calY,m+1,0).getDate(), lead=new Date(calY,m,1).getDay(), cells="";
-      for(var b=0;b<lead;b++) cells+="<td></td>";
-      for(var d=1;d<=nd;d++){
-        var i=iso(calY,m,d), n=onDay(i).length, pct=Math.round(n/SCOPE_STAFF*100);
-        var h=holOn(i), e=evOn(i), st;
-        if(n<=0 && h) st="background:var(--rule-strong)";
-        else if(pct<=0) st="background:var(--surface-2)";
-        else { var al = pct>=75?.9:pct>=50?.65:pct>=25?.4:.2;
-               st="background:rgba(23,63,69,"+al+")"+(al>=.5?";color:#fff":""); }
-        if(e) st+=";box-shadow:inset 0 0 0 2px var(--brand-gold)";
-        cells+='<td class="yd" style="'+st+'" data-day="'+i+'">'+d+'</td>';
-        if((lead+d)%7===0) cells+="</tr><tr>";
-      }
-      out+='<div class="ymonth"><div class="ymon-h">'+bi(AR_MONTHS[m],EN_MONTHS[m])+'</div><table class="ycal"><tr>'+
-        DOW_AR.map(function(x,k){return "<th>"+bi(x,DOW_EN[k])+"</th>";}).join("")+'</tr><tr>'+cells+'</tr></table></div>';
-    }
-    out+='</div><div class="legend">'+
-      '<span><i class="sw" style="background:var(--surface-2)"></i>0%</span>'+
-      '<span><i class="sw" style="background:rgba(23,63,69,.2)"></i>&lt;25%</span>'+
-      '<span><i class="sw" style="background:rgba(23,63,69,.4)"></i>25–50%</span>'+
-      '<span><i class="sw" style="background:rgba(23,63,69,.65)"></i>50–75%</span>'+
-      '<span><i class="sw" style="background:rgba(23,63,69,.9)"></i>≥75%</span>'+
-      '<span><i class="sw" style="background:var(--rule-strong)"></i>'+bi("عطلة رسمية","Holiday")+'</span>'+
-      '<span><i class="sw" style="background:#fff;box-shadow:inset 0 0 0 2px var(--brand-gold)"></i>'+bi("مناسبة","Event")+'</span></div>';
-    document.getElementById("calBody").innerHTML=out;
-    document.getElementById("calTitle").textContent=calY;
-  }
-  function drawCal(){ CAL_MODE==="year" ? drawYear() : drawMonth(); }
-
-  // ── annual person timeline (التقويم tab) ──
-  var tlM=10, tlY=2026;
-  function drawTimeline(){
-    var nd=new Date(tlY,tlM+1,0).getDate();
-    var head='<tr><th class="name-col">'+bi("القسم / الموظف","Department / person")+'</th>';
-    for(var d=1;d<=nd;d++){
-      var i=iso(tlY,tlM,d), h=holOn(i);
-      var hasCpd=(typeof cpdOn==="function") && cpdOn(i).length;
-      head+='<th class="'+((isWE(tlY,tlM,d)||h)?"we":"")+(evOn(i)?" evh":"")+(hasCpd?" cpdd":"")+
-        '" data-day="'+i+'"'+(hasCpd?' title="'+(isAr()?"نشاط تطوير مهني":"CPD activity")+'"':'')+'>'+d+'</th>';
-    }
-    head+='</tr>';
-    var body='';
-    DEP_ORDER.forEach(function(dep){
-      var people=STAFF.filter(function(p){return p.dep[0]===dep;});
-      if(!people.length) return;
-      body+='<tr class="sec-row"><td class="name-col">'+bi(dep,people[0].dep[1])+'</td><td colspan="'+nd+'"></td></tr>';
-      people.forEach(function(p){
-        body+='<tr><td class="name-col">'+bi(p.who[0],p.who[1])+'</td>';
-        for(var d=1;d<=nd;d++){
-          var i=iso(tlY,tlM,d), cls="day";
-          if(isWE(tlY,tlM,d)||holOn(i)) cls+=holOn(i)?" hol":" we";
-          LEAVE.forEach(function(l){ if(l.who[0]===p.who[0] && i>=l.start && i<=l.end)
-            cls="day "+(l.status==="approved"?"leave-approved":"leave-pending"); });
-          body+='<td class="'+cls+'" data-day="'+i+'"></td>';
-        }
-        body+='</tr>';
-      });
-    });
-    document.getElementById("timeline").innerHTML=head+body;
-    document.getElementById("tlLabel").textContent=(isAr()?AR_MONTHS:EN_MONTHS)[tlM]+" "+tlY;
-  }
-
-  // ── day / week / month statistics ──
-  function shiftISO(i,n){ var d=new Date(i); d.setDate(d.getDate()+n); return isoOf(d); }
-  function openDayStats(i){
-    var items=onDay(i), dayPct=Math.round(items.length/SCOPE_STAFF*100);
-    var wkStart=shiftISO(i,-(new Date(i).getDay())), peak=0, wkPeople={};
-    for(var k=0;k<7;k++){ var di=shiftISO(wkStart,k), m=onDay(di);
-      peak=Math.max(peak,m.length); m.forEach(function(l){wkPeople[l.who[0]]=1;}); }
-    var d0=new Date(i), mPeak=0, mPeople={};
-    var last=new Date(d0.getFullYear(),d0.getMonth()+1,0).getDate();
-    for(var d=1;d<=last;d++){ var mi=iso(d0.getFullYear(),d0.getMonth(),d), mm=onDay(mi);
-      mPeak=Math.max(mPeak,mm.length); mm.forEach(function(l){mPeople[l.who[0]]=1;}); }
-    var h=holOn(i), e=evOn(i), html="";
-    if(h) html+='<div class="alert hol">'+bi("عطلة رسمية: "+h[0],"Public holiday: "+h[1])+'</div>';
-    if(e) html+='<div class="alert info">'+bi("مناسبة: "+e.map(function(x){return x[0];}).join(" · "),
-                                              "Event: "+e.map(function(x){return x[1];}).join(" · "))+'</div>';
-    html+='<div class="alert '+(dayPct>=75?"block":(dayPct>0?"info":"ok"))+'">'+
-      bi("في إجازة اليوم: "+items.length+" ("+dayPct+"%)","On leave today: "+items.length+" ("+dayPct+"%)")+'</div>';
-    if(items.length) html+='<div class="who-list">'+items.map(function(l){
-        return '<div>• '+bi(l.who[0],l.who[1])+' — '+
-          (l.sub?bi("يغطّيه: "+l.sub[0],"covered by "+l.sub[1]):bi("بدون نائب","no substitute"))+
-          (l.status!=="approved"?bi(" (قيد الاعتماد)"," (pending)"):"")+'</div>'; }).join("")+'</div>';
-    html+='<div class="tw"><table><thead><tr><th>'+bi("النطاق","Scope")+'</th><th class="num">'+
-      bi("أقصى تزامن","Peak")+'</th><th class="num">'+bi("النسبة","Share")+'</th><th class="num">'+
-      bi("عدد الأشخاص","People")+'</th></tr></thead><tbody>'+
-      '<tr><td>'+bi("الأسبوع","Week")+'</td><td class="num tnum">'+peak+'</td><td class="num tnum">'+
-        Math.round(peak/SCOPE_STAFF*100)+'%</td><td class="num tnum">'+Object.keys(wkPeople).length+'</td></tr>'+
-      '<tr><td>'+bi("الشهر","Month")+'</td><td class="num tnum">'+mPeak+'</td><td class="num tnum">'+
-        Math.round(mPeak/SCOPE_STAFF*100)+'%</td><td class="num tnum">'+Object.keys(mPeople).length+'</td></tr>'+
-      '</tbody></table></div>'+
-      '<p style="font-size:var(--t-sm);color:var(--ink-3);margin-top:var(--sp-3)">'+
-      bi("إجمالي الموظفين في النطاق: "+SCOPE_STAFF,"Total staff in scope: "+SCOPE_STAFF)+'</p>';
-    document.getElementById("statsTitle").innerHTML=bi("إحصائيات "+fmtDate(i),"Statistics for "+fmtDate(i));
-    document.getElementById("statsBody").innerHTML=html;
-    document.getElementById("statsOvl").classList.add("open");
-  }
-  document.addEventListener("click",function(e){
-    var c=e.target.closest("[data-day]"); if(c){ openDayStats(c.dataset.day); return; }
-    if(e.target.id==="statsClose"||e.target.id==="statsOvl")
-      document.getElementById("statsOvl").classList.remove("open");
-  });
-  document.addEventListener("keydown",function(e){
-    if(e.key==="Escape") document.getElementById("statsOvl").classList.remove("open");
-  });
-
-  // out-this-week list
-  function drawOut(){
-    var box=document.getElementById("outThisWeek"); if(!box) return;
-    box.innerHTML = LEAVE.filter(function(l){ return l.start<="2026-11-30" && l.end>="2026-11-16"; })
-      .map(function(l){
-        return '<div class="rule-row"><span class="rc">·</span><div class="rb">'+
-          '<div class="rt">'+bi(l.who[0],l.who[1])+'</div>'+
-          '<div class="rd tnum">'+l.start+' → '+l.end+'</div></div>'+
-          '<span class="pill '+(l.status==="approved"?"p-good":"p-warn")+'">'+
-          (l.status==="approved"?bi("معتمدة","Approved"):bi("مبدئية","Initial"))+'</span></div>';
-      }).join("");
-  }
-
-  // controls
-  function bindLeave(){
-    var pv=document.getElementById("calPrev"), nx=document.getElementById("calNext");
-    if(pv) pv.onclick=function(){ if(CAL_MODE==="year"){calY--;} else {calM--; if(calM<0){calM=11;calY--;}} drawCal(); };
-    if(nx) nx.onclick=function(){ if(CAL_MODE==="year"){calY++;} else {calM++; if(calM>11){calM=0;calY++;}} drawCal(); };
-    var mm=document.getElementById("modeMonth"), my=document.getElementById("modeYear");
-    if(mm) mm.onclick=function(){ CAL_MODE="month"; mm.classList.add("on"); my.classList.remove("on"); drawCal(); };
-    if(my) my.onclick=function(){ CAL_MODE="year"; my.classList.add("on"); mm.classList.remove("on"); drawCal(); };
-    var tp=document.getElementById("tlPrev"), tn=document.getElementById("tlNext");
-    if(tp) tp.onclick=function(){ if(tlM===0){tlM=11;tlY--;}else tlM--; drawTimeline(); };
-    if(tn) tn.onclick=function(){ if(tlM===11){tlM=0;tlY++;}else tlM++; drawTimeline(); };
-  }
   var LVCFG={weeks:5,cap:75,heads:2,mgrs:1};
   var LVFACTS={weeks:2, capPct:75, headsOut:2, headsTotal:6, mgrsOut:0, mgrsTotal:3};
   function drawRules(){
@@ -5240,8 +5410,8 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
   });
   applyCfg();
 
-  bindLeave(); drawCal(); drawTimeline(); drawOut();
-  window._redrawLeave=function(){ drawCal(); drawTimeline(); drawOut(); };
+  // the leave window is fenced: a language or data change is pushed into its frame
+  window._redrawLeave=function(){ modPush("leave"); };
 
 var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة متكاملة للحوكمة وضمان الجودة في قطاع الأشخاص ذوي الإعاقة","d":"الصياغة الذكية SMART: بحلول الربع الرابع من عام 2027م، اعتماد وتفعيل إطار حوكمة المركز، ومنظومة إعداد وإدارة السياسات، وهيكل معايير الجودة، والنموذج التشغيلي للجودة في المحافظات، مع تطبيق ما لا يقل عن 80% من أدوات الحوكمة ذات الأولوية.","k":"نسبة أدوات الحوكمة ذات الأولوية المعتمدة والمفعلة","g":"≥80%","u":"","o":"دائرة الحوكمة ومعايير الجودة وتطوير الخدمات","s":"2027-01-01","e":"2027-12-31","b":0,"dir":null,"dep":null},{"r":"SO2","p":null,"l":"center","t":"بناء منظومة قابلة للقياس للرقابة والامتثال قائمة على المخاطر","d":"الصياغة الذكية SMART: بحلول الربع الرابع من عام 2027م، تطبيق برنامج موحد للرقابة والامتثال المؤسسي قائم على المخاطر يغطي 100% من المجالات ذات الأولوية عالية المخاطر، مع إصدار تقارير ربع سنوية لمتابعة الإجراءات التصحيحية.","k":"نسبة المجالات عالية المخاطر المشمولة بأعمال التدقيق والرقابة","g":"100%","u":"","o":"دائرة الرقابة والامتثال","s":"2027-01-01","e":"2027-12-31","b":0,"dir":null,"dep":null},{"r":"SO3","p":null,"l":"center","t":"توحيد منظومة الاعتماد والتصنيف والتراخيص لخدمات الأشخاص ذوي الإعاقة","d":"الصياغة الذكية SMART: بحلول الربع الرابع من عام 2027م، توحيد المتطلبات والمسارات ذات الأولوية للاعتماد والتصنيف والتراخيص، وتحديد مؤشرات ومستويات زمنية للخدمة لجميع المسارات ذات الأولوية بما يقلل التباين في الإجراءات.","k":"نسبة مسارات الاعتماد والتراخيص ذات الأولوية التي تم توحيدها وربطها بمؤشرات ومستويات خدمة","g":"100%","u":"","o":"دائرة الاعتماد والتراخيص","s":"2027-01-01","e":"2027-12-31","b":0,"dir":null,"dep":null},{"r":"SO4","p":null,"l":"center","t":"إنشاء منظومة قطاعية لقياس الأداء والتحسين المستمر","d":"الصياغة الذكية SMART: بحلول الربع الثالث من عام 2027م، اعتماد قاموس مؤشرات الأداء ودورية التقارير للخدمات ذات الأولوية، وتحقيق اكتمال تقارير ربع سنوية بنسبة لا تقل عن 90% بنهاية العام.","k":"نسبة اكتمال التقارير الدورية لمؤشرات الأداء","g":"≥90%","u":"","o":"مكتب المدير العام بالتكامل مع الحوكمة والجودة والتدقيق والامتثال","s":"2027-01-01","e":"2027-12-31","b":0,"dir":null,"dep":null},{"r":"SO5","p":null,"l":"center","t":"تفعيل شبكة جودة مستدامة في المحافظات الإحدى عشرة","d":"الصياغة الذكية SMART: بحلول الربع الرابع من عام 2027م، تفعيل نموذج تشغيلي موحد لإدارات الجودة في المحافظات الإحدى عشرة، يتضمن الأدوار وقوالب التقارير والتنسيق الربع سنوي، مع إنجاز ما لا يقل عن 80% من المخرجات الإقليمية المتفق عليها.","k":"نسبة المحافظات المنجزة للمخرجات المتفق عليها","g":"≥80%","u":"","o":"مكتب المدير العام وجميع الدوائر","s":"2027-01-01","e":"2027-12-31","b":0,"dir":null,"dep":null},{"r":"SO6","p":null,"l":"center","t":"تعزيز القدرات المؤسسية مع الحد من الاعتماد على زيادة القوى العاملة","d":"الصياغة الذكية SMART: بحلول الربع الرابع من عام 2027م، تطبيق برنامج لحصر الكفاءات ونقل الخبرات يشمل 100% من موظفي المركز وفرق الجودة بالمحافظات، ومعالجة ما لا يقل عن 75% من فجوات القدرات ذات الأولوية من خلال نقل المعرفة أو الموارد المشتركة ","k":"نسبة فجوات القدرات ذات الأولوية التي تمت معالجتها","g":"≥75%","u":"","o":"مكتب المدير العام وقسم تطوير الخدمات","s":"2027-01-01","e":"2027-12-31","b":0,"dir":null,"dep":null},{"r":"DO1.1","p":"SO1","l":"directorate","t":"اعتماد وتفعيل إطار للحوكمة يحدد صلاحيات اتخاذ القرار والأدوار والعلاقات البينية واللجان ومسارات التصعيد والمساءلة للعمليات ذات الأولوية","d":"الصياغة الذكية SMART: اعتماد وتفعيل إطار للحوكمة يحدد صلاحيات اتخاذ القرار والأدوار والعلاقات البينية واللجان ومسارات التصعيد والمساءلة للعمليات ذات الأولوية بحلول الربع الثاني من 2027م.","k":"اعتماد وتفعيل إطار الحوكمة","g":"معتمد بحلول الربع الثاني","u":"","o":"دائرة الحوكمة ومعايير الجودة وتطوير الخدمات","s":"2027-01-01","e":"2027-06-30","b":0,"dir":"GQSIS","dep":null},{"r":"DO1.2","p":"SO1","l":"directorate","t":"إرساء دورة موحدة لإعداد ومراجعة واعتماد السياسات والمعايير","d":"الصياغة الذكية SMART: إرساء دورة موحدة لإعداد ومراجعة واعتماد السياسات والمعايير واستكمال ما لا يقل عن 8 سياسات أو معايير ذات أولوية بحلول نهاية 2027م.","k":"عدد السياسات/المعايير ذات الأولوية المعتمدة","g":"≥8","u":"أداة","o":"دائرة الحوكمة ومعايير الجودة وتطوير الخدمات","s":"2027-01-01","e":"2027-12-31","b":0,"dir":"GQSIS","dep":null},{"r":"DO1.3","p":"SO4","l":"directorate","t":"إنشاء محفظة لتطوير الخدمات وإنجاز مشاريع تحسين بمنهجيات Lean","d":"الصياغة الذكية SMART: إنشاء محفظة لتطوير الخدمات وإنجاز ما لا يقل عن 6 مشاريع تحسين باستخدام منهجيات Lean وتحسين العمليات مع توثيق خط الأساس والتدخل والنتائج بحلول نهاية 2027م.","k":"عدد مشاريع التحسين ذات النتائج المتحققة والموثقة","g":"≥6","u":"مشاريع","o":"دائرة الحوكمة ومعايير الجودة وتطوير الخدمات","s":"2027-01-01","e":"2027-12-31","b":0,"dir":"GQSIS","dep":null},{"r":"DO2.1","p":"SO2","l":"directorate","t":"تنفيذ خطة رقابة سنوية قائمة على المخاطر","d":"الصياغة الذكية SMART: تنفيذ خطة رقابة سنوية قائمة على المخاطر تغطي جميع المجالات ذات الأولوية عالية المخاطر وإصدار تقارير ربع سنوية لمتابعة إغلاق الملاحظات بحلول نهاية 2027م.","k":"نسبة المجالات عالية المخاطر التي تم تدقيقها","g":"100%","u":"","o":"دائرة الرقابة والامتثال","s":"2027-01-01","e":"2027-12-31","b":0,"dir":"DAC","dep":null},{"r":"DO2.2","p":"SO2","l":"directorate","t":"إنشاء إطار للامتثال المؤسسي وسجل للالتزامات والإجراءات التصحيحية","d":"الصياغة الذكية SMART: إنشاء إطار للامتثال المؤسسي وسجل للالتزامات ونظام لمتابعة الإجراءات التصحيحية، مع إغلاق ما لا يقل عن 85% من الإجراءات ضمن المدد المتفق عليها بحلول نهاية 2027م.","k":"نسبة الإجراءات التصحيحية المغلقة في موعدها","g":"≥85%","u":"","o":"دائرة الرقابة والامتثال","s":"2027-01-01","e":"2027-12-31","b":0,"dir":"DAC","dep":null},{"r":"DO3.1","p":"SO3","l":"directorate","t":"استكمال الإطار الوطني للاعتماد والتصنيف وتجريبه","d":"الصياغة الذكية SMART: استكمال الإطار الوطني للاعتماد والتصنيف وتجريبه على عينة ممثلة من مقدمي الخدمات بحلول الربع الثالث من 2027م.","k":"استكمال الإطار وتنفيذ التجربة","g":"الإطار معتمد والتجربة مكتملة","u":"","o":"دائرة الاعتماد والتراخيص","s":"2027-01-01","e":"2027-09-30","b":0,"dir":"DAL","dep":null},{"r":"DO3.2","p":"SO3","l":"directorate","t":"توحيد مسارات التراخيص ذات الأولوية والنماذج والمدد المستهدفة","d":"الصياغة الذكية SMART: توحيد مسارات التراخيص ذات الأولوية والنماذج والمدد المستهدفة وخطة التجديد وإنشاء سجل حي لحالة التراخيص بحلول الربع الثاني من 2027م.","k":"نسبة مسارات التراخيص ذات الأولوية التي تم توحيدها","g":"100%","u":"","o":"دائرة الاعتماد والتراخيص","s":"2027-01-01","e":"2027-06-30","b":0,"dir":"DAL","dep":null},{"r":"DO4.1","p":"SO5","l":"directorate","t":"تفعيل النموذج التشغيلي للجودة في المحافظات الإحدى عشرة","d":"الصياغة الذكية SMART: تفعيل النموذج التشغيلي للجودة في المحافظات الإحدى عشرة مع تقارير ربع سنوية وتنفيذ ملتقيين منظمين للتنسيق والتعلم خلال عام 2027م.","k":"عدد المحافظات المفعلة","g":"11/11","u":"محافظة","o":"مكتب المدير العام وجميع الدوائر","s":"2027-01-01","e":"2027-12-31","b":0,"dir":"GQSIS","dep":null},{"r":"DO4.2","p":"SO6","l":"directorate","t":"استكمال حصر الكفاءات وتنفيذ خطة لنقل الخبرات وتنمية القدرات","d":"الصياغة الذكية SMART: استكمال حصر الكفاءات وتنفيذ خطة مدمجة لنقل الخبرات وتنمية القدرات لمعالجة ما لا يقل عن 75% من الفجوات ذات الأولوية دون خلق اعتماد دائم على زيادة القوى العاملة.","k":"نسبة فجوات القدرات ذات الأولوية التي تمت معالجتها","g":"≥75%","u":"","o":"مكتب المدير العام وقسم تطوير الخدمات","s":"2027-01-01","e":"2027-12-31","b":0,"dir":"GQSIS","dep":null},{"r":"DO4.3","p":"SO5","l":"directorate","t":"تنفيذ برنامج زيارات قيادية هادفة للمدير العام يغطي المحافظات الإحدى عشرة","d":"الصياغة الذكية SMART: تنفيذ برنامج زيارات قيادية هادفة للمدير العام يغطي المحافظات الإحدى عشرة للتحقق من جاهزية منظومة الجودة والاستماع لأصحاب المصلحة ومتابعة معالجة المخاطر، مع سجل متابعة موثق لكل محافظة خلال عام 2027م.","k":"نسبة المحافظات التي تمت تغطيتها بزيارة قيادية موثقة","g":"100% (11/11)","u":"محافظة","o":"مكتب المدير العام","s":"2027-01-01","e":"2027-12-15","b":0,"dir":"GQSIS","dep":null},{"r":"OP1","p":"DO1.1","l":"department","t":"إعداد إطار حوكمة المركز والقطاع","d":"الصياغة الذكية SMART: استكمال تحليل أصحاب المصلحة والوضع الراهن للحوكمة، ثم إعداد الإطار والتشاور بشأنه واعتماده وإصداره في موعد أقصاه 30 يونيو 2027م.\n\nالأنشطة ذات المتطلبات المالية من الخطة الأصلية:\n• FA01 — ورشة تصميم إطار الحوكمة مع أصحا","k":"اعتماد الإطار","g":"معتمد","u":"","o":"قسم الحوكمة ومعايير الجودة","s":"2027-01-01","e":"2027-06-30","b":1800,"dir":"GQSIS","dep":"GQS"},{"r":"OP2","p":"DO1.2","l":"department","t":"سياسة إعداد السياسات وأدواتها","d":"الصياغة الذكية SMART: اعتماد سياسة لإعداد السياسات وقالب موحد ومصفوفة اعتماد وسجل للسياسات بحلول 31 مارس 2027م، وتعريف 100% من التقسيمات المعنية بالمقر بالأدوات بحلول نهاية الربع الثاني.\n\nالأنشطة ذات المتطلبات المالية من الخطة الأصلية:\n• FA","k":"نسبة التقسيمات المعنية التي تم تعريفها","g":"100%","u":"","o":"قسم الحوكمة ومعايير الجودة","s":"2027-01-01","e":"2027-06-30","b":1200,"dir":"GQSIS","dep":"GQS"},{"r":"OP3","p":"DO1.2","l":"department","t":"برنامج السياسات والمعايير والأدلة ذات الأولوية","d":"الصياغة الذكية SMART: إعداد أو مراجعة واعتماد ما لا يقل عن 8 سياسات أو معايير أو أدلة ذات أولوية باستخدام منهجية موحدة ومضبوطة بحلول 31 ديسمبر 2027م.\n\nالأنشطة ذات المتطلبات المالية من الخطة الأصلية:\n• FA02 — سلسلة المشاورات الفنية للسياسات ","k":"عدد الأدوات المعتمدة","g":"≥8","u":"أداة","o":"قسم الحوكمة ومعايير الجودة","s":"2027-02-01","e":"2027-12-31","b":3000,"dir":"GQSIS","dep":"GQS"},{"r":"OP4","p":"DO1.3","l":"department","t":"محفظة مشاريع تحسين الخدمات بمنهجية Lean","d":"الصياغة الذكية SMART: اختيار ما لا يقل عن 6 عمليات عالية الأثر خلال الربع الأول، وتحديد خط الأساس وتنفيذ دورات التحسين والتحقق من النتائج أو مكاسب الكفاءة لعدد لا يقل عن 6 مشاريع بنهاية العام.\n\nالأنشطة ذات المتطلبات المالية من الخطة الأصلية","k":"عدد المشاريع ذات المكاسب المتحققة والموثقة","g":"≥6","u":"مشاريع","o":"قسم تطوير الخدمات","s":"2027-01-15","e":"2027-12-15","b":5000,"dir":"GQSIS","dep":"SI"},{"r":"OP5","p":"DO4.2","l":"department","t":"برنامج حصر الكفاءات ونقل الخبرات","d":"الصياغة الذكية SMART: حصر الكفاءات الحرجة بحلول الربع الأول وتنفيذ تدخلات داخلية لنقل المعرفة وتنمية القدرات لمعالجة ما لا يقل عن 75% من فجوات القدرات ذات الأولوية بحلول الربع الرابع.\n\nالأنشطة ذات المتطلبات المالية من الخطة الأصلية:\n• FA04 ","k":"نسبة فجوات القدرات التي تمت معالجتها","g":"≥75%","u":"","o":"قسم تطوير الخدمات","s":"2027-01-01","e":"2027-12-15","b":3600,"dir":"GQSIS","dep":"SI"},{"r":"OP6","p":"DO2.1","l":"department","t":"برنامج التدقيق السنوي القائم على المخاطر","d":"الصياغة الذكية SMART: اعتماد سجل المخاطر وخطة التدقيق السنوية بحلول 31 مارس، وتدقيق 100% من المجالات ذات الأولوية عالية المخاطر وإصدار التقارير خلال 20 يوم عمل من انتهاء العمل الميداني.","k":"نسبة المجالات عالية المخاطر التي تم تدقيقها","g":"100%","u":"","o":"قسم الرقابة","s":"2027-01-01","e":"2027-12-15","b":0,"dir":"DAC","dep":"AUD"},{"r":"OP7","p":"DO2.1","l":"department","t":"منهجية التدقيق المتبادل بين المحافظات","d":"الصياغة الذكية SMART: إعداد أدوات تدقيق موحدة وتنفيذ دورتين على الأقل للتدقيق المتبادل بين المحافظات بمشاركة إدارات الجودة الإقليمية بحلول الربع الرابع.\n\nالأنشطة ذات المتطلبات المالية من الخطة الأصلية:\n• FA05 — مهمات التدقيق المتبادل بين ال","k":"عدد دورات التدقيق المتبادل المنفذة","g":"≥2","u":"دورة","o":"قسم الرقابة","s":"2027-03-01","e":"2027-11-30","b":7000,"dir":"DAC","dep":"AUD"},{"r":"OP8","p":"DO2.2","l":"department","t":"سجل الالتزامات ومتابعة الامتثال","d":"الصياغة الذكية SMART: إنشاء سجل للالتزامات يغطي المتطلبات القانونية والتنظيمية والداخلية ذات الأولوية بحلول الربع الثاني وإصدار لوحات متابعة ربع سنوية بدءاً من الربع الثاني.\n\nالأنشطة ذات المتطلبات المالية من الخطة الأصلية:\n• FA06 — المراجعة","k":"عدد لوحات المتابعة الربع سنوية الصادرة","g":"3","u":"لوحات","o":"قسم الامتثال المؤسسي","s":"2027-01-01","e":"2027-12-31","b":2200,"dir":"DAC","dep":"IC"},{"r":"OP9","p":"DO2.2","l":"department","t":"متابعة الإجراءات التصحيحية والوقائية CAPA","d":"الصياغة الذكية SMART: تطبيق سجل موحد للإجراءات التصحيحية والوقائية بحلول الربع الثاني وتحقيق نسبة إغلاق لا تقل عن 85% ضمن المدد المتفق عليها بنهاية الربع الرابع.","k":"نسبة الإجراءات المغلقة في موعدها","g":"≥85%","u":"","o":"قسم الامتثال المؤسسي","s":"2027-02-01","e":"2027-12-31","b":0,"dir":"DAC","dep":"IC"},{"r":"OP10","p":"DO3.1","l":"department","t":"الإطار الوطني للاعتماد والتصنيف","d":"الصياغة الذكية SMART: استكمال المعايير ومنهجية التقييم وأدوات المقيمين، وإتمام التحقق مع أصحاب المصلحة والتطبيق التجريبي في موعد أقصاه 30 سبتمبر 2027م.\n\nالأنشطة ذات المتطلبات المالية من الخطة الأصلية:\n• FA07 — ملتقى التحقق من معايير الاعتما","k":"اكتمال التطبيق التجريبي","g":"نعم","u":"","o":"قسم الاعتماد والتصنيف","s":"2027-01-01","e":"2027-09-30","b":8200,"dir":"DAL","dep":"AC"},{"r":"OP11","p":"DO3.1","l":"department","t":"بناء قدرات المقيمين ومعايرة التقييم","d":"الصياغة الذكية SMART: تدريب ومعايرة مجموعة متعددة التخصصات من المقيمين بما يكفي للتطبيق التجريبي، وتحقيق مستوى كفاءة بعد التدريب لا يقل عن 80% بحلول الربع الثالث.\n\nالأنشطة ذات المتطلبات المالية من الخطة الأصلية:\n• FA09 — تدريب ومعايرة المقي","k":"نسبة المقيمين المحققين لمستوى الكفاءة","g":"≥80%","u":"","o":"قسم الاعتماد والتصنيف","s":"2027-04-01","e":"2027-09-15","b":5600,"dir":"DAL","dep":"AC"},{"r":"OP12","p":"DO3.2","l":"department","t":"توحيد مسارات وإجراءات التراخيص","d":"الصياغة الذكية SMART: حصر وتوحيد جميع مسارات التراخيص والتجديد ذات الأولوية والنماذج والأدوار والمدد المستهدفة ومسارات التصعيد بحلول 30 يونيو 2027م.\n\nالأنشطة ذات المتطلبات المالية من الخطة الأصلية:\n• FA10 — ورشة إعادة تصميم إجراءات التراخيص","k":"نسبة المسارات ذات الأولوية التي تم توحيدها","g":"100%","u":"","o":"قسم التراخيص","s":"2027-01-01","e":"2027-06-30","b":1600,"dir":"DAL","dep":"LIC"},{"r":"OP13","p":"DO3.2","l":"department","t":"السجل الاستباقي لحالة التراخيص والتجديد","d":"الصياغة الذكية SMART: تطبيق سجل حي يصنف تلقائياً التراخيص المنتهية والتي تنتهي خلال شهر أو ثلاثة أشهر وما بعدها، مع تحقيق اكتمال بيانات لا يقل عن 95% بحلول الربع الثاني.","k":"نسبة اكتمال بيانات السجل","g":"≥95%","u":"","o":"قسم التراخيص","s":"2027-01-01","e":"2027-06-30","b":0,"dir":"DAL","dep":"LIC"},{"r":"OP14","p":"DO4.1","l":"department","t":"النموذج التشغيلي للجودة في المحافظات","d":"الصياغة الذكية SMART: إصدار الأدوار ومصفوفة RACI وتقويم التقارير والقوالب للمحافظات الإحدى عشرة بحلول الربع الثاني، وتحقيق تقارير ربع سنوية من 11/11 محافظة بنهاية العام.\n\nالأنشطة ذات المتطلبات المالية من الخطة الأصلية:\n• FA11 — ملتقى إطلاق ","k":"عدد المحافظات المقدمة للتقارير الربع سنوية","g":"11/11","u":"محافظة","o":"مكتب المدير العام ومنسقو الدوائر","s":"2027-01-01","e":"2027-12-31","b":9000,"dir":"GQSIS","dep":"GQS"},{"r":"OP15","p":"DO4.1","l":"department","t":"منظومة مؤشرات أداء القطاع ولوحة المتابعة","d":"الصياغة الذكية SMART: اعتماد قاموس مؤشرات للخدمات ذات الأولوية بحلول الربع الثاني، وتطبيق التقارير الربع سنوية وتحقيق اكتمال في التقارير لا يقل عن 90% بحلول الربع الرابع.\n\nالأنشطة ذات المتطلبات المالية من الخطة الأصلية:\n• FA13 — ورشة تصميم ","k":"نسبة اكتمال التقارير","g":"≥90%","u":"","o":"مكتب المدير العام بالتكامل مع الحوكمة والجودة والتدقيق والامتثال","s":"2027-01-01","e":"2027-12-31","b":11100,"dir":"GQSIS","dep":"GQS"},{"r":"OP16","p":"DO4.3","l":"department","t":"زيارات قيادية هادفة للمدير العام إلى المحافظات الإحدى عشرة","d":"الصياغة الذكية SMART: ينفذ المدير العام زيارات قيادية هادفة تغطي جميع محافظات سلطنة عُمان الإحدى عشرة خلال عام 2027م، للتحقق من جاهزية منظومة الجودة، والاستماع لأصحاب المصلحة، ومراجعة المخاطر والإجراءات التصحيحية، وإصدار سجل متابعة موحد لكل","k":"عدد المحافظات التي تمت تغطيتها بزيارة قيادية موثقة وسجل متابعة","g":"11/11","u":"محافظة","o":"مكتب المدير العام بالتكامل مع منسقي المحافظات","s":"2027-01-01","e":"2027-12-15","b":0,"dir":"GQSIS","dep":"GQS"},{"r":"OP17","p":"DO4.2","l":"department","t":"ورش تدريب نظم الجودة للمحافظات","d":"الصياغة الذكية SMART: تصميم وتنفيذ أربع ورش تطبيقية في نظم الجودة لممثلي إدارات الجودة في المحافظات، تغطي أساسيات الحوكمة، مؤشرات الأداء، إدارة المخاطر، والتحسين المستمر، مع مشاركة جميع المحافظات الإحدى عشرة وتحقيق نتيجة لا تقل عن 80% في ال","k":"نسبة المحافظات المشاركة والمجتازة للتقييم البعدي في ورش نظم الجودة","g":"100% (11/11)","u":"محافظة","o":"قسم الحوكمة ومعايير الجودة بالتكامل مع منسقي المحافظات","s":"2027-04-01","e":"2027-10-31","b":0,"dir":"GQSIS","dep":"GQS"}];
 
@@ -7605,8 +7775,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   document.addEventListener("click",function(e){
     if(e.target.closest("[data-openleave]")){
       document.querySelector('[data-go="leave"]').click();
-      var t=document.querySelector('#lvtabs [data-pane="lv-cal"]');
-      if(t) t.click();
+      modOpen("leave","lv-cal");
       window.scrollTo({top:0,behavior:"instant"});
       return;
     }
@@ -7853,16 +8022,6 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   refreshPeopleCount();
 
 
-  var sr=document.getElementById("staffRows");
-  if(sr){
-    // named RTITLE, not ROLE: a var here shares the whole script's scope and
-    // would otherwise overwrite the persona the whole platform is rendered for
-    var RTITLE={dept_head:["رئيس قسم","Department head"],staff:["موظف","Staff"]};
-    sr.innerHTML = STAFF.map(function(p){
-      return '<tr><td>'+bi(p.who[0],p.who[1])+'</td><td>'+bi(p.dep[0],p.dep[1])+'</td><td>'+
-        bi(RTITLE[p.role][0],RTITLE[p.role][1])+'</td><td class="num tnum">'+p.taken+'</td></tr>';
-    }).join("");
-  }
 
   // ── owner settings ──
   var owt=document.querySelectorAll("#owntabs button");
@@ -7903,6 +8062,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       r.style.setProperty("--rule",th.dark.rule);
       r.style.setProperty("--rule-strong",th.dark.rule2);
     }
+      modPush();
   }
 
   function drawThemes(){
@@ -8839,22 +8999,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     coord: ["lv-mine","lv-submit","lv-cal","lv-marks","lv-staff"],
     staff: ["lv-mine","lv-submit","lv-cal"]
   };
-  function applyLeaveTabs(){
-    var allowed=LEAVE_TABS[ROLE]||LEAVE_TABS.dg;
-    var btns=document.querySelectorAll("#lvtabs button");
-    btns.forEach(function(b){ b.hidden = allowed.indexOf(b.dataset.pane)<0; });
-    var openBtn=[].filter.call(btns,function(b){return !b.hidden && b.classList.contains("on");})[0];
-    if(!openBtn){
-      var first=[].filter.call(btns,function(b){return !b.hidden;})[0];
-      if(first) first.click();
-    }
-    var subSel=document.getElementById("lr-sub");
-    if(subSel && !subSel.options.length){
-      subSel.innerHTML=STAFF.slice(0,6).map(function(p){
-        return '<option>'+(isAr()?p.who[0]:p.who[1])+'</option>'; }).join("");
-    }
-    drawLeaveCheck();
-  }
+  function applyLeaveTabs(){ modSync("leave"); }
   // ══ leave as a real ledger: submitted, decided, and the balance moves ══
   var LVSEQ=0;
   var LVREQ=[
@@ -8879,49 +9024,6 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       return !!p && p.dep[0]===me.dep[0];
     });
   }
-  var LVSTATE={
-    pending: ["p-warn","بانتظار الاعتماد النهائي","Awaiting final approval"],
-    approved:["p-good","معتمدة","Approved"],
-    returned:["p-serious","أُعيدت بطلب تعديل","Returned for amendment"]
-  };
-  var LVRETURNING={};
-  function drawLvMine(){
-    var host=document.getElementById("lvMineRows"); if(!host) return;
-    var meId=(typeof myPerson==="function"?myPerson().id:"m7");
-    var mine=LVREQ.filter(function(r){return r.byId===meId;});
-    host.innerHTML = mine.length ? mine.map(function(r){
-      var st=LVSTATE[r.state];
-      return '<tr><td class="tnum">'+r.from+'</td><td class="tnum">'+r.to+'</td>'+
-        '<td class="tnum">'+lvDays(r)+' '+bi("يوماً","days")+'</td>'+
-        '<td>'+bi(r.sub[0],r.sub[1])+'</td>'+
-        '<td><span class="pill '+st[0]+'">'+bi(st[1],st[2])+'</span>'+
-        (r.state==="returned"&&r.note?'<div class="retnote"><b>'+bi("السبب: ","Reason: ")+'</b>'+r.note+'</div>':"")+
-        '</td></tr>';
-    }).join("") : '<tr><td colspan="5" style="color:var(--ink-3);font-size:var(--t-sm)">'+
-      bi("لا توجد طلبات إجازة لهذا الحساب.","No leave requests for this account.")+'</td></tr>';
-  }
-  function drawLvAppr(){
-    var host=document.getElementById("lvApprList"); if(!host) return;
-    var q=lvQueue();
-    var sub=document.getElementById("lvApprSub"); if(sub) sub.textContent=String(q.length);
-    host.innerHTML = q.length ? q.map(function(r){
-      return '<div class="subrow"><span class="kind k-obj"><i></i>'+bi("إجازة","Leave")+'</span>'+
-        '<span><span class="st2">'+bi(r.who[0],r.who[1])+'</span>'+
-          '<span class="sm">'+bi(r.dep[0],r.dep[1])+' · <span class="tnum">'+r.from+' → '+r.to+'</span> · '+
-          lvDays(r)+' '+bi("يوماً","days")+' · '+bi("النائب: ","substitute: ")+bi(r.sub[0],r.sub[1])+'</span></span>'+
-        '<span class="sw2 tnum">'+r.when+'</span>'+
-        '<span class="acts">'+
-          '<button class="mini yes" data-lvdec="'+r.id+':v">'+bi("اعتماد نهائي","Approve")+'</button>'+
-          '<button class="mini ret" data-lvdec="'+r.id+':a">'+bi("إعادة للتعديل","Return for amendment")+'</button></span>'+
-        (LVRETURNING[r.id]
-          ? '<span class="amendbox"><span class="al">'+bi("ما سبب الإعادة؟","Why is it returned?")+'</span>'+
-            '<textarea id="lvnote-'+r.id+'"></textarea>'+
-            '<span class="arow"><button class="btn btn-p" data-lvsend="'+r.id+'">'+bi("إعادة الطلب للتعديل","Return request for amendment")+'</button>'+
-            '<button class="btn" data-lvcancel="'+r.id+'">'+bi("إلغاء","Cancel")+'</button></span></span>'
-          : "")+
-        '</div>';
-    }).join("") : '<div class="subempty">'+bi("لا توجد طلبات إجازة بانتظار القرار في هذه القائمة.","No leave requests await a decision in this list.")+'</div>';
-  }
   function lvBadge(){
     var b=document.querySelector('[data-go="leave"] .count'); if(!b) return;
     var meId=(typeof myPerson==="function"?myPerson().id:"");
@@ -8929,11 +9031,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       : LVREQ.filter(function(r){return r.byId===meId&&(r.state==="pending"||r.state==="returned");}).length;
     b.textContent=String(n);
   }
-  function lvAfter(){ drawLvMine(); drawLvAppr(); lvBadge();
+  function lvAfter(){ lvBadge();
     if(typeof drawDash==="function") drawDash();
-    if(typeof drawHead==="function") drawHead(); }
+    if(typeof drawHead==="function") drawHead();
+    modPush("leave"); }
   function applyLvDecision(id, state, note){
-    delete LVRETURNING[id];
     var r=LVREQ.filter(function(x){return x.id===id;})[0]; if(!r) return;
     r.state=state; r.note=note||"";
     r.decidedBy=SESSION?SESSION.u:"dg"; r.decidedAt="2026-11-20";
@@ -8945,28 +9047,6 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     lvAfter();
     if(typeof drawRoster==="function"){ drawRoster(); drawPeopleTiles(); }
   }
-  document.addEventListener("click",function(e){
-    var d=e.target.closest("[data-lvdec]");
-    if(d){
-      var q=d.dataset.lvdec.split(":"), id=q[0], act=q[1];
-      if(act==="a"){ LVRETURNING[id]=true; drawLvAppr(); return; }
-      var r=LVREQ.filter(function(x){return x.id===id;})[0];
-      stepUp("approve", bi("اعتماد إجازة: ","Approving leave for: ")+(r?bi(r.who[0],r.who[1]):""),
-        function(){ applyLvDecision(id,"approved",""); });
-      return;
-    }
-    var ls=e.target.closest("[data-lvsend]");
-    if(ls){
-      var id2=ls.dataset.lvsend;
-      var ta=document.getElementById("lvnote-"+id2);
-      var note=(ta&&ta.value.trim())||(isAr()?"يُرجى اختيار موعد آخر.":"Please choose different dates.");
-      stepUp("reject", bi("إعادة طلب إجازة","Returning a leave request"),
-        function(){ applyLvDecision(id2,"returned",note); });
-      return;
-    }
-    var lc=e.target.closest("[data-lvcancel]");
-    if(lc){ delete LVRETURNING[lc.dataset.lvcancel]; drawLvAppr(); return; }
-  });
 
   // ══ the CPD programme: rows are activities, columns are months ══
   var CPD_TYPES={lecture:["محاضرة","Lecture"],workshop:["ورشة","Workshop"],
@@ -9159,7 +9239,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       if(nt && nt<nf) nt="";
       evD.from=nf; evD.to=nt;
       openCpd(iD); drawCpd();
-      if(typeof drawTimeline==="function") drawTimeline();   // the leave calendar marks move with it
+      modPush("leave");   // the leave calendar marks move with it
       return;
     }
     var cf=e.target.closest("[data-ckconf]");
@@ -11955,39 +12035,6 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     }
   });
 
-  function drawLeaveCheck(){
-    // These four rules are listed, not evaluated: nothing here reads the dates entered, so the
-    // panel must not show a result. Their configured values are untouched.
-    var h=document.getElementById("lrCheck"); if(!h) return;
-    var row=function(code, ar, en){
-      return '<div class="rule-row"><span class="rc">'+code+'</span><div class="rb">'+
-        '<div class="rt">'+bi(ar,en)+'</div>'+
-        '<div class="rd">'+bi("لم يُجرَ فحص لهذا البند على الطلب المدخل.","This item has not been checked against the entered request.")+'</div></div>'+
-        '<span class="pill">'+bi("غير مفحوص","Not checked")+'</span></div>';
-    };
-    h.innerHTML='<p class="subh" style="margin-top:0">'+bi("بنود لمراجعة طلب الإجازة","Leave-request review items")+'</p>'+
-      '<p style="font-size:var(--t-sm);color:var(--ink-3);margin:0 0 8px">'+bi("لا تتحقق هذه اللوحة من الطلب المدخل. إرسال الطلب لا يعني استيفاء قواعد الإجازة.","This panel does not validate the entered request. Submitting it does not mean the leave rules have been met.")+'</p>'+
-      row("R1","مدة الإجازة","Duration")+
-      row("R2","نسبة غياب القسم","Department cap")+
-      row("R3","تغطية الإشراف","Supervision cover")+
-      row("R4","رؤساء الأقسام المتغيبون","Concurrent department heads");
-  }
-  document.addEventListener("click",function(e){
-    if(!e.target.closest("#lrSend")) return;
-    var from=(document.getElementById("lr-from")||{}).value, to=(document.getElementById("lr-to")||{}).value;
-    if(!from||!to||new Date(to)<new Date(from)) return;
-    var subSel=document.getElementById("lr-sub");
-    var subName=subSel&&subSel.selectedIndex>=0?subSel.options[subSel.selectedIndex].text:"—";
-    var me=(typeof myPerson==="function")?myPerson():null;
-    stepUp("submit", bi("إرسال طلب إجازة: ","Submitting leave: ")+from+" → "+to, function(){
-      LVREQ.push({id:"LN"+(++LVSEQ), byId:me?me.id:"m7",
-        who:me?me.who:["موظف","Staff"], dep:me?me.dep:["—","—"],
-        from:from, to:to, sub:[subName,subName], state:"pending", note:"", when:"2026-11-20"});
-      lvAfter();
-      var m=document.getElementById("lrSaved");
-      if(m){ m.classList.add("on"); setTimeout(function(){m.classList.remove("on");},2600); }
-    });
-  });
 
   // ── my assignments ──
   var VIEW_AS=null;   // a specific person chosen in the rail's "view as" — every page then renders as them
@@ -13381,7 +13428,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     document.getElementById("mk-name").value="";
     var msg=document.getElementById("markSaved");
     if(msg){ msg.classList.add("on"); setTimeout(function(){msg.classList.remove("on");},2600); }
-    drawCoord(); drawCal(); drawTimeline();
+    drawCoord(); modPush("leave");
   });
 
   // ── directorate head ──
@@ -13597,6 +13644,529 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     }
     SEL=saveSel;
   }
+  // ══ fenced windows ══
+  // A fenced window is delegated to one custodian. Its whole source sits in one
+  // <template id="mod-NAME"> block and runs in a sandboxed frame with no origin of its own
+  // (it cannot read this page, its storage, or its cookies) and with a content policy that
+  // blocks every network call. What it may see is the state its window's provider sends; what
+  // it may do is the short list of requests in MOD_OPS, and each is checked here — role,
+  // record shape, two-step confirmation. Nothing the custodian writes runs outside the frame.
+  var MOD_LIST={
+    leave:{screen:"leave", title:["الإجازات","Leave"]}
+  };
+  var MODS={};          // name -> {frame, draft}
+  var MOD_PRELUDE=function(){
+    // runs first inside every fenced frame; it is the platform's, not the window's
+    var seq=0, waits={}, subs={}, ST=null, REVIEW=false, HELLO=false, QUEUE=[];
+    // a content policy does not cover peer-to-peer connections, so the window has none
+    ["RTCPeerConnection","webkitRTCPeerConnection","RTCDataChannel","RTCSessionDescription","RTCIceCandidate"].forEach(function(k){
+      try{ Object.defineProperty(window,k,{value:undefined,writable:false,configurable:false}); }catch(_){} });
+    function send(m){ m.ch="qagc"; parent.postMessage(m,"*"); }
+    // requests made while the page is still loading wait until the platform has been greeted
+    function call(op,args){
+      return new Promise(function(res,rej){ var id=++seq; waits[id]=[res,rej];
+        var m={op:op,args:args||{},id:id}; if(HELLO) send(m); else QUEUE.push(m); });
+    }
+    function fire(ev,data){ (subs[ev]||[]).forEach(function(cb){ try{ cb(data); }catch(err){ report(err); } }); }
+    function report(err){ try{ var m={op:"log",args:{msg:String(err&&err.stack||err).slice(0,800)}}; if(HELLO) send(m); else QUEUE.push(m); }catch(_){} }
+    window.addEventListener("error",function(e){ report(e.error||e.message); });
+    window.addEventListener("unhandledrejection",function(e){ report(e.reason); });
+    function esc(x){ return String(x==null?"":x).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+    function isAr(){ return document.documentElement.lang==="ar"; }
+    var QH=0;
+    function help(topicAr, topicEn, ar, en){
+      var id="qh"+(++QH), a=isAr();
+      return '<span class="q-help" data-qhelp><button type="button" class="q-info" aria-expanded="false" aria-controls="'+id+'" aria-describedby="'+id+'">'+
+        '<span class="q-dot" aria-hidden="true">i</span><span class="q-sr" data-ar="'+esc("مساعدة: "+topicAr)+'" data-en="'+esc("Help: "+topicEn)+'">'+(a?"مساعدة: "+esc(topicAr):"Help: "+esc(topicEn))+'</span></button>'+
+        '<span class="q-help-panel" id="'+id+'" role="note" hidden data-ar="'+esc(ar)+'" data-en="'+esc(en)+'">'+esc(a?ar:en)+'</span></span>';
+    }
+    function names(){
+      var a=isAr();
+      document.querySelectorAll("[data-aria-ar]").forEach(function(el){
+        var v=el.getAttribute(a?"data-aria-ar":"data-aria-en"); if(v!==null && el.getAttribute("aria-label")!==v) el.setAttribute("aria-label",v); });
+      document.querySelectorAll("[data-qhelp] [data-ar]").forEach(function(el){
+        var v=el.getAttribute(a?"data-ar":"data-en"); if(el.textContent!==v) el.textContent=v; });
+    }
+    function closeHelp(except){
+      document.querySelectorAll('.q-info[aria-expanded="true"]').forEach(function(b){
+        if(b===except) return; b.setAttribute("aria-expanded","false");
+        var p=document.getElementById(b.getAttribute("aria-controls")); if(p) p.hidden=true; });
+    }
+    // review mode: a click is a comment, so it is taken before the window sees it
+    function text(el){
+      var want=isAr()?"ar":"en", parts=[];
+      if(el.querySelectorAll) el.querySelectorAll("span[lang]").forEach(function(x){
+        if(x.getAttribute("lang")===want && !x.querySelector("span[lang]")) parts.push(x.textContent); });
+      var t=parts.length?parts.join(" "):(el.textContent||el.getAttribute("placeholder")||el.tagName);
+      t=String(t).replace(/\s+/g," ").trim(); return t.length>110?t.slice(0,110)+"…":t;
+    }
+    function anchor(el){
+      var card=el.closest(".card,.tile,.subrow,.rule-row");
+      var ch=card?card.querySelector(".card-h h2,.st2,.rt"):null;
+      var host=el.closest("[id]"), sibs=host?[].slice.call(host.querySelectorAll(el.tagName)):[];
+      return {where:ch?text(ch):"", what:text(el), hostId:host?host.id:"", tag:el.tagName, idx:sibs.indexOf(el)};
+    }
+    function find(a){
+      var host=(a.hostId&&document.getElementById(a.hostId))||document.body;
+      var sibs=[].slice.call(host.querySelectorAll(a.tag||"*"));
+      var el=(a.idx>=0&&a.idx<sibs.length)?sibs[a.idx]:null;
+      if(el && text(el)===a.what) return el;
+      return sibs.filter(function(x){ return text(x)===a.what; })[0]||el||null;
+    }
+    function rect(el){ var r=el.getBoundingClientRect(); return {x:r.left,y:r.top,w:r.width,h:r.height}; }
+    document.addEventListener("click",function(e){
+      if(!REVIEW) return;
+      e.preventDefault(); e.stopPropagation();
+      var el=e.target.nodeType===1?e.target:e.target.parentElement; if(!el) return;
+      send({op:"review.pick",args:{a:anchor(el),r:rect(el)}});
+    },true);
+    document.addEventListener("click",function(e){
+      var b=e.target.closest?e.target.closest(".q-info"):null; if(!b) return;
+      e.preventDefault();
+      var open=b.getAttribute("aria-expanded")==="true";
+      closeHelp(b); b.setAttribute("aria-expanded",open?"false":"true");
+      var p=document.getElementById(b.getAttribute("aria-controls")); if(p) p.hidden=open;
+    });
+    document.addEventListener("keydown",function(e){
+      if(e.key!=="Escape") return;
+      var inside=e.target.closest?e.target.closest("[data-qhelp]"):null; if(!inside) return;
+      var b=inside.querySelector(".q-info"); if(!b||b.getAttribute("aria-expanded")!=="true") return;
+      b.setAttribute("aria-expanded","false");
+      var p=document.getElementById(b.getAttribute("aria-controls")); if(p) p.hidden=true;
+      b.focus(); e.stopPropagation();
+    });
+    window.addEventListener("message",function(e){
+      if(e.source!==parent) return;
+      var m=e.data; if(!m||m.ch!=="qagc") return;
+      if(m.re){ var w=waits[m.re]; if(w){ delete waits[m.re]; if(m.ok) w[0](m.data); else w[1](new Error(m.err||"refused")); } return; }
+      var d=m.data;
+      if(m.ev==="look"){
+        var r=document.documentElement;
+        r.setAttribute("style", d.style||"");
+        ["data-ui","data-theme"].forEach(function(k){ if(d[k]) r.setAttribute(k,d[k]); else r.removeAttribute(k); });
+        document.body.setAttribute("data-flag", d.flag||"");
+        r.setAttribute("dir", d.dir==="ltr"?"ltr":"rtl");
+        if(r.lang!==d.lang){ r.lang=d.lang; names(); fire("lang",d.lang); }
+        return;
+      }
+      if(m.ev==="vp"){ document.documentElement.style.setProperty("--vp-top",d.top+"px"); document.documentElement.style.setProperty("--vp-h",d.h+"px"); return; }
+      if(m.ev==="review"){ REVIEW=!!d; document.body.setAttribute("data-review",REVIEW?"on":""); return; }
+      if(m.ev==="locate"){
+        send({op:"review.rects",args:{rects:(d||[]).map(function(n){ var el=find(n.a); return el?{id:n.id,r:rect(el)}:{id:n.id,r:null}; })}});
+        return;
+      }
+      if(m.ev==="state") ST=d;
+      if(m.ev!=="measure") fire(m.ev,d);
+      setTimeout(function(){ fit(true); },30);
+    });
+    window.QAGC=Object.freeze({ call:call, on:function(ev,cb){ (subs[ev]=subs[ev]||[]).push(cb); },
+      state:function(){ return ST; }, t:function(ar,en){ return '<span lang="ar">'+ar+'</span><span lang="en">'+en+'</span>'; },
+      esc:esc, isAr:isAr, help:help });
+    // the height follows the content, so the page scrolls as every other window does.
+    // A frame loaded while its window was hidden reports nothing until asked, so every
+    // message from the platform is followed by a fresh measurement.
+    var root=null, lastH=-1;
+    function fit(force){ if(!root) return; var h=Math.ceil(root.getBoundingClientRect().height);
+      if(h>0 && (force||h!==lastH)){ lastH=h; send({op:"fit",args:{h:h}}); } }
+    document.addEventListener("DOMContentLoaded",function(){
+      root=document.getElementById("qagc-root");
+      new ResizeObserver(function(){ fit(false); }).observe(root);
+      new MutationObserver(function(){ names(); }).observe(root,{childList:true,subtree:true});
+      names(); send({op:"hello",args:{}}); HELLO=true; QUEUE.splice(0).forEach(send); fit(true);
+    });
+  };
+  var MOD_CSP="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; font-src data:; img-src data:; "+
+              "connect-src 'none'; form-action 'none'; base-uri 'none'; frame-src 'none'; media-src 'none'; object-src 'none'";
+  var MOD_FRAME_CSS="html,body{background:transparent!important;background-attachment:scroll!important;margin:0}"+
+    "body{overflow:hidden}#qagc-root{display:block}"+
+    ".ovl{position:absolute!important;top:var(--vp-top,0px)!important;height:var(--vp-h,100vh)!important;bottom:auto!important;inset-inline:0!important}"+
+    "body[data-review=on] *{cursor:crosshair!important}";
+  var MOD_CSS=null;
+  function modCss(){
+    if(MOD_CSS===null) MOD_CSS=[].map.call(document.querySelectorAll("head style"),function(x){ return x.textContent; }).join("\n");
+    return MOD_CSS;
+  }
+  function modDraftKey(name){ return "qagcModDraft."+name; }
+  // a draft runs only in its custodian's own browser; nobody else, the DG included, runs it
+  function modMayDraft(name){
+    var me=(typeof myPerson==="function")?myPerson():null;
+    return !!(me && MOD_CUST[name] && MOD_CUST[name]===me.id && ROLE!=="dg");
+  }
+  function modSource(name){
+    var d=null;
+    if(modMayDraft(name)){ try{ d=localStorage.getItem(modDraftKey(name)); }catch(_){ d=null; } }
+    if(d) return {src:d, draft:true};
+    var t=document.getElementById("mod-"+name);
+    return {src:t?t.innerHTML:"", draft:false};
+  }
+  // the policy comes first in <head>, then the platform's styles, then the prelude, so QAGC
+  // exists before any of the window's own scripts run
+  function modDoc(src){
+    return '<!doctype html><html lang="'+(isAr()?"ar":"en")+'" dir="rtl"><head><meta charset="utf-8">'+
+      '<meta http-equiv="Content-Security-Policy" content="'+MOD_CSP+'">'+
+      '<style>'+modCss().replace(/<\/style/gi,"<\\/style")+'</style><style>'+MOD_FRAME_CSS+'</style>'+
+      '<script>('+MOD_PRELUDE.toString()+')();<\/script>'+
+      '</head><body><div id="qagc-root" class="mod-root">'+src+'</div></body></html>';
+  }
+  function modMount(name){
+    var cfg=MOD_LIST[name], scr=document.getElementById(cfg.screen); if(!scr) return null;
+    var m=MODS[name];
+    if(m && m.frame && m.frame.isConnected) return m;
+    var host=scr.querySelector(".modhost")||scr;
+    var s=modSource(name);
+    var f=document.createElement("iframe");
+    f.className="modframe"; f.setAttribute("sandbox","allow-scripts");
+    f.setAttribute("title", isAr()?cfg.title[0]:cfg.title[1]);
+    f.setAttribute("referrerpolicy","no-referrer");
+    f.srcdoc=modDoc(s.src);
+    var loads=0;
+    // the frame is written once; a second load means its code navigated it away from the
+    // platform's document, so it is taken down rather than left running
+    f.addEventListener("load",function(){ if(++loads>1){ f.remove(); delete MODS[name];
+      host.insertAdjacentHTML("afterbegin",'<div class="moddraft bad">'+
+        bi("أُوقفت هذه النافذة لأن شيفرتها حاولت مغادرة المنصة.","This window was stopped: its code tried to leave the platform.")+'</div>'); } });
+    host.innerHTML="";
+    if(modMayDraft(name)) host.appendChild(modTools(name, s.draft));
+    host.appendChild(f);
+    MODS[name]={frame:f, draft:s.draft, ready:false, open:null};
+    return MODS[name];
+  }
+  function modRemount(name){ var m=MODS[name]; if(m&&m.frame) m.frame.remove(); delete MODS[name]; modMount(name); }
+  function modOpen(name, pane){
+    var m=modMount(name); if(!m) return;
+    if(m.ready) modPost(name,{ev:"open",data:{pane:pane}}); else m.open=pane;
+  }
+  // the custodian's workbench: a draft runs only in this browser, behind the same fence
+  function modTools(name, draft){
+    var bar=document.createElement("div"); bar.className="modtools"+(draft?" draft":"");
+    bar.innerHTML=
+      '<span class="mt-l">'+(draft
+        ? bi("مسودة الأمين معروضة في هذا المتصفح فقط — النسخة المعتمدة لم تتغيّر.","Custodian's draft, shown in this browser only — the installed version is unchanged.")
+        : bi("النسخة المعتمدة لهذه النافذة.","The installed version of this window."))+'</span>'+
+      '<label class="btn mini"><input type="file" accept=".html,text/html" data-moddraft="'+name+'" hidden>'+bi("تحميل مسودة","Load a draft")+'</label>'+
+      (draft?'<button class="btn mini" data-moddraftoff="'+name+'">'+bi("إزالة المسودة","Remove the draft")+'</button>':'')+
+      '<button class="btn mini" data-modget="'+name+'">'+bi("تنزيل النسخة المعتمدة","Download the installed version")+'</button>'+
+      '<span class="mt-err" role="status"></span>';
+    return bar;
+  }
+  // the same rules fence.py applies before installing; here they keep an obvious mistake out of the draft
+  function modLint(src){
+    var bad=[];
+    if(src.length>300000) bad.push(isAr()?"الملف أكبر من 300 ك.ب":"larger than 300 KB");
+    [[/<\/?template\b/i,"template"],[/<meta\b/i,"meta"],[/<base\b/i,"base"],[/<link\b/i,"link"],[/<(i?frame|object|embed|portal)\b/i,"frame/object"],
+     [/(?:https?:)?\/\/[a-z0-9.-]+\.[a-z]{2,}/i,"URL"],[/\bjavascript:/i,"javascript:"],[/\b(?:parent|top|opener|frameElement)\s*\./,"parent/top"],
+     [/\bpostMessage\b/,"postMessage"],[/\b(?:localStorage|sessionStorage|indexedDB|cookie)\b/,"storage"],
+     [/\b(?:fetch|XMLHttpRequest|WebSocket|EventSource|RTCPeerConnection|sendBeacon|importScripts|Worker)\b/,"network"],
+     [/\b(?:location|navigation)\s*[.=[]/,"location"],[/\beval\s*\(|\bnew\s+Function\b|\bFunction\s*\(/,"eval"],[/\bwindow\.open\b/,"window.open"]
+    ].forEach(function(r){ if(r[0].test(src)) bad.push(r[1]); });
+    return bad;
+  }
+  document.addEventListener("change",function(e){
+    var inp=e.target.closest&&e.target.closest("[data-moddraft]"); if(!inp||!inp.files||!inp.files[0]) return;
+    var name=inp.dataset.moddraft; if(!MOD_LIST[name]||!modMayDraft(name)) return;
+    var err=inp.closest(".modtools").querySelector(".mt-err");
+    var rd=new FileReader();
+    rd.onload=function(){
+      var src=String(rd.result||""), bad=modLint(src);
+      if(bad.length){ err.textContent=(isAr()?"رُفضت المسودة: ":"Draft refused: ")+bad.join("، "); return; }
+      try{ localStorage.setItem(modDraftKey(name), src); }catch(_){ err.textContent=isAr()?"تعذّر حفظ المسودة في هذا المتصفح.":"The draft could not be saved in this browser."; return; }
+      modRemount(name);
+    };
+    rd.readAsText(inp.files[0]);
+  });
+  document.addEventListener("click",function(e){
+    var off=e.target.closest&&e.target.closest("[data-moddraftoff]");
+    if(off){ try{ localStorage.removeItem(modDraftKey(off.dataset.moddraftoff)); }catch(_){} modRemount(off.dataset.moddraftoff); return; }
+    var get=e.target.closest&&e.target.closest("[data-modget]");
+    if(get){
+      var t=document.getElementById("mod-"+get.dataset.modget); if(!t) return;
+      var a=document.createElement("a");
+      a.href=URL.createObjectURL(new Blob([t.innerHTML],{type:"text/html;charset=utf-8"}));
+      a.download=get.dataset.modget+".window.html"; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); },4000);
+    }
+  });
+  // a role change can grant or withdraw the custodian's workbench and the draft with it
+  function modSync(name){
+    var m=MODS[name], want=modSource(name).draft, tools=modMayDraft(name);
+    var host=m&&m.frame&&m.frame.parentNode, has=!!(host&&host.querySelector(".modtools"));
+    if(!m || m.draft!==want || has!==tools) modRemount(name); else modPush(name);
+  }
+  function modPost(name, msg){
+    var m=MODS[name]; if(!m||!m.frame||!m.ready||!m.frame.contentWindow) return;
+    msg.ch="qagc"; m.frame.contentWindow.postMessage(msg,"*");
+  }
+  function modLook(name){
+    var r=document.documentElement;
+    modPost(name,{ev:"look",data:{lang:isAr()?"ar":"en", style:r.getAttribute("style")||"",
+      dir:r.getAttribute("dir")==="ltr"?"ltr":"rtl",
+      "data-ui":r.getAttribute("data-ui")||"", "data-theme":r.getAttribute("data-theme")||"",
+      flag:document.body.getAttribute("data-flag")||""}});
+  }
+  function modPush(name){
+    if(typeof MODS==="undefined"||!MODS) return;
+    if(!name){ Object.keys(MODS).forEach(function(n){ modPush(n); }); return; }
+    var p=MOD_STATE[name]; if(!p) return;
+    modLook(name);
+    try{ modPost(name,{ev:"state",data:p()}); }catch(err){ console.error("module state "+name, err); }
+  }
+  function modVp(){
+    Object.keys(MODS).forEach(function(n){
+      var m=MODS[n]; if(!m||!m.frame||!m.frame.isConnected||!m.frame.offsetParent) return;
+      var r=m.frame.getBoundingClientRect(), vh=window.innerHeight||720;
+      var top=Math.max(0,-r.top), h=Math.max(200,Math.min(vh, r.height-top) - Math.max(0,r.top));
+      modPost(n,{ev:"vp",data:{top:Math.round(top), h:Math.round(Math.min(vh,h))}});
+    });
+  }
+  var _modVpT=0;
+  window.addEventListener("scroll",function(){ if(_modVpT) return; _modVpT=requestAnimationFrame(function(){ _modVpT=0; modVp(); }); },{passive:true});
+  window.addEventListener("resize",function(){ modVp(); });
+  document.addEventListener("click",function(e){
+    if(!(e.target.closest&&e.target.closest("[data-go],[data-openleave]"))) return;
+    setTimeout(function(){ Object.keys(MODS).forEach(function(n){ modPost(n,{ev:"measure"}); }); modVp(); },60);
+  });
+  // custodians: one person per window, named by the Director General
+  var MOD_CUST={};
+  try{ MOD_CUST=JSON.parse(localStorage.getItem("qagcCustodians")||"{}")||{}; }catch(_){ MOD_CUST={}; }
+  function modCustPersist(){ try{ localStorage.setItem("qagcCustodians", JSON.stringify(MOD_CUST)); }catch(_){} }
+  function modMayEdit(name){
+    if(ROLE==="dg") return true;
+    var me=(typeof myPerson==="function")?myPerson():null;
+    return !!(me && MOD_CUST[name] && MOD_CUST[name]===me.id);
+  }
+  // the requests every window may make
+  var MOD_COMMON={
+    hello:function(name,a,reply){ var m=MODS[name]; m.ready=true; modPush(name); modVp();
+      modPost(name,{ev:"review",data:!!RVON});
+      if(m.open){ modPost(name,{ev:"open",data:{pane:m.open}}); m.open=null; }
+      if(RVON) rvPaint();
+      reply(true); },
+    fit:function(name,a,reply){
+      var h=Math.max(120, Math.min(20000, +a.h||0)), fr=MODS[name].frame;
+      if(fr.style.height!==h+"px"){ fr.style.height=h+"px"; modVp(); } reply(true); },
+    log:function(name,a,reply){ console.warn("["+name+" window] "+String(a.msg||"").slice(0,800)); reply(true); },
+    toast:function(name,a,reply){
+      var ar=String(a.ar||"").slice(0,160), en=String(a.en||"").slice(0,160);
+      if(typeof gxToast==="function") gxToast(gxEsc(ar), gxEsc(en)); reply(true); },
+    "prefs.get":function(name,a,reply){
+      var all={}; try{ all=JSON.parse(localStorage.getItem("qagcMod."+name)||"{}")||{}; }catch(_){}
+      reply(true, all); },
+    "prefs.set":function(name,a,reply){
+      var txt=""; try{ txt=JSON.stringify(a.value===undefined?null:a.value); }catch(_){ reply(false,null,"not storable"); return; }
+      if(txt.length>8192){ reply(false,null,"too large"); return; }
+      var all={}; try{ all=JSON.parse(localStorage.getItem("qagcMod."+name)||"{}")||{}; }catch(_){}
+      var k=String(a.key||"").slice(0,40); if(!/^[a-zA-Z0-9_-]+$/.test(k)){ reply(false,null,"bad key"); return; }
+      all[k]=JSON.parse(txt);
+      try{ localStorage.setItem("qagcMod."+name, JSON.stringify(all)); reply(true); }catch(_){ reply(false,null,"storage"); } },
+    "review.pick":function(name,a,reply){
+      if(!RVON){ reply(false,null,"review mode is off"); return; }
+      var an=a.a||{}, cfg=MOD_LIST[name];
+      // what the frame reports is text; it reaches the note composer's markup, so it is made plain here
+      var plain=function(v,n){ return String(v==null?"":v).replace(/[<>&"'`]/g,"").replace(/\s+/g," ").trim().slice(0,n); };
+      var anchor={screen:cfg.screen, screenName:isAr()?cfg.title[0]:cfg.title[1], where:plain(an.where,60),
+        what:plain(an.what,110), hostId:String(an.hostId||"").replace(/[^A-Za-z0-9_-]/g,"").slice(0,60),
+        tag:String(an.tag||"DIV").replace(/[^A-Za-z0-9]/g,"").slice(0,12)||"DIV",
+        idx:Math.max(0,Math.min(5000,Math.floor(+an.idx||0))), mod:name};
+      rvPopOpenFramed(name, anchor, a.r||{}); reply(true); },
+    "review.rects":function(name,a,reply){ rvPaintFramed(name, a.rects||[]); reply(true); }
+  };
+  var MOD_OPS={}, MOD_STATE={};
+  // The window proposes; the person decides. A change a window asks for is shown in the
+  // platform's own dialog, which the window can neither see nor press, whether or not two-step
+  // confirmation is on for that action. Only one such question is open at a time.
+  var MOD_ASK=null;
+  function modAsk(name, what, kind, done, reply){
+    if(MOD_ASK){ reply(false,null,"another confirmation is open"); return; }
+    MOD_ASK={done:function(){ MOD_ASK=null; stepUp(kind, what, done); }, reply:reply};
+    var o=document.getElementById("modAskOvl"); if(!o){ MOD_ASK=null; reply(false,null,"no dialog"); return; }
+    var cfg=MOD_LIST[name];
+    document.getElementById("modAskWhat").innerHTML=what;
+    document.getElementById("modAskFrom").innerHTML=bi("طلب من نافذة «"+cfg.title[0]+"»","Requested by the «"+cfg.title[1]+"» window");
+    o.classList.add("open");
+    setTimeout(function(){ var b=document.getElementById("modAskNo"); if(b) b.focus(); },30);
+  }
+  document.addEventListener("click",function(e){
+    if(!MOD_ASK) return;
+    var yes=e.target.closest&&e.target.closest("#modAskYes"), no=e.target.closest&&e.target.closest("#modAskNo");
+    if(!yes&&!no) return;
+    document.getElementById("modAskOvl").classList.remove("open");
+    var a=MOD_ASK; if(no){ MOD_ASK=null; a.reply(false,null,"declined"); return; }
+    a.done();
+  });
+  document.addEventListener("keydown",function(e){
+    if(e.key!=="Escape"||!MOD_ASK) return;
+    document.getElementById("modAskOvl").classList.remove("open");
+    var a=MOD_ASK; MOD_ASK=null; a.reply(false,null,"declined");
+  });
+  // a window that floods the page is slowed, and an oversized request is refused
+  var MOD_RATE={};
+  function modRateOk(name){
+    var now=Date.now(), r=MOD_RATE[name]||(MOD_RATE[name]={t:now,n:0});
+    if(now-r.t>1000){ r.t=now; r.n=0; }
+    return ++r.n<=40;
+  }
+  window.addEventListener("message",function(e){
+    var name=null;
+    Object.keys(MODS).forEach(function(k){ var m=MODS[k]; if(m&&m.frame&&e.source===m.frame.contentWindow) name=k; });
+    if(!name) return;
+    var msg=e.data; if(!msg||msg.ch!=="qagc"||typeof msg.op!=="string") return;
+    var reply=function(ok,data,err){
+      if(!msg.id) return;
+      var w=MODS[name]&&MODS[name].frame&&MODS[name].frame.contentWindow; if(!w) return;
+      w.postMessage({ch:"qagc", re:msg.id, ok:!!ok, data:data===undefined?null:data, err:err||""},"*");
+    };
+    if(!modRateOk(name)){ reply(false,null,"too many requests"); return; }
+    var size=0; try{ size=JSON.stringify(msg.args||{}).length; }catch(_){ size=1e9; }
+    if(size>65536){ reply(false,null,"request too large"); return; }
+    var h=Object.prototype.hasOwnProperty.call(MOD_COMMON,msg.op) ? MOD_COMMON[msg.op]
+          : (MOD_OPS[name] && Object.prototype.hasOwnProperty.call(MOD_OPS[name],msg.op) ? MOD_OPS[name][msg.op] : null);
+    if(!h){ reply(false,null,"unknown request: "+msg.op.slice(0,40)); return; }
+    if(msg.op!=="hello" && !MODS[name].ready){ reply(false,null,"not ready"); return; }
+    try{ h(name, (msg.args&&typeof msg.args==="object")?msg.args:{}, reply); }
+    catch(err){ console.error("module request "+name+"/"+msg.op, err); reply(false,null,"failed"); }
+  });
+
+  // ── review notes on a fenced window: the frame reports the spot, the note lives here ──
+  function rvPopOpenFramed(name, anchor, r){
+    var m=MODS[name]; if(!m) return;
+    var fr=m.frame.getBoundingClientRect();
+    var fake={getBoundingClientRect:function(){ return {left:fr.left+(+r.x||0), top:fr.top+(+r.y||0),
+      right:fr.left+(+r.x||0)+(+r.w||0), bottom:fr.top+(+r.y||0)+(+r.h||0), width:+r.w||0, height:+r.h||0}; },
+      closest:function(){ return null; }, classList:{add:function(){},remove:function(){}}, _anchor:anchor};
+    rvPopOpen(fake, null);
+  }
+  var RV_FRAMED={};
+  function rvPaintFramed(name, rects){
+    var m=MODS[name]; if(!m||!RVON) return;
+    var fr=m.frame.getBoundingClientRect();
+    (Array.isArray(rects)?rects.slice(0,200):[]).forEach(function(x){
+      if(!x||typeof x.id!=="string") return;
+      var nt=RVNOTES.filter(function(n){return n.id===x.id;})[0]; if(!nt) return;
+      var i=RVNOTES.indexOf(nt);
+      var pin=[].filter.call(document.querySelectorAll(".rv-pin"),function(p){ return p.getAttribute("data-rvpin")===nt.id; })[0];
+      if(!pin) return;
+      var y=+(x.r&&x.r.y), xx=+(x.r&&x.r.x), w=+(x.r&&x.r.w);
+      if(x.r && isFinite(y) && isFinite(xx) && isFinite(w)){ pin.hidden=false;
+        pin.style.top=(fr.top+window.scrollY+y-8)+"px"; pin.style.left=(fr.left+window.scrollX+xx+w-10)+"px"; }
+    });
+  }
+  function rvLocateFramed(){
+    Object.keys(MODS).forEach(function(n){
+      var list=RVNOTES.filter(function(nt){ return nt.a && nt.a.mod===n; }).map(function(nt){ return {id:nt.id, a:nt.a}; });
+      if(list.length) modPost(n,{ev:"locate",data:list});
+    });
+  }
+
+  // ── custodians: settings › «أمناء النوافذ» ──
+  function drawCustodians(){
+    var h=document.getElementById("custRows"); if(!h) return;
+    var wins=[].map.call(document.querySelectorAll(".nav button[data-go]"),function(b){
+      var ar=b.querySelector('span[lang="ar"]'), en=b.querySelector('span[lang="en"]');
+      return {k:b.dataset.go, ar:ar?ar.textContent:b.dataset.go, en:en?en.textContent:b.dataset.go};
+    });
+    var people=STAFF.filter(function(p){ return p.id!=="dg0"; });
+    h.innerHTML=wins.map(function(w){
+      var fenced=!!MOD_LIST[w.k], cur=MOD_CUST[w.k]||"";
+      return '<tr><td>'+bi(gxEsc(w.ar),gxEsc(w.en))+'</td>'+
+        '<td><select class="fld-sel" data-cust="'+w.k+'" aria-label="'+gxEsc(isAr()?"أمين نافذة "+w.ar:"Custodian of "+w.en)+'">'+
+          '<option value="">'+(isAr()?"— لا أحد —":"— nobody —")+'</option>'+
+          people.map(function(p){ return '<option value="'+p.id+'"'+(p.id===cur?' selected':'')+'>'+gxEsc(isAr()?p.who[0]:p.who[1])+'</option>'; }).join("")+
+        '</select></td>'+
+        '<td>'+(fenced
+          ? '<span class="pill p-good">'+bi("داخل الحد · تعديل مباشر","Fenced · direct editing")+'</span>'
+          : '<span class="pill">'+bi("بالملاحظات حتى تُنقل إلى الحد","By notes until it is fenced")+'</span>')+'</td></tr>';
+    }).join("");
+    var by={}; Object.keys(MOD_CUST).forEach(function(k){ (by[MOD_CUST[k]]=by[MOD_CUST[k]]||[]).push(k); });
+    var names={}; wins.forEach(function(w){ names[w.k]=w; });
+    var bp=document.getElementById("custByPerson");
+    if(bp) bp.innerHTML=Object.keys(by).length ? Object.keys(by).map(function(pid){
+      var p=STAFF.filter(function(x){return x.id===pid;})[0]; if(!p) return "";
+      return '<div class="rule-row"><span class="rc tnum">'+by[pid].length+'</span><div class="rb"><div class="rt">'+gxEsc(isAr()?p.who[0]:p.who[1])+'</div>'+
+        '<div class="rd">'+by[pid].map(function(k){ var w=names[k]; return w?gxEsc(isAr()?w.ar:w.en):gxEsc(k); }).join(isAr()?"، ":", ")+'</div></div></div>';
+    }).join("") : '<div class="subempty">'+bi("لم يُسمَّ أمين لأي نافذة بعد.","No custodian has been named yet.")+'</div>';
+  }
+  document.addEventListener("change",function(e){
+    var s=e.target.closest&&e.target.closest("[data-cust]"); if(!s) return;
+    if(ROLE!=="dg") return;
+    if(s.value) MOD_CUST[s.dataset.cust]=s.value; else delete MOD_CUST[s.dataset.cust];
+    modCustPersist(); drawCustodians();
+    if(MOD_LIST[s.dataset.cust]) modSync(s.dataset.cust);
+    gxToast("حُفظ أمين النافذة.","Custodian saved.");
+  });
+  document.addEventListener("click",function(e){ if(e.target.closest&&e.target.closest('[data-opane="ow-cust"]')) drawCustodians(); });
+
+  // ── the leave window's contract, platform side ──
+  // What the window may read (MOD_STATE.leave) and what it may ask for (MOD_OPS.leave).
+  // Everything here is the redline: who decides, the record's fields, the balance, step-up.
+  function lvClone(x){ return JSON.parse(JSON.stringify(x)); }
+  function lvPublicReq(r){
+    return {id:r.id, byId:r.byId, who:r.who, dep:r.dep, from:r.from, to:r.to, sub:r.sub,
+            state:r.state, note:r.note||"", when:r.when||"", decidedAt:r.decidedAt||""};
+  }
+  function lvSubs(me){
+    // the substitutes offered: the first six on the roster, as before, never the requester
+    return STAFF.slice(0,6).filter(function(p){ return !me || p.id!==me.id; })
+      .map(function(p){ return {id:p.id, who:p.who}; });
+  }
+  function lvCpdDates(){
+    var out=[];
+    if(typeof CPD==="undefined") return out;
+    CPD.forEach(function(ev){
+      if(!ev.from) return;
+      var a=new Date(ev.from+"T12:00:00"), b=new Date((ev.to||ev.from)+"T12:00:00");
+      for(var d=a; d<=b && out.length<800; d.setDate(d.getDate()+1)) out.push(isoOf(d));
+    });
+    return out;
+  }
+  MOD_STATE.leave=function(){
+    var me=(typeof myPerson==="function")?myPerson():null;
+    var meId=me?me.id:"";
+    return lvClone({
+      role:ROLE, today:PLATFORM_TODAY,
+      me: me?{id:me.id, who:me.who, dep:me.dep}:null,
+      tabs:(LEAVE_TABS[ROLE]||LEAVE_TABS.staff).slice(),
+      staff:STAFF.map(function(p){ return {id:p.id, who:p.who, dep:p.dep, role:p.role, taken:p.taken, balance:p.balance}; }),
+      depOrder:DEP_ORDER, scopeStaff:SCOPE_STAFF,
+      hol:HOL, events:EVENTS, leave:LEAVE, cpdDates:lvCpdDates(),
+      subs:lvSubs(me),
+      requests:{ mine:LVREQ.filter(function(r){ return r.byId===meId; }).map(lvPublicReq),
+                 queue:(LEAVE_TABS[ROLE]||[]).indexOf("lv-appr")>=0 ? lvQueue().map(lvPublicReq) : [] }
+    });
+  }
+  function lvIso(v){ return typeof v==="string" && /^\d{4}-\d{2}-\d{2}$/.test(v) && !isNaN(new Date(v+"T12:00:00")); }
+  function lvPlain(v,n){ return String(v==null?"":v).replace(/[<>&"]/g,"").replace(/\s+/g," ").trim().slice(0,n); }
+  MOD_OPS.leave={
+    // a request is built here from validated fields; the window never writes a record
+    "leave.submit":function(name,a,reply){
+      if((LEAVE_TABS[ROLE]||[]).indexOf("lv-submit")<0){ reply(false,null,"not permitted for this role"); return; }
+      var me=(typeof myPerson==="function")?myPerson():null;
+      if(!me){ reply(false,null,"no account"); return; }
+      if(!lvIso(a.from)||!lvIso(a.to)||a.to<a.from){ reply(false,null,"dates"); return; }
+      if(lvDays({from:a.from,to:a.to})>366){ reply(false,null,"too long"); return; }
+      var sub=lvSubs(me).filter(function(p){ return p.id===a.subId; })[0];
+      if(!sub){ reply(false,null,"substitute"); return; }
+      modAsk(name, bi("إرسال طلب إجازة: ","Submitting leave: ")+a.from+" → "+a.to, "submit", function(){
+        LVREQ.push({id:"LN"+(++LVSEQ), byId:me.id, who:me.who, dep:me.dep,
+          from:a.from, to:a.to, sub:[sub.who[0],sub.who[1]], state:"pending", note:"", when:PLATFORM_TODAY});
+        lvAfter(); reply(true);
+      }, reply);
+    },
+    // the decision stays where the approval chain puts it: only requests in this desk's queue
+    "leave.decide":function(name,a,reply){
+      if((LEAVE_TABS[ROLE]||[]).indexOf("lv-appr")<0){ reply(false,null,"not permitted for this role"); return; }
+      var r=lvQueue().filter(function(x){ return x.id===a.id; })[0];
+      if(!r){ reply(false,null,"not in this desk's queue"); return; }
+      if(a.decision!=="approved" && a.decision!=="returned"){ reply(false,null,"decision"); return; }
+      var note=a.decision==="returned" ? (lvPlain(a.note,500)||(isAr()?"يُرجى اختيار موعد آخر.":"Please choose different dates.")) : "";
+      if(a.decision==="approved")
+        modAsk(name, bi("اعتماد إجازة: ","Approving leave for: ")+bi(gxEsc(r.who[0]),gxEsc(r.who[1])), "approve",
+          function(){ applyLvDecision(r.id,"approved",""); reply(true); }, reply);
+      else
+        modAsk(name, bi("إعادة طلب إجازة: ","Returning a leave request: ")+bi(gxEsc(r.who[0]),gxEsc(r.who[1])), "reject",
+          function(){ applyLvDecision(r.id,"returned",note); reply(true); }, reply);
+    }
+  };
+
   // ══ review mode ══
   // She points at anything on the live platform and says what is wrong with
   // it. A note remembers where it was pinned, so it survives the dynamic
@@ -13689,6 +14259,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     rvClearPins();
     if(!RVON) return;
     RVNOTES.forEach(function(nt,i){
+      if(nt.a && nt.a.mod){       // inside a fenced window: placed once the frame reports where
+        var fp=document.createElement("button"); fp.className="rv-pin"; fp.type="button"; fp.hidden=true;
+        fp.textContent=String(i+1); fp.setAttribute("data-rvpin", nt.id); fp.title=rvTrim(nt.text,90);
+        document.body.appendChild(fp); return;
+      }
       var el=rvFind(nt.a);
       var pin=document.createElement("button");
       pin.className="rv-pin"+(el?"":" gone");
@@ -13706,6 +14281,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         document.body.appendChild(pin);
       }
     });
+      rvLocateFramed();
   }
   function rvRows(){
     var host=document.getElementById("rvList"); if(!host) return;
@@ -13790,6 +14366,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       : bi("وضع المراجعة","Review mode");
     var p=document.getElementById("rvPanel");
     if(p) p.hidden=!RVON;
+    Object.keys(MODS).forEach(function(n){ modPost(n,{ev:"review",data:RVON}); });
     if(!RVON){ rvClearPins(); rvPopClose(); }
     else { rvRows(); rvPaint(); rvPullSilent(); }
   }
@@ -13809,7 +14386,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var pop=document.getElementById("rvPop"); if(!pop) return;
     RVTARGET=el; RVEDIT=existing||null;
     el.classList.add("rv-hot");
-    var a=existing?existing.a:rvAnchor(el);
+    var a=existing?existing.a:(el._anchor||rvAnchor(el));
     document.getElementById("rvPopCx").innerHTML=
       '<b>'+a.screenName+'</b>'+(a.where?' · '+a.where:'')+(a.what?'<br>“'+rvTrim(a.what,80)+'”':'');
     var ta=document.getElementById("rvPopTa");
@@ -13947,7 +14524,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       if(!txt.trim()){ document.getElementById("rvPopTa").focus(); return; }
       if(RVEDIT){ RVEDIT.text=txt.trim(); RVEDIT.to=RVTO; }
       else if(RVTARGET){
-        RVNOTES.push({id:"N"+(++RVSEQ), a:rvAnchor(RVTARGET), text:txt.trim(),
+        RVNOTES.push({id:"N"+(++RVSEQ), a:RVTARGET._anchor||rvAnchor(RVTARGET), text:txt.trim(),
           to:RVTO, by:(SESSION?SESSION.u:"—"), when:PLATFORM_TODAY});
       }
       rvPersist(); rvPopClose(); rvRows(); rvPaint();
@@ -14089,7 +14666,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   // without this the old screen's pins linger and the new screen's never appear
   document.addEventListener("click", function(e){
     if(!RVON || !e.target.closest) return;
-    if(e.target.closest('.nav button,[data-goto],[data-minetab],[data-cpdtab],#lvtabs button,[data-ccv]'))
+    if(e.target.closest('.nav button,[data-goto],[data-minetab],[data-cpdtab],[data-ccv]'))
       rvSoon(180);
   }, true);
   window.addEventListener("resize", function(){ if(RVON) rvPaint(); });
@@ -14179,6 +14756,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   kbdPass();
 
   applyRole();
+  modMount("leave");
   gateFoot(); drawAccounts(); drawInvites();
 
   // ── the owner's configuration outlives the refresh, all of it in one store ──
