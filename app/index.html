@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>منصة ضمان الجودة</title>
-<meta name="qagc-ver" content="beta 90">
+<meta name="qagc-ver" content="beta 91">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -13961,7 +13961,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   var MOD_PREVIEW=function(){
     // the preview's stand-in for the platform: the same QAGC calls, answered here with the
     // demonstration data the file was saved with. It reaches nothing outside this file.
-    var ST=window.QAGC_DEMO_STATE||{}, subs={}, prefs={}, seq=0, QH=0;
+    var ALL=window.QAGC_DEMO_STATES||null, ROLE0=window.QAGC_DEMO_ROLE||"staff";
+    function pick(r){ return JSON.parse(JSON.stringify(ALL&&ALL[r] ? ALL[r] : (window.QAGC_DEMO_STATE||{}))); }
+    var ST=pick(ROLE0), subs={}, prefs={}, seq=0, QH=0;
     function esc(x){ return String(x==null?"":x).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
     function isAr(){ return document.documentElement.lang==="ar"; }
     function fire(ev,d){ (subs[ev]||[]).forEach(function(cb){ try{ cb(d); }catch(err){ console.error(err); } }); }
@@ -14019,6 +14021,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var lb=document.getElementById("qagc-preview-lang");
       if(lb) lb.addEventListener("click",function(){ var ar=isAr();
         document.documentElement.lang=ar?"en":"ar"; document.documentElement.dir=ar?"ltr":"rtl"; names(); fire("lang"); });
+      // each role sees its own tabs and data: the window is one program for all of them
+      var rsel=document.getElementById("qagc-preview-role");
+      if(rsel){ rsel.value=ROLE0; rsel.addEventListener("change",function(){ ST=pick(rsel.value); say("",""); fire("state",ST); }); }
       new MutationObserver(names).observe(document.getElementById("qagc-root"),{childList:true,subtree:true});
       names(); fire("state",ST);
     });
@@ -14029,10 +14034,22 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     ".qagc-preview-bar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:10px 18px;"+
       "background:var(--warn-bg);color:var(--warn-ink);font-size:var(--t-sm);border-bottom:1px solid var(--warn-rule)}"+
     ".qagc-preview-bar .grow{flex:1;min-width:220px}";
+  var MOD_ROLES=[["dg","المدير العام","Director General"],["dir","مدير دائرة","Directorate head"],
+                 ["head","رئيس قسم","Department head"],["coord","قسم التنسيق والمتابعة","Coordination & Follow-up"],["staff","موظف","Staff"]];
+  // every role's view, built the way the platform builds it for that role's demonstration persona
+  function modStatesAll(name){
+    var out={}, keepRole=ROLE, keepView=VIEW_AS;
+    try{
+      MOD_ROLES.forEach(function(r){
+        ROLE=r[0]; VIEW_AS=null;
+        try{ out[r[0]]=MOD_STATE[name](); }catch(_){ out[r[0]]=null; }
+      });
+    } finally { ROLE=keepRole; VIEW_AS=keepView; }
+    return out;
+  }
   function modWorkbench(name){
     var t=document.getElementById("mod-"+name); if(!t) return "";
-    var cfg=MOD_LIST[name], st={}, m=modMarks(name);
-    try{ st=MOD_STATE[name](); }catch(_){ st={}; }
+    var cfg=MOD_LIST[name], m=modMarks(name), all=modStatesAll(name);
     return '<!doctype html>\n<html lang="ar" dir="rtl"><head><meta charset="utf-8">\n'+
       '<title>'+cfg.title[0]+' — ملف التطوير</title>\n'+
       '<\!-- ملف تطوير نافذة «'+cfg.title[0]+'» في منصة ضمان الجودة. يُعدَّل ما بين السطرين المعلَّمين أدناه فقط.\n'+
@@ -14040,10 +14057,13 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       '<\!-- Development file for the «'+cfg.title[1]+'» window of the QAGC platform. Edit only between the two marked\n'+
       '     lines below. The rest is a preview with demonstration data; it reaches nothing and is never installed. -->\n'+
       '<style>'+modCss().replace(/<\/style/gi,"<\\/style")+'</style>\n<style>'+MOD_FRAME_CSS+MOD_PREVIEW_CSS+'</style>\n'+
-      '<script>window.QAGC_DEMO_STATE='+JSON.stringify(st).replace(/</g,"\\u003c")+';<\/script>\n'+
+      '<script>window.QAGC_DEMO_STATES='+JSON.stringify(all).replace(/</g,"\\u003c")+';window.QAGC_DEMO_ROLE="'+(MOD_ROLES.some(function(r){return r[0]===ROLE;})?ROLE:"staff")+'";<\/script>\n'+
       '<script>('+MOD_PREVIEW.toString()+')();<\/script>\n</head><body>\n'+
       '<div class="qagc-preview-bar"><span class="grow"><span lang="ar">ملف التطوير — معاينة ببيانات تجريبية، لا تتصل بالمنصة.</span>'+
         '<span lang="en">Development file — a preview with demonstration data; it does not reach the platform.</span></span>'+
+        '<label style="display:inline-flex;gap:6px;align-items:center"><span lang="ar">العرض بصفة</span><span lang="en">View as</span>'+
+          '<select id="qagc-preview-role" class="fld-sel" style="width:auto">'+MOD_ROLES.map(function(r){
+            return '<option value="'+r[0]+'">'+r[1]+' · '+r[2]+'</option>'; }).join("")+'</select></label>'+
         '<button class="btn mini" id="qagc-preview-lang" type="button">العربية · English</button>'+
         '<span id="qagc-preview-note" role="status"></span></div>\n'+
       '<div id="qagc-root" class="mod-root">\n'+m[0]+'\n'+t.innerHTML+'\n'+m[1]+'\n</div>\n</body></html>\n';
