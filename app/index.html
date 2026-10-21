@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>منصة ضمان الجودة</title>
-<meta name="qagc-ver" content="beta 88">
+<meta name="qagc-ver" content="beta 89">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -2403,6 +2403,20 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       <div class="fld"><label><span lang="ar">كلمة المرور</span><span lang="en">Password</span></label>
         <input id="gi-pass" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" style="direction:ltr;text-align:start"></div>
       <button class="btn btn-p" id="gi-go"><span lang="ar">تسجيل الدخول</span><span lang="en">Sign in</span></button>
+      <button class="btn" id="gi-forgot" style="margin-top:var(--sp-2)"><span lang="ar">نسيت كلمة المرور</span><span lang="en">Forgotten password</span></button>
+    </div>
+    <div id="gateForgot" hidden>
+      <div class="gatemsg tip"><span lang="ar">برمز الاسترداد: تعيين كلمة مرور جديدة هنا مباشرة. يُنشأ الرمز مسبقاً من «تفضيلاتي»، ويُستخدم مرة واحدة.<br>بلا رمز: يعيد المدير العام أو قسم التنسيق والمتابعة تعيين كلمة المرور من الإعدادات، فتصل كلمة مؤقتة تُغيَّر عند الدخول. حساب المدير العام يُستعاد برمز الاسترداد وحده.</span><span lang="en">With a recovery code: set a new password here. The code is made in advance from My preferences, and works once.<br>Without one: the Director General or Coordination &amp; Follow-up resets the password from Settings, which gives a temporary password to change at sign-in. The Director General's account is recovered only with its recovery code.</span></div>
+      <div class="fld"><label for="gf-user"><span lang="ar">اسم المستخدم</span><span lang="en">Username</span></label>
+        <input id="gf-user" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" style="direction:ltr;text-align:start"></div>
+      <div class="fld"><label for="gf-code"><span lang="ar">رمز الاسترداد</span><span lang="en">Recovery code</span></label>
+        <input id="gf-code" autocomplete="one-time-code" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="XXXX-XXXX-XXXX" style="direction:ltr;text-align:start"></div>
+      <div class="fld"><label for="gf-a"><span lang="ar">كلمة المرور الجديدة</span><span lang="en">New password</span></label>
+        <input id="gf-a" type="password" autocomplete="new-password" style="direction:ltr;text-align:start"></div>
+      <div class="fld"><label for="gf-b"><span lang="ar">تأكيد كلمة المرور</span><span lang="en">Confirm the password</span></label>
+        <input id="gf-b" type="password" autocomplete="new-password" style="direction:ltr;text-align:start"></div>
+      <button class="btn btn-p" id="gf-go"><span lang="ar">تعيين كلمة المرور والدخول</span><span lang="en">Set the password and sign in</span></button>
+      <button class="btn" id="gf-back" style="margin-top:var(--sp-2)"><span lang="ar">العودة إلى تسجيل الدخول</span><span lang="en">Back to sign-in</span></button>
     </div>
     <div id="gateInvite" hidden>
       <p style="font-size:var(--t-sm);color:var(--ink-2);margin-bottom:var(--sp-3)" id="giIntro"></p>
@@ -3566,6 +3580,13 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
       <div class="rolebar">
         <span lang="ar">هذه تفضيلات شخصية. الخيارات المتاحة أدناه يحدّدها المدير العام، والاختيار بينها لي.</span>
         <span lang="en">These are personal preferences. Which options exist is set by the Director General; choosing between them is mine.</span>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><div class="chrow"><div>
+          <span class="ceye"><span lang="ar">الحساب المسجَّل الدخول به</span><span lang="en">The signed-in account</span></span>
+          <h2><span lang="ar">أمان الحساب</span><span lang="en">Account security</span></h2></div></div></div>
+        <div id="secCard"></div>
       </div>
 
       <div class="card">
@@ -12863,10 +12884,52 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   var SESSION=null;
   var PENDING_NEW=null;              // the account being forced to set a password
   function acctOf(u){ return ACCOUNTS.filter(function(a){return a.u===u;})[0]||null; }
+  // ── a password set in the platform outlives the page: kept on this device as a salted
+  //    SHA-256 hash, never as text. The built platform keeps an argon2id hash server-side. ──
+  var CREDS={}; try{ CREDS=JSON.parse(localStorage.getItem("qagcCreds")||"{}")||{}; }catch(_){ CREDS={}; }
+  function credSave(){ try{ localStorage.setItem("qagcCreds", JSON.stringify(CREDS)); return true; }catch(_){ return false; } }
+  function credHex(buf){ return [].map.call(new Uint8Array(buf),function(x){ return ("0"+x.toString(16)).slice(-2); }).join(""); }
+  function credSalt(){ var b=new Uint8Array(16); crypto.getRandomValues(b); return credHex(b.buffer); }
+  function credHash(salt, text){
+    return crypto.subtle.digest("SHA-256", new TextEncoder().encode(salt+"\u0000"+text)).then(credHex);
+  }
+  function credSet(a, pw, must){
+    var salt=credSalt();
+    return credHash(salt, pw).then(function(h){
+      var c=CREDS[a.u]||{}; c.s=salt; c.h=h; c.must=!!must; CREDS[a.u]=c; a.must=!!must; return credSave(); });
+  }
+  function credCheck(a, pw){
+    var c=CREDS[a.u]; if(!c||!c.h) return Promise.resolve(a.p===pw);
+    return credHash(c.s, pw).then(function(h){ return h===c.h; });
+  }
+  ACCOUNTS.forEach(function(a){ var c=CREDS[a.u]; if(c&&c.h) a.must=!!c.must; });
+  // a recovery code: made by its holder in advance, shown once, kept only as a hash, used once
+  function credCode(n){
+    var al="ABCDEFGHJKLMNPQRSTUVWXYZ23456789", b=new Uint8Array(n), o="";
+    crypto.getRandomValues(b); for(var i=0;i<n;i++) o+=al[b[i]%al.length]; return o;
+  }
+  function credNorm(code){ return String(code||"").replace(/[\s-]/g,"").toUpperCase(); }
+  function credSetRecovery(a, code){
+    var salt=credSalt();
+    return credHash(salt, credNorm(code)).then(function(h){
+      var c=CREDS[a.u]||{}; c.r=h; c.rs=salt; c.rat=PLATFORM_TODAY; CREDS[a.u]=c; return credSave(); });
+  }
+  function credCheckRecovery(a, code){
+    var c=CREDS[a.u]; if(!c||!c.r) return Promise.resolve(false);
+    return credHash(c.rs, credNorm(code)).then(function(h){ return h===c.r; });
+  }
+  // five wrong recovery codes for one username pause that username for fifteen minutes
+  function credLock(u){ var L={}; try{ L=JSON.parse(localStorage.getItem("qagcResetLock")||"{}")||{}; }catch(_){}
+    var x=L[u]; return x&&x.until&&x.until>Date.now() ? Math.ceil((x.until-Date.now())/60000) : 0; }
+  function credFail(u){ var L={}; try{ L=JSON.parse(localStorage.getItem("qagcResetLock")||"{}")||{}; }catch(_){}
+    var x=L[u]||{n:0,until:0}; if(x.until&&x.until<=Date.now()) x={n:0,until:0};
+    x.n++; if(x.n>=5){ x.until=Date.now()+15*60000; x.n=0; } L[u]=x;
+    try{ localStorage.setItem("qagcResetLock", JSON.stringify(L)); }catch(_){} }
+  function credClearFail(u){ var L={}; try{ L=JSON.parse(localStorage.getItem("qagcResetLock")||"{}")||{}; }catch(_){}
+    delete L[u]; try{ localStorage.setItem("qagcResetLock", JSON.stringify(L)); }catch(_){} }
   function canManageAccounts(){ return ROLE==="dg"||ROLE==="coord"; }
   function tempKey(){
-    var s2="ABCDEFGHJKLMNPQRSTUVWXYZ23456789", out="";
-    for(var i=0;i<9;i++) out+=s2[Math.floor(Math.random()*s2.length)];
+    var out=credCode(9);
     return out.slice(0,3)+"-"+out.slice(3,6)+"-"+out.slice(6);
   }
   function gateMsg(kind,html){
@@ -12875,8 +12938,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   function gateFoot(){
     var el=document.getElementById("gateFoot"); if(!el) return;
-    el.innerHTML=bi("الحسابات يصدرها المدير العام أو قسم التنسيق والمتابعة. إن نُسيت كلمة المرور فالإعادة منهما، لا من هذه الصفحة.",
-                    "Accounts are issued by the Director General or Coordination & Follow-up. A forgotten password is reset by them, not from this page.")+
+    el.innerHTML=bi("الحسابات يصدرها المدير العام أو قسم التنسيق والمتابعة. إن نُسيت كلمة المرور: رمز الاسترداد من هذه الصفحة، أو إعادة التعيين منهما.",
+                    "Accounts are issued by the Director General or Coordination & Follow-up. A forgotten password: a recovery code on this page, or a reset by them.")+
       '<br><span style="color:var(--warn-ink)">'+
       bi("نموذج للعرض: dg / qagc2027 — ولكل موظف في الكشف حساب تجريبي: اسم المستخدم رمزه (m1 … m20) وكلمة المرور نفسها. الأدوار والصلاحيات تُفرض في المتصفح في هذه النسخة، فلا تصلح لبيانات حقيقية قبل الواجهة الخلفية.",
          "Demonstration build: dg / qagc2027 — roles are enforced in the browser here; not for real data before the backend.")+'</span>';
@@ -12897,14 +12960,17 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var a=acctOf(u);
     // one message for both failures: never say which half was wrong —
     // but a keyboard left on Arabic is a different, nameable problem
-    if(!a || a.p!==p){
+    var fail=function(){
       if(/[\u0600-\u06FF]/.test(uRaw+pRaw)){
         gateMsg("bad", bi("تحتوي بيانات الدخول على أحرف عربية. المطلوب أحرف لاتينية؛ يلزم تصحيح الإدخال.","Sign-in details contain Arabic characters. Latin characters are required; correct the entry."));
       } else {
         gateMsg("bad", bi("اسم المستخدم أو كلمة المرور غير صحيحة.","That username and password do not match."));
       }
-      return;
-    }
+    };
+    if(!a){ fail(); return; }
+    credCheck(a, p).then(function(ok){ if(ok) signInOk(a); else fail(); }, fail);
+  }
+  function signInOk(a){
     if(!a.active){ gateMsg("bad", bi("الحساب موقوف. للتواصل: قسم التنسيق والمتابعة.","Account suspended. Contact Coordination & Follow-up.")); return; }
     document.getElementById("gi-pass").value="";
     if(a.must){
@@ -12923,14 +12989,107 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var x=document.getElementById("gn-a").value||"", y=document.getElementById("gn-b").value||"";
     if(x.length<8){ gateMsg("bad", bi("يلزم أن تتكوّن كلمة المرور من ثمانية أحرف على الأقل.","The password must contain at least eight characters.")); return; }
     if(x!==y){ gateMsg("bad", bi("تأكيد كلمة المرور غير مطابق.","Password confirmation does not match.")); return; }
-    a.p=x; a.must=false; PENDING_NEW=null;
-    document.getElementById("gn-a").value=""; document.getElementById("gn-b").value="";
-    document.getElementById("gateNew").hidden=true;
-    document.getElementById("gateForm").hidden=false;
-    gateMsg("", "");
-    openApp(a);
+    credSet(a, x, false).then(function(saved){
+      PENDING_NEW=null;
+      document.getElementById("gn-a").value=""; document.getElementById("gn-b").value="";
+      document.getElementById("gateNew").hidden=true;
+      document.getElementById("gateForm").hidden=false;
+      gateMsg("", "");
+      openApp(a);
+      if(!saved) gxToast("تعذّر حفظ كلمة المرور على هذا الجهاز؛ تسري حتى إغلاق الصفحة.","The password could not be saved on this device; it lasts until the page is closed.");
+    });
   }
+  function gateShow(which){
+    ["gateForm","gateForgot"].forEach(function(id){ var el=document.getElementById(id); if(el) el.hidden=(id!==which); });
+    gateMsg("","");
+    var f=document.getElementById(which==="gateForgot"?"gf-user":"gi-user"); if(f) setTimeout(function(){ f.focus(); },30);
+  }
+  function recoverWithCode(){
+    var u=(document.getElementById("gf-user").value||"").trim().toLowerCase();
+    var code=document.getElementById("gf-code").value||"";
+    var x=document.getElementById("gf-a").value||"", y=document.getElementById("gf-b").value||"";
+    if(!u||!credNorm(code)){ gateMsg("bad", bi("يلزم إدخال اسم المستخدم ورمز الاسترداد.","Enter the username and the recovery code.")); return; }
+    if(x.length<8){ gateMsg("bad", bi("يلزم أن تتكوّن كلمة المرور من ثمانية أحرف على الأقل.","The password must contain at least eight characters.")); return; }
+    if(x!==y){ gateMsg("bad", bi("تأكيد كلمة المرور غير مطابق.","Password confirmation does not match.")); return; }
+    var mins=credLock(u);
+    if(mins){ gateMsg("bad", bi("أُوقفت المحاولات لهذا الحساب مؤقتاً. المحاولة بعد "+mins+" دقيقة.","Attempts for this account are paused. Try again in "+mins+" min.")); return; }
+    var a=acctOf(u);
+    // the same answer whether the username or the code was wrong
+    var bad=function(){ credFail(u); gateMsg("bad", bi("اسم المستخدم أو رمز الاسترداد غير صحيح.","That username and recovery code do not match.")); };
+    if(!a){ bad(); return; }
+    credCheckRecovery(a, code).then(function(ok){
+      if(!ok){ bad(); return; }
+      if(!a.active){ gateMsg("bad", bi("الحساب موقوف. للتواصل: قسم التنسيق والمتابعة.","Account suspended. Contact Coordination & Follow-up.")); return; }
+      credClearFail(u);
+      var c=CREDS[a.u]; c.r=null; c.rs=null; c.rat="";          // a code works once
+      credSet(a, x, false).then(function(){
+        ["gf-user","gf-code","gf-a","gf-b"].forEach(function(id){ document.getElementById(id).value=""; });
+        gateShow("gateForm"); openApp(a);
+        gxToast("عُيّنت كلمة المرور الجديدة. يلزم إنشاء رمز استرداد جديد من «تفضيلاتي».","The new password is set. Make a new recovery code in My preferences.");
+      });
+    }, bad);
+  }
+  function drawSecurity(){
+    var h=document.getElementById("secCard"); if(!h) return;
+    var a=SESSION; if(!a){ h.innerHTML='<div class="subempty">'+bi("لا يوجد حساب مسجَّل الدخول.","No account is signed in.")+'</div>'; return; }
+    var c=CREDS[a.u]||{};
+    h.innerHTML=
+      '<p style="font-size:var(--t-sm);color:var(--ink-3);margin-top:0">'+bi("للحساب: ","For the account: ")+'<b style="direction:ltr;unicode-bidi:isolate">'+gxEsc(a.u)+'</b></p>'+
+      '<p class="subh">'+bi("تغيير كلمة المرور","Change the password")+'</p>'+
+      '<div class="frow">'+
+        '<div class="fld"><label for="sec-cur">'+bi("كلمة المرور الحالية","Current password")+'</label><input id="sec-cur" type="password" autocomplete="current-password" style="direction:ltr;text-align:start"></div>'+
+        '<div class="fld"><label for="sec-a">'+bi("كلمة المرور الجديدة","New password")+'</label><input id="sec-a" type="password" autocomplete="new-password" style="direction:ltr;text-align:start"></div>'+
+        '<div class="fld"><label for="sec-b">'+bi("تأكيد كلمة المرور","Confirm the password")+'</label><input id="sec-b" type="password" autocomplete="new-password" style="direction:ltr;text-align:start"></div>'+
+      '</div>'+
+      '<div style="margin-top:var(--sp-2);display:flex;gap:var(--sp-3);align-items:center;flex-wrap:wrap"><button class="btn btn-p" id="secChange">'+bi("تغيير كلمة المرور","Change the password")+'</button>'+
+        '<span class="kerr" id="secErr" role="status"></span></div>'+
+      '<p class="subh" style="margin-top:var(--sp-5)">'+bi("رمز الاسترداد","Recovery code")+' '+
+        qHelp("رمز الاسترداد","Recovery code",
+          "يتيح تعيين كلمة مرور جديدة من صفحة الدخول عند نسيانها، دون الرجوع إلى أحد. يظهر مرة واحدة عند إنشائه، ويُستخدم مرة واحدة، وإنشاء رمز جديد يُبطل السابق. يُحفظ خارج المنصة في مكان آمن.",
+          "Lets a forgotten password be replaced from the sign-in page without asking anyone. It is shown once when made and works once; making a new one cancels the old. Keep it somewhere safe outside the platform.")+'</p>'+
+      '<p style="font-size:var(--t-sm);color:var(--ink-3)">'+(c.r
+        ? bi("يوجد رمز استرداد صالح، أُنشئ في "+gxEsc(c.rat||"—")+".","A valid recovery code exists, made on "+gxEsc(c.rat||"—")+".")
+        : bi("لا يوجد رمز استرداد لهذا الحساب.","This account has no recovery code."))+'</p>'+
+      '<button class="btn" id="secCode">'+(c.r?bi("إنشاء رمز جديد بدل الحالي","Make a new code in place of this one"):bi("إنشاء رمز استرداد","Make a recovery code"))+'</button>'+
+      '<div id="secCodeOut"></div>'+
+      '<p style="font-size:var(--t-xs);color:var(--warn-ink);margin-top:var(--sp-3)">'+bi("نموذج للعرض: تُحفظ كلمة المرور ورمز الاسترداد على هذا الجهاز فقط.","Demonstration build: the password and the recovery code are kept on this device only.")+'</p>';
+  }
+  document.addEventListener("click",function(e){
+    if(e.target.closest&&e.target.closest('[data-go="prefs"]')) setTimeout(drawSecurity,0);
+    if(e.target.closest&&e.target.closest("#secChange")){
+      var a=SESSION; if(!a) return;
+      var cur=document.getElementById("sec-cur").value||"", x=document.getElementById("sec-a").value||"", y=document.getElementById("sec-b").value||"";
+      var err=document.getElementById("secErr");
+      if(x.length<8){ err.textContent=isAr()?"يلزم أن تتكوّن كلمة المرور من ثمانية أحرف على الأقل.":"The password must contain at least eight characters."; return; }
+      if(x!==y){ err.textContent=isAr()?"تأكيد كلمة المرور غير مطابق.":"Password confirmation does not match."; return; }
+      credCheck(a, cur).then(function(ok){
+        if(!ok){ err.textContent=isAr()?"كلمة المرور الحالية غير صحيحة.":"The current password is not right."; return; }
+        credSet(a, x, false).then(function(saved){
+          drawSecurity();
+          gxToast(saved?"تغيّرت كلمة المرور.":"تغيّرت كلمة المرور لهذه الجلسة فقط؛ تعذّر حفظها على هذا الجهاز.",
+                  saved?"The password has changed.":"The password changed for this session only; it could not be saved on this device.");
+        });
+      });
+      return;
+    }
+    if(e.target.closest&&e.target.closest("#secCode")){
+      var a2=SESSION; if(!a2) return;
+      stepUp("accounts", bi("إنشاء رمز استرداد للحساب ","Making a recovery code for ")+gxEsc(a2.u), function(){
+        var raw=credCode(12), code=raw.slice(0,4)+"-"+raw.slice(4,8)+"-"+raw.slice(8);
+        credSetRecovery(a2, code).then(function(saved){
+          drawSecurity();
+          var out=document.getElementById("secCodeOut"); if(!out) return;
+          out.innerHTML=saved
+            ? '<div class="gatemsg tip" style="margin-top:var(--sp-3)">'+bi("رمز الاسترداد — يظهر مرة واحدة فقط:","Recovery code — shown this once only:")+
+              '<div class="tempkey" style="font-size:1.4em;letter-spacing:.12em;direction:ltr;margin:8px 0">'+code+'</div>'+
+              bi("يُكتب أو يُحفظ الآن في مكان آمن خارج المنصة. لا يُعرض مرة أخرى.","Write it down or store it now, somewhere safe outside the platform. It will not be shown again.")+'</div>'
+            : '<div class="kerr">'+bi("تعذّر حفظ الرمز على هذا الجهاز.","The code could not be saved on this device.")+'</div>';
+        });
+      });
+    }
+  });
   function signOut(){
+    var sco=document.getElementById("secCodeOut"); if(sco) sco.innerHTML="";
     SESSION=null;
     try{ localStorage.removeItem("qagcSession"); }catch(_){}
     document.getElementById("gate").classList.remove("done");
@@ -13010,6 +13169,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       return;
     }
     if(e.target.closest("#gi-go")){ signIn(); return; }
+    if(e.target.closest("#gi-forgot")){ gateShow("gateForgot"); return; }
+    if(e.target.closest("#gf-back")){ gateShow("gateForm"); return; }
+    if(e.target.closest("#gf-go")){ recoverWithCode(); return; }
     if(e.target.closest("#gn-go")){ setNewPassword(); return; }
     if(e.target.closest("#signOut")){ signOut(); return; }
     if(e.target.closest("#stepGo")){ stepConfirm(); return; }
@@ -13020,6 +13182,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(e.target.id==="gi-user"||e.target.id==="gi-pass"){ e.preventDefault(); signIn(); }
     else if(e.target.id==="gn-a"||e.target.id==="gn-b"){ e.preventDefault(); setNewPassword(); }
     else if(e.target.id==="stepCode"){ e.preventDefault(); stepConfirm(); }
+    else if(/^gf-/.test(e.target.id||"")){ e.preventDefault(); recoverWithCode(); }
   });
 
   // ── invitations: the account created by its own holder, from an emailed link ──
@@ -13161,7 +13324,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
                          : '<span class="pill p-neutral">'+bi("موقوف","Suspended")+'</span>')+
               (a.twofa?' <span class="pill p-neutral">'+bi("خطوتان","2-step")+'</span>':"")+'</span>'+
             '<span class="acts">'+(may?
-              '<button class="mini no" data-acreset="'+i+'">'+bi("إعادة تعيين كلمة المرور","Reset password")+'</button>'+
+              ((a.role!=="dg"||ROLE==="dg")?'<button class="mini no" data-acreset="'+i+'">'+bi("إعادة تعيين كلمة المرور","Reset password")+'</button>':'')+
               '<button class="mini '+(a.active?"no":"yes")+'" data-actoggle="'+i+'">'+
                 (a.active?bi("إيقاف","Suspend"):bi("تفعيل","Enable"))+'</button>'+
               '<button class="mini '+(a.twofa?"no":"yes")+'" data-ac2fa="'+i+'">'+
@@ -13176,11 +13339,12 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var r=e.target.closest("[data-acreset]");
     if(r){
       var a=ACCOUNTS[+r.dataset.acreset];
+      if(a.role==="dg" && ROLE!=="dg"){ gxToast("حساب المدير العام يُستعاد برمز الاسترداد الخاص به وحده.","The Director General's account is recovered only with its own recovery code."); return; }
       stepUp("accounts",
         bi("إعادة تعيين كلمة مرور: ","Reset the password for: ")+bi(a.who[0],a.who[1]),
         function(){
-          var k=tempKey(); a.p=k; a.must=true; a.newkey=k;
-          drawAccounts();
+          var k=tempKey(); a.newkey=k;
+          credSet(a, k, true).then(function(){ drawAccounts(); });
           setTimeout(function(){ a.newkey=null; drawAccounts(); }, 30000);   // shown once
         });
       return;
