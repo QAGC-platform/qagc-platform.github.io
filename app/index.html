@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>منصة ضمان الجودة</title>
-<meta name="qagc-ver" content="beta 98">
+<meta name="qagc-ver" content="beta 99">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -4354,6 +4354,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
           <p class="subh" style="margin-top:var(--sp-4)"><span lang="ar">النوافذ لكل أمين</span><span lang="en">Windows per custodian</span></p>
           <div id="custByPerson"></div>
           <div id="custKeyOut"></div>
+          <div id="custKeyList"></div>
           <p class="subh" style="margin-top:var(--sp-5)"><span lang="ar">ربط Claude بالجسر</span><span lang="en">Connecting Claude to the bridge</span></p>
           <p style="font-size:var(--t-sm);color:var(--ink-3)"><span lang="ar">التعليقات تُنفَّذ في جلسة Claude لدى مالك المنصة. مفتاح Claude يقرأ لوحة التعليقات ويغلق التعليق بعد تنفيذه، ولا يملك غير ذلك.</span><span lang="en">Comments are carried out in the platform owner's Claude session. The Claude key reads the comment board and closes a comment once it is done, and can do nothing else.</span></p>
           <div id="claudeKeyBox"></div>
@@ -14702,7 +14703,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           drawClaudeKey({issued:PLATFORM_TODAY});
           claudeSay("tip", bi("مفتاح Claude — يظهر مرة واحدة. على جهاز Mac لمالك المنصة: نسخ المفتاح، ثم في Terminal:","The Claude key — shown once. On the platform owner's Mac: copy the key, then in Terminal:")+
             '<div class="tempkey" style="direction:ltr;font-size:1.05em;letter-spacing:.04em;margin:8px 0;word-break:break-all">'+key+'</div>'+
-            '<div style="direction:ltr;font-family:var(--mono,monospace);font-size:var(--t-sm)">pbpaste &gt; ~/.qagc-claude-key &amp;&amp; chmod 600 ~/.qagc-claude-key</div>');
+            '<div style="direction:ltr;font-family:var(--mono,monospace);font-size:var(--t-sm)">pbpaste &gt; ~/.qagc-claude-key &amp;&amp; chmod 600 ~/.qagc-claude-key</div>'+
+            '<div style="margin-top:8px"><button class="btn mini btn-p" data-copy="'+gxEsc(key)+'">'+bi("نسخ مفتاح Claude","Copy the Claude key")+'</button></div>');
         }).catch(function(err){ claudeSay("bad", bi("تعذّر الاتصال بالجسر. ","The bridge could not be reached. ")+gxEsc(String(err&&err.message||""))); });
       });
       return;
@@ -14727,6 +14729,47 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     return fetch(cfg.url+"?key="+encodeURIComponent(cfg.key),{method:"POST",body:JSON.stringify(body)}).then(function(r){ return r.json(); });
   }
   function custSha(text){ return crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)).then(credHex); }
+  function copyText(text){
+    function fallback(){
+      try{ var ta=document.createElement("textarea"); ta.value=text; ta.setAttribute("readonly","");
+        ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta); ta.select();
+        var ok=document.execCommand("copy"); ta.remove(); return ok; }catch(_){ return false; }
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText)
+      return navigator.clipboard.writeText(text).then(function(){ return true; }, function(){ return fallback(); });
+    return Promise.resolve(fallback());
+  }
+  document.addEventListener("click",function(e){
+    var b=e.target.closest&&e.target.closest("[data-copy]"); if(!b) return;
+    var keep=b.getAttribute("data-label")||b.innerHTML;
+    if(!b.getAttribute("data-label")) b.setAttribute("data-label", keep);
+    copyText(b.getAttribute("data-copy")).then(function(ok){
+      b.innerHTML = ok ? bi("نُسخ ✓","Copied ✓") : bi("تعذّر النسخ — يُحدَّد ويُنسخ يدوياً","Could not copy — select it and copy");
+      setTimeout(function(){ b.innerHTML=b.getAttribute("data-label"); }, 2200);
+    });
+  });
+  // a key stays on the card, with its own copy buttons, until it is marked as handed over
+  function custKeyCard(pid, name, key, url){
+    var list=document.getElementById("custKeyList"); if(!list) return;
+    var old=list.querySelector('[data-keycard="'+pid+'"]'); if(old) old.remove();
+    var both=(isAr()?"عنوان الجسر:\n":"Bridge address:\n")+url+"\n"+(isAr()?"مفتاح التعليق:\n":"Comment key:\n")+key;
+    var d=document.createElement("div"); d.className="gatemsg tip"; d.style.marginTop="var(--sp-3)"; d.setAttribute("data-keycard", pid);
+    d.innerHTML=bi("مفتاح التعليق لـ "+gxEsc(name[0])+" — لا يظهر مرة أخرى بعد إغلاق هذا المربع. يُسلَّم مع عنوان الجسر ليُدخلهما في لوحة وضع المراجعة على جهازه.",
+                   "Comment key for "+gxEsc(name[1])+" — it is not shown again once this box is closed. Hand it over with the bridge address; they enter both in the review-mode panel on their device.")+
+      '<div class="tempkey" style="direction:ltr;font-size:1.15em;letter-spacing:.06em;margin:8px 0;user-select:all">'+gxEsc(key)+'</div>'+
+      '<div style="direction:ltr;font-size:var(--t-xs);word-break:break-all;user-select:all">'+gxEsc(url)+'</div>'+
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">'+
+        '<button class="btn mini" data-copy="'+gxEsc(key)+'">'+bi("نسخ المفتاح","Copy the key")+'</button>'+
+        '<button class="btn mini" data-copy="'+gxEsc(url)+'">'+bi("نسخ عنوان الجسر","Copy the bridge address")+'</button>'+
+        '<button class="btn mini btn-p" data-copy="'+gxEsc(both)+'">'+bi("نسخ الاثنين معاً","Copy both")+'</button>'+
+        '<button class="btn mini" data-keydone="'+pid+'">'+bi("تم التسليم — إغلاق","Handed over — close")+'</button></div>';
+    list.insertBefore(d, list.firstChild);
+    try{ d.scrollIntoView({block:"nearest", behavior:"smooth"}); }catch(_){}
+  }
+  document.addEventListener("click",function(e){
+    var k=e.target.closest&&e.target.closest("[data-keydone]"); if(!k) return;
+    var card=k.closest("[data-keycard]"); if(card) card.remove();
+  });
   // every step of issuing or withdrawing a key is shown on the card itself, in view
   function custSay(kind, html){
     var out=document.getElementById("custKeyOut"); if(!out) return;
@@ -14751,13 +14794,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           if(!j||!j.ok){ custSay("bad", bi("رفض الجسر إصدار المفتاح: ","The bridge refused the key: ")+gxEsc(String((j&&j.error)||"—"))+
             (j&&j.error==="bad key"?" — "+bi("مفتاح الجسر المحفوظ على هذا الجهاز غير صحيح.","the bridge key saved on this device is not right."):"")); return; }
           var o=custIssued(); o[pid]={at:PLATFORM_TODAY}; custIssuedSave(o); drawCustodians();
-          var out=document.getElementById("custKeyOut");
-          if(out){ out.innerHTML='<div class="gatemsg tip" style="margin-top:var(--sp-3)">'+
-            bi("مفتاح التعليق لـ "+gxEsc(p.who[0])+" — يظهر مرة واحدة. يُسلَّم مع عنوان الجسر ليُدخلهما في لوحة وضع المراجعة على جهازه.",
-               "Comment key for "+gxEsc(p.who[1])+" — shown once. Hand it over with the bridge address; they enter both in the review-mode panel on their device.")+
-            '<div class="tempkey" style="direction:ltr;font-size:1.15em;letter-spacing:.06em;margin:8px 0">'+key+'</div>'+
-            '<div style="direction:ltr;font-size:var(--t-xs);word-break:break-all">'+gxEsc(cfg.url)+'</div></div>';
-            try{ out.scrollIntoView({block:"nearest", behavior:"smooth"}); }catch(_){} }
+          var out=document.getElementById("custKeyOut"); if(out) out.innerHTML="";
+          custKeyCard(pid, p.who, key, cfg.url);
         }).catch(function(err){ custSay("bad", bi("تعذّر الاتصال بالجسر. ","The bridge could not be reached. ")+gxEsc(String(err&&err.message||""))); });
       });
       return;
@@ -14771,6 +14809,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         custBridge({fn:"revokeCustodian", person:pid2}).then(function(j){
           if(!j||!j.ok){ custSay("bad", bi("رفض الجسر سحب المفتاح: ","The bridge refused: ")+gxEsc(String((j&&j.error)||"—"))); return; }
           var o=custIssued(); delete o[pid2]; custIssuedSave(o); drawCustodians();
+          var kc=document.querySelector('#custKeyList [data-keycard="'+pid2+'"]'); if(kc) kc.remove();
           custSay("ok", bi("سُحب مفتاح التعليق؛ لم يعد يعمل.","The comment key was withdrawn; it no longer works."));
         }).catch(function(err){ custSay("bad", bi("تعذّر الاتصال بالجسر. ","The bridge could not be reached. ")+gxEsc(String(err&&err.message||""))); });
       });
