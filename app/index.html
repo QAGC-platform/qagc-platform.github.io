@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>منصة ضمان الجودة</title>
-<meta name="qagc-ver" content="beta 94">
+<meta name="qagc-ver" content="beta 95">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -14597,40 +14597,52 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     return fetch(cfg.url+"?key="+encodeURIComponent(cfg.key),{method:"POST",body:JSON.stringify(body)}).then(function(r){ return r.json(); });
   }
   function custSha(text){ return crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)).then(credHex); }
+  // every step of issuing or withdrawing a key is shown on the card itself, in view
+  function custSay(kind, html){
+    var out=document.getElementById("custKeyOut"); if(!out) return;
+    out.innerHTML='<div class="gatemsg '+kind+'" style="margin-top:var(--sp-3)">'+html+'</div>';
+    try{ out.scrollIntoView({block:"nearest", behavior:"smooth"}); }catch(_){}
+  }
   document.addEventListener("click",function(e){
     var kb=e.target.closest&&e.target.closest("[data-custkey]");
     if(kb){
-      if(!rvIsDG()) return;
+      if(!rvIsDG()){ custSay("bad", bi("مفاتيح التعليق تُصدَر من حساب المدير العام فقط.","Comment keys are issued from the Director General's own account only.")); return; }
       var pid=kb.dataset.custkey, p=STAFF.filter(function(x){return x.id===pid;})[0]; if(!p) return;
-      var cfg=dgCalCfg(); if(!cfg){ gxToast("يلزم ربط الجسر أولاً من الإعدادات.","Connect the bridge in Settings first."); return; }
+      var cfg=dgCalCfg();
+      if(!cfg){ custSay("bad", bi("الجسر غير مربوط على هذا الجهاز. يُربط من تبويب «الذكاء الاصطناعي»: عنوان الجسر ومفتاحه، ثم «حفظ».","The bridge is not connected on this device. Connect it in the AI tab: the bridge address and key, then Save.")); return; }
+      if(!custWindowsOf(pid).length){ custSay("bad", bi("لم تُسنَد إلى هذا الموظف نافذة بعد.","No window is assigned to this person yet.")); return; }
+      custSay("tip", bi("يلزم تأكيد الإصدار بخطوتين…","Confirm the issue with the two-step code…"));
       stepUp("accounts", bi("إصدار مفتاح تعليق لـ ","Issuing a comment key for ")+gxEsc(isAr()?p.who[0]:p.who[1]), function(){
+        custSay("tip", bi("جارٍ إصدار المفتاح عبر الجسر… قد يستغرق بضع ثوانٍ.","Issuing the key through the bridge… this can take a few seconds."));
         var key="QC-"+credCode(28);
         custSha(key).then(function(h){
           return custBridge({fn:"setCustodian", keyHash:h, person:pid, name:p.who[0], windows:custWindowsOf(pid)});
         }).then(function(j){
-          if(!j||!j.ok){ gxToast("رفض الجسر إصدار المفتاح.","The bridge refused the key."); return; }
+          if(!j||!j.ok){ custSay("bad", bi("رفض الجسر إصدار المفتاح: ","The bridge refused the key: ")+gxEsc(String((j&&j.error)||"—"))+
+            (j&&j.error==="bad key"?" — "+bi("مفتاح الجسر المحفوظ على هذا الجهاز غير صحيح.","the bridge key saved on this device is not right."):"")); return; }
           var o=custIssued(); o[pid]={at:PLATFORM_TODAY}; custIssuedSave(o); drawCustodians();
           var out=document.getElementById("custKeyOut");
-          if(out) out.innerHTML='<div class="gatemsg tip" style="margin-top:var(--sp-3)">'+
+          if(out){ out.innerHTML='<div class="gatemsg tip" style="margin-top:var(--sp-3)">'+
             bi("مفتاح التعليق لـ "+gxEsc(p.who[0])+" — يظهر مرة واحدة. يُسلَّم مع عنوان الجسر ليُدخلهما في لوحة وضع المراجعة على جهازه.",
                "Comment key for "+gxEsc(p.who[1])+" — shown once. Hand it over with the bridge address; they enter both in the review-mode panel on their device.")+
             '<div class="tempkey" style="direction:ltr;font-size:1.15em;letter-spacing:.06em;margin:8px 0">'+key+'</div>'+
             '<div style="direction:ltr;font-size:var(--t-xs);word-break:break-all">'+gxEsc(cfg.url)+'</div></div>';
-        }).catch(function(){ gxToast("تعذّر الاتصال بالجسر.","The bridge could not be reached."); });
+            try{ out.scrollIntoView({block:"nearest", behavior:"smooth"}); }catch(_){} }
+        }).catch(function(err){ custSay("bad", bi("تعذّر الاتصال بالجسر. ","The bridge could not be reached. ")+gxEsc(String(err&&err.message||""))); });
       });
       return;
     }
     var rb=e.target.closest&&e.target.closest("[data-custrevoke]");
     if(rb){
-      if(!rvIsDG()) return;
+      if(!rvIsDG()){ custSay("bad", bi("مفاتيح التعليق تُسحب من حساب المدير العام فقط.","Comment keys are withdrawn from the Director General's own account only.")); return; }
       var pid2=rb.dataset.custrevoke;
       stepUp("accounts", bi("سحب مفتاح التعليق","Withdrawing the comment key"), function(){
+        custSay("tip", bi("جارٍ سحب المفتاح عبر الجسر…","Withdrawing the key through the bridge…"));
         custBridge({fn:"revokeCustodian", person:pid2}).then(function(j){
-          if(!j||!j.ok){ gxToast("رفض الجسر سحب المفتاح.","The bridge refused."); return; }
+          if(!j||!j.ok){ custSay("bad", bi("رفض الجسر سحب المفتاح: ","The bridge refused: ")+gxEsc(String((j&&j.error)||"—"))); return; }
           var o=custIssued(); delete o[pid2]; custIssuedSave(o); drawCustodians();
-          var out=document.getElementById("custKeyOut"); if(out) out.innerHTML="";
-          gxToast("سُحب مفتاح التعليق.","The comment key was withdrawn.");
-        }).catch(function(){ gxToast("تعذّر الاتصال بالجسر.","The bridge could not be reached."); });
+          custSay("ok", bi("سُحب مفتاح التعليق؛ لم يعد يعمل.","The comment key was withdrawn; it no longer works."));
+        }).catch(function(err){ custSay("bad", bi("تعذّر الاتصال بالجسر. ","The bridge could not be reached. ")+gxEsc(String(err&&err.message||""))); });
       });
     }
   });
