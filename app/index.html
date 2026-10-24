@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>منصة ضمان الجودة</title>
-<meta name="qagc-ver" content="beta 100">
+<meta name="qagc-ver" content="beta 101">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -14762,8 +14762,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var old=list.querySelector('[data-keycard="'+pid+'"]'); if(old) old.remove();
     var both=(isAr()?"عنوان الجسر:\n":"Bridge address:\n")+url+"\n"+(isAr()?"مفتاح التعليق:\n":"Comment key:\n")+key;
     var d=document.createElement("div"); d.className="gatemsg tip"; d.style.marginTop="var(--sp-3)"; d.setAttribute("data-keycard", pid);
-    d.innerHTML=bi("مفتاح التعليق لـ "+gxEsc(name[0])+" — لا يظهر مرة أخرى بعد إغلاق هذا المربع. يُسلَّم له ليُدخله في «تفضيلاتي» › «مفتاح التعليق» على جهازه.",
-                   "Comment key for "+gxEsc(name[1])+" — it is not shown again once this box is closed. Hand it over; they enter it in My preferences › Comment key on their device.")+
+    var wins=custWindowsOf(pid).map(function(k){ return gxEsc(rvWinName(k)); }).join(isAr()?"، ":", ");
+    d.innerHTML=bi("مفتاح التعليق لـ "+gxEsc(name[0])+" — مفتاح واحد يشمل كل نوافذه: "+wins+". أي مفتاح سابق له أُلغي. لا يظهر مرة أخرى بعد إغلاق هذا المربع؛ يُسلَّم له ليُدخله في «تفضيلاتي» › «مفتاح التعليق» على جهازه.",
+                   "Comment key for "+gxEsc(name[1])+" — one key covering all their windows: "+wins+". Any earlier key of theirs is cancelled. It is not shown again once this box is closed; hand it over and they enter it in My preferences › Comment key on their device.")+
       '<div class="tempkey" style="direction:ltr;font-size:1.15em;letter-spacing:.06em;margin:8px 0;user-select:all">'+gxEsc(key)+'</div>'+
       '<div style="direction:ltr;font-size:var(--t-xs);word-break:break-all;user-select:all">'+gxEsc(url)+'</div>'+
       '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">'+
