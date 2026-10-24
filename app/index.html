@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>منصة ضمان الجودة</title>
-<meta name="qagc-ver" content="beta 99">
+<meta name="qagc-ver" content="beta 100">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -3587,6 +3587,13 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
           <span class="ceye"><span lang="ar">الحساب المسجَّل الدخول به</span><span lang="en">The signed-in account</span></span>
           <h2><span lang="ar">أمان الحساب</span><span lang="en">Account security</span></h2></div></div></div>
         <div id="secCard"></div>
+      </div>
+
+      <div class="card" id="custPrefWrap" hidden>
+        <div class="card-h"><div class="chrow"><div>
+          <span class="ceye"><span lang="ar">التعليق على النوافذ المسندة إليّ</span><span lang="en">Commenting on the windows assigned to me</span></span>
+          <h2><span lang="ar">مفتاح التعليق</span><span lang="en">Comment key</span></h2></div></div></div>
+        <div id="custPref"></div>
       </div>
 
       <div class="card">
@@ -13011,6 +13018,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function openApp(a){
     SESSION=a; ROLE=a.role; VIEW_AS=null; if(typeof ALL_TABS!=="undefined") ALL_TABS=false;
     if(typeof testAidsSync==="function") testAidsSync();
+    if(typeof rvDrawCust==="function") rvDrawCust();
     try{ localStorage.setItem("qagcSession", a.u); }catch(_){}
     var sel=document.getElementById("roleSel"); if(sel) sel.value=a.role;
     document.getElementById("gate").classList.add("done");
@@ -13180,7 +13188,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       }).catch(function(){ er3.textContent=isAr()?"تعذّر الاتصال بالجسر.":"The bridge could not be reached."; });
       return;
     }
-    if(e.target.closest&&e.target.closest('[data-go="prefs"]')) setTimeout(drawSecurity,0);
+    if(e.target.closest&&e.target.closest('[data-go="prefs"]')) setTimeout(function(){ drawSecurity(); drawCustPref(); },0);
     if(e.target.closest&&e.target.closest("#secChange")){
       var a=SESSION; if(!a) return;
       var cur=document.getElementById("sec-cur").value||"", x=document.getElementById("sec-a").value||"", y=document.getElementById("sec-b").value||"";
@@ -14754,8 +14762,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var old=list.querySelector('[data-keycard="'+pid+'"]'); if(old) old.remove();
     var both=(isAr()?"عنوان الجسر:\n":"Bridge address:\n")+url+"\n"+(isAr()?"مفتاح التعليق:\n":"Comment key:\n")+key;
     var d=document.createElement("div"); d.className="gatemsg tip"; d.style.marginTop="var(--sp-3)"; d.setAttribute("data-keycard", pid);
-    d.innerHTML=bi("مفتاح التعليق لـ "+gxEsc(name[0])+" — لا يظهر مرة أخرى بعد إغلاق هذا المربع. يُسلَّم مع عنوان الجسر ليُدخلهما في لوحة وضع المراجعة على جهازه.",
-                   "Comment key for "+gxEsc(name[1])+" — it is not shown again once this box is closed. Hand it over with the bridge address; they enter both in the review-mode panel on their device.")+
+    d.innerHTML=bi("مفتاح التعليق لـ "+gxEsc(name[0])+" — لا يظهر مرة أخرى بعد إغلاق هذا المربع. يُسلَّم له ليُدخله في «تفضيلاتي» › «مفتاح التعليق» على جهازه.",
+                   "Comment key for "+gxEsc(name[1])+" — it is not shown again once this box is closed. Hand it over; they enter it in My preferences › Comment key on their device.")+
       '<div class="tempkey" style="direction:ltr;font-size:1.15em;letter-spacing:.06em;margin:8px 0;user-select:all">'+gxEsc(key)+'</div>'+
       '<div style="direction:ltr;font-size:var(--t-xs);word-break:break-all;user-select:all">'+gxEsc(url)+'</div>'+
       '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">'+
@@ -15085,25 +15093,49 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function rvMay(screen){ var a=rvAllowed(); return a===null || a.indexOf(screen)>=0; }
   function rvWinName(k){ var b=document.querySelector('.nav button[data-go="'+k+'"] span[lang="'+(isAr()?"ar":"en")+'"]'); return b?b.textContent:k; }
   function rvDrawCust(){
-    var h=document.getElementById("rvCust"); if(!h) return;
-    if(rvIsDG()){ h.hidden=true; return; }
-    h.hidden=false;
+    var h=document.getElementById("rvCust");
+    if(h){
+      if(rvIsDG()) h.hidden=true;
+      else {
+        h.hidden=false; var c=rvCustCfg();
+        h.innerHTML = c&&c.windows.length
+          ? '<b>'+bi("نوافذك للتعليق: ","Your windows for comments: ")+'</b>'+c.windows.map(function(k){ return gxEsc(rvWinName(k)); }).join(isAr()?"، ":", ")
+          : bi("لا نوافذ للتعليق. مفتاح التعليق يُدخل من «تفضيلاتي».","No windows to comment on. The comment key is entered in My preferences.");
+      }
+    }
+    var pull=document.getElementById("rvPull"); if(pull) pull.hidden=!rvIsDG();
+    drawCustPref(); rvToggleSync();
+  }
+  function drawCustPref(){
+    var wrap=document.getElementById("custPrefWrap"), h=document.getElementById("custPref"); if(!wrap||!h) return;
+    if(!SESSION || rvIsDG()){ wrap.hidden=true; return; }
+    wrap.hidden=false;
     var c=rvCustCfg();
+    var defUrl=(function(){ var el=document.getElementById("aiCfgUrl"); return el?(el.getAttribute("value")||""):""; })();
     h.innerHTML = c
-      ? '<b>'+bi("نوافذك للتعليق: ","Your windows for comments: ")+'</b>'+(c.windows.length?c.windows.map(function(k){ return gxEsc(rvWinName(k)); }).join(isAr()?"، ":", "):bi("لا شيء بعد","none yet"))+
-        ' <button class="btn mini" id="rvCustCheck">'+bi("تحديث","Refresh")+'</button> <button class="btn mini" id="rvCustOff">'+bi("إزالة المفتاح","Remove the key")+'</button>'
-      : '<div style="margin-bottom:6px">'+bi("التعليق متاح على النوافذ المسندة إليك فقط، بمفتاح تعليق يصدره المدير العام.","Comments are open only on the windows assigned to you, with a comment key issued by the Director General.")+'</div>'+
-        '<label for="rvCustUrl">'+bi("عنوان الجسر","Bridge address")+'</label><input id="rvCustUrl" style="direction:ltr;width:100%" autocomplete="off">'+
-        '<label for="rvCustKey">'+bi("مفتاح التعليق","Comment key")+'</label><input id="rvCustKey" type="password" style="direction:ltr;width:100%" autocomplete="off">'+
-        '<div style="margin-top:6px"><button class="btn btn-p mini" id="rvCustSave">'+bi("حفظ والتحقق","Save and check")+'</button> <span id="rvCustMsg" class="kerr" role="status"></span></div>';
-    var pull=document.getElementById("rvPull"); if(pull) pull.hidden=true;
+      ? '<p><b>'+bi("نوافذك للتعليق: ","Your windows for comments: ")+'</b>'+(c.windows.length?c.windows.map(function(k){ return gxEsc(rvWinName(k)); }).join(isAr()?"، ":", "):bi("لا شيء بعد","none yet"))+'</p>'+
+        '<p style="font-size:var(--t-sm);color:var(--ink-3)">'+bi("التعليق: «وضع المراجعة» أسفل القائمة الجانبية، ثم النقر على العنصر في إحدى نوافذك.","To comment: «Review mode» at the bottom of the side menu, then click the element in one of your windows.")+'</p>'+
+        '<button class="btn mini" id="rvCustCheck">'+bi("تحديث قائمة النوافذ","Refresh the window list")+'</button> <button class="btn mini" id="rvCustOff">'+bi("إزالة المفتاح من هذا الجهاز","Remove the key from this device")+'</button>'
+      : '<p style="font-size:var(--t-sm);color:var(--ink-3)">'+bi("يُصدر المدير العام مفتاح التعليق لأمين النافذة. بعد حفظه هنا يعمل «وضع المراجعة» على النوافذ المسندة إليك وحدها.","The Director General issues the comment key to a window's custodian. Once it is saved here, review mode works on the windows assigned to you, and only those.")+'</p>'+
+        '<div class="fld"><label for="rvCustKey">'+bi("مفتاح التعليق","Comment key")+'</label><input id="rvCustKey" type="password" style="direction:ltr;text-align:start" autocomplete="off" placeholder="QC-…"></div>'+
+        '<details style="margin-top:6px"><summary style="font-size:var(--t-sm);cursor:pointer">'+bi("عنوان الجسر","Bridge address")+'</summary>'+
+          '<div class="fld"><label for="rvCustUrl">'+bi("عنوان الجسر — معبّأ مسبقاً، ويُغيَّر فقط إن أُعطيت عنواناً آخر","Bridge address — filled in; change it only if you were given another")+'</label>'+
+          '<input id="rvCustUrl" style="direction:ltr;text-align:start" autocomplete="off" value="'+gxEsc(defUrl)+'"></div></details>'+
+        '<div style="margin-top:8px"><button class="btn btn-p" id="rvCustSave">'+bi("حفظ والتحقق","Save and check")+'</button> <span id="rvCustMsg" class="kerr" role="status"></span></div>';
+  }
+  // review mode is offered to the DG, and to anyone holding a valid key with at least one window
+  function rvToggleSync(){
+    var may=!!SESSION && (rvIsDG() || (rvAllowed()||[]).length>0);
+    var t=document.getElementById("rvToggle"); if(t) t.hidden=!may;
+    var hp=t&&t.nextElementSibling&&t.nextElementSibling.matches&&t.nextElementSibling.matches("[data-qhelp]")?t.nextElementSibling:null; if(hp) hp.hidden=!may;
+    if(!may && RVON) rvSetMode(false);
   }
   function rvCustPing(url, key){
     return fetch(url+"?key="+encodeURIComponent(key)+"&fn=ping").then(function(r){ return r.json(); });
   }
   document.addEventListener("click",function(e){
     if(e.target.closest&&e.target.closest("#rvCustSave")){
-      var url=(document.getElementById("rvCustUrl").value||"").trim(), key=(document.getElementById("rvCustKey").value||"").trim();
+      var url=((document.getElementById("rvCustUrl")||{}).value||"").trim(), key=(document.getElementById("rvCustKey").value||"").trim();
       var msg=document.getElementById("rvCustMsg");
       if(!/^https:\/\/script\.google\.com\//.test(url)||key.length<20){ msg.textContent=isAr()?"يلزم عنوان الجسر ومفتاح التعليق كما أصدرهما المدير العام.":"Enter the bridge address and the comment key exactly as issued."; return; }
       msg.textContent=isAr()?"جارٍ التحقق…":"Checking…";
