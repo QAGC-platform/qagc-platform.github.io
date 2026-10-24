@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>منصة ضمان الجودة</title>
-<meta name="qagc-ver" content="beta 95">
+<meta name="qagc-ver" content="beta 96">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -4354,6 +4354,9 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
           <p class="subh" style="margin-top:var(--sp-4)"><span lang="ar">النوافذ لكل أمين</span><span lang="en">Windows per custodian</span></p>
           <div id="custByPerson"></div>
           <div id="custKeyOut"></div>
+          <p class="subh" style="margin-top:var(--sp-5)"><span lang="ar">ربط Claude بالجسر</span><span lang="en">Connecting Claude to the bridge</span></p>
+          <p style="font-size:var(--t-sm);color:var(--ink-3)"><span lang="ar">التعليقات تُنفَّذ في جلسة Claude لدى مالك المنصة. مفتاح Claude يقرأ لوحة التعليقات ويغلق التعليق بعد تنفيذه، ولا يملك غير ذلك.</span><span lang="en">Comments are carried out in the platform owner's Claude session. The Claude key reads the comment board and closes a comment once it is done, and can do nothing else.</span></p>
+          <div id="claudeKeyBox"></div>
         </div>
       </div>
 
@@ -14587,6 +14590,49 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     gxToast("حُفظ أمين النافذة.","Custodian saved.");
   });
   document.addEventListener("click",function(e){ if(e.target.closest&&e.target.closest('[data-opane="ow-cust"]')) drawCustodians(); });
+  // ── the Claude key: issued here, shown once, saved by the owner into a file on his Mac ──
+  function drawClaudeKey(status){
+    var h=document.getElementById("claudeKeyBox"); if(!h) return;
+    if(!rvIsDG()){ h.innerHTML=""; return; }
+    h.innerHTML='<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">'+
+      '<span style="font-size:var(--t-sm)">'+(status&&status.issued?bi("مفتاح Claude صادر في "+gxEsc(status.issued),"Claude key issued on "+gxEsc(status.issued)):bi("لا مفتاح لـ Claude بعد","No Claude key yet"))+'</span>'+
+      '<button class="mini yes" id="claudeKeyNew">'+(status&&status.issued?bi("مفتاح جديد بدل الحالي","A new key in place of this one"):bi("إصدار مفتاح Claude","Issue the Claude key"))+'</button>'+
+      (status&&status.issued?'<button class="mini no" id="claudeKeyOff">'+bi("سحب المفتاح","Withdraw the key")+'</button>':'')+'</div><div id="claudeKeyOut"></div>';
+  }
+  function claudeSay(kind, html){ var o=document.getElementById("claudeKeyOut"); if(!o) return; o.innerHTML='<div class="gatemsg '+kind+'" style="margin-top:var(--sp-3)">'+html+'</div>'; try{ o.scrollIntoView({block:"nearest",behavior:"smooth"}); }catch(_){} }
+  function claudeStatus(){
+    if(!rvIsDG()) { drawClaudeKey(null); return; }
+    custBridge({fn:"claudeKeyStatus"}).then(function(j){ drawClaudeKey(j&&j.ok?j:null); }).catch(function(){ drawClaudeKey(null); });
+  }
+  document.addEventListener("click",function(e){
+    if(e.target.closest&&e.target.closest('[data-opane="ow-cust"]')) setTimeout(claudeStatus,0);
+    if(e.target.closest&&e.target.closest("#claudeKeyNew")){
+      if(!rvIsDG()) return;
+      if(!dgCalCfg()){ claudeSay("bad", bi("الجسر غير مربوط على هذا الجهاز.","The bridge is not connected on this device.")); return; }
+      claudeSay("tip", bi("يلزم تأكيد الإصدار بخطوتين…","Confirm with the two-step code…"));
+      stepUp("accounts", bi("إصدار مفتاح Claude للجسر","Issuing the Claude key for the bridge"), function(){
+        claudeSay("tip", bi("جارٍ الإصدار عبر الجسر…","Issuing through the bridge…"));
+        var key="CL-"+credCode(32);
+        custSha(key).then(function(h){ return custBridge({fn:"setClaudeKey", keyHash:h}); }).then(function(j){
+          if(!j||!j.ok){ claudeSay("bad", bi("رفض الجسر: ","The bridge refused: ")+gxEsc(String((j&&j.error)||"—"))); return; }
+          drawClaudeKey({issued:PLATFORM_TODAY});
+          claudeSay("tip", bi("مفتاح Claude — يظهر مرة واحدة. على جهاز Mac لمالك المنصة: نسخ المفتاح، ثم في Terminal:","The Claude key — shown once. On the platform owner's Mac: copy the key, then in Terminal:")+
+            '<div class="tempkey" style="direction:ltr;font-size:1.05em;letter-spacing:.04em;margin:8px 0;word-break:break-all">'+key+'</div>'+
+            '<div style="direction:ltr;font-family:var(--mono,monospace);font-size:var(--t-sm)">pbpaste &gt; ~/.qagc-claude-key &amp;&amp; chmod 600 ~/.qagc-claude-key</div>');
+        }).catch(function(err){ claudeSay("bad", bi("تعذّر الاتصال بالجسر. ","The bridge could not be reached. ")+gxEsc(String(err&&err.message||""))); });
+      });
+      return;
+    }
+    if(e.target.closest&&e.target.closest("#claudeKeyOff")){
+      if(!rvIsDG()) return;
+      stepUp("accounts", bi("سحب مفتاح Claude","Withdrawing the Claude key"), function(){
+        custBridge({fn:"revokeClaudeKey"}).then(function(j){
+          if(!j||!j.ok){ claudeSay("bad", bi("رفض الجسر.","The bridge refused.")); return; }
+          drawClaudeKey(null); claudeSay("ok", bi("سُحب مفتاح Claude.","The Claude key was withdrawn."));
+        }).catch(function(){ claudeSay("bad", bi("تعذّر الاتصال بالجسر.","The bridge could not be reached.")); });
+      });
+    }
+  });
   // comment keys: made here, shown once, registered with the bridge as a hash only
   function custIssued(){ try{ return JSON.parse(localStorage.getItem("qagcCustIssued")||"{}")||{}; }catch(_){ return {}; } }
   function custIssuedSave(o){ try{ localStorage.setItem("qagcCustIssued", JSON.stringify(o)); }catch(_){} }

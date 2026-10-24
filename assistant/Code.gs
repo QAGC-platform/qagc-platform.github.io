@@ -189,6 +189,15 @@ function custodianOf_(e) {
   const c = custodians_()[sha256_(key)];
   return (c && c.active !== false) ? c : null;
 }
+// ── the Claude key: reads the review board and closes notes, nothing else ──
+// The surgeon's Claude session implements what custodians ask for. Its key is issued by the DG
+// with the master key; the bridge keeps only its SHA-256.
+function claudeOf_(e) {
+  const key = (e && e.parameter && e.parameter.key) || '';
+  const h = PROPS.getProperty('QAGC_CLAUDE_KEY_HASH') || '';
+  return !!(key && h && key.length >= 20 && key !== PROPS.getProperty('QAGC_API_KEY') && sha256_(key) === h);
+}
+
 // a custodian key sends at most 120 notes an hour
 function custodianQuota_(c, n) {
   const cache = CacheService.getScriptCache(), k = 'cq_' + c.person;
@@ -309,7 +318,11 @@ function addFeedback_(body, cust) {
 }
 
 function doGet(e) {
-  if (!authed_(e)) {
+  if (!authed_(e) && claudeOf_(e)) {
+    const cfn = e.parameter.fn || 'ping';
+    if (cfn === 'ping') return json_({ ok: true, service: 'qagc-assistant', claude: true });
+    if (cfn !== 'feedback') return json_({ ok: false, error: 'this key may only read the review board' });
+  } else if (!authed_(e)) {
     const cust = custodianOf_(e);
     if (cust && (e.parameter.fn || 'ping') === 'ping')
       return json_({ ok: true, service: 'qagc-assistant', custodian: true, name: cust.name || '', windows: cust.windows || [] });
@@ -401,8 +414,9 @@ function doPost(e) {
     try { pb = JSON.parse(e.postData.contents || '{}'); } catch (_) { return json_({ ok: false, error: 'bad key' }); }
     if (AUTH_PUBLIC.indexOf(pb.fn) >= 0) return authPublic_(pb.fn, pb);
   }
-  const cust = authed_(e) ? null : custodianOf_(e);
-  if (!authed_(e) && !cust) return json_({ ok: false, error: 'bad key' });
+  const claude = !authed_(e) && claudeOf_(e);
+  const cust = (authed_(e) || claude) ? null : custodianOf_(e);
+  if (!authed_(e) && !cust && !claude) return json_({ ok: false, error: 'bad key' });
   let body = {};
   try { body = JSON.parse(e.postData.contents || '{}'); } catch (err) {
     return json_({ ok: false, error: 'body is not JSON' });
@@ -412,6 +426,15 @@ function doPost(e) {
     if (fn !== 'addFeedback') return json_({ ok: false, error: 'this key may only send review notes' });
     return addFeedback_(body, cust);
   }
+  if (claude && fn !== 'resolveFeedback') return json_({ ok: false, error: 'this key may only close review notes' });
+  if (fn === 'setClaudeKey') {
+    const h = String(body.keyHash || '').toLowerCase();
+    if (!/^[0-9a-f]{64}$/.test(h)) return json_({ ok: false, error: 'keyHash must be a SHA-256 hex' });
+    PROPS.setProperty('QAGC_CLAUDE_KEY_HASH', h); PROPS.setProperty('QAGC_CLAUDE_KEY_AT', new Date().toISOString().slice(0, 10));
+    return json_({ ok: true });
+  }
+  if (fn === 'revokeClaudeKey') { PROPS.deleteProperty('QAGC_CLAUDE_KEY_HASH'); PROPS.deleteProperty('QAGC_CLAUDE_KEY_AT'); return json_({ ok: true }); }
+  if (fn === 'claudeKeyStatus') return json_({ ok: true, issued: PROPS.getProperty('QAGC_CLAUDE_KEY_AT') || '' });
 
   // ── accounts: kept and issued with the master key only ──
   if (fn === 'acctSync') {
