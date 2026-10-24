@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>منصة ضمان الجودة</title>
-<meta name="qagc-ver" content="beta 93">
+<meta name="qagc-ver" content="beta 94">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -3940,6 +3940,12 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
 
       <!-- kpis -->
       <div class="pane" id="ow-acc">
+        <div class="card">
+          <div class="card-h"><div class="chrow"><div>
+            <span class="ceye"><span lang="ar">التحقق من الدخول لكل الأجهزة</span><span lang="en">Sign-in checked for every device</span></span>
+            <h2><span lang="ar">الدخول عبر الجسر</span><span lang="en">Bridge sign-in</span></h2></div></div></div>
+          <div id="authCard"></div>
+        </div>
         <div class="card">
           <div class="card-h"><div class="chrow"><span class="ib gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><div>
             <span class="ceye"><span lang="ar">من يدخل، وبأي صلاحية</span><span lang="en">Who signs in, and as what</span></span>
@@ -12933,6 +12939,62 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var out=credCode(9);
     return out.slice(0,3)+"-"+out.slice(3,6)+"-"+out.slice(6);
   }
+  // ── sign-in through the bridge: once the DG switches it on, every device checks there ──
+  var AUTH={on:false};
+  try{ AUTH.on=localStorage.getItem("qagcAuthOn")==="1"; }catch(_){}
+  function bridgeUrl(){
+    var c=(typeof dgCalCfg==="function")?dgCalCfg():null; if(c&&c.url) return c.url;
+    var el=document.getElementById("aiCfgUrl"); return el?(el.getAttribute("value")||""):"";
+  }
+  function bridgePublic(body){
+    var u=bridgeUrl(); if(!u) return Promise.reject(new Error("no bridge"));
+    return fetch(u,{method:"POST",body:JSON.stringify(body)}).then(function(r){ return r.json(); });
+  }
+  function bridgeMaster(body){
+    var c=(typeof dgCalCfg==="function")?dgCalCfg():null; if(!c) return Promise.reject(new Error("no master"));
+    return fetch(c.url+"?key="+encodeURIComponent(c.key),{method:"POST",body:JSON.stringify(body)}).then(function(r){ return r.json(); });
+  }
+  function authToken(){ try{ return localStorage.getItem("qagcToken")||""; }catch(_){ return ""; } }
+  function authSetToken(t){ try{ if(t) localStorage.setItem("qagcToken",t); else localStorage.removeItem("qagcToken"); }catch(_){} }
+  function authSetOn(on){ AUTH.on=!!on; try{ localStorage.setItem("qagcAuthOn", on?"1":"0"); }catch(_){} }
+  // the platform's account for an account the bridge vouched for; the bridge's role wins
+  function authAccount(acc){
+    var a=acctOf(acc.u);
+    if(!a){ a={u:acc.u, p:null, role:acc.role, sid:acc.sid, must:false, active:true, twofa:false, who:[acc.u,acc.u], dep:["—","—"]}; ACCOUNTS.push(a); }
+    a.role=acc.role; if(acc.sid) a.sid=acc.sid; a.must=!!acc.must; a.active=acc.active!==false;
+    return a;
+  }
+  function signInBridge(u, p){
+    gateMsg("tip", bi("جارٍ التحقق عبر الجسر…","Checking through the bridge…"));
+    bridgePublic({fn:"signIn", u:u, p:p}).then(function(j){
+      if(!j||!j.ok){
+        if(j&&j.error==="bridge sign-in is off"){ authSetOn(false); signIn(); return; }
+        if(j&&j.error==="paused") gateMsg("bad", bi("أُوقفت المحاولات لهذا الحساب مؤقتاً. المحاولة بعد 15 دقيقة.","Attempts for this account are paused. Try again in 15 min."));
+        else if(j&&j.error==="suspended") gateMsg("bad", bi("الحساب موقوف. للتواصل: قسم التنسيق والمتابعة.","Account suspended. Contact Coordination & Follow-up."));
+        else gateMsg("bad", bi("اسم المستخدم أو كلمة المرور غير صحيحة.","That username and password do not match."));
+        return;
+      }
+      authSetToken(j.token);
+      var a=authAccount(j.account);
+      document.getElementById("gi-pass").value="";
+      if(a.must){
+        PENDING_NEW=a;
+        document.getElementById("gateForm").hidden=true;
+        document.getElementById("gateNew").hidden=false;
+        gateMsg("tip", bi("كلمة المرور مؤقتة. يلزم تعيين كلمة مرور جديدة للمتابعة.","Temporary password. Set a new password to continue."));
+        return;
+      }
+      gateMsg("",""); openApp(a);
+    }).catch(function(){ gateMsg("bad", bi("تعذّر الاتصال بالجسر للتحقق من الدخول.","The bridge could not be reached to check the sign-in.")); });
+  }
+  // a new password: at the bridge when sign-in is there, else on this device
+  function authSetPassword(a, x){
+    if(!AUTH.on) return credSet(a, x, false);
+    return bridgePublic({fn:"changePassword", token:authToken(), p:x}).then(function(j){
+      if(!j||!j.ok) throw new Error((j&&j.error)||"refused");
+      a.must=false; return true;
+    });
+  }
   function gateMsg(kind,html){
     var el=document.getElementById("gateMsg");
     if(el) el.innerHTML = html ? '<div class="gatemsg '+kind+'">'+html+'</div>' : "";
@@ -12956,6 +13018,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var pRaw=document.getElementById("gi-pass").value||"";
     var u=uRaw.trim().toLowerCase();
     var p=pRaw.trim();                      // a copy-pasted password often carries a space
+    if(AUTH.on){ signInBridge(u, p); return; }
     var a=acctOf(u);
     // one message for both failures: never say which half was wrong —
     // but a keyboard left on Arabic is a different, nameable problem
@@ -12988,7 +13051,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var x=document.getElementById("gn-a").value||"", y=document.getElementById("gn-b").value||"";
     if(x.length<8){ gateMsg("bad", bi("يلزم أن تتكوّن كلمة المرور من ثمانية أحرف على الأقل.","The password must contain at least eight characters.")); return; }
     if(x!==y){ gateMsg("bad", bi("تأكيد كلمة المرور غير مطابق.","Password confirmation does not match.")); return; }
-    credSet(a, x, false).then(function(saved){
+    authSetPassword(a, x).then(function(saved){
       PENDING_NEW=null;
       document.getElementById("gn-a").value=""; document.getElementById("gn-b").value="";
       document.getElementById("gateNew").hidden=true;
@@ -12996,7 +13059,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       gateMsg("", "");
       openApp(a);
       if(!saved) gxToast("تعذّر حفظ كلمة المرور على هذا الجهاز؛ تسري حتى إغلاق الصفحة.","The password could not be saved on this device; it lasts until the page is closed.");
-    });
+    }).catch(function(){ gateMsg("bad", bi("تعذّر تعيين كلمة المرور عبر الجسر.","The password could not be set through the bridge.")); });
   }
   function gateShow(which){
     ["gateForm","gateForgot"].forEach(function(id){ var el=document.getElementById(id); if(el) el.hidden=(id!==which); });
@@ -13010,6 +13073,21 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(!u||!credNorm(code)){ gateMsg("bad", bi("يلزم إدخال اسم المستخدم ورمز الاسترداد.","Enter the username and the recovery code.")); return; }
     if(x.length<8){ gateMsg("bad", bi("يلزم أن تتكوّن كلمة المرور من ثمانية أحرف على الأقل.","The password must contain at least eight characters.")); return; }
     if(x!==y){ gateMsg("bad", bi("تأكيد كلمة المرور غير مطابق.","Password confirmation does not match.")); return; }
+    if(AUTH.on){
+      bridgePublic({fn:"recover", u:u, code:code, p:x}).then(function(j){
+        if(!j||!j.ok){
+          gateMsg("bad", j&&j.error==="paused"
+            ? bi("أُوقفت المحاولات لهذا الحساب مؤقتاً. المحاولة بعد 15 دقيقة.","Attempts for this account are paused. Try again in 15 min.")
+            : bi("اسم المستخدم أو رمز الاسترداد غير صحيح.","That username and recovery code do not match."));
+          return;
+        }
+        authSetToken(j.token);
+        ["gf-user","gf-code","gf-a","gf-b"].forEach(function(id){ document.getElementById(id).value=""; });
+        gateShow("gateForm"); openApp(authAccount(j.account));
+        gxToast("عُيّنت كلمة المرور الجديدة. يلزم إنشاء رمز استرداد جديد من «تفضيلاتي».","The new password is set. Make a new recovery code in My preferences.");
+      }).catch(function(){ gateMsg("bad", bi("تعذّر الاتصال بالجسر.","The bridge could not be reached.")); });
+      return;
+    }
     var mins=credLock(u);
     if(mins){ gateMsg("bad", bi("أُوقفت المحاولات لهذا الحساب مؤقتاً. المحاولة بعد "+mins+" دقيقة.","Attempts for this account are paused. Try again in "+mins+" min.")); return; }
     var a=acctOf(u);
@@ -13046,12 +13124,14 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         qHelp("رمز الاسترداد","Recovery code",
           "يتيح تعيين كلمة مرور جديدة من صفحة الدخول عند نسيانها، دون الرجوع إلى أحد. يظهر مرة واحدة عند إنشائه، ويُستخدم مرة واحدة، وإنشاء رمز جديد يُبطل السابق. يُحفظ خارج المنصة في مكان آمن.",
           "Lets a forgotten password be replaced from the sign-in page without asking anyone. It is shown once when made and works once; making a new one cancels the old. Keep it somewhere safe outside the platform.")+'</p>'+
-      '<p style="font-size:var(--t-sm);color:var(--ink-3)">'+(c.r
+      '<p style="font-size:var(--t-sm);color:var(--ink-3)">'+(AUTH.on
+        ? bi("الدخول عبر الجسر: كلمة المرور ورمز الاسترداد محفوظان في الجسر ويسريان على كل الأجهزة.","Bridge sign-in: the password and the recovery code are kept at the bridge and work on every device.")
+        : c.r
         ? bi("يوجد رمز استرداد صالح، أُنشئ في "+gxEsc(c.rat||"—")+".","A valid recovery code exists, made on "+gxEsc(c.rat||"—")+".")
         : bi("لا يوجد رمز استرداد لهذا الحساب.","This account has no recovery code."))+'</p>'+
       '<button class="btn" id="secCode">'+(c.r?bi("إنشاء رمز جديد بدل الحالي","Make a new code in place of this one"):bi("إنشاء رمز استرداد","Make a recovery code"))+'</button>'+
       '<div id="secCodeOut"></div>'+
-      '<p style="font-size:var(--t-xs);color:var(--warn-ink);margin-top:var(--sp-3)">'+bi("نموذج للعرض: تُحفظ كلمة المرور ورمز الاسترداد على هذا الجهاز فقط.","Demonstration build: the password and the recovery code are kept on this device only.")+'</p>';
+      (AUTH.on?'':'<p style="font-size:var(--t-xs);color:var(--warn-ink);margin-top:var(--sp-3)">'+bi("وضع التجربة: تُحفظ كلمة المرور ورمز الاسترداد على هذا الجهاز فقط.","Test mode: the password and the recovery code are kept on this device only.")+'</p>');
   }
   document.addEventListener("click",function(e){
     if(e.target.closest&&e.target.closest('[data-go="prefs"]')) setTimeout(drawSecurity,0);
@@ -13061,6 +13141,13 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var err=document.getElementById("secErr");
       if(x.length<8){ err.textContent=isAr()?"يلزم أن تتكوّن كلمة المرور من ثمانية أحرف على الأقل.":"The password must contain at least eight characters."; return; }
       if(x!==y){ err.textContent=isAr()?"تأكيد كلمة المرور غير مطابق.":"Password confirmation does not match."; return; }
+      if(AUTH.on){
+        bridgePublic({fn:"changePassword", token:authToken(), old:cur, p:x}).then(function(j){
+          if(!j||!j.ok){ err.textContent=(j&&j.error==="current password")?(isAr()?"كلمة المرور الحالية غير صحيحة.":"The current password is not right."):(isAr()?"تعذّر تغيير كلمة المرور عبر الجسر.":"The password could not be changed through the bridge."); return; }
+          drawSecurity(); gxToast("تغيّرت كلمة المرور.","The password has changed.");
+        }).catch(function(){ err.textContent=isAr()?"تعذّر الاتصال بالجسر.":"The bridge could not be reached."; });
+        return;
+      }
       credCheck(a, cur).then(function(ok){
         if(!ok){ err.textContent=isAr()?"كلمة المرور الحالية غير صحيحة.":"The current password is not right."; return; }
         credSet(a, x, false).then(function(saved){
@@ -13075,7 +13162,9 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       var a2=SESSION; if(!a2) return;
       stepUp("accounts", bi("إنشاء رمز استرداد للحساب ","Making a recovery code for ")+gxEsc(a2.u), function(){
         var raw=credCode(12), code=raw.slice(0,4)+"-"+raw.slice(4,8)+"-"+raw.slice(8);
-        credSetRecovery(a2, code).then(function(saved){
+        (AUTH.on
+          ? bridgePublic({fn:"newRecovery", token:authToken()}).then(function(j){ if(!j||!j.ok) return false; code=j.code; return true; })
+          : credSetRecovery(a2, code)).then(function(saved){
           drawSecurity();
           var out=document.getElementById("secCodeOut"); if(!out) return;
           out.innerHTML=saved
@@ -13087,8 +13176,70 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       });
     }
   });
+  function drawAuthCard(){
+    var h=document.getElementById("authCard"); if(!h) return;
+    if(!(SESSION && SESSION.role==="dg")){ h.innerHTML=""; return; }
+    var hasMaster=!!(typeof dgCalCfg==="function" && dgCalCfg());
+    h.innerHTML = AUTH.on
+      ? '<p><span class="pill p-good">'+bi("مفعّل","On")+'</span> '+bi("كل دخول يُتحقَّق منه عبر الجسر، ولكل حساب كلمة مروره. كلمة المرور التجريبية المشتركة لا تعمل.","Every sign-in is checked through the bridge, and each account has its own password. The shared demonstration password does not work.")+'</p>'+
+        '<p style="font-size:var(--t-sm);color:var(--ink-3)">'+bi("كلمة الدخول الأولى لكل موظف: «إعادة تعيين كلمة المرور» في قائمة الحسابات أدناه، فيُغيّرها عند أول دخول.","Each person's first password: «Reset password» in the account list below; they change it at first sign-in.")+'</p>'+
+        '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="authSync">'+bi("مزامنة قائمة الحسابات مع الجسر","Sync the account list with the bridge")+'</button>'+
+        '<button class="btn" id="authOff">'+bi("إيقاف الدخول عبر الجسر (العودة إلى وضع التجربة)","Switch bridge sign-in off (back to test mode)")+'</button></div><span class="kerr" id="authErr" role="status"></span>'
+      : '<p><span class="pill">'+bi("غير مفعّل — وضع التجربة","Off — test mode")+'</span> '+bi("كلمات المرور محفوظة على كل جهاز وحده، وكلمة المرور التجريبية المشتركة تفتح الحسابات التي لم تُغيَّر.","Passwords are kept on each device alone, and the shared demonstration password opens any account not yet changed.")+'</p>'+
+        (hasMaster
+          ? '<p style="font-size:var(--t-sm)">'+bi("للتفعيل: كلمة مرور جديدة لحساب المدير العام، عشرة أحرف على الأقل. تُستخدم بعدها على كل الأجهزة.","To switch on: a new password for the Director General's account, at least ten characters. It is then used on every device.")+'</p>'+
+            '<div class="frow"><div class="fld"><label for="authA">'+bi("كلمة مرور المدير العام الجديدة","The DG's new password")+'</label><input id="authA" type="password" autocomplete="new-password" style="direction:ltr;text-align:start"></div>'+
+            '<div class="fld"><label for="authB">'+bi("تأكيد كلمة المرور","Confirm the password")+'</label><input id="authB" type="password" autocomplete="new-password" style="direction:ltr;text-align:start"></div></div>'+
+            '<button class="btn btn-p" id="authOn">'+bi("تفعيل الدخول عبر الجسر","Switch bridge sign-in on")+'</button> <span class="kerr" id="authErr" role="status"></span>'
+          : '<p class="kerr">'+bi("يلزم ربط الجسر أولاً من تبويب «الذكاء الاصطناعي».","Connect the bridge first, in the AI tab.")+'</p>');
+  }
+  function authRoster(){ return ACCOUNTS.map(function(a){ return {u:a.u, role:a.role, sid:a.sid, active:a.active!==false}; }); }
+  document.addEventListener("click",function(e){
+    if(e.target.closest&&e.target.closest('[data-opane="ow-acc"]')) setTimeout(drawAuthCard,0);
+    var on=e.target.closest&&e.target.closest("#authOn");
+    if(on){
+      if(!(SESSION&&SESSION.role==="dg")) return;
+      var x=document.getElementById("authA").value||"", y=document.getElementById("authB").value||"", er=document.getElementById("authErr");
+      if(x.length<10){ er.textContent=isAr()?"عشرة أحرف على الأقل.":"At least ten characters."; return; }
+      if(x!==y){ er.textContent=isAr()?"تأكيد كلمة المرور غير مطابق.":"Password confirmation does not match."; return; }
+      stepUp("accounts", bi("تفعيل الدخول عبر الجسر لكل الأجهزة","Switching bridge sign-in on for every device"), function(){
+        er.textContent=isAr()?"جارٍ التفعيل…":"Switching on…";
+        bridgeMaster({fn:"acctSync", accounts:authRoster()}).then(function(j){
+          if(!j||!j.ok) throw new Error("sync");
+          return bridgeMaster({fn:"authSetup", on:true, dgPassword:x});
+        }).then(function(j){
+          if(!j||!j.ok||!j.on) throw new Error((j&&j.error)||"setup");
+          return bridgePublic({fn:"signIn", u:"dg", p:x});
+        }).then(function(j){
+          if(!j||!j.ok) throw new Error("sign-in");
+          authSetToken(j.token); authSetOn(true); authAccount(j.account);
+          document.getElementById("authA").value=""; document.getElementById("authB").value="";
+          drawAuthCard(); drawSecurity();
+          gxToast("الدخول عبر الجسر مفعّل. لكل موظف كلمة مؤقتة من قائمة الحسابات.","Bridge sign-in is on. Give each person a temporary password from the account list.");
+        }).catch(function(err){ er.textContent=(isAr()?"تعذّر التفعيل: ":"Could not switch on: ")+gxEsc(String(err&&err.message||"")); });
+      });
+      return;
+    }
+    if(e.target.closest&&e.target.closest("#authOff")){
+      if(!(SESSION&&SESSION.role==="dg")) return;
+      stepUp("accounts", bi("إيقاف الدخول عبر الجسر والعودة إلى وضع التجربة","Switching bridge sign-in off, back to test mode"), function(){
+        bridgeMaster({fn:"authSetup", on:false}).then(function(j){
+          if(!j||!j.ok) throw new Error("refused");
+          authSetOn(false); drawAuthCard(); drawSecurity(); gxToast("عاد الدخول إلى وضع التجربة.","Sign-in is back in test mode.");
+        }).catch(function(){ var er=document.getElementById("authErr"); if(er) er.textContent=isAr()?"تعذّر الإيقاف.":"Could not switch off."; });
+      });
+      return;
+    }
+    if(e.target.closest&&e.target.closest("#authSync")){
+      bridgeMaster({fn:"acctSync", accounts:authRoster()}).then(function(j){
+        gxToast(j&&j.ok?"زُوِّد الجسر بقائمة الحسابات.":"تعذّرت المزامنة.", j&&j.ok?"The bridge has the account list.":"The sync failed.");
+      }).catch(function(){ gxToast("تعذّر الاتصال بالجسر.","The bridge could not be reached."); });
+    }
+  });
   function signOut(){
     var sco=document.getElementById("secCodeOut"); if(sco) sco.innerHTML="";
+    if(AUTH.on && authToken()){ bridgePublic({fn:"signOut", token:authToken()}).catch(function(){}); }
+    authSetToken("");
     SESSION=null;
     try{ localStorage.removeItem("qagcSession"); }catch(_){}
     document.getElementById("gate").classList.remove("done");
@@ -13342,6 +13493,14 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       stepUp("accounts",
         bi("إعادة تعيين كلمة مرور: ","Reset the password for: ")+bi(a.who[0],a.who[1]),
         function(){
+          if(AUTH.on){
+            bridgeMaster({fn:"acctTemp", u:a.u}).then(function(j){
+              if(!j||!j.ok){ gxToast("رفض الجسر إصدار كلمة مؤقتة.","The bridge refused the temporary password."); return; }
+              a.newkey=j.temp; a.must=true; drawAccounts();
+              setTimeout(function(){ a.newkey=null; drawAccounts(); }, 30000);
+            }).catch(function(){ gxToast("تعذّر الاتصال بالجسر.","The bridge could not be reached."); });
+            return;
+          }
           var k=tempKey(); a.newkey=k;
           credSet(a, k, true).then(function(){ drawAccounts(); });
           setTimeout(function(){ a.newkey=null; drawAccounts(); }, 30000);   // shown once
@@ -13354,7 +13513,15 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       stepUp("accounts",
         (a2.active?bi("إيقاف حساب: ","Suspend the account of: "):bi("تفعيل حساب: ","Enable the account of: "))+
           bi(a2.who[0],a2.who[1]),
-        function(){ a2.active=!a2.active; drawAccounts(); });
+        function(){
+          if(AUTH.on){
+            bridgeMaster({fn:"acctActive", u:a2.u, active:!a2.active}).then(function(j){
+              if(!j||!j.ok){ gxToast("رفض الجسر تغيير حالة الحساب.","The bridge refused."); return; }
+              a2.active=j.active; drawAccounts();
+            }).catch(function(){ gxToast("تعذّر الاتصال بالجسر.","The bridge could not be reached."); });
+            return;
+          }
+          a2.active=!a2.active; drawAccounts(); });
       return;
     }
     var f=e.target.closest("[data-ac2fa]");
@@ -13411,12 +13578,16 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       : ROLE_NAV[ROLE].slice();
     // a roster with nobody in it is not an empty page, it is a tab that should not exist
     if(!ALL_TABS && !peopleInScope().length) allowed=allowed.filter(function(x){return x!=="people";});
+    // a custodian viewing as someone else sees only their own windows
+    var cvw=(typeof custViewWindows==="function")?custViewWindows():null;
+    if(cvw && SESSION && (ROLE!==SESSION.role || VIEW_AS)) allowed=allowed.filter(function(x){ return cvw.indexOf(x)>=0; });
     document.querySelectorAll(".nav button").forEach(function(b){
       b.hidden = allowed.indexOf(b.dataset.go)<0;
     });
     var cur=document.querySelector(".screen.on");
     if(cur && allowed.indexOf(cur.id)<0 && cur.id!=="person"){
-      var back=document.querySelector('[data-go="'+ROLE_HOME[ROLE]+'"]'); if(back) back.click();
+      var backK=allowed.indexOf(ROLE_HOME[ROLE])>=0?ROLE_HOME[ROLE]:allowed[0];
+      var back=backK?document.querySelector('[data-go="'+backK+'"]'):null; if(back) back.click();
     }
     var who=ROLE_WHO[ROLE];
     var nm=document.querySelector(".who-name"), rl=document.querySelector(".who-role"),
@@ -13425,6 +13596,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(rl) rl.innerHTML=bi(who[1][0],who[1][1]);
     if(av) av.textContent=who[2];
     var home=(OWN.landing && ROLE_NAV[ROLE].indexOf(OWN.landing)>=0) ? OWN.landing : ROLE_HOME[ROLE];
+    if(allowed.indexOf(home)<0 && allowed.length) home=allowed[0];
     var btn=document.querySelector('[data-go="'+home+'"]');
     if(btn) btn.click();
     // the roster is scoped, so it must be redrawn when the scope changes
@@ -13443,11 +13615,15 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   // viewing as another role or person, and showing every tab, are review aids for the
   // Director General's own account; for anyone else they are hidden and refused
+  // a custodian may also view as other roles and accounts — only ever on their own windows
+  function custViewWindows(){ if(!SESSION||SESSION.role==="dg") return null; var a=(typeof rvAllowed==="function")?rvAllowed():[]; return (a&&a.length)?a:null; }
+  function testAidsMay(){ return !!(SESSION && (SESSION.role==="dg" || custViewWindows())); }
   function testAidsSync(){
-    var dg=!!(SESSION && SESSION.role==="dg");
-    var box=document.querySelector(".roleswitch"); if(box) box.hidden=!dg;
+    var dg=!!(SESSION && SESSION.role==="dg"), may=testAidsMay();
+    var box=document.querySelector(".roleswitch"); if(box) box.hidden=!may;
     var at=document.getElementById("allTabs"); if(at) at.hidden=!dg;
-    if(!dg && SESSION){
+    if(!dg) ALL_TABS=false;
+    if(!may && SESSION){
       var reset=(ROLE!==SESSION.role)||VIEW_AS||ALL_TABS;
       VIEW_AS=null; ALL_TABS=false; ROLE=SESSION.role;
       var r2=document.getElementById("roleSel"); if(r2) r2.value=ROLE;
@@ -13457,10 +13633,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     return false;
   }
   var rs=document.getElementById("roleSel");
-  if(rs) rs.addEventListener("change",function(){ if(!(SESSION&&SESSION.role==="dg")){ testAidsSync(); applyRole(); return; } VIEW_AS=null; var ps=document.getElementById("personSel"); if(ps) ps.value=""; ROLE=this.value; applyRole(); });
+  if(rs) rs.addEventListener("change",function(){ if(!testAidsMay()){ testAidsSync(); applyRole(); return; } VIEW_AS=null; var ps=document.getElementById("personSel"); if(ps) ps.value=""; ROLE=this.value; applyRole(); });
   var psel=document.getElementById("personSel");
   if(psel){ psel.innerHTML='<option value="">'+(isAr()?"— الدور فقط":"— role only")+'</option>'+STAFF.map(function(p){ return '<option value="'+p.id+'">'+p.who[0]+' — '+((p.desig&&p.desig[0])||"")+'</option>'; }).join("");
-    psel.addEventListener("change",function(){ if(!(SESSION&&SESSION.role==="dg")){ testAidsSync(); applyRole(); return; } VIEW_AS=this.value||null; if(VIEW_AS){ var acc=ACCOUNTS.filter(function(a){return a.sid===VIEW_AS;})[0]; ROLE=acc?acc.role:"staff"; if(rs) rs.value=ROLE; } applyRole(); }); }
+    psel.addEventListener("change",function(){ if(!testAidsMay()){ testAidsSync(); applyRole(); return; } VIEW_AS=this.value||null; if(VIEW_AS){ var acc=ACCOUNTS.filter(function(a){return a.sid===VIEW_AS;})[0]; ROLE=acc?acc.role:"staff"; if(rs) rs.value=ROLE; } applyRole(); }); }
   var atb=document.getElementById("allTabs");
   if(atb) atb.addEventListener("click",function(){
     if(!(SESSION&&SESSION.role==="dg")){ testAidsSync(); applyRole(); return; }
@@ -14753,7 +14929,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       rvCustPing(url,key).then(function(j){
         if(!j||!j.ok||!j.custodian){ msg.textContent=isAr()?"رفض الجسر هذا المفتاح.":"The bridge refused this key."; return; }
         try{ localStorage.setItem("qagcCustKey", JSON.stringify({url:url, key:key, windows:j.windows||[], name:j.name||""})); }catch(_){}
-        rvDrawCust(); rvToast(bi("حُفظ مفتاح التعليق.","Comment key saved."));
+        rvDrawCust(); testAidsSync(); rvToast(bi("حُفظ مفتاح التعليق.","Comment key saved."));
       }).catch(function(){ msg.textContent=isAr()?"تعذّر الاتصال بالجسر.":"The bridge could not be reached."; });
       return;
     }
@@ -15283,12 +15459,30 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   // (Demo-grade: the built platform restores a server-side session token instead.)
   try{
     var savedU=localStorage.getItem("qagcSession");
-    if(savedU && !SESSION){
+    if(AUTH.on){
+      var tk=authToken();
+      if(tk){
+        bridgePublic({fn:"whoami", token:tk}).then(function(j){
+          if(j&&j.ok&&!SESSION){ var ra=authAccount(j.account); if(ra.active&&!ra.must){ gateMsg("",""); openApp(ra); } }
+          else if(!(j&&j.ok)){ authSetToken(""); try{ localStorage.removeItem("qagcSession"); }catch(_){} }
+        }).catch(function(){ gateMsg("bad", bi("تعذّر الاتصال بالجسر؛ يلزم الاتصال لتسجيل الدخول.","The bridge could not be reached; a connection is needed to sign in.")); });
+      } else localStorage.removeItem("qagcSession");
+    } else if(savedU && !SESSION){
       var savedA=acctOf(savedU);
       if(savedA && savedA.active && !savedA.must){ gateMsg("",""); openApp(savedA); }
       else localStorage.removeItem("qagcSession");
     }
   }catch(_){}
+  // the bridge says which sign-in is in force; a change since the last visit applies now
+  bridgePublic({fn:"authMode"}).then(function(j){
+    if(!j||!j.ok) return;
+    var was=AUTH.on; authSetOn(!!j.on);
+    if(j.on && !was && SESSION){
+      signOut();
+      gateMsg("tip", bi("الدخول الآن عبر الجسر. يلزم تسجيل الدخول بكلمة المرور الخاصة بك.","Sign-in now goes through the bridge. Sign in with your own password."));
+    }
+    if(typeof drawAuthCard==="function") drawAuthCard();
+  }).catch(function(){});
 
   document.getElementById("lang").addEventListener("click", function(){
     var ar = document.documentElement.lang === "ar";

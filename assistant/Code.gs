@@ -197,6 +197,93 @@ function custodianQuota_(c, n) {
   cache.put(k, String(used + n), 3600);
   return true;
 }
+// ── sign-in for every device: accounts and their password hashes live here ──
+// While QAGC_AUTH_ON is not '1' the platform keeps its local sign-in. Once the DG switches it on,
+// every sign-in is checked here and the shared demonstration password stops working.
+function accts_() { try { return JSON.parse(PROPS.getProperty('QAGC_ACCOUNTS') || '{}') || {}; } catch (_) { return {}; } }
+function acctsSave_(a) { PROPS.setProperty('QAGC_ACCOUNTS', JSON.stringify(a)); }
+function authOn_() { return PROPS.getProperty('QAGC_AUTH_ON') === '1'; }
+function salt_() { return Utilities.getUuid().replace(/-/g, ''); }
+function pwHash_(salt, pw) { let h = salt + ':' + String(pw); for (let i = 0; i < 1500; i++) h = sha256_(h); return h; }
+function pwOk_(rec, pw) { return !!(rec && rec.h && rec.s && pwHash_(rec.s, pw) === rec.h); }
+function pwSet_(rec, pw, must) { rec.s = salt_(); rec.h = pwHash_(rec.s, pw); rec.must = !!must; rec.changed = new Date().toISOString(); }
+function newCode_(n) {
+  const al = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const raw = sha256_(Utilities.getUuid() + Utilities.getUuid() + Date.now());
+  let o = ''; for (let i = 0; i < n; i++) o += al[parseInt(raw.substr(i * 2, 2), 16) % al.length];
+  return o;
+}
+// five failures for one username pause it for fifteen minutes
+function locked_(u) { return Number(CacheService.getScriptCache().get('lk_' + u) || 0) >= 5; }
+function failed_(u) { const c = CacheService.getScriptCache(), k = 'lk_' + u; c.put(k, String(Number(c.get(k) || 0) + 1), 900); }
+function cleared_(u) { CacheService.getScriptCache().remove('lk_' + u); }
+// sessions: a random token; only its hash is kept, for twelve hours
+function sessions_() { try { return JSON.parse(PROPS.getProperty('QAGC_SESSIONS') || '{}') || {}; } catch (_) { return {}; } }
+function sessionNew_(u) {
+  const all = sessions_(), now = Date.now();
+  Object.keys(all).forEach(k => { if (all[k].exp < now) delete all[k]; });
+  const t = Utilities.getUuid() + Utilities.getUuid();
+  all[sha256_(t)] = { u: u, exp: now + 12 * 3600 * 1000 };
+  PROPS.setProperty('QAGC_SESSIONS', JSON.stringify(all));
+  return t;
+}
+function sessionUser_(t) {
+  if (!t) return null;
+  const s = sessions_()[sha256_(String(t))];
+  return (s && s.exp > Date.now()) ? s.u : null;
+}
+function sessionEnd_(u, t) {
+  const all = sessions_();
+  Object.keys(all).forEach(k => { if ((t && k === sha256_(String(t))) || (!t && all[k].u === u)) delete all[k]; });
+  PROPS.setProperty('QAGC_SESSIONS', JSON.stringify(all));
+}
+function acctPublic_(u, r) { return { u: u, role: r.role, sid: r.sid || '', active: r.active !== false, must: !!r.must, hasPassword: !!r.h, hasRecovery: !!r.rh }; }
+// the requests a person can make before or about their own sign-in — no bridge key involved
+function authPublic_(fn, body) {
+  if (fn === 'authMode') return json_({ ok: true, on: authOn_() });
+  if (!authOn_()) return json_({ ok: false, error: 'bridge sign-in is off' });
+  const u = String(body.u || '').trim().toLowerCase().slice(0, 40);
+  const all = accts_();
+  if (fn === 'signIn') {
+    if (locked_(u)) return json_({ ok: false, error: 'paused', minutes: 15 });
+    const r = all[u];
+    if (!r || !pwOk_(r, body.p)) { failed_(u); return json_({ ok: false, error: 'no match' }); }
+    if (r.active === false) return json_({ ok: false, error: 'suspended' });
+    cleared_(u);
+    return json_({ ok: true, token: sessionNew_(u), account: acctPublic_(u, r) });
+  }
+  if (fn === 'recover') {
+    if (locked_(u)) return json_({ ok: false, error: 'paused', minutes: 15 });
+    const r = all[u], code = String(body.code || '').replace(/[\s-]/g, '').toUpperCase();
+    if (!r || !r.rh || sha256_(r.rs + ':' + code) !== r.rh) { failed_(u); return json_({ ok: false, error: 'no match' }); }
+    if (String(body.p || '').length < 8) return json_({ ok: false, error: 'password too short' });
+    if (r.active === false) return json_({ ok: false, error: 'suspended' });
+    pwSet_(r, body.p, false); delete r.rh; delete r.rs;                 // a code works once
+    acctsSave_(all); cleared_(u); sessionEnd_(u, null);
+    return json_({ ok: true, token: sessionNew_(u), account: acctPublic_(u, r) });
+  }
+  // the rest need a live session
+  const who = sessionUser_(body.token);
+  if (!who || !all[who]) return json_({ ok: false, error: 'not signed in' });
+  const me = all[who];
+  if (fn === 'whoami') return json_({ ok: true, account: acctPublic_(who, me) });
+  if (fn === 'signOut') { sessionEnd_(who, body.token); return json_({ ok: true }); }
+  if (fn === 'changePassword') {
+    if (!me.must && !pwOk_(me, body.old)) return json_({ ok: false, error: 'current password' });
+    if (String(body.p || '').length < 8) return json_({ ok: false, error: 'password too short' });
+    pwSet_(me, body.p, false); acctsSave_(all);
+    return json_({ ok: true, account: acctPublic_(who, me) });
+  }
+  if (fn === 'newRecovery') {
+    const code = newCode_(12);
+    me.rs = salt_(); me.rh = sha256_(me.rs + ':' + code); me.rat = new Date().toISOString().slice(0, 10);
+    acctsSave_(all);
+    return json_({ ok: true, code: code.slice(0, 4) + '-' + code.slice(4, 8) + '-' + code.slice(8), at: me.rat });
+  }
+  return json_({ ok: false, error: 'unknown request' });
+}
+const AUTH_PUBLIC = ['authMode', 'signIn', 'recover', 'whoami', 'signOut', 'changePassword', 'newRecovery'];
+
 function addFeedback_(body, cust) {
   const notes = Array.isArray(body.notes) ? body.notes.slice(0, 40) : [];
   if (!notes.length) return json_({ ok: false, error: 'notes are required' });
@@ -309,6 +396,11 @@ function doGet(e) {
 }
 
 function doPost(e) {
+  if (!authed_(e) && !custodianOf_(e)) {
+    let pb = {};
+    try { pb = JSON.parse(e.postData.contents || '{}'); } catch (_) { return json_({ ok: false, error: 'bad key' }); }
+    if (AUTH_PUBLIC.indexOf(pb.fn) >= 0) return authPublic_(pb.fn, pb);
+  }
   const cust = authed_(e) ? null : custodianOf_(e);
   if (!authed_(e) && !cust) return json_({ ok: false, error: 'bad key' });
   let body = {};
@@ -319,6 +411,51 @@ function doPost(e) {
   if (cust) {
     if (fn !== 'addFeedback') return json_({ ok: false, error: 'this key may only send review notes' });
     return addFeedback_(body, cust);
+  }
+
+  // ── accounts: kept and issued with the master key only ──
+  if (fn === 'acctSync') {
+    // the platform's roster of accounts; a password is never sent this way
+    const list = Array.isArray(body.accounts) ? body.accounts.slice(0, 300) : [];
+    const all = accts_();
+    list.forEach(a => {
+      const u = String(a.u || '').trim().toLowerCase().slice(0, 40); if (!/^[a-z0-9._-]+$/.test(u)) return;
+      const r = all[u] || {};
+      r.role = ['dg', 'dir', 'head', 'coord', 'staff'].indexOf(a.role) >= 0 ? a.role : 'staff';
+      r.sid = String(a.sid || '').slice(0, 20); if (r.active === undefined) r.active = a.active !== false;
+      all[u] = r;
+    });
+    acctsSave_(all);
+    return json_({ ok: true, count: Object.keys(all).length });
+  }
+  if (fn === 'authSetup') {
+    const all = accts_();
+    if (body.on) {
+      if (String(body.dgPassword || '').length < 10) return json_({ ok: false, error: 'the DG password must have at least 10 characters' });
+      const dg = all.dg || { role: 'dg', sid: 'dg0', active: true };
+      dg.role = 'dg'; dg.active = true; pwSet_(dg, body.dgPassword, false); all.dg = dg;
+      acctsSave_(all); PROPS.setProperty('QAGC_AUTH_ON', '1');
+    } else PROPS.setProperty('QAGC_AUTH_ON', '0');
+    return json_({ ok: true, on: authOn_() });
+  }
+  if (fn === 'acctTemp') {
+    const all = accts_(), u = String(body.u || '').trim().toLowerCase();
+    if (!all[u]) return json_({ ok: false, error: 'no such account' });
+    if (u === 'dg') return json_({ ok: false, error: 'the DG account is recovered with its own code' });
+    const raw = newCode_(9), temp = raw.slice(0, 3) + '-' + raw.slice(3, 6) + '-' + raw.slice(6);
+    pwSet_(all[u], temp, true); acctsSave_(all); sessionEnd_(u, null); cleared_(u);
+    return json_({ ok: true, u: u, temp: temp });
+  }
+  if (fn === 'acctActive') {
+    const all = accts_(), u = String(body.u || '').trim().toLowerCase();
+    if (!all[u]) return json_({ ok: false, error: 'no such account' });
+    if (u === 'dg') return json_({ ok: false, error: 'the DG account cannot be suspended' });
+    all[u].active = !!body.active; acctsSave_(all); if (!body.active) sessionEnd_(u, null);
+    return json_({ ok: true, u: u, active: all[u].active });
+  }
+  if (fn === 'acctList') {
+    const all = accts_();
+    return json_({ ok: true, on: authOn_(), accounts: Object.keys(all).map(u => acctPublic_(u, all[u])) });
   }
 
   // ── custodian keys: issued, re-scoped and withdrawn with the master key only ──
