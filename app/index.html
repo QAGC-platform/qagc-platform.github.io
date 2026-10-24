@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>منصة ضمان الجودة</title>
-<meta name="qagc-ver" content="beta 101">
+<meta name="qagc-ver" content="beta 102">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -2583,6 +2583,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
         </select>
         <div class="rl" style="margin-top:6px"><span lang="ar">عرض حساب محدد</span><span lang="en">View a specific account</span></div>
         <select id="personSel"><option value="">— <span lang="ar">الدور فقط</span></option></select>
+        <button class="btn mini" id="viewReset" hidden style="margin-top:8px;width:100%"><span lang="ar">العودة إلى حسابي</span><span lang="en">Back to my own view</span></button>
       </div>
       <button class="langbtn" id="lang">
         <span lang="ar">English</span><span lang="en">العربية</span>
@@ -13669,6 +13670,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   };
   var ALL_TABS=false;      // review aid: show every tab whatever the persona
   function applyRole(){
+    if(typeof viewResetSync==="function") setTimeout(viewResetSync,0);
     var allowed=ALL_TABS
       ? [].slice.call(document.querySelectorAll(".nav button")).map(function(b){return b.dataset.go;})
       : ROLE_NAV[ROLE].slice();
@@ -13676,7 +13678,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(!ALL_TABS && !peopleInScope().length) allowed=allowed.filter(function(x){return x!=="people";});
     // a custodian viewing as someone else sees only their own windows
     var cvw=(typeof custViewWindows==="function")?custViewWindows():null;
-    if(cvw && SESSION && (ROLE!==SESSION.role || VIEW_AS)) allowed=allowed.filter(function(x){ return cvw.indexOf(x)>=0; });
+    if(cvw && SESSION && viewingOther()) allowed=allowed.filter(function(x){ return cvw.indexOf(x)>=0; });
     document.querySelectorAll(".nav button").forEach(function(b){
       b.hidden = allowed.indexOf(b.dataset.go)<0;
     });
@@ -13713,6 +13715,19 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   // Director General's own account; for anyone else they are hidden and refused
   // a custodian may also view as other roles and accounts — only ever on their own windows
   function custViewWindows(){ if(!SESSION||SESSION.role==="dg") return null; var a=(typeof rvAllowed==="function")?rvAllowed():[]; return (a&&a.length)?a:null; }
+  function viewingOther(){
+    if(!SESSION) return false;
+    return ROLE!==SESSION.role || !!(VIEW_AS && VIEW_AS!==SESSION.sid);
+  }
+  function viewResetSync(){ var b=document.getElementById("viewReset"); if(b) b.hidden=!viewingOther(); }
+  document.addEventListener("click",function(e){
+    if(!(e.target.closest&&e.target.closest("#viewReset"))) return;
+    if(!SESSION) return;
+    VIEW_AS=null; ROLE=SESSION.role; ALL_TABS=false;
+    var r=document.getElementById("roleSel"); if(r) r.value=ROLE;
+    var ps=document.getElementById("personSel"); if(ps) ps.value="";
+    applyRole();
+  });
   function testAidsMay(){ return !!(SESSION && (SESSION.role==="dg" || custViewWindows())); }
   function testAidsSync(){
     var dg=!!(SESSION && SESSION.role==="dg"), may=testAidsMay();
