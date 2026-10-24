@@ -246,7 +246,49 @@ function sessionEnd_(u, t) {
   Object.keys(all).forEach(k => { if ((t && k === sha256_(String(t))) || (!t && all[k].u === u)) delete all[k]; });
   PROPS.setProperty('QAGC_SESSIONS', JSON.stringify(all));
 }
-function acctPublic_(u, r) { return { u: u, role: r.role, sid: r.sid || '', active: r.active !== false, must: !!r.must, hasPassword: !!r.h, hasRecovery: !!r.rh }; }
+function acctPublic_(u, r) { return { u: u, role: r.role, sid: r.sid || '', active: r.active !== false, must: !!r.must, hasPassword: !!r.h, hasRecovery: !!r.rh, hasApp: !!r.ts }; }
+// ── the second step: a code from an authenticator app (RFC 6238, 30 s, 6 digits), checked here ──
+const B32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+function b32enc_(bytes) {
+  let bits = 0, val = 0, out = '';
+  bytes.forEach(b => { val = (val << 8) | (b & 255); bits += 8; while (bits >= 5) { out += B32[(val >>> (bits - 5)) & 31]; bits -= 5; } });
+  if (bits > 0) out += B32[(val << (5 - bits)) & 31];
+  return out;
+}
+function b32dec_(str) {
+  let bits = 0, val = 0; const out = [];
+  String(str).replace(/[\s=]/g, '').toUpperCase().split('').forEach(c => {
+    const i = B32.indexOf(c); if (i < 0) return;
+    val = (val << 5) | i; bits += 5;
+    if (bits >= 8) { out.push((val >>> (bits - 8)) & 255); bits -= 8; }
+  });
+  return out;
+}
+function totpAt_(secret, counter) {
+  const msg = []; let c = counter;
+  for (let i = 7; i >= 0; i--) { msg[i] = c & 255; c = Math.floor(c / 256); }
+  const signed = b => (b > 127 ? b - 256 : b);
+  const h = Utilities.computeHmacSignature(Utilities.MacAlgorithm.HMAC_SHA_1, msg.map(signed), b32dec_(secret).map(signed)).map(b => b & 255);
+  const o = h[19] & 15;
+  const n = ((h[o] & 127) << 24) | (h[o + 1] << 16) | (h[o + 2] << 8) | h[o + 3];
+  return ('000000' + (n % 1000000)).slice(-6);
+}
+// one step either side for clock drift; a code is accepted once
+function totpOk_(rec, secret, code) {
+  code = String(code || '').replace(/\s/g, '');
+  if (!/^\d{6}$/.test(code)) return false;
+  const now = Math.floor(Date.now() / 30000);
+  for (let d = -1; d <= 1; d++) {
+    const ctr = now + d;
+    if (totpAt_(secret, ctr) === code && ctr > (rec.tl || 0)) { rec.tl = ctr; return true; }
+  }
+  return false;
+}
+function newSecret_() {
+  const hex = sha256_(Utilities.getUuid() + Utilities.getUuid() + Date.now());
+  const bytes = []; for (let i = 0; i < 20; i++) bytes.push(parseInt(hex.substr(i * 2, 2), 16));
+  return b32enc_(bytes);
+}
 // the requests a person can make before or about their own sign-in — no bridge key involved
 function authPublic_(fn, body) {
   if (fn === 'authMode') return json_({ ok: true, on: authOn_() });
@@ -283,6 +325,29 @@ function authPublic_(fn, body) {
     pwSet_(me, body.p, false); acctsSave_(all);
     return json_({ ok: true, account: acctPublic_(who, me) });
   }
+  // the second step for a sensitive action: the app code once linked, else the password again
+  if (fn === 'stepCheck') {
+    if (locked_('st_' + who)) return json_({ ok: false, error: 'paused', minutes: 15 });
+    const ok = me.ts ? totpOk_(me, me.ts, body.code) : pwOk_(me, body.p);
+    if (!ok) { failed_('st_' + who); return json_({ ok: false, error: me.ts ? 'code' : 'password', method: me.ts ? 'app' : 'password' }); }
+    cleared_('st_' + who); acctsSave_(all);
+    return json_({ ok: true, method: me.ts ? 'app' : 'password' });
+  }
+  if (fn === 'appBegin') {
+    me.tp = newSecret_(); acctsSave_(all);
+    return json_({ ok: true, secret: me.tp, uri: 'otpauth://totp/' + encodeURIComponent('QAGC:' + who) + '?secret=' + me.tp + '&issuer=QAGC&digits=6&period=30' });
+  }
+  if (fn === 'appConfirm') {
+    if (!me.tp) return json_({ ok: false, error: 'start again' });
+    if (!totpOk_(me, me.tp, body.code)) return json_({ ok: false, error: 'code' });
+    me.ts = me.tp; delete me.tp; acctsSave_(all);
+    return json_({ ok: true, account: acctPublic_(who, me) });
+  }
+  if (fn === 'appOff') {
+    if (!me.ts || !totpOk_(me, me.ts, body.code)) return json_({ ok: false, error: 'code' });
+    delete me.ts; delete me.tl; acctsSave_(all);
+    return json_({ ok: true, account: acctPublic_(who, me) });
+  }
   if (fn === 'newRecovery') {
     const code = newCode_(12);
     me.rs = salt_(); me.rh = sha256_(me.rs + ':' + code); me.rat = new Date().toISOString().slice(0, 10);
@@ -291,7 +356,8 @@ function authPublic_(fn, body) {
   }
   return json_({ ok: false, error: 'unknown request' });
 }
-const AUTH_PUBLIC = ['authMode', 'signIn', 'recover', 'whoami', 'signOut', 'changePassword', 'newRecovery'];
+const AUTH_PUBLIC = ['authMode', 'signIn', 'recover', 'whoami', 'signOut', 'changePassword', 'newRecovery',
+                     'stepCheck', 'appBegin', 'appConfirm', 'appOff'];
 
 function addFeedback_(body, cust) {
   const notes = Array.isArray(body.notes) ? body.notes.slice(0, 40) : [];
@@ -468,6 +534,12 @@ function doPost(e) {
     const raw = newCode_(9), temp = raw.slice(0, 3) + '-' + raw.slice(3, 6) + '-' + raw.slice(6);
     pwSet_(all[u], temp, true); acctsSave_(all); sessionEnd_(u, null); cleared_(u);
     return json_({ ok: true, u: u, temp: temp });
+  }
+  if (fn === 'acctAppReset') {
+    const all = accts_(), u = String(body.u || '').trim().toLowerCase();
+    if (!all[u]) return json_({ ok: false, error: 'no such account' });
+    delete all[u].ts; delete all[u].tp; delete all[u].tl; acctsSave_(all);
+    return json_({ ok: true, u: u });
   }
   if (fn === 'acctActive') {
     const all = accts_(), u = String(body.u || '').trim().toLowerCase();

@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>منصة ضمان الجودة</title>
-<meta name="qagc-ver" content="beta 97">
+<meta name="qagc-ver" content="beta 98">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -12964,7 +12964,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function authAccount(acc){
     var a=acctOf(acc.u);
     if(!a){ a={u:acc.u, p:null, role:acc.role, sid:acc.sid, must:false, active:true, twofa:false, who:[acc.u,acc.u], dep:["—","—"]}; ACCOUNTS.push(a); }
-    a.role=acc.role; if(acc.sid) a.sid=acc.sid; a.must=!!acc.must; a.active=acc.active!==false;
+    a.role=acc.role; if(acc.sid) a.sid=acc.sid; a.must=!!acc.must; a.active=acc.active!==false; a.hasApp=!!acc.hasApp;
     return a;
   }
   function signInBridge(u, p){
@@ -13134,9 +13134,51 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
         : bi("لا يوجد رمز استرداد لهذا الحساب.","This account has no recovery code."))+'</p>'+
       '<button class="btn" id="secCode">'+(c.r?bi("إنشاء رمز جديد بدل الحالي","Make a new code in place of this one"):bi("إنشاء رمز استرداد","Make a recovery code"))+'</button>'+
       '<div id="secCodeOut"></div>'+
+      (AUTH.on
+        ? '<p class="subh" style="margin-top:var(--sp-5)">'+bi("تطبيق المصادقة","Authenticator app")+'</p>'+
+          (a.hasApp
+            ? '<p style="font-size:var(--t-sm)"><span class="pill p-good">'+bi("مرتبط","Linked")+'</span> '+bi("التأكيد بخطوتين يطلب الرمز من هاتفك.","Two-step confirmation asks for the code from your phone.")+'</p>'+
+              '<div class="frow"><div class="fld"><label for="secAppOffCode">'+bi("الرمز الحالي من التطبيق","The current code from the app")+'</label><input id="secAppOffCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" style="direction:ltr;text-align:start"></div></div>'+
+              '<button class="btn" id="secAppOff">'+bi("إلغاء ربط التطبيق","Unlink the app")+'</button>'
+            : '<p style="font-size:var(--t-sm);color:var(--ink-3)">'+bi("بعد الربط يطلب التأكيد بخطوتين رمزاً من هاتفك بدل كلمة المرور. يصلح Google Authenticator أو Microsoft Authenticator.","Once linked, two-step confirmation asks for a code from your phone instead of the password. Google Authenticator or Microsoft Authenticator both work.")+'</p>'+
+              '<button class="btn btn-p" id="secAppStart">'+bi("ربط تطبيق المصادقة","Link an authenticator app")+'</button>')+
+          '<div id="secAppOut"></div><span class="kerr" id="secAppErr" role="status"></span>'
+        : '')+
       (AUTH.on?'':'<p style="font-size:var(--t-xs);color:var(--warn-ink);margin-top:var(--sp-3)">'+bi("وضع التجربة: تُحفظ كلمة المرور ورمز الاسترداد على هذا الجهاز فقط.","Test mode: the password and the recovery code are kept on this device only.")+'</p>');
   }
   document.addEventListener("click",function(e){
+    if(e.target.closest&&e.target.closest("#secAppStart")){
+      var er=document.getElementById("secAppErr"); er.textContent="";
+      bridgePublic({fn:"appBegin", token:authToken()}).then(function(j){
+        if(!j||!j.ok){ er.textContent=isAr()?"تعذّر بدء الربط.":"Linking could not start."; return; }
+        var grouped=j.secret.replace(/(.{4})/g,"$1 ").trim();
+        document.getElementById("secAppOut").innerHTML='<div class="gatemsg tip" style="margin-top:var(--sp-3)">'+
+          bi("في التطبيق: «+» ثم «إدخال مفتاح الإعداد». الاسم: QAGC، والمفتاح:","In the app: «+», then «Enter a setup key». Name: QAGC, and the key:")+
+          '<div class="tempkey" style="direction:ltr;font-size:1.1em;letter-spacing:.08em;margin:8px 0">'+gxEsc(grouped)+'</div>'+
+          bi("النوع: مبني على الوقت. ثم يُكتب هنا أول رمز يظهر في التطبيق:","Type: time-based. Then enter the first code the app shows:")+
+          '<div class="frow" style="margin-top:6px"><div class="fld"><label for="secAppCode">'+bi("الرمز من التطبيق","The code from the app")+'</label><input id="secAppCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" style="direction:ltr;text-align:start"></div></div>'+
+          '<button class="btn btn-p" id="secAppConfirm">'+bi("تأكيد الربط","Confirm the link")+'</button></div>';
+      }).catch(function(){ er.textContent=isAr()?"تعذّر الاتصال بالجسر.":"The bridge could not be reached."; });
+      return;
+    }
+    if(e.target.closest&&e.target.closest("#secAppConfirm")){
+      var er2=document.getElementById("secAppErr"), cd=(document.getElementById("secAppCode").value||"").trim();
+      bridgePublic({fn:"appConfirm", token:authToken(), code:cd}).then(function(j){
+        if(!j||!j.ok){ er2.textContent=isAr()?"الرمز غير صحيح. يُكتب الرمز الظاهر الآن في التطبيق.":"That code is not right. Enter the code the app shows now."; return; }
+        if(SESSION) SESSION.hasApp=true; drawSecurity();
+        gxToast("رُبط تطبيق المصادقة.","The authenticator app is linked.");
+      }).catch(function(){ er2.textContent=isAr()?"تعذّر الاتصال بالجسر.":"The bridge could not be reached."; });
+      return;
+    }
+    if(e.target.closest&&e.target.closest("#secAppOff")){
+      var er3=document.getElementById("secAppErr"), cd2=(document.getElementById("secAppOffCode").value||"").trim();
+      bridgePublic({fn:"appOff", token:authToken(), code:cd2}).then(function(j){
+        if(!j||!j.ok){ er3.textContent=isAr()?"الرمز غير صحيح.":"That code is not right."; return; }
+        if(SESSION) SESSION.hasApp=false; drawSecurity();
+        gxToast("أُلغي ربط التطبيق.","The app was unlinked.");
+      }).catch(function(){ er3.textContent=isAr()?"تعذّر الاتصال بالجسر.":"The bridge could not be reached."; });
+      return;
+    }
     if(e.target.closest&&e.target.closest('[data-go="prefs"]')) setTimeout(drawSecurity,0);
     if(e.target.closest&&e.target.closest("#secChange")){
       var a=SESSION; if(!a) return;
@@ -13254,31 +13296,62 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   var TWOFA={on:true, acts:{approve:true, reject:true, submit:true, budget:true, accounts:true}};
   var STEP=null;
   function stepUp(kind, what, done){
-    var need = TWOFA.on && TWOFA.acts[kind] && (!SESSION || SESSION.twofa!==false);
+    var need = TWOFA.on && TWOFA.acts[kind] && (!SESSION || SESSION.twofa!==false || AUTH.on);
     if(!need){ done(); return; }
-    var code=String(Math.floor(100000+Math.random()*900000));
-    STEP={code:code, done:done};
+    var inp=document.getElementById("stepCode");
     document.getElementById("stepTitle").innerHTML=bi("تأكيد بخطوتين","Two-step confirmation");
     document.getElementById("stepWhat").innerHTML=what;
     document.getElementById("stepErr").textContent="";
-    document.getElementById("stepCode").value="";
-    document.getElementById("stepHint").innerHTML=
-      '<div style="text-align:center;margin-bottom:6px"><span style="display:inline-block;font-family:var(--mono,monospace);font-size:1.7em;font-weight:700;letter-spacing:.18em;direction:ltr;padding:6px 18px;border:2px dashed var(--warn-ink);border-radius:10px;background:var(--surface-2)">'+code+'</span></div>'+
-      bi("هذا رمزك — اكتبه في الخانة أعلاه. (نموذج للعرض: في المنصة المبنية يصل الرمز إلى تطبيق المصادقة أو بريد الوزارة ولا يظهر هنا.)",
-         "This is your code — type it in the box above. (Demonstration build: in the real platform it reaches the authenticator app or ministry mail, never shown here.)");
+    inp.value="";
+    if(AUTH.on && authToken()){
+      // the second step is checked at the bridge: the app's code once linked, else the password again
+      var app=!!(SESSION && SESSION.hasApp);
+      STEP={bridge:true, app:app, done:done};
+      inp.type=app?"text":"password"; inp.setAttribute("inputmode", app?"numeric":"text");
+      inp.setAttribute("maxlength", app?"6":"200"); inp.setAttribute("autocomplete", app?"one-time-code":"current-password");
+      inp.placeholder=app?"······":(isAr()?"كلمة المرور":"Password");
+      document.getElementById("stepHint").innerHTML= app
+        ? bi("الرمز المكوّن من ستة أرقام في تطبيق المصادقة على هاتفك.","The six-digit code in the authenticator app on your phone.")
+        : bi("إعادة إدخال كلمة المرور. ربط تطبيق المصادقة من «تفضيلاتي» يجعل هذه الخطوة رمزاً من الهاتف.","Re-enter your password. Linking an authenticator app in My preferences makes this step a code from your phone.");
+    } else {
+      var code=String(Math.floor(100000+Math.random()*900000));
+      STEP={code:code, done:done};
+      inp.type="text"; inp.setAttribute("inputmode","numeric"); inp.setAttribute("maxlength","6"); inp.placeholder="······";
+      document.getElementById("stepHint").innerHTML=
+        '<div style="text-align:center;margin-bottom:6px"><span style="display:inline-block;font-family:var(--mono,monospace);font-size:1.7em;font-weight:700;letter-spacing:.18em;direction:ltr;padding:4px 14px;border:2px dashed var(--warn-ink);border-radius:10px">'+code+'</span></div>'+
+        bi("وضع التجربة: يظهر الرمز هنا لأن الدخول عبر الجسر غير مفعّل. بعد تفعيله من الإعدادات يأتي الرمز من تطبيق المصادقة ولا يظهر هنا.",
+           "Test mode: the code shows here because bridge sign-in is off. Once it is switched on in Settings, the code comes from an authenticator app and never shows here.");
+    }
     document.getElementById("stepOvl").classList.add("open");
-    setTimeout(function(){ document.getElementById("stepCode").focus(); },40);
+    setTimeout(function(){ inp.focus(); },40);
   }
   function stepConfirm(){
     if(!STEP) return;
     var v=(document.getElementById("stepCode").value||"").trim();
-    if(v!==STEP.code){
-      document.getElementById("stepErr").textContent=isAr()?"الرمز غير صحيح.":"That code is not right.";
+    var err=document.getElementById("stepErr");
+    if(STEP.bridge){
+      if(!v) return;
+      var st=STEP; err.textContent=isAr()?"جارٍ التحقق…":"Checking…";
+      bridgePublic(st.app?{fn:"stepCheck", token:authToken(), code:v}:{fn:"stepCheck", token:authToken(), p:v}).then(function(j){
+        if(STEP!==st) return;
+        if(!j||!j.ok){
+          err.textContent = (j&&j.error==="paused") ? (isAr()?"أُوقفت المحاولات مؤقتاً. المحاولة بعد 15 دقيقة.":"Attempts are paused. Try again in 15 min.")
+            : (j&&j.error==="not signed in") ? (isAr()?"انتهت الجلسة؛ يلزم تسجيل الدخول من جديد.":"The session has ended; sign in again.")
+            : st.app ? (isAr()?"الرمز غير صحيح.":"That code is not right.") : (isAr()?"كلمة المرور غير صحيحة.":"That password is not right.");
+          return;
+        }
+        var fn=st.done; STEP=null; document.getElementById("stepCode").value="";
+        document.getElementById("stepOvl").classList.remove("open"); fn();
+      }).catch(function(){ if(STEP===st) err.textContent=isAr()?"تعذّر الاتصال بالجسر.":"The bridge could not be reached."; });
       return;
     }
-    var fn=STEP.done; STEP=null;
+    if(v!==STEP.code){
+      err.textContent=isAr()?"الرمز غير صحيح.":"That code is not right.";
+      return;
+    }
+    var fn2=STEP.done; STEP=null;
     document.getElementById("stepOvl").classList.remove("open");
-    fn();
+    fn2();
   }
   function flashSaved(id){
     var m=document.getElementById(id);
@@ -13480,6 +13553,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
               ((a.role!=="dg"||ROLE==="dg")?'<button class="mini no" data-acreset="'+i+'">'+bi("إعادة تعيين كلمة المرور","Reset password")+'</button>':'')+
               '<button class="mini '+(a.active?"no":"yes")+'" data-actoggle="'+i+'">'+
                 (a.active?bi("إيقاف","Suspend"):bi("تفعيل","Enable"))+'</button>'+
+              (AUTH.on?'<button class="mini no" data-acapp="'+i+'">'+bi("مسح ربط التطبيق","Clear the app link")+'</button>':'')+
               '<button class="mini '+(a.twofa?"no":"yes")+'" data-ac2fa="'+i+'">'+
                 (a.twofa?bi("إلغاء الخطوتين","2-step off"):bi("طلب خطوتين","2-step on"))+'</button>'
               :"")+
@@ -13508,6 +13582,16 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           credSet(a, k, true).then(function(){ drawAccounts(); });
           setTimeout(function(){ a.newkey=null; drawAccounts(); }, 30000);   // shown once
         });
+      return;
+    }
+    var ap=e.target.closest("[data-acapp]");
+    if(ap){
+      var a4=ACCOUNTS[+ap.dataset.acapp];
+      stepUp("accounts", bi("مسح ربط تطبيق المصادقة لـ ","Clearing the authenticator link for ")+bi(a4.who[0],a4.who[1]), function(){
+        bridgeMaster({fn:"acctAppReset", u:a4.u}).then(function(j){
+          gxToast(j&&j.ok?"مُسح ربط التطبيق؛ يربطه صاحبه من جديد من «تفضيلاتي».":"رفض الجسر.", j&&j.ok?"The app link was cleared; its owner links it again in My preferences.":"The bridge refused.");
+        }).catch(function(){ gxToast("تعذّر الاتصال بالجسر.","The bridge could not be reached."); });
+      });
       return;
     }
     var t=e.target.closest("[data-actoggle]");
