@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>منصة ضمان الجودة</title>
-<meta name="qagc-ver" content="beta 96">
+<meta name="qagc-ver" content="beta 97">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -13194,7 +13194,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
             '<div class="frow"><div class="fld"><label for="authA">'+bi("كلمة مرور المدير العام الجديدة","The DG's new password")+'</label><input id="authA" type="password" autocomplete="new-password" style="direction:ltr;text-align:start"></div>'+
             '<div class="fld"><label for="authB">'+bi("تأكيد كلمة المرور","Confirm the password")+'</label><input id="authB" type="password" autocomplete="new-password" style="direction:ltr;text-align:start"></div></div>'+
             '<button class="btn btn-p" id="authOn">'+bi("تفعيل الدخول عبر الجسر","Switch bridge sign-in on")+'</button> <span class="kerr" id="authErr" role="status"></span>'
-          : '<p class="kerr">'+bi("يلزم ربط الجسر أولاً من تبويب «الذكاء الاصطناعي».","Connect the bridge first, in the AI tab.")+'</p>');
+          : '<p class="kerr">'+bi("يلزم ربط الجسر أولاً من صفحة «المساعد الذكي» › «الوارد من ChatGPT».","Connect the bridge first, on the Assistant page › The ChatGPT inbox.")+'</p>');
   }
   function authRoster(){ return ACCOUNTS.map(function(a){ return {u:a.u, role:a.role, sid:a.sid, active:a.active!==false}; }); }
   document.addEventListener("click",function(e){
@@ -14608,7 +14608,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(e.target.closest&&e.target.closest('[data-opane="ow-cust"]')) setTimeout(claudeStatus,0);
     if(e.target.closest&&e.target.closest("#claudeKeyNew")){
       if(!rvIsDG()) return;
-      if(!dgCalCfg()){ claudeSay("bad", bi("الجسر غير مربوط على هذا الجهاز.","The bridge is not connected on this device.")); return; }
+      if(!dgCalCfg()){ claudeSay("bad", bi("الجسر غير مربوط على هذا الجهاز. يُربط من صفحة «المساعد الذكي» › «الوارد من ChatGPT»: المفتاح، ثم «تذكّر المفتاح على هذا الجهاز» و«اتصال وتحديث».","The bridge is not connected on this device. Connect it on the Assistant page › The ChatGPT inbox: the key, then Remember the key on this device, and Connect.")); return; }
       claudeSay("tip", bi("يلزم تأكيد الإصدار بخطوتين…","Confirm with the two-step code…"));
       stepUp("accounts", bi("إصدار مفتاح Claude للجسر","Issuing the Claude key for the bridge"), function(){
         claudeSay("tip", bi("جارٍ الإصدار عبر الجسر…","Issuing through the bridge…"));
@@ -14655,7 +14655,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       if(!rvIsDG()){ custSay("bad", bi("مفاتيح التعليق تُصدَر من حساب المدير العام فقط.","Comment keys are issued from the Director General's own account only.")); return; }
       var pid=kb.dataset.custkey, p=STAFF.filter(function(x){return x.id===pid;})[0]; if(!p) return;
       var cfg=dgCalCfg();
-      if(!cfg){ custSay("bad", bi("الجسر غير مربوط على هذا الجهاز. يُربط من تبويب «الذكاء الاصطناعي»: عنوان الجسر ومفتاحه، ثم «حفظ».","The bridge is not connected on this device. Connect it in the AI tab: the bridge address and key, then Save.")); return; }
+      if(!cfg){ custSay("bad", bi("الجسر غير مربوط على هذا الجهاز. يُربط من صفحة «المساعد الذكي» › «الوارد من ChatGPT»: المفتاح، ثم «تذكّر المفتاح على هذا الجهاز» و«اتصال وتحديث».","The bridge is not connected on this device. Connect it on the Assistant page › The ChatGPT inbox: the key, then Remember the key on this device, and Connect.")); return; }
       if(!custWindowsOf(pid).length){ custSay("bad", bi("لم تُسنَد إلى هذا الموظف نافذة بعد.","No window is assigned to this person yet.")); return; }
       custSay("tip", bi("يلزم تأكيد الإصدار بخطوتين…","Confirm the issue with the two-step code…"));
       stepUp("accounts", bi("إصدار مفتاح تعليق لـ ","Issuing a comment key for ")+gxEsc(isAr()?p.who[0]:p.who[1]), function(){
