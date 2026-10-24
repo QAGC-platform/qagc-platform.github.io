@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>منصة ضمان الجودة</title>
-<meta name="qagc-ver" content="beta 91">
+<meta name="qagc-ver" content="beta 92">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -4347,6 +4347,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
           </table></div>
           <p class="subh" style="margin-top:var(--sp-4)"><span lang="ar">النوافذ لكل أمين</span><span lang="en">Windows per custodian</span></p>
           <div id="custByPerson"></div>
+          <div id="custKeyOut"></div>
         </div>
       </div>
 
@@ -4657,6 +4658,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
     <span class="n" id="rvCount">0</span>
     <button class="btn" id="rvHide" style="margin-inline-start:auto;padding:2px 9px"><span lang="ar">إخفاء</span><span lang="en">Hide</span></button>
   </div>
+  <div id="rvCust" hidden style="padding:8px 12px;border-bottom:1px solid var(--rule);font-size:var(--t-sm)"></div>
   <div class="pb" id="rvList"></div>
   <div class="pf">
     <button class="btn btn-p" id="rvSend"><span lang="ar">إرسال عبر الجسر</span><span lang="en">Send via the bridge</span></button>
@@ -14250,6 +14252,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       try{ localStorage.setItem("qagcMod."+name, JSON.stringify(all)); reply(true); }catch(_){ reply(false,null,"storage"); } },
     "review.pick":function(name,a,reply){
       if(!RVON){ reply(false,null,"review mode is off"); return; }
+      if(!rvMay(MOD_LIST[name].screen)){ rvToast(bi("التعليق متاح على النوافذ المسندة إليك فقط.","Comments are open only on the windows assigned to you.")); reply(false,null,"not assigned"); return; }
       var an=a.a||{}, cfg=MOD_LIST[name];
       // what the frame reports is text; it reaches the note composer's markup, so it is made plain here
       var plain=function(v,n){ return String(v==null?"":v).replace(/[<>&"'`]/g,"").replace(/\s+/g," ").trim().slice(0,n); };
@@ -14372,19 +14375,76 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var bp=document.getElementById("custByPerson");
     if(bp) bp.innerHTML=Object.keys(by).length ? Object.keys(by).map(function(pid){
       var p=STAFF.filter(function(x){return x.id===pid;})[0]; if(!p) return "";
+      var iss=custIssued()[pid];
       return '<div class="rule-row"><span class="rc tnum">'+by[pid].length+'</span><div class="rb"><div class="rt">'+gxEsc(isAr()?p.who[0]:p.who[1])+'</div>'+
-        '<div class="rd">'+by[pid].map(function(k){ var w=names[k]; return w?gxEsc(isAr()?w.ar:w.en):gxEsc(k); }).join(isAr()?"، ":", ")+'</div></div></div>';
+        '<div class="rd">'+by[pid].map(function(k){ var w=names[k]; return w?gxEsc(isAr()?w.ar:w.en):gxEsc(k); }).join(isAr()?"، ":", ")+'</div>'+
+        '<div class="rd">'+(iss?bi("مفتاح التعليق صادر في "+gxEsc(iss.at),"Comment key issued on "+gxEsc(iss.at)):bi("لا مفتاح تعليق بعد","No comment key yet"))+'</div></div>'+
+        '<span class="acts"><button class="mini yes" data-custkey="'+pid+'">'+(iss?bi("مفتاح جديد","New key"):bi("إصدار مفتاح التعليق","Issue a comment key"))+'</button>'+
+        (iss?'<button class="mini no" data-custrevoke="'+pid+'">'+bi("سحب المفتاح","Withdraw the key")+'</button>':'')+'</span></div>';
     }).join("") : '<div class="subempty">'+bi("لم يُسمَّ أمين لأي نافذة بعد.","No custodian has been named yet.")+'</div>';
   }
   document.addEventListener("change",function(e){
     var s=e.target.closest&&e.target.closest("[data-cust]"); if(!s) return;
     if(ROLE!=="dg") return;
+    var before=MOD_CUST[s.dataset.cust]||"";
     if(s.value) MOD_CUST[s.dataset.cust]=s.value; else delete MOD_CUST[s.dataset.cust];
     modCustPersist(); drawCustodians();
+    [before, s.value].filter(function(x,i,a){ return x && a.indexOf(x)===i && custIssued()[x]; }).forEach(function(pid){
+      custBridge({fn:"setCustodianWindows", person:pid, windows:custWindowsOf(pid)}).then(function(j){
+        if(!j||!j.ok) gxToast("تعذّر تحديث نوافذ المفتاح في الجسر.","The key's windows could not be updated at the bridge.");
+      }).catch(function(){ gxToast("تعذّر الاتصال بالجسر؛ نوافذ المفتاح لم تُحدَّث.","The bridge could not be reached; the key's windows were not updated."); });
+    });
     if(MOD_LIST[s.dataset.cust]) modSync(s.dataset.cust);
     gxToast("حُفظ أمين النافذة.","Custodian saved.");
   });
   document.addEventListener("click",function(e){ if(e.target.closest&&e.target.closest('[data-opane="ow-cust"]')) drawCustodians(); });
+  // comment keys: made here, shown once, registered with the bridge as a hash only
+  function custIssued(){ try{ return JSON.parse(localStorage.getItem("qagcCustIssued")||"{}")||{}; }catch(_){ return {}; } }
+  function custIssuedSave(o){ try{ localStorage.setItem("qagcCustIssued", JSON.stringify(o)); }catch(_){} }
+  function custWindowsOf(pid){ return Object.keys(MOD_CUST).filter(function(k){ return MOD_CUST[k]===pid; }); }
+  function custBridge(body){
+    var cfg=(typeof dgCalCfg==="function")?dgCalCfg():null;
+    if(!cfg) return Promise.reject(new Error("no bridge"));
+    return fetch(cfg.url+"?key="+encodeURIComponent(cfg.key),{method:"POST",body:JSON.stringify(body)}).then(function(r){ return r.json(); });
+  }
+  function custSha(text){ return crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)).then(credHex); }
+  document.addEventListener("click",function(e){
+    var kb=e.target.closest&&e.target.closest("[data-custkey]");
+    if(kb){
+      if(!rvIsDG()) return;
+      var pid=kb.dataset.custkey, p=STAFF.filter(function(x){return x.id===pid;})[0]; if(!p) return;
+      var cfg=dgCalCfg(); if(!cfg){ gxToast("يلزم ربط الجسر أولاً من الإعدادات.","Connect the bridge in Settings first."); return; }
+      stepUp("accounts", bi("إصدار مفتاح تعليق لـ ","Issuing a comment key for ")+gxEsc(isAr()?p.who[0]:p.who[1]), function(){
+        var key="QC-"+credCode(28);
+        custSha(key).then(function(h){
+          return custBridge({fn:"setCustodian", keyHash:h, person:pid, name:p.who[0], windows:custWindowsOf(pid)});
+        }).then(function(j){
+          if(!j||!j.ok){ gxToast("رفض الجسر إصدار المفتاح.","The bridge refused the key."); return; }
+          var o=custIssued(); o[pid]={at:PLATFORM_TODAY}; custIssuedSave(o); drawCustodians();
+          var out=document.getElementById("custKeyOut");
+          if(out) out.innerHTML='<div class="gatemsg tip" style="margin-top:var(--sp-3)">'+
+            bi("مفتاح التعليق لـ "+gxEsc(p.who[0])+" — يظهر مرة واحدة. يُسلَّم مع عنوان الجسر ليُدخلهما في لوحة وضع المراجعة على جهازه.",
+               "Comment key for "+gxEsc(p.who[1])+" — shown once. Hand it over with the bridge address; they enter both in the review-mode panel on their device.")+
+            '<div class="tempkey" style="direction:ltr;font-size:1.15em;letter-spacing:.06em;margin:8px 0">'+key+'</div>'+
+            '<div style="direction:ltr;font-size:var(--t-xs);word-break:break-all">'+gxEsc(cfg.url)+'</div></div>';
+        }).catch(function(){ gxToast("تعذّر الاتصال بالجسر.","The bridge could not be reached."); });
+      });
+      return;
+    }
+    var rb=e.target.closest&&e.target.closest("[data-custrevoke]");
+    if(rb){
+      if(!rvIsDG()) return;
+      var pid2=rb.dataset.custrevoke;
+      stepUp("accounts", bi("سحب مفتاح التعليق","Withdrawing the comment key"), function(){
+        custBridge({fn:"revokeCustodian", person:pid2}).then(function(j){
+          if(!j||!j.ok){ gxToast("رفض الجسر سحب المفتاح.","The bridge refused."); return; }
+          var o=custIssued(); delete o[pid2]; custIssuedSave(o); drawCustodians();
+          var out=document.getElementById("custKeyOut"); if(out) out.innerHTML="";
+          gxToast("سُحب مفتاح التعليق.","The comment key was withdrawn.");
+        }).catch(function(){ gxToast("تعذّر الاتصال بالجسر.","The bridge could not be reached."); });
+      });
+    }
+  });
 
   // ── the leave window's contract, platform side ──
   // What the window may read (MOD_STATE.leave) and what it may ask for (MOD_OPS.leave).
@@ -14646,6 +14706,55 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     var url=RVBOARD+"#in="+b64;
     return url.length>28000 ? "" : url;     // well inside what browsers accept
   }
+  // Review comments: the Director General comments anywhere. Anyone else comments only on the
+  // windows assigned to them, and sends through the bridge with their own comment-only key —
+  // the bridge holds the list of their windows and refuses a note on any other.
+  function rvIsDG(){ return !!(SESSION && SESSION.role==="dg"); }
+  function rvCustCfg(){ try{ var c=JSON.parse(localStorage.getItem("qagcCustKey")||"null"); return (c&&c.url&&c.key)?c:null; }catch(_){ return null; } }
+  function rvAllowed(){ if(rvIsDG()) return null; var c=rvCustCfg(); return c&&Array.isArray(c.windows)?c.windows:[]; }
+  function rvMay(screen){ var a=rvAllowed(); return a===null || a.indexOf(screen)>=0; }
+  function rvWinName(k){ var b=document.querySelector('.nav button[data-go="'+k+'"] span[lang="'+(isAr()?"ar":"en")+'"]'); return b?b.textContent:k; }
+  function rvDrawCust(){
+    var h=document.getElementById("rvCust"); if(!h) return;
+    if(rvIsDG()){ h.hidden=true; return; }
+    h.hidden=false;
+    var c=rvCustCfg();
+    h.innerHTML = c
+      ? '<b>'+bi("نوافذك للتعليق: ","Your windows for comments: ")+'</b>'+(c.windows.length?c.windows.map(function(k){ return gxEsc(rvWinName(k)); }).join(isAr()?"، ":", "):bi("لا شيء بعد","none yet"))+
+        ' <button class="btn mini" id="rvCustCheck">'+bi("تحديث","Refresh")+'</button> <button class="btn mini" id="rvCustOff">'+bi("إزالة المفتاح","Remove the key")+'</button>'
+      : '<div style="margin-bottom:6px">'+bi("التعليق متاح على النوافذ المسندة إليك فقط، بمفتاح تعليق يصدره المدير العام.","Comments are open only on the windows assigned to you, with a comment key issued by the Director General.")+'</div>'+
+        '<label for="rvCustUrl">'+bi("عنوان الجسر","Bridge address")+'</label><input id="rvCustUrl" style="direction:ltr;width:100%" autocomplete="off">'+
+        '<label for="rvCustKey">'+bi("مفتاح التعليق","Comment key")+'</label><input id="rvCustKey" type="password" style="direction:ltr;width:100%" autocomplete="off">'+
+        '<div style="margin-top:6px"><button class="btn btn-p mini" id="rvCustSave">'+bi("حفظ والتحقق","Save and check")+'</button> <span id="rvCustMsg" class="kerr" role="status"></span></div>';
+    var pull=document.getElementById("rvPull"); if(pull) pull.hidden=true;
+  }
+  function rvCustPing(url, key){
+    return fetch(url+"?key="+encodeURIComponent(key)+"&fn=ping").then(function(r){ return r.json(); });
+  }
+  document.addEventListener("click",function(e){
+    if(e.target.closest&&e.target.closest("#rvCustSave")){
+      var url=(document.getElementById("rvCustUrl").value||"").trim(), key=(document.getElementById("rvCustKey").value||"").trim();
+      var msg=document.getElementById("rvCustMsg");
+      if(!/^https:\/\/script\.google\.com\//.test(url)||key.length<20){ msg.textContent=isAr()?"يلزم عنوان الجسر ومفتاح التعليق كما أصدرهما المدير العام.":"Enter the bridge address and the comment key exactly as issued."; return; }
+      msg.textContent=isAr()?"جارٍ التحقق…":"Checking…";
+      rvCustPing(url,key).then(function(j){
+        if(!j||!j.ok||!j.custodian){ msg.textContent=isAr()?"رفض الجسر هذا المفتاح.":"The bridge refused this key."; return; }
+        try{ localStorage.setItem("qagcCustKey", JSON.stringify({url:url, key:key, windows:j.windows||[], name:j.name||""})); }catch(_){}
+        rvDrawCust(); rvToast(bi("حُفظ مفتاح التعليق.","Comment key saved."));
+      }).catch(function(){ msg.textContent=isAr()?"تعذّر الاتصال بالجسر.":"The bridge could not be reached."; });
+      return;
+    }
+    if(e.target.closest&&e.target.closest("#rvCustCheck")){
+      var c=rvCustCfg(); if(!c) return;
+      rvCustPing(c.url,c.key).then(function(j){
+        if(!j||!j.ok||!j.custodian){ try{ localStorage.removeItem("qagcCustKey"); }catch(_){} rvDrawCust(); rvToast(bi("المفتاح لم يعد صالحاً.","The key is no longer valid.")); return; }
+        c.windows=j.windows||[]; c.name=j.name||""; try{ localStorage.setItem("qagcCustKey", JSON.stringify(c)); }catch(_){}
+        rvDrawCust(); rvToast(bi("حُدّثت قائمة نوافذك.","Your windows were refreshed."));
+      }).catch(function(){ rvToast(bi("تعذّر الاتصال بالجسر.","The bridge could not be reached.")); });
+      return;
+    }
+    if(e.target.closest&&e.target.closest("#rvCustOff")){ try{ localStorage.removeItem("qagcCustKey"); }catch(_){} rvDrawCust(); return; }
+  });
   function rvSetMode(on){
     RVON=!!on;
     document.body.setAttribute("data-review", RVON?"on":"");
@@ -14657,6 +14766,7 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
       : bi("وضع المراجعة","Review mode");
     var p=document.getElementById("rvPanel");
     if(p) p.hidden=!RVON;
+    if(RVON) rvDrawCust();
     Object.keys(MODS).forEach(function(n){ modPost(n,{ev:"review",data:RVON}); });
     if(!RVON){ rvClearPins(); rvPopClose(); }
     else { rvRows(); rvPaint(); rvPullSilent(); }
@@ -14784,6 +14894,15 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(!RVON) return;
     if(e.target.closest("#rvPop,#rvPanel,#rvToggle,.rv-pin,#rvToast,#verBar,.gate,[data-qhelp]")) return;
     if(RVNAV){ RVNAV=false; return; }
+    if(!rvIsDG()){
+      var scr=e.target.closest(".screen");
+      if(!scr || !rvMay(scr.id)){
+        if(e.target.closest("nav.rail .nav button, #rvCust")) return;      // moving between windows stays possible
+        e.preventDefault(); e.stopPropagation();
+        rvToast(bi("التعليق متاح على النوافذ المسندة إليك فقط.","Comments are open only on the windows assigned to you."));
+        return;
+      }
+    }
     e.preventDefault(); e.stopPropagation();
     var el=e.target;
     // a bare text node's parent is more useful than a wrapping span
@@ -14853,6 +14972,25 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     if(e.target.closest("#rvSend")){
       var unsent=RVNOTES.filter(function(nt){return !nt.fid;});
       if(!unsent.length){ rvToast(bi("لا توجد ملاحظات جديدة للإرسال.","No new notes to send.")); return; }
+      if(!rvIsDG()){
+        var cc=rvCustCfg();
+        if(!cc){ rvDrawCust(); rvToast(bi("يلزم مفتاح التعليق من المدير العام أولاً.","A comment key from the Director General is needed first.")); return; }
+        var mine=unsent.filter(function(nt){ return nt.a && rvMay(nt.a.screen); });
+        if(!mine.length){ rvToast(bi("لا ملاحظات على نوافذك لإرسالها.","No notes on your windows to send.")); return; }
+        rvToast(bi("جارٍ الإرسال عبر الجسر…","Sending through the bridge…"));
+        fetch(cc.url+"?key="+encodeURIComponent(cc.key), {method:"POST",
+          body:JSON.stringify({fn:"addFeedback", notes:mine.map(function(nt){
+            return {when:nt.when, to:nt.to==="dg"?"dg":"dev", screen:nt.a.screen||"", where:nt.a.where||"", what:nt.a.what||"", text:nt.text};
+          })})})
+          .then(function(r){return r.json();})
+          .then(function(j){
+            if(j.ok&&j.ids){ mine.forEach(function(nt,i){ nt.fid=j.ids[i]; }); rvPersist(); rvRows();
+              rvToast(bi(j.ids.length+" ملاحظة أُرسلت عبر الجسر.", j.ids.length+" notes sent through the bridge.")); }
+            else rvToast(bi("رفض الجسر: ","Bridge refused: ")+gxEsc(String(j.error||"")));
+          })
+          .catch(function(){ rvToast(bi("تعذّر الاتصال بالجسر.","The bridge could not be reached.")); });
+        return;
+      }
       var cfg=(typeof dgCalCfg==="function")?dgCalCfg():null;
       if(cfg){
         // the platform DOES have an authenticated door: the bridge. Notes sent

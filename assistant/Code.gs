@@ -172,8 +172,62 @@ function authed_(e) {
   return key && key === PROPS.getProperty('QAGC_API_KEY');
 }
 
+// ── window custodians: a comment-only key for each person, issued by the DG ──
+// The master key can do everything. A custodian key can do one thing: add review notes,
+// and only on the windows listed for it. The bridge keeps the SHA-256 of each custodian key,
+// never the key, and stamps every note with the custodian's name, not the sender's claim.
+function sha256_(s) {
+  return Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, String(s), Utilities.Charset.UTF_8)
+    .map(b => ('0' + (b & 255).toString(16)).slice(-2)).join('');
+}
+function custodians_() {
+  try { return JSON.parse(PROPS.getProperty('QAGC_CUSTODIANS') || '{}') || {}; } catch (_) { return {}; }
+}
+function custodianOf_(e) {
+  const key = (e && e.parameter && e.parameter.key) || '';
+  if (!key || key.length < 20 || key === PROPS.getProperty('QAGC_API_KEY')) return null;
+  const c = custodians_()[sha256_(key)];
+  return (c && c.active !== false) ? c : null;
+}
+// a custodian key sends at most 120 notes an hour
+function custodianQuota_(c, n) {
+  const cache = CacheService.getScriptCache(), k = 'cq_' + c.person;
+  const used = Number(cache.get(k) || 0);
+  if (used + n > 120) return false;
+  cache.put(k, String(used + n), 3600);
+  return true;
+}
+function addFeedback_(body, cust) {
+  const notes = Array.isArray(body.notes) ? body.notes.slice(0, 40) : [];
+  if (!notes.length) return json_({ ok: false, error: 'notes are required' });
+  if (cust) {
+    const allowed = Array.isArray(cust.windows) ? cust.windows : [];
+    const outside = notes.filter(nt => allowed.indexOf(String(nt.screen || '')) < 0);
+    if (outside.length) return json_({ ok: false, error: 'a note is on a window not assigned to this key: ' + String(outside[0].screen || '—').slice(0, 40) });
+    if (!custodianQuota_(cust, notes.length)) return json_({ ok: false, error: 'too many notes this hour' });
+  }
+  const sh = fsheet_();
+  const ids = [];
+  notes.forEach(nt => {
+    const id = 'F' + Utilities.getUuid().slice(0, 8);
+    ids.push(id);
+    sh.appendRow([id, String(nt.when || new Date().toISOString()).slice(0, 16),
+      cust ? String(cust.name || cust.person).slice(0, 80) : String(nt.by || '').slice(0, 80),
+      String(nt.screen || '').slice(0, 40),
+      String(nt.where || '').slice(0, 120), String(nt.what || '').slice(0, 160),
+      String(nt.text || '').slice(0, 2000), 'open', '',
+      nt.to === 'dg' ? 'dg' : 'dev']);
+  });
+  return json_({ ok: true, ids: ids });
+}
+
 function doGet(e) {
-  if (!authed_(e)) return json_({ ok: false, error: 'bad key' });
+  if (!authed_(e)) {
+    const cust = custodianOf_(e);
+    if (cust && (e.parameter.fn || 'ping') === 'ping')
+      return json_({ ok: true, service: 'qagc-assistant', custodian: true, name: cust.name || '', windows: cust.windows || [] });
+    return json_({ ok: false, error: 'bad key' });
+  }
   const fn = (e.parameter.fn || 'ping');
   if (fn === 'ping') return json_({ ok: true, service: 'qagc-assistant', tags: TAGS });
   if (fn === 'objectives') return json_({ ok: true, objectives: OBJECTIVES });
@@ -255,12 +309,54 @@ function doGet(e) {
 }
 
 function doPost(e) {
-  if (!authed_(e)) return json_({ ok: false, error: 'bad key' });
+  const cust = authed_(e) ? null : custodianOf_(e);
+  if (!authed_(e) && !cust) return json_({ ok: false, error: 'bad key' });
   let body = {};
   try { body = JSON.parse(e.postData.contents || '{}'); } catch (err) {
     return json_({ ok: false, error: 'body is not JSON' });
   }
   const fn = body.fn || 'addTask';
+  if (cust) {
+    if (fn !== 'addFeedback') return json_({ ok: false, error: 'this key may only send review notes' });
+    return addFeedback_(body, cust);
+  }
+
+  // ── custodian keys: issued, re-scoped and withdrawn with the master key only ──
+  if (fn === 'setCustodian') {
+    const h = String(body.keyHash || '').toLowerCase();
+    if (!/^[0-9a-f]{64}$/.test(h)) return json_({ ok: false, error: 'keyHash must be a SHA-256 hex' });
+    const person = String(body.person || '').trim().slice(0, 20);
+    if (!person) return json_({ ok: false, error: 'person is required' });
+    const windows = (Array.isArray(body.windows) ? body.windows : []).map(w => String(w).trim().slice(0, 40))
+      .filter(w => /^[a-z0-9_-]+$/.test(w)).slice(0, 30);
+    const all = custodians_();
+    Object.keys(all).forEach(k => { if (all[k].person === person && k !== h) delete all[k]; });   // one key per person
+    all[h] = { person: person, name: String(body.name || '').slice(0, 80), windows: windows,
+               issued: all[h] ? all[h].issued : new Date().toISOString(), active: true };
+    PROPS.setProperty('QAGC_CUSTODIANS', JSON.stringify(all));
+    return json_({ ok: true, person: person, windows: windows });
+  }
+  if (fn === 'setCustodianWindows') {
+    const person = String(body.person || '').trim().slice(0, 20);
+    const windows = (Array.isArray(body.windows) ? body.windows : []).map(w => String(w).trim().slice(0, 40))
+      .filter(w => /^[a-z0-9_-]+$/.test(w)).slice(0, 30);
+    const all = custodians_(); let n = 0;
+    Object.keys(all).forEach(k => { if (all[k].person === person) { all[k].windows = windows; n++; } });
+    PROPS.setProperty('QAGC_CUSTODIANS', JSON.stringify(all));
+    return json_({ ok: true, updated: n });
+  }
+  if (fn === 'revokeCustodian') {
+    const person = String(body.person || '').trim().slice(0, 20);
+    const all = custodians_(); let n = 0;
+    Object.keys(all).forEach(k => { if (all[k].person === person) { delete all[k]; n++; } });
+    PROPS.setProperty('QAGC_CUSTODIANS', JSON.stringify(all));
+    return json_({ ok: true, revoked: n });
+  }
+  if (fn === 'listCustodians') {
+    const all = custodians_();
+    return json_({ ok: true, custodians: Object.keys(all).map(k => ({ person: all[k].person, name: all[k].name,
+      windows: all[k].windows, issued: all[k].issued })) });
+  }
 
   // ── a CPD activity goes straight to its place on the year board ──
   if (fn === 'addCpd') {
@@ -355,22 +451,7 @@ function doPost(e) {
   }
 
   // ── review notes: the platform pins them, the bridge carries them ──
-  if (fn === 'addFeedback') {
-    const notes = Array.isArray(body.notes) ? body.notes.slice(0, 40) : [];
-    if (!notes.length) return json_({ ok: false, error: 'notes are required' });
-    const sh = fsheet_();
-    const ids = [];
-    notes.forEach(nt => {
-      const id = 'F' + Utilities.getUuid().slice(0, 8);
-      ids.push(id);
-      sh.appendRow([id, String(nt.when || new Date().toISOString()).slice(0, 16),
-        String(nt.by || '').slice(0, 80), String(nt.screen || '').slice(0, 40),
-        String(nt.where || '').slice(0, 120), String(nt.what || '').slice(0, 160),
-        String(nt.text || '').slice(0, 2000), 'open', '',
-        nt.to === 'dg' ? 'dg' : 'dev']);
-    });
-    return json_({ ok: true, ids: ids });
-  }
+  if (fn === 'addFeedback') return addFeedback_(body, null);
   // ── work mail: the daily lane — items routed to the person responsible ──
   if (fn === 'inboxAdd') {
     const it = body.item || {};
