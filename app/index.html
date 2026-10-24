@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>منصة ضمان الجودة</title>
-<meta name="qagc-ver" content="beta 92">
+<meta name="qagc-ver" content="beta 93">
 <script>
   document.documentElement.lang = "ar";
   document.documentElement.dir = "rtl";
@@ -4340,7 +4340,7 @@ html[dir="ltr"] .orgu:not([data-open]) > .oh .ocaret::after{content:"\25B8"}
           <div class="card-h"><div class="chrow"><div>
             <span class="ceye"><span lang="ar">توزيع العمل على النوافذ</span><span lang="en">Dividing the work by window</span></span>
             <h2><span lang="ar">أمناء النوافذ</span><span lang="en">Window custodians</span></h2></div></div></div>
-          <p style="font-size:var(--t-sm);color:var(--ink-3)"><span lang="ar">لكل نافذة أمين واحد. النافذة الداخلة في الحد يعدّلها أمينها مباشرة بمسودة تُعرض في متصفحه وحده، ولا تُعتمد إلا بعد فحصها. النوافذ الأخرى تُطوَّر بملاحظات وضع المراجعة.</span><span lang="en">One custodian per window. A fenced window is edited directly by its custodian through a draft shown in their browser only, and installed only after it passes the check. Other windows are developed through review-mode notes.</span></p>
+          <p style="font-size:var(--t-sm);color:var(--ink-3)"><span lang="ar">لكل نافذة أمين واحد يطوّرها بالتعليق عليها في وضع المراجعة، وتصل تعليقاته عبر الجسر بمفتاح تعليق يُصدَر هنا. يقبل الجسر تعليقاته على النوافذ المسندة إليه فقط.</span><span lang="en">One custodian per window, who develops it by commenting in review mode. Their comments travel through the bridge with a comment key issued here, and the bridge accepts them only on the windows assigned to them.</span></p>
           <div class="tw"><table>
             <thead><tr><th><span lang="ar">النافذة</span><span lang="en">Window</span></th><th><span lang="ar">الأمين</span><span lang="en">Custodian</span></th><th><span lang="ar">طريقة العمل</span><span lang="en">How it is worked on</span></th></tr></thead>
             <tbody id="custRows"></tbody>
@@ -12940,13 +12940,11 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   function gateFoot(){
     var el=document.getElementById("gateFoot"); if(!el) return;
     el.innerHTML=bi("الحسابات يصدرها المدير العام أو قسم التنسيق والمتابعة. إن نُسيت كلمة المرور: رمز الاسترداد من هذه الصفحة، أو إعادة التعيين منهما.",
-                    "Accounts are issued by the Director General or Coordination & Follow-up. A forgotten password: a recovery code on this page, or a reset by them.")+
-      '<br><span style="color:var(--warn-ink)">'+
-      bi("نموذج للعرض: dg / qagc2027 — ولكل موظف في الكشف حساب تجريبي: اسم المستخدم رمزه (m1 … m20) وكلمة المرور نفسها. الأدوار والصلاحيات تُفرض في المتصفح في هذه النسخة، فلا تصلح لبيانات حقيقية قبل الواجهة الخلفية.",
-         "Demonstration build: dg / qagc2027 — roles are enforced in the browser here; not for real data before the backend.")+'</span>';
+                    "Accounts are issued by the Director General or Coordination & Follow-up. A forgotten password: a recovery code on this page, or a reset by them.");
   }
   function openApp(a){
-    SESSION=a; ROLE=a.role;
+    SESSION=a; ROLE=a.role; VIEW_AS=null; if(typeof ALL_TABS!=="undefined") ALL_TABS=false;
+    if(typeof testAidsSync==="function") testAidsSync();
     try{ localStorage.setItem("qagcSession", a.u); }catch(_){}
     var sel=document.getElementById("roleSel"); if(sel) sel.value=a.role;
     document.getElementById("gate").classList.add("done");
@@ -13443,13 +13441,29 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
     applyLeaveTabs(); drawMine(); afterSubmit(); drawPrioEverywhere(); lvAfter(); drawCpd(); drawStrips();
     drawCoord(); drawDir(); drawHead(); drawStaffHome(); drawPrefs(); drawAccounts(); drawOrg();
   }
+  // viewing as another role or person, and showing every tab, are review aids for the
+  // Director General's own account; for anyone else they are hidden and refused
+  function testAidsSync(){
+    var dg=!!(SESSION && SESSION.role==="dg");
+    var box=document.querySelector(".roleswitch"); if(box) box.hidden=!dg;
+    var at=document.getElementById("allTabs"); if(at) at.hidden=!dg;
+    if(!dg && SESSION){
+      var reset=(ROLE!==SESSION.role)||VIEW_AS||ALL_TABS;
+      VIEW_AS=null; ALL_TABS=false; ROLE=SESSION.role;
+      var r2=document.getElementById("roleSel"); if(r2) r2.value=ROLE;
+      var p2=document.getElementById("personSel"); if(p2) p2.value="";
+      return reset;
+    }
+    return false;
+  }
   var rs=document.getElementById("roleSel");
-  if(rs) rs.addEventListener("change",function(){ VIEW_AS=null; var ps=document.getElementById("personSel"); if(ps) ps.value=""; ROLE=this.value; applyRole(); });
+  if(rs) rs.addEventListener("change",function(){ if(!(SESSION&&SESSION.role==="dg")){ testAidsSync(); applyRole(); return; } VIEW_AS=null; var ps=document.getElementById("personSel"); if(ps) ps.value=""; ROLE=this.value; applyRole(); });
   var psel=document.getElementById("personSel");
   if(psel){ psel.innerHTML='<option value="">'+(isAr()?"— الدور فقط":"— role only")+'</option>'+STAFF.map(function(p){ return '<option value="'+p.id+'">'+p.who[0]+' — '+((p.desig&&p.desig[0])||"")+'</option>'; }).join("");
-    psel.addEventListener("change",function(){ VIEW_AS=this.value||null; if(VIEW_AS){ var acc=ACCOUNTS.filter(function(a){return a.sid===VIEW_AS;})[0]; ROLE=acc?acc.role:"staff"; if(rs) rs.value=ROLE; } applyRole(); }); }
+    psel.addEventListener("change",function(){ if(!(SESSION&&SESSION.role==="dg")){ testAidsSync(); applyRole(); return; } VIEW_AS=this.value||null; if(VIEW_AS){ var acc=ACCOUNTS.filter(function(a){return a.sid===VIEW_AS;})[0]; ROLE=acc?acc.role:"staff"; if(rs) rs.value=ROLE; } applyRole(); }); }
   var atb=document.getElementById("allTabs");
   if(atb) atb.addEventListener("click",function(){
+    if(!(SESSION&&SESSION.role==="dg")){ testAidsSync(); applyRole(); return; }
     ALL_TABS=!ALL_TABS;
     atb.setAttribute("aria-pressed", ALL_TABS?"true":"false");
     document.getElementById("allTabsLbl").innerHTML = ALL_TABS
@@ -14077,10 +14091,10 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
   }
   function modDraftKey(name){ return "qagcModDraft."+name; }
   // a draft runs only in its custodian's own browser; nobody else, the DG included, runs it
-  function modMayDraft(name){
-    var me=(typeof myPerson==="function")?myPerson():null;
-    return !!(me && MOD_CUST[name] && MOD_CUST[name]===me.id && ROLE!=="dg");
-  }
+  // custodians work by review comments through the bridge (decided 2026-10-24); a window's
+  // code changes only by installation, so no draft runs anywhere
+  function modMayDraft(name){ return false; }
+  try{ Object.keys(localStorage).forEach(function(k){ if(/^qagcModDraft\./.test(k)) localStorage.removeItem(k); }); }catch(_){}
   function modSource(name){
     var d=null;
     if(modMayDraft(name)){ try{ d=localStorage.getItem(modDraftKey(name)); }catch(_){ d=null; } }
@@ -14366,9 +14380,8 @@ var PLAN2027=[{"r":"SO1","p":null,"l":"center","t":"إرساء منظومة مت
           people.map(function(p){ return '<option value="'+p.id+'"'+(p.id===cur?' selected':'')+'>'+gxEsc(isAr()?p.who[0]:p.who[1])+'</option>'; }).join("")+
         '</select></td>'+
         '<td>'+(fenced
-          ? '<span class="pill p-good">'+bi("داخل الحد · تعديل مباشر","Fenced · direct editing")+'</span> '+
-            '<button class="mini" data-modget="'+w.k+'">'+bi("تنزيل ملف التطوير","Download the development file")+'</button>'
-          : '<span class="pill">'+bi("بالملاحظات حتى تُنقل إلى الحد","By notes until it is fenced")+'</span>')+'</td></tr>';
+          ? '<span class="pill">'+bi("بالتعليقات عبر الجسر","By comments through the bridge")+'</span>'
+          : '<span class="pill">'+bi("بالتعليقات عبر الجسر","By comments through the bridge")+'</span>')+'</td></tr>';
     }).join("");
     var by={}; Object.keys(MOD_CUST).forEach(function(k){ (by[MOD_CUST[k]]=by[MOD_CUST[k]]||[]).push(k); });
     var names={}; wins.forEach(function(w){ names[w.k]=w; });
